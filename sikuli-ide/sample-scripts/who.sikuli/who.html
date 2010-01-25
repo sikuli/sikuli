@@ -1,0 +1,72 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+      </style>
+   </head>
+<body>
+<pre class="sikuli-code">
+d = VDict({
+  <img src="1254350186871.png" />: <span class="str">"Rob"</span>,
+  <img src="1254350214900.png" />: <span class="str">"Michael"</span>,
+  <img src="1254350243471.png" />: <span class="str">"Greg"</span>
+})
+
+d[<img src="1254350295318.png" />] = <span class="str">"Jones"</span>
+
+running = True
+<span class="kw">while</span> running:
+  region = Subregion(<span class="dig">265</span>,<span class="dig">295</span>,<span class="dig">558</span>,<span class="dig">179</span>)
+  <span class="kw">for</span> person <span class="kw">in</span> d.keys():
+    <span class="kw">if</span> region.<span class="skw">find</span>(person):
+      m = region.matches[<span class="dig">0</span>]
+      photo = <span class="skw">capture</span>(m)
+      <span class="kw">if</span> photo <span class="kw">in</span> d:
+        <span class="skw">popup</span>(d[photo][<span class="dig">0</span>] + <span class="str">" posts a new message"</span>)
+        running = False
+        <span class="kw">break</span>
+      <span class="kw">else</span>:
+        <span class="skw">sleep</span>(<span class="dig">1</span>)
+</pre>
+</body>
+</html>

@@ -1,0 +1,125 @@
+JAVAC=javac
+PYTHON_DOC=pythondoc.py
+PYTHON_DOC_FLAGS=-Dstyle=css/pydoc.css -p python.edu.mit.csail.uid
+
+LIB_PATH=$(shell pwd)/../lib
+CLASSPATH=$(INCLUDE_LIB_PATH):../lib/jython-2.2.1.jar
+
+JAR=sikuli-script.jar
+JYTHON_CLASS=org.python.util.jython
+JYTHON_SRC_CLASS=python/edu/mit/csail/uid/
+
+DOC_PATH=doc/
+SOURCE_PATH=src/main/java
+TARGET_PATH=target/classes
+NATIVE_SRC_PATH=src/main/native
+NATIVE_TARGET_PATH=target/lib
+JYTHON_SRC_PATH=src/main/python
+TEST_PATH=src/test/java
+TEST_TARGET_PATH=target/test-classes
+INCLUDE_LIB_PATH=lib
+NATIVE_LOADER_PATH=../lib/mx-native-loader-1.2
+JAR_PATH=target/jar/
+RELEASE_TMP_PATH=target/sikuli-script
+
+PY_TEST_PATH=src/test/python
+
+SRC=$(shell find $(SOURCE_PATH) -name \*.java)
+CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java | perl -ple 's!^./(.*)\.java!$(TARGET_PATH)/$$1.class!' )
+JFLAGS=-sourcepath $(SOURCE_PATH) -d $(TARGET_PATH) -cp $(CLASSPATH) 
+
+JUNIT_JAR=../lib/junit-3.8.1.jar
+TEST_SRC=$(shell find $(TEST_PATH) -name \*.java)
+TEST_CLASSES=$(shell cd $(TEST_PATH); find . -name \*.java | perl -ple 's!^./(.*)\.java!$(TEST_TARGET_PATH)/$$1.class!' )
+TEST_CLASSPATH=$(JAR_PATH):$(CLASSPATH):$(JUNIT_JAR):$(TEST_TARGET_PATH):$(TARGET_PATH)
+TEST_JFLAGS=-sourcepath $(TEST_PATH) -d $(TEST_TARGET_PATH) -cp $(TEST_CLASSPATH)
+
+$(TEST_TARGET_PATH)/%.class: $(TEST_PATH)/%.java
+	$(JAVAC) $(TEST_JFLAGS) $<
+
+$(TARGET_PATH)/%.class: $(SOURCE_PATH)/%.java
+	$(JAVAC) $(JFLAGS) $<
+
+$(TEST_TARGET_PATH):
+	mkdir -p $(TEST_TARGET_PATH)
+
+$(TARGET_PATH):
+	mkdir -p $(TARGET_PATH)
+
+$(JAR_PATH):
+	mkdir -p $(JAR_PATH)
+
+$(RELEASE_TMP_PATH):
+	mkdir -p $(RELEASE_TMP_PATH)
+
+default: jar
+
+all: $(TARGET_PATH) $(CLASSES) native-lib
+
+doc: python-doc java-doc install-doc
+
+java-doc:
+	javadoc -sourcepath $(SOURCE_PATH) -d $(DOC_PATH) -classpath $(CLASSPATH)  edu.mit.csail.uid
+
+
+python-doc:
+	cd $(JYTHON_SRC_PATH)/..; $(PYTHON_DOC) $(PYTHON_DOC_FLAGS) $(JYTHON_SRC_CLASS)
+	for f in $(JYTHON_SRC_PATH)/../*.html;do mv $$f $(DOC_PATH); done
+
+install-doc:
+	cp -r $(DOC_PATH)/* ../../www/doc
+
+test: test-vdict test-sikuli-script
+
+test-vdict-py:
+	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py
+	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestVDict.py
+	
+test-vdict: vdict $(TEST_CLASSES) 
+	rm -rf tmplib
+	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.VDictTest
+
+test-sikuli-script: $(TEST_CLASSES)
+	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.SikuliScriptTest
+
+vdict:
+	make -C $(NATIVE_SRC_PATH) -f Makefile.vdict
+	cp $(NATIVE_TARGET_PATH)/* $(JAR_PATH)/META-INF/lib/
+
+clean:
+	rm $(CLASSES)
+
+native-loader:
+	cd $(NATIVE_LOADER_PATH); mvn compile
+	#cp -fr $(NATIVE_LOADER_PATH)/target/classes/* $(INCLUDE_LIB_PATH)
+
+native-lib:
+	make -C $(NATIVE_SRC_PATH)
+
+prepare-jar: $(JAR_PATH) native-loader
+	cp -rf $(TARGET_PATH)/* $(JAR_PATH)
+	mkdir -p $(JAR_PATH)/META-INF
+	cp -rf $(NATIVE_TARGET_PATH) $(JAR_PATH)/META-INF
+	cp -rf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) # Linux -rLf
+	cd $(JAR_PATH); jar xvf $(LIB_PATH)/jython-*.jar 
+	mkdir -p $(JAR_PATH)/Lib
+	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
+	cd $(JAR_PATH)/Lib; unzip -f $(LIB_PATH)/jython-lib.zip
+	
+jar: all prepare-jar
+	cd $(JAR_PATH); jar cvfm ../$(JAR) ../MANIFEST.txt *; cd -
+
+install-jar: jar
+	cp target/$(JAR) $(LIB_PATH)
+
+update-so:
+	cd $(JAR_PATH); jar ufm ../../../lib/sikuli-script.jar ../MANIFEST.txt META-INF
+
+release: $(RELEASE_TMP_PATH) 
+	rm -rf $(RELEASE_TMP_PATH)/*
+	cp target/sikuli-script.{bat,sh} $(RELEASE_TMP_PATH)
+	chmod +x $(RELEASE_TMP_PATH)/sikuli-script.sh
+	cp $(LIB_PATH)/sikuli-script.jar $(RELEASE_TMP_PATH)
+	cp -r $(LIB_PATH)/{win32,tmplib} $(RELEASE_TMP_PATH)
+	cd target; zip -r ../../release/Sikuli-Script-all-`date "+%Y%m%d"`.zip sikuli-script -x '*/.svn/*'
+

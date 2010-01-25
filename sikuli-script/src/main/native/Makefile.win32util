@@ -1,0 +1,48 @@
+CXX=g++
+TARGET_DIR=..\..\..\target\lib
+
+OPENCV_DIR=C:\OpenCV2.0
+TESSERACT_DIR= C:\tesseract-2.04
+JDK_DIR=C:\Program Files\Java\jdk1.6.0_16
+
+#DEBUG=-g -DDEBUG
+ARCH=-arch i386 -arch ppc
+CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` -I/usr/local/include/tesseract/ -I/opt/local/include/tesseract/ $(ARCH)
+LDFLAGS= $(DEBUG) $(ARCH) -dynamiclib -framework JavaVM `pkg-config --libs opencv` -ltesseract_full -ltiff 
+OBJS = VDictProxy.o
+
+DYN_LIB = Win32Util.dll 
+
+SRC=Win32Util.cc
+
+
+CLASSES_TARGET_PATH=..\..\..\target\classes
+CLASSPATH=..\java;..\..\..\lib
+PACKAGE=edu.mit.csail.uid
+
+default: dll
+
+
+$(DYN_LIB): $(OBJS) 
+	mkdir -p $(TARGET_DIR)
+	$(CXX) $(LDFLAGS) $(OBJS) -o $(DYN_LIB)
+
+exe: $(BIN)
+
+lib: $(DYN_LIB)
+
+jni:
+	javac -sourcepath ..\java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) ..\java\edu\mit\csail\uid\*.java
+	javah -classpath $(CLASSES_TARGET_PATH) $(PACKAGE).Win32Util
+
+clean:
+	rm $(OBJS) $(DYN_LIB)
+
+vcvars:
+	"C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\vcvars32.bat"
+
+dll: vcvars
+	set LIB="$(OPENCV_DIR)\tmp\lib\Release";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
+	cl /o$(DYN_LIB) /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" user32.lib -LD $(SRC)
+	copy $(DYN_LIB) $(TARGET_DIR)
+

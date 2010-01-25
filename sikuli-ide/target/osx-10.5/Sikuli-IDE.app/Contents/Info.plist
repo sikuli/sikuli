@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sikuli</string>
+			</array>
+			<key>LSTypeIsPackage</key>
+			<true/>
+                        <key>CFBundleTypeIconFile</key>
+                        <string>SikuliSrc.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Sikuli Script source file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsAppleDefaultForType</key>
+			<true/>
+		</dict>
+	</array>
+	<key>NSJavaRoot</key>
+	<string>Contents/Resources/Java</string>
+	<key>CFBundleName</key>
+	<string>Sikuli IDE</string>
+	<key>CFBundleVersion</key>
+	<string>0.9</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>true</string>
+	<key>CFBundleExecutable</key>
+	<string>JavaApplicationStub</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleIconFile</key>
+	<string>SikuliIde.icns</string>
+	<key>Java</key>
+	<dict>
+		<key>MainClass</key>
+		<string>edu.mit.csail.uid.SikuliIDE</string>
+		<key>JVMVersion</key>
+		<string>1.5+</string>
+		<key>ClassPath</key>
+		<array>
+			<string>$JAVAROOT/sikuli-script.jar</string>
+			<string>$JAVAROOT/junit-3.8.1.jar</string>
+			<string>$JAVAROOT/sikuli-ide.jar</string>
+		</array>
+		<key>Properties</key>
+		<dict>
+			<key>apple.laf.useScreenMenuBar</key>
+			<string>true</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

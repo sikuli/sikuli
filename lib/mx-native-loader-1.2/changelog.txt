@@ -1,0 +1,10 @@
+Changes in version 1.2
+======================
+2008-03-26 richardv
+ * add changelog and license to source packages
+
+Changes in version 1.1
+======================
+2008-01-16 richardv
+ * migrate to svn
+ * add a fudge to deal with .dylibs on MacOS X

@@ -1,0 +1,68 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+      </style>
+   </head>
+<body>
+<pre class="sikuli-code">
+<span class="cmt"># create some notes
+</span>v = VDict()
+v[<img src="1254684338981.png" />] = <span class="str">'use 42.242.123.43'</span>
+v[<img src="1254685582365.png" />] = <span class="str">'use my default login'</span>
+
+<span class="cmt"># add a new note
+</span><span class="skw">popup</span>(<span class="str">'Take a screenshot to add a note'</span>)
+new_image = <span class="skw">capture</span>()
+new_note = <span class="skw">input</span>()
+v[new_image] = new_note
+
+<span class="cmt"># lookup some notes
+</span><span class="kw">for</span> i <span class="kw">in</span> (<span class="dig">1</span>,<span class="dig">2</span>):
+  <span class="skw">popup</span>(<span class="str">'Take a screenshot to retrieve a note'</span>)
+  query_image = <span class="skw">capture</span>()
+  retrieved_note = v[query_image][<span class="dig">0</span>]
+  <span class="skw">popup</span>(retrieved_note)
+</pre>
+</body>
+</html>

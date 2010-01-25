@@ -1,0 +1,62 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+      </style>
+   </head>
+<body>
+<pre class="sikuli-code">
+<span class="kw">def</span> dragRight(t):
+  <span class="skw">dragDrop</span>(t,  [ t.x + <span class="dig">200</span>, t.y ] )
+
+<span class="cmt"># http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=victoria,+bc&amp;sll=10.305461,-61.280365&amp;sspn=0.524239,0.826721&amp;g=victoria&amp;ie=UTF8&amp;ll=48.458807,-123.380413&amp;spn=0.044169,0.168743&amp;z=13
+</span>
+<span class="kw">while</span> True:
+  t = <span class="skw">find</span>(Pattern(<img src="1254430393129.png" />).similar(<span class="dig">0.70</span>).firstN(<span class="dig">1</span>))[<span class="dig">0</span>]
+  <span class="kw">if</span> t:
+    dragRight(t)
+  <span class="kw">else</span>:
+    <span class="kw">break</span>
+</pre>
+</body>
+</html>

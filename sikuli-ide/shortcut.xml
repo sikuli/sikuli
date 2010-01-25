@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<shortcuts>
+    <skipIfNotSupported/>
+	 <defaultCurrentUser/>
+	 <programGroup defaultName="Sikuli Script" location="applications||startMenu"/>
+    <shortcut
+            name="Sikuli IDE"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            startMenu="yes"
+            startup="no"
+            target="$INSTALL_PATH\Sikuli-IDE.exe"
+            iconFile="$INSTALL_PATH\ide-icon.ico"
+            iconIndex="0"
+            commandLine=""
+				workingDirectory="$INSTALL_PATH"
+            description="Sikuli IDE">
+        <createForPack name="Sikuli IDE"/>
+    </shortcut>
+    <shortcut name="Uninstaller"
+            programGroup="yes"
+            desktop="no"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+            commandLine=""
+            iconFile="%SystemRoot%\system32\SHELL32.dll"
+            iconIndex="31"
+				workingDirectory="$INSTALL_PATH"
+            description="Uninstaller">
+        <createForPack name="Sikuli IDE"/>
+    </shortcut>
+</shortcuts>

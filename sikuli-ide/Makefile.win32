@@ -1,0 +1,91 @@
+ARGS=#evaluation/TestJEdit.sikuli 
+
+JAVAC=javac
+JAVA=java
+
+LIB_PATH=../lib
+CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar;$(LIB_PATH)/sikuli-script.jar;$(LIB_PATH)/jintellitype-1.3.2/jintellitype-1.3.2.jar
+RESOURCE_PATH=resources
+MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
+
+JAR=sikuli-ide.jar
+APP=$(TARGET_OS)/Sikuli-IDE.app
+RECORDER=../sikuli-redo/target/MacRecorder.app
+RELEASE_APP_ZIP=Sikuli-IDE-win-`date "+%Y%m%d"`.zip
+RELEASE_APP_INSTALLER=Sikuli-IDE-win-`date "+%Y%m%d"`.exe
+
+TARGET_PATH=target
+SOURCE_PATH=src/main/java
+CLASSES_OUT_PATH=target/classes
+JAR_PATH=target/jar
+RELEASE_TMP_PATH=$(TARGET_PATH)/Sikuli-IDE
+RELEASE_PATH=../release
+RELEASE_FILES=*.exe,*.ico,sikuli-ide-full.jar,tmplib
+APP_FRAMEWORKS_PATH=$(TARGET_PATH)/$(APP)/Contents/Frameworks
+
+SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*Mac.java')
+CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java -and -not -regex '.*Mac.java'| perl -ple 's!^./(.*)\.java!$(CLASSES_OUT_PATH)/$$1.class!' )
+RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts
+TARGET_RESOURCES=$(RESOURCES:$(RESOURCE_PATH)/%=$(CLASSES_OUT_PATH)/%)
+
+JFLAGS=-sourcepath $(SOURCE_PATH) -d $(CLASSES_OUT_PATH) -cp "$(CLASSPATH)"
+
+default: test
+
+#$(CLASSES_OUT_PATH)/%.class: $(SOURCE_PATH)/%.java
+#	$(JAVAC) $(JFLAGS) $<
+
+$(CLASSES_OUT_PATH)/%: $(RESOURCE_PATH)/%
+	cp -rf $< $(CLASSES_OUT_PATH)
+
+
+$(CLASSES): $(SRC)
+	$(JAVAC) $(JFLAGS) $(SRC)
+
+$(CLASSES_OUT_PATH):
+	mkdir -p $(CLASSES_OUT_PATH)
+
+$(JAR_PATH):
+	mkdir -p $(JAR_PATH)
+
+
+debug:
+	jdb -Dsikuli.Debug=3  -classpath $(CLASSPATH):$(CLASSES_OUT_PATH) $(MAIN_CLASS) /Users/vgod/test.sikuli
+
+test:all
+	#open target/Sikuli-IDE.app --args ../evaluation/TestJEdit.sikuli
+	PATH=$$PATH:tmplib/ $(JAVA) -Dsikuli.Debug=3  -cp "$(CLASSPATH);$(CLASSES_OUT_PATH)" $(MAIN_CLASS) $(ARGS) #evaluation/TestCapivara.sikuli #testing/PythonTestCase.sikuli #evaluation/TestDrJava.py #testing/PythonTestCase.py
+
+
+all: $(CLASSES_OUT_PATH) $(CLASSES) $(TARGET_RESOURCES)
+
+clean:
+	rm $(CLASSES)
+
+prepare-jar:
+	cp -rf $(CLASSES_OUT_PATH)/* $(JAR_PATH)
+	
+jar: $(JAR_PATH) all prepare-jar
+	cd $(JAR_PATH); jar cvMf ../$(JAR) *; cd -
+
+install-jar: jar
+	cp $(JAR_PATH)/../$(JAR) $(LIB_PATH)
+
+
+$(RELEASE_TMP_PATH):
+	mkdir -p $(RELEASE_TMP_PATH)
+
+release: jar $(RELEASE_TMP_PATH) 
+	perl -pi -e 's/<appversion>.*<\/appversion>/$$v=`cat latest-ver`;chomp($$v);"<appversion>$$v<\/appversion>"/xe' install.xml
+	cp $(subst ;, , $(CLASSPATH)) $(JAR_PATH)/../$(JAR) $(RELEASE_TMP_PATH)
+	cd $(RELEASE_TMP_PATH); rm -f sikuli-ide-full.jar; ../../../utils/merge-jar.sh *.jar; mv out.jar sikuli-ide-full.jar
+	rm -rf $(RELEASE_TMP_PATH)/tmplib
+	cp -r $(LIB_PATH)/win32 $(RELEASE_TMP_PATH)/tmplib
+	cp $(TARGET_PATH)/win32/* $(RELEASE_TMP_PATH)
+	rm -rf $(RELEASE_TMP_PATH)/tmplib/.svn
+	cd $(TARGET_PATH) ;  zip -r ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP) Sikuli-IDE/{$(RELEASE_FILES)} -x '*/.svn/*'
+	echo "Generated ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP)"
+	/cygdrive/c/Program\ Files/IzPack/bin/compile install.xml
+	/cygdrive/c/Program\ Files/IzPack/utils/wrappers/izpack2exe/izpack2exe --file=install.jar --no-upx --with-7z=..\\utils\\7za.exe
+	mv setup.exe $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)
+	echo "Generated $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)"

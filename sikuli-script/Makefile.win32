@@ -1,0 +1,47 @@
+# Usage: nmake -f Makefile.win32
+
+CLASSES_TARGET_PATH=target\classes
+CLASSPATH=..\lib\mx-native-loader-1.2\target\classes
+
+NATIVE_SRC_PATH=src\main\native
+NATIVE_TARGET_PATH=target\lib
+
+JAR_PATH=target\jar
+JAR_DLL_PATH=$(JAR_PATH)\META-INF\lib
+
+DLLS=$(NATIVE_TARGET_PATH)\*.dll
+
+default: java dll jar
+
+$(CLASSES_TARGET_PATH):
+	mkdir $(CLASSES_TARGET_PATH)
+
+$(NATIVE_TARGET_PATH):
+	mkdir $(NATIVE_TARGET_PATH)
+
+java: $(CLASSES_TARGET_PATH)
+	javac -sourcepath ..\java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) src\main\java\edu\mit\csail\uid\*.java
+
+dll: $(NATIVE_TARGET_PATH)
+	cd $(NATIVE_SRC_PATH)
+	nmake -f Makefile.win32 
+
+$(JAR_PATH):
+	mkdir $(JAR_PATH)
+
+$(JAR_DLL_PATH):
+	mkdir $(JAR_DLL_PATH)
+
+prepare-jar: $(JAR_PATH) $(JAR_DLL_PATH) 
+	copy $(DLLS) $(JAR_DLL_PATH)
+	xcopy /s /y $(CLASSES_TARGET_PATH)\* $(JAR_PATH)
+
+jar: prepare-jar
+	copy $(DLLS) ..\lib\win32
+	cd $(JAR_PATH)
+	jar ufm ..\..\..\lib\sikuli-script.jar ..\MANIFEST.txt *
+
+update-dll:
+	cd $(JAR_PATH)
+	jar ufm ..\..\..\lib\sikuli-script.jar ..\MANIFEST.txt META-INF
+

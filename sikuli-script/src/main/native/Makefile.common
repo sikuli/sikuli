@@ -1,0 +1,38 @@
+TARGET_DIR=../../../target/lib
+OS=$(shell uname)
+UNAME_P=$(shell uname -p)
+
+
+CXX=g++
+#DEBUG=-g -DDEBUG
+ifeq "$(OS)" "Darwin"
+  ifeq  "$(UNAME_P)" "i386"
+    ARCH+=-arch i386
+  endif
+  ifeq  "$(UNAME_P)" "powerpc"
+    ARCH+=-arch ppc
+  endif
+endif
+
+CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
+LDFLAGS= $(DEBUG) $(ARCH) `pkg-config --libs opencv` 
+BIN_LDFLAGS=`pkg-config --libs opencv` 
+
+
+ifeq  "$(OS)" "Darwin"
+   CXXFLAGS+=-I/opt/local/include/tesseract/ 
+   LDFLAGS+=-dynamiclib -framework JavaVM 
+   DYN_LIB_POSTFIX=jnilib 
+   BIN_LDFLAGS+=-framework JavaVM 
+endif
+
+
+ifeq  "$(OS)" "Linux"
+   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux -I/usr/local/include/tesseract/ -I/usr/include/tesseract/ 
+   LDFLAGS+=-shared -L/usr/local/lib -I/usr/lib/jvm/java-6-sun/lib
+   DYN_LIB_POSTFIX=so
+endif
+
+CLASSES_TARGET_PATH=../../../target/classes
+CLASSPATH=../java:../../../lib:../../../../lib/jython-2.2.1.jar
+PACKAGE=edu.mit.csail.uid

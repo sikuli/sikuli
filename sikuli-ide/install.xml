@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<installation version="1.0">
+	<info>
+		<appname>Sikuli Script</appname>
+		<appversion>0.9.3</appversion>
+		<appsubpath>Sikuli</appsubpath>
+		<authors>
+			<author name="Tsung-Hsiang Chang" email="vgod@mit.edu"/>
+			<author name="Tom Yeh" email="tomyeh@mit.edu"/>
+		</authors>
+		<url>http://sikuli.org</url>
+		<uninstaller>
+			<write>yes</write>
+			<name>$INSTALL_PATH/uninstaller.jar</name>
+		</uninstaller>
+		<javaversion>1.6</javaversion>
+		<requiresjdk>no</requiresjdk>
+	</info>
+	<variables>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+		<variable name="ApplicationShortcutPath" value="ApplicationShortcuts"/>
+	</variables>
+	<guiprefs width="600" height="480" resizable="no">
+		<modifier key="useButtonIcons" value="yes"/>
+		<modifier key="layoutAnchor" value="CENTER"/>
+		<modifier key="useLabelIcons" value="yes"/>
+		<modifier key="useHeadingPanel" value="yes"/>
+		<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+		<modifier key="headingPanelCounter" value="progressbar"/>
+		<modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+		<modifier key="allYGap" value="4"/>
+		<modifier key="paragraphYGap" value="10"/>
+		<modifier key="filler1YGap" value="5"/>
+		<modifier key="filler3XGap" value="10"/>
+	</guiprefs>
+	<locale>
+		<langpack iso3="eng"/>
+	</locale>
+	<resources>
+		<res src="../art-work/ide-icon2.png" id="installer.langsel.img"/>
+		<res src="shortcut.xml" id="shortcutSpec.xml"/>
+	</resources>
+	<panels>
+		<panel classname="HelloPanel"/>
+		<panel classname="TargetPanel"/>
+		<panel classname="ImgPacksPanel"/>
+		<panel classname="InstallPanel"/>
+		<panel classname="ShortcutPanel" id="shortcutpanel"/>
+		<panel classname="FinishPanel"/>
+	</panels>
+	<packs>
+		<pack name="Sikuli IDE" required="yes" id="ide" >
+			<description>Sikuli IDE</description>
+			<file src="target\Sikuli-IDE\tmplib" targetdir="$INSTALL_PATH"/>
+			<file src="target\Sikuli-IDE\sikuli-ide-full.jar" targetdir="$INSTALL_PATH"/>
+			<file src="target\Sikuli-IDE\ide-icon.ico" targetdir="$INSTALL_PATH"/>
+			<file src="target\Sikuli-IDE\Sikuli-IDE.exe" targetdir="$INSTALL_PATH"/>
+		</pack>
+	</packs>
+	<native type="izpack" name="ShellLink.dll"/>
+	<native type="izpack" name="ShellLink_x64.dll"/>
+</installation>

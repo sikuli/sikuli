@@ -1,0 +1,36 @@
+app: jar $(TARGET_PATH)/$(APP) app-frameworks
+	for jar in `echo $(CLASSPATH):$(TARGET_PATH)/$(JAR) | sed -e "s/:/ /g"`; do cp $$jar $(TARGET_PATH)/$(APP)/Contents/Resources/Java/ ; done
+
+app-frameworks: $(NATIVE_TARGET_PATH) 
+	mkdir -p $(APP_FRAMEWORKS_PATH)
+	cp $(NATIVE_TARGET_PATH)/*.jnilib $(APP_FRAMEWORKS_PATH)
+	cp ../sikuli-script/target/lib/*.jnilib $(APP_FRAMEWORKS_PATH)
+	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.jnilib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
+	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.dylib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
+	cd $(APP_FRAMEWORKS_PATH); ./change-lib-path.sh
+
+release-all: 
+	#cp -rf $(RECORDER) $(TARGET_PATH) 
+	#cd $(TARGET_PATH); zip -r $(RELEASE_APP_ZIP) `basename $(RECORDER)` $(APP) 
+	for OS in osx-10.5 osx-10.6; do \
+		APP=Sikuli-IDE.app; \
+		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-`date "+%Y%m%d"`.zip; \
+		cd $(TARGET_PATH)/$$OS; zip -r $$RELEASE_APP_ZIP $$APP -x '*/.svn/*'; \
+		cd -; mv $(TARGET_PATH)/$$OS/$$RELEASE_APP_ZIP $(RELEASE_PATH); \
+	done
+
+
+do_release:  app
+	for OS in $(TARGET_OS); do \
+		APP=Sikuli-IDE.app; \
+		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-`date "+%Y%m%d"`.zip; \
+		cd $(TARGET_PATH)/$$OS; zip -r $$RELEASE_APP_ZIP $$APP -x '*/.svn/*'; \
+		cd -; mv $(TARGET_PATH)/$$OS/$$RELEASE_APP_ZIP $(RELEASE_PATH); \
+		echo generated $(RELEASE_PATH)/$$RELEASE_APP_ZIP; \
+	done
+
+
+update-ver:
+	defaults write `pwd`/$(TARGET_PATH)/$(APP)/Contents/Info CFBundleVersion `cat latest-ver`
+	plutil -convert xml1 $(TARGET_PATH)/$(APP)/Contents/Info.plist
+

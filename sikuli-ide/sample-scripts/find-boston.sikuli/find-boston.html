@@ -1,0 +1,66 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+      </style>
+   </head>
+<body>
+<pre class="sikuli-code">
+setAutoWaitTimeout(<span class="dig">5000</span>)
+
+switchApp(<span class="str">"Firefox.app"</span>)
+<span class="skw">type</span>(<span class="str">"t"</span>, KEY_META)
+<span class="skw">type</span>(<span class="str">"maps.google.com\n"</span>)
+
+thumb = <span class="skw">find</span>(<img src="1254359884578.png" />)[<span class="dig">0</span>]
+<span class="skw">dragDrop</span>(thumb, [thumb.x, thumb.y+<span class="dig">1000</span>])
+
+maps = [<img src="1254359121572.png" />, <img src="1254359136164.png" />, <img src="1254359152708.png" />, <img src="1254359165924.png" />, <img src="1254359183116.png" />, <img src="1254359486921.png" />, <img src="1254359330134.png" />]
+
+<span class="kw">for</span> m <span class="kw">in</span> maps:
+  <span class="skw">doubleClick</span>(m)
+
+<span class="skw">popup</span>(<span class="str">"Here we are!"</span>)
+</pre>
+</body>
+</html>
