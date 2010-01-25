@@ -34,6 +34,8 @@ TEST_CLASSES=$(shell cd $(TEST_PATH); find . -name \*.java | perl -ple 's!^./(.*
 TEST_CLASSPATH=$(JAR_PATH):$(CLASSPATH):$(JUNIT_JAR):$(TEST_TARGET_PATH):$(TARGET_PATH)
 TEST_JFLAGS=-sourcepath $(TEST_PATH) -d $(TEST_TARGET_PATH) -cp $(TEST_CLASSPATH)
 
+default: jar
+
 $(TEST_TARGET_PATH)/%.class: $(TEST_PATH)/%.java
 	$(JAVAC) $(TEST_JFLAGS) $<
 
@@ -52,7 +54,6 @@ $(JAR_PATH):
 $(RELEASE_TMP_PATH):
 	mkdir -p $(RELEASE_TMP_PATH)
 
-default: jar
 
 all: $(TARGET_PATH) $(CLASSES) native-lib
 

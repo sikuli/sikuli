@@ -20,7 +20,7 @@ BIN_LDFLAGS=`pkg-config --libs opencv`
 
 
 ifeq  "$(OS)" "Darwin"
-   CXXFLAGS+=-I/opt/local/include/tesseract/ 
+   CXXFLAGS+=-I/opt/local/include/tesseract/ -I/usr/local/include/tesseract/ 
    LDFLAGS+=-dynamiclib -framework JavaVM 
    DYN_LIB_POSTFIX=jnilib 
    BIN_LDFLAGS+=-framework JavaVM 
