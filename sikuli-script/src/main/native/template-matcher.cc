@@ -105,6 +105,7 @@ Match verify_match(IplImage *img, IplImage *tpl, CvRect roi){
 
   // create new image for template matching computation
   IplImage* res = cvCreateImage( cvSize( res_width, res_height ), IPL_DEPTH_32F, 1 );
+  // released in this function
 
   cvMatchTemplate(img, tpl, res, CV_TM_CCOEFF_NORMED);
 
@@ -151,14 +152,18 @@ LookaheadTemplateMatcher::next(){
 DownsampleTemplateMatcher::DownsampleTemplateMatcher(IplImage *img, IplImage *tpl, float downsample_ratio) 
 : original_img_(img), original_tpl_(tpl), downsample_ratio_(downsample_ratio){
 
+  if (downsample_ratio < 1.0)
+    downsample_ratio = 1.0;
 
   cout << "screen/template: (" << img->width << "," << img->height << ")";
   cout << "/(" << tpl->width << "," << tpl->height << ")" << endl;
 
   IplImage* downsampled_img = cvCreateImage(cvSize(img->width/downsample_ratio, img->height/downsample_ratio), IPL_DEPTH_8U, 3 );
+  // released in DownsampleTempalteMatcher's desctrutor
   cvResize(img, downsampled_img);
 
   IplImage* downsampled_tpl = cvCreateImage(cvSize(tpl->width/downsample_ratio, tpl->height/downsample_ratio), IPL_DEPTH_8U, 3 );
+  // released in DownsampleTempalteMatcher's desctrutor
   cvResize(tpl, downsampled_tpl);
 
   cout << "downsampled to: (" << downsampled_img->width << "," << downsampled_img->height << ")";
@@ -172,6 +177,7 @@ DownsampleTemplateMatcher::DownsampleTemplateMatcher(IplImage *img, IplImage *tp
 DownsampleTemplateMatcher::~DownsampleTemplateMatcher(){
   cvReleaseImage(&img_);
   cvReleaseImage(&tpl_);  
+  cvReleaseImage(&res_);
 };
 
 Match DownsampleTemplateMatcher::next(){
@@ -206,7 +212,8 @@ TemplateMatcher::TemplateMatcher(IplImage *img, IplImage *tpl){
 }
 
 TemplateMatcher::~TemplateMatcher(){
-  //cout << "release res\n"; 
+  cvReleaseImage(&img_);
+  cvReleaseImage(&tpl_);
   cvReleaseImage(&res_);
 }
 
@@ -219,6 +226,7 @@ TemplateMatcher::init(IplImage *img, IplImage *tpl){
   int res_height = img->height - tpl->height + 1;
   res_ = cvCreateImage( cvSize( res_width, res_height ), IPL_DEPTH_32F, 1 );
   cvMatchTemplate(img, tpl, res_, CV_TM_CCOEFF_NORMED );
+  // released by descructor
 }
 
 Match TemplateMatcher::next(){
@@ -226,8 +234,6 @@ Match TemplateMatcher::next(){
   CvPoint detection_loc;
   double detection_score=1.0;
 
-  //cout << "next(): " << res_ << " ";
-  //cout << "h: " << res_->height << " w: " << res_->width << endl;
   cvMinMaxLoc( res_, 0, &detection_score, 0, &detection_loc, 0 );
 
   for(int i=detection_loc.y; i < min(detection_loc.y+tpl_->height, res_->height); i++) 
@@ -259,8 +265,7 @@ Matches match_by_template(const char* screen_image_filename,
 
 
   float downsample_ratio = 1.0;
-//  int min_tpl_dimension = 24; // 24 is better for recorder
-  int min_tpl_dimension = 24;
+  int min_tpl_dimension = 12;
   
 
   float starttime, stoptime, timeused;
@@ -268,10 +273,10 @@ Matches match_by_template(const char* screen_image_filename,
 
 
   cout << endl << "screen_match is called with n=" << max_num_matches << " and t=" << min_similarity_threshold << endl;
-  cout << "screen: " << screen_image_filename << ", template: " << template_image_filename << endl;
 
   // load input image
   img = cvLoadImage( screen_image_filename, CV_LOAD_IMAGE_COLOR );
+  // released in this function
  
   // obtain region of interest rectangle
    if (w>0&&h>0){
@@ -288,6 +293,7 @@ Matches match_by_template(const char* screen_image_filename,
 
   IplImage *roi_img;
   roi_img = cvCreateImage(cvGetSize(img),img->depth,img->nChannels);
+  // released in this function
   cvCopy(img, roi_img);
  
   cvResetImageROI(img);
@@ -301,6 +307,7 @@ Matches match_by_template(const char* screen_image_filename,
 
   /* load template image */
   tpl = cvLoadImage( template_image_filename, CV_LOAD_IMAGE_COLOR );
+  // released in this function
 
   /* always check */
   if( tpl == 0 ) {
@@ -334,6 +341,7 @@ Matches match_by_template(const char* screen_image_filename,
   vector<TemplateMatcher*> matchers;
   vector<IplImage*> scaled_tpls;
 
+
   for (int t=0; t< scales.size(); ++t){
 
     float scale = scales[t];
@@ -341,17 +349,19 @@ Matches match_by_template(const char* screen_image_filename,
     int scaled_tpl_width  = tpl->width * scale;
     int scaled_tpl_height = tpl->height * scale;
     IplImage* scaled_tpl = cvCreateImage(cvSize(scaled_tpl_width, scaled_tpl_height), IPL_DEPTH_8U, 3 );
+    // released at the end of match_by_template()
+    
     cvResize(tpl, scaled_tpl);
     scaled_tpls.push_back(scaled_tpl);
-
+    
     downsample_ratio = 1.0*min(scaled_tpl->width,scaled_tpl->height) / min_tpl_dimension;
+    
     
 
     //DownsampleTemplateMatcher* matcher = new DownsampleTemplateMatcher(img, scaled_tpl, downsample_ratio);
     TemplateMatcher* matcher = new LookaheadTemplateMatcher(roi_img, scaled_tpl, downsample_ratio);
 
     matchers.push_back(matcher);
-
 
   }
 
@@ -377,12 +387,6 @@ Matches match_by_template(const char* screen_image_filename,
     Match best_match = best_matches[best_i];
     best_matches[best_i] = matchers[best_i]->next();
 
-    /*
-    //Sean: try to fix the NULL pointer error
-    for (int i=0; i< matchers.size(); ++i)
-       delete matchers[i];
-       */
-
 
 //    cout << best_match.score << endl;
 
@@ -398,11 +402,6 @@ Matches match_by_template(const char* screen_image_filename,
 
     }
   }
-
-  //Sean: try to fix the NULL pointer error
-  for (int i=0; i< matchers.size(); ++i)
-     delete matchers[i];
-  //------
 
   //cout << "[time] after finding all:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
 
@@ -457,7 +456,6 @@ Matches match_by_template(const char* screen_image_filename,
     }
 
 
-   
 
     cvSaveImage("output.jpg", img);
     cvSaveImage("template.jpg", tpl);
