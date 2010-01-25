@@ -109,6 +109,8 @@ public class SikuliScript {
          _osUtil = new MacUtil();
       else if( OS.startsWith("windows"))
       	_osUtil = new Win32Util();
+      else if( OS.startsWith("linux"))
+      	_osUtil = new LinuxUtil();
       else{
          System.err.println("Warning: Sikuli doesn't fully support " + OS);
          _osUtil = new DummyOSUtil();

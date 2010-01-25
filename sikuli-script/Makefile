@@ -101,11 +101,11 @@ prepare-jar: $(JAR_PATH) native-loader
 	cp -rf $(TARGET_PATH)/* $(JAR_PATH)
 	mkdir -p $(JAR_PATH)/META-INF
 	cp -rf $(NATIVE_TARGET_PATH) $(JAR_PATH)/META-INF
-	cp -rf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) # Linux -rLf
+	cp -RLf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) # Linux -rLf
 	cd $(JAR_PATH); jar xvf $(LIB_PATH)/jython-*.jar 
 	mkdir -p $(JAR_PATH)/Lib
 	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
-	cd $(JAR_PATH)/Lib; unzip -f $(LIB_PATH)/jython-lib.zip
+	cd $(JAR_PATH)/Lib; unzip -n $(LIB_PATH)/jython-lib.zip
 	
 jar: all prepare-jar
 	cd $(JAR_PATH); jar cvfm ../$(JAR) ../MANIFEST.txt *; cd -

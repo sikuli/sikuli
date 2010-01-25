@@ -17,8 +17,16 @@ public class MacUtil implements OSUtil {
       }
    }
 
-   public int openApp(String appName){
-      return switchApp(appName);
+   public int openApp(String appCmd){
+      try{
+         System.out.println("switchApp: " + appCmd);
+         Process p = Runtime.getRuntime().exec(appCmd);
+         p.waitFor();
+         return p.exitValue();
+      }
+      catch(Exception e){
+         return -1;
+      }
    }
 
 
@@ -29,16 +37,6 @@ public class MacUtil implements OSUtil {
          System.out.println("closeApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
-/*
-         DataOutputStream out = new DataOutputStream(p.getOutputStream());
-         out.writeUTF(cmdKill);
-         out.close();
-         BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-         String line;
-         while((line=in.readLine()) != null)
-            System.out.println(line);
-         in.close();
-*/
          return p.exitValue();
       }
       catch(Exception e){
