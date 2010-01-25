@@ -7,6 +7,7 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import javax.swing.*;
@@ -1009,6 +1010,7 @@ class ImageButton extends JButton implements ActionListener /*, MouseListener*/ 
    static final int DEFAULT_NUM_MATCHES = 10;
    static final float DEFAULT_SIMILARITY = 0.7f;
 
+
    private String _imgFilename, _thumbFname;
    private JTextPane _pane;
    private float _similarity;
@@ -1017,6 +1019,7 @@ class ImageButton extends JButton implements ActionListener /*, MouseListener*/ 
    private boolean _showText;
 
    private PatternWindow pwin = null;
+
 
    /*
    public void mousePressed(java.awt.event.MouseEvent e) {}
@@ -1128,7 +1131,7 @@ class ImageButton extends JButton implements ActionListener /*, MouseListener*/ 
          if(_exact)
             ret += ".exact()";
          else
-            ret += String.format(".similar(%.2f)", _similarity);
+            ret += String.format(Locale.ENGLISH, ".similar(%.2f)", _similarity);
          if(_numMatches != DEFAULT_NUM_MATCHES)
             ret += String.format(".firstN(%d)", _numMatches);
          return ret;
