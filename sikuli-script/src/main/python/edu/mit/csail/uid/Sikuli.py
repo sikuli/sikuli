@@ -27,6 +27,14 @@ KEY_CTRL = InputEvent.CTRL_MASK
 # This equals to java.awt.event.InputEvent.META_MASK.
 KEY_META = InputEvent.META_MASK
 ##
+# The Apple(Command) key modifier constant. 
+# This equals to java.awt.event.InputEvent.META_MASK.
+KEY_CMD  = InputEvent.META_MASK
+##
+# The Windows key modifier constant. 
+# This equals to java.awt.event.InputEvent.META_MASK.
+KEY_WIN  = InputEvent.META_MASK
+##
 # The Alt key modifier constant. 
 # This equals to java.awt.event.InputEvent.ALT_MASK.
 KEY_ALT = InputEvent.ALT_MASK
@@ -254,7 +262,7 @@ def closeApp(app):
 # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
 # value, all find() just act as the {@link #wait} method.
 # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a {@link #Pattern} object.
-# @return a {@link #Matches} object that contains a list of {@link #Match} objects, or None if nothing is found.
+# @return a {@link #Match} object that contains the best matching region, or None if nothing is found.
 #
 def find(img):
    find.regions = _si.find(img)

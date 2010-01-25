@@ -581,7 +581,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
       File f = getFileInBundle(filename);
       Debug.log(7,"replaceWithImage: " + filename);
-      if( f.exists() ){
+      if( f != null && f.exists() ){
          this.select(startOff, endOff);
          ImageButton icon = new ImageButton(this, f.getAbsolutePath());
          if(useParameters)
