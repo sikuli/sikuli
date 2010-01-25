@@ -630,6 +630,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 class CaptureButton extends JButton implements ActionListener, Cloneable{
    protected Element _line;
    protected SikuliPane _codePane;
+   protected boolean _isCapturing;
 
    /*
    public String toString(){
@@ -677,6 +678,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable{
 
    public void captureCompleted(String imgFullPath){
       Debug.log("captureCompleted: " + imgFullPath);
+      _isCapturing = false;
       Element src = getSrcElement();
       if( src == null ){
          if(_codePane == null)
@@ -717,6 +719,9 @@ class CaptureButton extends JButton implements ActionListener, Cloneable{
 
 
    public void capture(final int delay){
+      if(_isCapturing)
+         return;
+      _isCapturing = true;
       Thread t = new Thread("capture"){
          public void run(){
             SikuliIDE ide = SikuliIDE.getInstance();
