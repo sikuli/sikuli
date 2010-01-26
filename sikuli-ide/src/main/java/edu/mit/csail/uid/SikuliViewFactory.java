@@ -173,7 +173,8 @@ class HighlightLabelView extends LabelView {
        "doubleClickAll", "repeatDoubleClickAll", "rightClick",
        "dragDrop", "type", "sleep", "popup", "capture", "input",
        "assertExist", "assertNotExist",
-       "switchApp", "openApp", "closeApp"
+       "switchApp", "openApp", "closeApp",
+       "hover", "paste"
     };
 
     static {

@@ -34,7 +34,7 @@ public class ScriptRunner {
 
    private File getPyFrom(String dotSikuliPath) throws IOException{
       String name = new File(dotSikuliPath).getName();
-      String prefix = name.substring(0, name.indexOf('.'));
+      String prefix = name.substring(0, name.lastIndexOf('.'));
       return new File(dotSikuliPath + "/"+ prefix + ".py");
    }
 }

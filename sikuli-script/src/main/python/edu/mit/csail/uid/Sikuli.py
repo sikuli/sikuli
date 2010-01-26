@@ -326,6 +326,15 @@ class Subregion(SubregionJ):
 ############ ACTIONS ############ 
 
 ##
+# Move the mouse cursor to the best matched position of the 
+# given image pattern. It calls
+# find() to locate the pattern if a file name or a Pattern object is given.
+# @param img The file name of an image; a Pattern object; a Match object; or a Matches object.
+# @return 0 <br/> Returns -1 if find() fails.
+def hover(img):
+   return _si.hover(img)
+
+##
 # Performs a mouse clicking on the best matched position of the 
 # given image pattern. It calls
 # find() to locate the pattern if a file name or a Pattern object is given.

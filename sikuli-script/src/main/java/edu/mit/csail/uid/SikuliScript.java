@@ -619,12 +619,23 @@ public class SikuliScript {
                                     "Sikuli", JOptionPane.PLAIN_MESSAGE);
    }
 
+   public <T> int hover(T pat) throws IOException, AWTException, FindFailed{
+      Match m = find1(pat);
+      if( m != null){
+         int x = _getCenterX(m);
+         int y = _getCenterY(m);
+         _robot.mouseMove(x, y);
+         return 0;
+      }
+      return -1;
+   }
 
    ////// Low level actions
 
    public void mouseMove(int x, int y) {
       _robot.mouseMove(x,y);
    }
+
    
    public <T> Matches _find(T pat, String region) throws IOException, AWTException, FindFailed{
       if( pat instanceof Pattern ){
