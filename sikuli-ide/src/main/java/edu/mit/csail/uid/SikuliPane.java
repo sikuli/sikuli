@@ -150,7 +150,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    private void writeFile() throws IOException{
-      this.write(new FileWriter(_editingFilename));
+      this.write( new BufferedWriter(new OutputStreamWriter(
+                  new FileOutputStream(_editingFilename), "UTF8")));
       convertSrcToHtml(getSrcBundle());
       _dirty = false;
    }
@@ -205,7 +206,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
          filename = filename.substring(0, filename.length()-1);
       _srcBundlePath = filename + "/";
       _editingFilename = getSourceFilename(filename);
-      this.read(new FileReader(_editingFilename), null);
+      this.read( new BufferedReader(new InputStreamReader(
+                  new FileInputStream(_editingFilename), "UTF8")), null);
    }
 
    public String loadFile() throws IOException{

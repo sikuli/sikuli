@@ -732,7 +732,7 @@ public class SikuliIDE extends JFrame {
             py.exec(it.next());
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
          py.exec("setBundlePath('" + path + "')");
-         py.execfile(f.getAbsolutePath());
+         py.execfile( f.getAbsolutePath() );
       }
 
       public void stopRunning(){

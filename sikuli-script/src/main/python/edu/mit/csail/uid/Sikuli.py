@@ -417,6 +417,21 @@ def type(*args):
    return _si.type(args[0], args[1], args[2])
 
 ##
+# Paste the given string to the best matched position of the given 
+# image pattern. It performs a mouse clicking on the matched position to gain 
+# the focus automatically before pasting. If args contains only a string, it
+# performs the pasting on the current focused component. Pasting is performed 
+# by OS-level shortcut (Ctrl-V or Cmd-V).
+# @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before typing. 
+# @return Returns 0 if nothing is typed, otherwise returns 1.
+def paste(*args):
+   if len(args) == 1:
+      return _si.paste(None, args[0])
+   if len(args) == 2:
+      return _si.paste(args[0], args[1])
+   return 0
+
+##
 # Drags from the position of <i>src</i>, 
 # and drops on the position of <i>dest</i>.
 # @param src This can be a file name of an image; a Pattern object; or a Match object.

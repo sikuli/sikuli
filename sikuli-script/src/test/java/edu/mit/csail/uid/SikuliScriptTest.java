@@ -32,11 +32,21 @@ public class SikuliScriptTest
     /**
      * Rigourous Test :-)
      */
-    public void testClick() throws Exception
+    public void _testClick() throws Exception
     {
        SikuliScript script = new SikuliScript();
        int ret = script.click("test-res/apple.png", 0);
        System.out.println( "[click] returns: " + ret);
+       assertTrue(ret>0);
+    }
+
+    public void testPaste() throws Exception
+    {
+       SikuliScript script = new SikuliScript();
+       script.switchApp("TextEdit.app");
+       script.wait("test-res/textedit-untitled.png", 5000);
+       int ret = script.paste(null, "test paste 中文字");
+       System.out.println( "[paste] returns: " + ret);
        assertTrue(ret>0);
     }
 
