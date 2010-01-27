@@ -42,34 +42,92 @@ KEY_ALT = InputEvent.ALT_MASK
 ##
 # class Key contains the constants of all special keys.
 class Key:
+   ##
+   # ENTER 
    ENTER       = "\n"
+   ##
+   # BACKSPACE
    BACKSPACE   = "\b"
+   ##
+   # TAB
    TAB         = "\t"
+   ##
+   # ESC
    ESC         = u"\u001b"
+   ##
+   # UP
    UP          = u"\ue000"
+   ##
+   # RIGHT
    RIGHT       = u"\ue001"
+   ##
+   # DOWN
    DOWN        = u"\ue002"
+   ##
+   # LEFT
    LEFT        = u"\ue003"
+   ##
+   # PAGE_UP
    PAGE_UP     = u"\ue004"
+   ##
+   # PAGE_DOWN
    PAGE_DOWN   = u"\ue005"
+   ##
+   # DELETE
    DELETE      = u"\ue006"
+   ##
+   # END
    END         = u"\ue007"
+   ##
+   # HOME
    HOME        = u"\ue008"
+   ##
+   # INSERT
    INSERT      = u"\ue009"
+   ##
+   # F1
    F1          = u"\ue011"
+   ##
+   # F2
    F2          = u"\ue012"
+   ##
+   # F3
    F3          = u"\ue013"
+   ##
+   # F4
    F4          = u"\ue014"
+   ##
+   # F5
    F5          = u"\ue015"
+   ##
+   # F6
    F6          = u"\ue016"
+   ##
+   # F7
    F7          = u"\ue017"
+   ##
+   # F8
    F8          = u"\ue018"
+   ##
+   # F9
    F9          = u"\ue019"
+   ##
+   # F10
    F10         = u"\ue01A"
+   ##
+   # F11
    F11         = u"\ue01B"
+   ##
+   # F12
    F12         = u"\ue01C"
+   ##
+   # F13
    F13         = u"\ue01D"
+   ##
+   # F14
    F14         = u"\ue01E"
+   ##
+   # F15
    F15         = u"\ue01F"
 
 
@@ -245,7 +303,7 @@ def input(msg=""):
 # the screen if no arguments are given.
 # If any arguments are specified, capture() automatically captures the given
 # region of the screen.
-# @param *args The args can be 4 integers: x, y, w, and h, a {@link #Match} object or a {@link #Subregion} object.
+# @param *args The args can be 4 integers: x, y, w, and h, a <a href="edu/mit/csail/uid/Match.html">Match</a> object or a {@link #Subregion} object.
 # @return The path to the captured image.
 #
 def capture(*args):
@@ -296,8 +354,8 @@ def closeApp(app):
 # region in find.region. <br/>
 # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
 # value, all find() just act as the {@link #wait} method.
-# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a {@link #Pattern} object.
-# @return a {@link #Match} object that contains the best matching region, or None if nothing is found.
+# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
+# @return a <a href="edu/mit/csail/uid/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
 #
 def find(img):
    find.regions = _si.find(img)
@@ -316,8 +374,8 @@ def find(img):
 # regions in find.regions and the best matched region in find.region. <br/>
 # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
 # value, all findAll() just act as the {@link #wait} method.
-# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a {@link #Pattern} object.
-# @return a {@link #Matches} object that contains a list of {@link #Match} objects, or None if nothing is found.
+# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
+# @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if nothing is found.
 #
 def findAll(img):
    find.regions = _si.findAll(img)
@@ -330,7 +388,7 @@ def findAll(img):
 # the specified amount of time has elapsed.
 # @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
 # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
-# @return a {@link #Matches} object that contains a list of {@link #Match} objects, or None if timeout occurs.
+# @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
 #
 def wait(img, timeout=3000):
    wait.regions = _si.wait(img, timeout)
@@ -363,8 +421,8 @@ class Subregion(SubregionJ):
 ##
 # Move the mouse cursor to the best matched position of the 
 # given image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; a Match object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a>  object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @return 0 <br/> Returns -1 if find() fails.
 def hover(img):
    return _si.hover(img)
@@ -372,8 +430,8 @@ def hover(img):
 ##
 # Performs a mouse clicking on the best matched position of the 
 # given image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; a Match object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. <br/> Returns -1 if find() fails.
 def click(img, modifiers=0):
@@ -381,8 +439,8 @@ def click(img, modifiers=0):
 
 ##
 # Performs a mouse clicking for each matched position of the given image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. <br/> Returns -1 if find() fails.
 def clickAll(img, modifiers=0):
@@ -393,7 +451,7 @@ def clickAll(img, modifiers=0):
 # given image pattern until no more matching can be found. It keeps calling
 # find() to locate the pattern on the screen for clicking, and stops if
 # nothing is found.
-# @param img The file name of an image, or a Pattern object.
+# @param img The file name of an image, or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. 
 def repeatClickAll(img, modifiers=0):
@@ -402,8 +460,8 @@ def repeatClickAll(img, modifiers=0):
 ##
 # Performs a double clicking on the best matched position of the given 
 # image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; a Match object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. <br/> Returns -1 if find() fails.
 def doubleClick(img, modifiers=0):
@@ -411,8 +469,8 @@ def doubleClick(img, modifiers=0):
 
 ##
 # Performs a double clicking for each matched position of the given image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. <br/> Returns -1 if find() fails.
 def doubleClickAll(img, modifiers=0):
@@ -424,7 +482,7 @@ def doubleClickAll(img, modifiers=0):
 # given image pattern until no more matching can be found. It keeps calling
 # find() to locate the pattern on the screen for clicking, and stops if
 # nothing is found.
-# @param img The file name of an image, or a Pattern object.
+# @param img The file name of an image, or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. 
 def repeatDoubleClickAll(img, modifiers=0):
@@ -433,8 +491,8 @@ def repeatDoubleClickAll(img, modifiers=0):
 ##
 # Performs a right clicking on the best matched position of the given 
 # image pattern. It calls
-# find() to locate the pattern if a file name or a Pattern object is given.
-# @param img The file name of an image; a Pattern object; a Match object; or a Matches object.
+# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
 # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
 # @return The number of performed clicking. <br/> Returns -1 if find() fails.
 def rightClick(img, modifiers=0):
@@ -446,7 +504,8 @@ def rightClick(img, modifiers=0):
 # image pattern. It performs a mouse clicking on the matched position to gain 
 # the focus automatically before typing. If args contains only a string, it
 # performs the typing on the current focused component.
-# @param *args The parameters can be (string), (string, modifiers), (image pattern, string), or (image pattern, string, modifiers). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before typing. The modifiers specifies the key modifiers to be pressed while typing.
+# See {@link #Key the Key class} for typing special keys, and {@link #paste paste()} if you need to "type" international characters or you are using diffrent keymaps other than QWERTY.
+# @param *args The parameters can be (string), (string, modifiers), (image pattern, string), or (image pattern, string, modifiers). The string specifies the string to be typed in, which can be concatenated with the special keys defined in {@link #Key the Key class}.  The image pattern specifies the object that needs the focus before typing. The modifiers specifies the key modifiers to be pressed while typing.
 # @return Returns 0 if nothing is typed, otherwise returns 1.
 def type(*args):
    import __builtin__
@@ -465,9 +524,11 @@ def type(*args):
 # image pattern. It performs a mouse clicking on the matched position to gain 
 # the focus automatically before pasting. If args contains only a string, it
 # performs the pasting on the current focused component. Pasting is performed 
-# by OS-level shortcut (Ctrl-V or Cmd-V).
-# @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before typing. 
-# @return Returns 0 if nothing is typed, otherwise returns 1.
+# using OS-level shortcut (Ctrl-V or Cmd-V), so it would mess up the clipboard.
+# paste() is a temporary solution for typing international characters or 
+# typing on different keyboard layouts.
+# @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
+# @return Returns 0 if nothing is pasted, otherwise returns 1.
 def paste(*args):
    if len(args) == 1:
       return _si.paste(None, args[0])
@@ -478,8 +539,8 @@ def paste(*args):
 ##
 # Drags from the position of <i>src</i>, 
 # and drops on the position of <i>dest</i>.
-# @param src This can be a file name of an image; a Pattern object; or a Match object.
-# @param dest This can be a file name of an image; a Pattern object; or a Match object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
+# @param src This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object.
+# @param dest This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
 # @return Returns 1 if both src and dest can be found, otherwise returns 0.
 def dragDrop(src, dest):
    if isinstance(dest, list) or isinstance(dest, tuple):
