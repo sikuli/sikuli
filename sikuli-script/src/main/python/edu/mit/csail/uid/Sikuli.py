@@ -39,6 +39,41 @@ KEY_WIN  = InputEvent.META_MASK
 # This equals to java.awt.event.InputEvent.ALT_MASK.
 KEY_ALT = InputEvent.ALT_MASK
 
+##
+# class Key contains the constants of all special keys.
+class Key:
+   ENTER       = "\n"
+   BACKSPACE   = "\b"
+   TAB         = "\t"
+   ESC         = u"\u001b"
+   UP          = u"\ue000"
+   RIGHT       = u"\ue001"
+   DOWN        = u"\ue002"
+   LEFT        = u"\ue003"
+   PAGE_UP     = u"\ue004"
+   PAGE_DOWN   = u"\ue005"
+   DELETE      = u"\ue006"
+   END         = u"\ue007"
+   HOME        = u"\ue008"
+   INSERT      = u"\ue009"
+   F1          = u"\ue011"
+   F2          = u"\ue012"
+   F3          = u"\ue013"
+   F4          = u"\ue014"
+   F5          = u"\ue015"
+   F6          = u"\ue016"
+   F7          = u"\ue017"
+   F8          = u"\ue018"
+   F9          = u"\ue019"
+   F10         = u"\ue01A"
+   F11         = u"\ue01B"
+   F12         = u"\ue01C"
+   F13         = u"\ue01D"
+   F14         = u"\ue01E"
+   F15         = u"\ue01F"
+
+
+
 ## 
 # VDict implements a visual dictionary that has Python's conventional dict
 # interfaces.

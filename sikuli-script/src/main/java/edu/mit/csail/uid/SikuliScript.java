@@ -548,7 +548,6 @@ public class SikuliScript {
          case ')': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_0); break;
          case '_': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_MINUS); break;
          case '+': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_EQUALS); break;
-         case '\u001b': doType(KeyEvent.VK_ESCAPE); break;
          case '\b': doType(KeyEvent.VK_BACK_SPACE); break;
          case '\t': doType(KeyEvent.VK_TAB); break;
          case '\r': doType(KeyEvent.VK_ENTER); break;
@@ -570,6 +569,32 @@ public class SikuliScript {
          case '/': doType(KeyEvent.VK_SLASH); break;
          case '?': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_SLASH); break;
          case ' ': doType(KeyEvent.VK_SPACE); break;
+         case '\u001b': doType(KeyEvent.VK_ESCAPE); break;
+         case '\ue000': doType(KeyEvent.VK_UP); break;
+         case '\ue001': doType(KeyEvent.VK_RIGHT); break;
+         case '\ue002': doType(KeyEvent.VK_DOWN); break;
+         case '\ue003': doType(KeyEvent.VK_LEFT); break;
+         case '\ue004': doType(KeyEvent.VK_PAGE_UP); break;
+         case '\ue005': doType(KeyEvent.VK_PAGE_DOWN); break;
+         case '\ue006': doType(KeyEvent.VK_DELETE); break;
+         case '\ue007': doType(KeyEvent.VK_END); break;
+         case '\ue008': doType(KeyEvent.VK_HOME); break;
+         case '\ue009': doType(KeyEvent.VK_INSERT); break;
+         case '\ue011': doType(KeyEvent.VK_F1); break;
+         case '\ue012': doType(KeyEvent.VK_F2); break;
+         case '\ue013': doType(KeyEvent.VK_F3); break;
+         case '\ue014': doType(KeyEvent.VK_F4); break;
+         case '\ue015': doType(KeyEvent.VK_F5); break;
+         case '\ue016': doType(KeyEvent.VK_F6); break;
+         case '\ue017': doType(KeyEvent.VK_F7); break;
+         case '\ue018': doType(KeyEvent.VK_F8); break;
+         case '\ue019': doType(KeyEvent.VK_F9); break;
+         case '\ue01A': doType(KeyEvent.VK_F10); break;
+         case '\ue01B': doType(KeyEvent.VK_F11); break;
+         case '\ue01C': doType(KeyEvent.VK_F12); break;
+         case '\ue01D': doType(KeyEvent.VK_F13); break;
+         case '\ue01E': doType(KeyEvent.VK_F14); break;
+         case '\ue01F': doType(KeyEvent.VK_F15); break;
          default:
                    throw new IllegalArgumentException("Cannot type character " + character);
       }
