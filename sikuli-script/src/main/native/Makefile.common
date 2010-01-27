@@ -1,16 +1,17 @@
 TARGET_DIR=../../../target/lib
 OS=$(shell uname)
-UNAME_P=$(shell uname -p)
+UNAME_R=$(shell uname -r)
 
 
 CXX=g++
 #DEBUG=-g -DDEBUG
 
 ifeq "$(OS)" "Darwin"
-	ifeq ($(findstring "$(OS)", 10.),)
+
+	ifneq (,$(findstring 10., $(UNAME_R)))
 		ARCH=-arch i386
 	endif
-	ifeq ($(findstring "$(OS)", 9.),)
+	ifneq (,$(findstring 9., $(UNAME_R)))
 		ARCH=-arch i386 -arch ppc
 	endif
 endif

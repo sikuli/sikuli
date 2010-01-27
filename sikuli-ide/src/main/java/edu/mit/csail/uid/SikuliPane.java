@@ -389,9 +389,12 @@ public class SikuliPane extends JTextPane implements KeyListener,
    public void jumpTo(int lineNo, int column) throws BadLocationException{
       Debug.log(6, "jumpTo: " + lineNo+","+column);
       int off = getLineStartOffset(lineNo-1)+column-1;
-      int nextLine = getLineStartOffset(lineNo);
-      if( off >= nextLine )
-         off = nextLine-1;
+      int lineCount= getDocument().getDefaultRootElement().getElementCount(); 
+      if( lineNo < lineCount ){
+         int nextLine = getLineStartOffset(lineNo);
+         if( off >= nextLine )
+            off = nextLine-1;
+      }
       if(off < 0) off = 0;
       setCaretPosition( off );
    }
@@ -716,8 +719,9 @@ class CaptureButton extends JButton implements ActionListener, Cloneable{
    }
 
    public void captureCompleted(String imgFullPath){
-      Debug.log("captureCompleted: " + imgFullPath);
       _isCapturing = false;
+      if(imgFullPath == null) return;
+      Debug.log("captureCompleted: " + imgFullPath);
       Element src = getSrcElement();
       if( src == null ){
          if(_codePane == null)
@@ -866,9 +870,17 @@ class ScreenOverlay extends JWindow{
             if (_screen == null) return;
             if( e.getButton() == java.awt.event.MouseEvent.BUTTON3 ){
                close();
+               if(_captureBtn!=null)
+                  _captureBtn.captureCompleted(null);
+               //FIXME: add subregion completed
                return;
             }
             if( _captureBtn!=null){
+               int w = rectSelection.width, h = rectSelection.height;
+               if( rectSelection.width <= 0 || rectSelection.height <= 0){
+                  _captureBtn.captureCompleted(null);
+                  return;
+               }
                BufferedImage cropImg = cropSelection();
                String filename = 
                      Utils.saveImage(cropImg, _parentPane.getSrcBundle());

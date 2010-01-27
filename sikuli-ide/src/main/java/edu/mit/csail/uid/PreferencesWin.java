@@ -134,7 +134,8 @@ public class PreferencesWin extends JFrame {
             //---- lblDelaySecs ----
             lblDelaySecs.setText("seconds");
 
-            GroupLayout paneCaptureLayout = new GroupLayout(paneCapture);
+            org.jdesktop.layout.GroupLayout paneCaptureLayout = 
+               new org.jdesktop.layout.GroupLayout(paneCapture);
             paneCapture.setLayout(paneCaptureLayout);
             paneCaptureLayout.setHorizontalGroup(
                paneCaptureLayout.createParallelGroup()
@@ -143,11 +144,11 @@ public class PreferencesWin extends JFrame {
                      .add(paneCaptureLayout.createParallelGroup()
                         .add(lblHotkey)
                         .add(lblDelay))
-                     .addPreferredGap(LayoutStyle.RELATED)
-                     .add(paneCaptureLayout.createParallelGroup(GroupLayout.LEADING, false)
+                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                     .add(paneCaptureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                         .add(paneCaptureLayout.createSequentialGroup()
-                           .add(_spnDelay, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                           .addPreferredGap(LayoutStyle.RELATED)
+                           .add(_spnDelay, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 74, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                            .add(lblDelaySecs))
                         .add(_txtHotkey))
                      .add(50, 50, 50))
@@ -156,14 +157,14 @@ public class PreferencesWin extends JFrame {
                paneCaptureLayout.createParallelGroup()
                   .add(paneCaptureLayout.createSequentialGroup()
                      .add(34, 34, 34)
-                     .add(paneCaptureLayout.createParallelGroup(GroupLayout.BASELINE)
-                        .add(lblHotkey, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-                        .add(_txtHotkey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                     .addPreferredGap(LayoutStyle.RELATED)
+                     .add(paneCaptureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(lblHotkey, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(_txtHotkey, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                      .add(paneCaptureLayout.createParallelGroup()
-                        .add(lblDelaySecs, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                        .add(lblDelaySecs, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                         .add(_spnDelay)
-                        .add(lblDelay, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                        .add(lblDelay, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                      .add(150, 150, 150))
             );
          }
