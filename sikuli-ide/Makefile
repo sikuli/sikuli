@@ -1,13 +1,10 @@
 UNAME=$(shell uname)
 ifeq "$(UNAME)" "Darwin"
-   OS=$(shell uname -rs)
-   ifeq "$(OS)" "Darwin 10.2.0" 
+   OS=$(shell uname -r)
+   ifeq ($(findstring "$(OS)", 10.),)
       TARGET_OS=osx-10.6
    endif
-   ifeq "$(OS)" "Darwin 10.0.0" 
-      TARGET_OS=osx-10.6
-   endif
-   ifeq  "$(OS)" "Darwin 9.8.0"
+   ifeq ($(findstring "$(OS)", 9.),)
       TARGET_OS=osx-10.5
    endif
 endif
@@ -21,7 +18,7 @@ JAVA=java
 
 LIB_PATH=../lib
 #CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/jmf.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/sikuli-redo.jar
-CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar
+CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/swing-layout-1.0.1.jar
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
 JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3  

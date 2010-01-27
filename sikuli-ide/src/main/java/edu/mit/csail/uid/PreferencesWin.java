@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.prefs.*;
+import org.jdesktop.layout.*;
+
 /*
  * Created by JFormDesigner on Mon Nov 16 10:13:52 EST 2009
  */
@@ -136,33 +138,33 @@ public class PreferencesWin extends JFrame {
             paneCapture.setLayout(paneCaptureLayout);
             paneCaptureLayout.setHorizontalGroup(
                paneCaptureLayout.createParallelGroup()
-                  .addGroup(paneCaptureLayout.createSequentialGroup()
-                     .addGap(26, 26, 26)
-                     .addGroup(paneCaptureLayout.createParallelGroup()
-                        .addComponent(lblHotkey)
-                        .addComponent(lblDelay))
-                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                     .addGroup(paneCaptureLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                        .addGroup(paneCaptureLayout.createSequentialGroup()
-                           .addComponent(_spnDelay, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                           .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                           .addComponent(lblDelaySecs))
-                        .addComponent(_txtHotkey))
-                     .addGap(50, 50, 50))
+                  .add(paneCaptureLayout.createSequentialGroup()
+                     .add(26, 26, 26)
+                     .add(paneCaptureLayout.createParallelGroup()
+                        .add(lblHotkey)
+                        .add(lblDelay))
+                     .addPreferredGap(LayoutStyle.RELATED)
+                     .add(paneCaptureLayout.createParallelGroup(GroupLayout.LEADING, false)
+                        .add(paneCaptureLayout.createSequentialGroup()
+                           .add(_spnDelay, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                           .addPreferredGap(LayoutStyle.RELATED)
+                           .add(lblDelaySecs))
+                        .add(_txtHotkey))
+                     .add(50, 50, 50))
             );
             paneCaptureLayout.setVerticalGroup(
                paneCaptureLayout.createParallelGroup()
-                  .addGroup(paneCaptureLayout.createSequentialGroup()
-                     .addGap(34, 34, 34)
-                     .addGroup(paneCaptureLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblHotkey, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(_txtHotkey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                     .addGroup(paneCaptureLayout.createParallelGroup()
-                        .addComponent(lblDelaySecs, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(_spnDelay)
-                        .addComponent(lblDelay, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-                     .addGap(150, 150, 150))
+                  .add(paneCaptureLayout.createSequentialGroup()
+                     .add(34, 34, 34)
+                     .add(paneCaptureLayout.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblHotkey, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                        .add(_txtHotkey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                     .addPreferredGap(LayoutStyle.RELATED)
+                     .add(paneCaptureLayout.createParallelGroup()
+                        .add(lblDelaySecs, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                        .add(_spnDelay)
+                        .add(lblDelay, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                     .add(150, 150, 150))
             );
          }
          _tabPane.addTab("Screen Capturing", paneCapture);

@@ -5,13 +5,14 @@ UNAME_P=$(shell uname -p)
 
 CXX=g++
 #DEBUG=-g -DDEBUG
+
 ifeq "$(OS)" "Darwin"
-  ifeq  "$(UNAME_P)" "i386"
-    ARCH+=-arch i386
-  endif
-  ifeq  "$(UNAME_P)" "powerpc"
-    ARCH+=-arch ppc
-  endif
+	ifeq ($(findstring "$(OS)", 10.),)
+		ARCH=-arch i386
+	endif
+	ifeq ($(findstring "$(OS)", 9.),)
+		ARCH=-arch i386 -arch ppc
+	endif
 endif
 
 CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
