@@ -1,10 +1,10 @@
 UNAME=$(shell uname)
 ifeq "$(UNAME)" "Darwin"
    OS=$(shell uname -r)
-   ifeq ($(findstring "$(OS)", 10.),)
+   ifneq (,$(findstring 10., $(OS)))
       TARGET_OS=osx-10.6
    endif
-   ifeq ($(findstring "$(OS)", 9.),)
+   ifneq (,$(findstring 9., $(OS)))
       TARGET_OS=osx-10.5
    endif
 endif

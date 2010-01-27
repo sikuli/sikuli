@@ -1,4 +1,4 @@
-app: jar $(TARGET_PATH)/$(APP) app-frameworks
+app: jar $(TARGET_PATH)/$(APP) app-frameworks update-ver
 	for jar in `echo $(CLASSPATH):$(TARGET_PATH)/$(JAR) | sed -e "s/:/ /g"`; do cp $$jar $(TARGET_PATH)/$(APP)/Contents/Resources/Java/ ; done
 
 app-frameworks: $(NATIVE_TARGET_PATH) 
