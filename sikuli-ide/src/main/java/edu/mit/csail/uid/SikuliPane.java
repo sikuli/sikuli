@@ -149,10 +149,16 @@ public class SikuliPane extends JTextPane implements KeyListener,
       py.exec(pyConverter);
    }
 
-   private void writeFile() throws IOException{
+   private void writeFile(String filename) throws IOException{
+      this.write( new BufferedWriter(new OutputStreamWriter(
+                  new FileOutputStream(filename), "UTF8")));
+   }
+
+   private void writeSrcFile(boolean writeHTML) throws IOException{
       this.write( new BufferedWriter(new OutputStreamWriter(
                   new FileOutputStream(_editingFilename), "UTF8")));
-      convertSrcToHtml(getSrcBundle());
+      if(writeHTML)
+         convertSrcToHtml(getSrcBundle());
       _dirty = false;
    }
 
@@ -160,24 +166,55 @@ public class SikuliPane extends JTextPane implements KeyListener,
       if(_editingFilename==null)
          return saveAsFile();
       else{
-         writeFile();
+         writeSrcFile(true);
          return getCurrentShortFilename();
       }
    }
 
+   private JFileChooser createFileChooser(){
+      JFileChooser fc = new JFileChooser();
+      fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+      fc.setAcceptAllFileFilterUsed(false);
+      fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
+      fc.setSelectedFile(null);
+      return fc;
+   }
+
    public String saveAsFile() throws IOException{
-      JFileChooser fcSave = new JFileChooser();
-      //fcSave.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      fcSave.setAcceptAllFileFilterUsed(false);
-      fcSave.setFileFilter(new SourceFileFilter());
-      fcSave.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
-      fcSave.setSelectedFile(null);
+      JFileChooser fcSave = createFileChooser();
+      fcSave.setFileFilter(new SourceFileFilter("sikuli", "Sikuli source files (*.sikuli)"));
       if(fcSave.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
          return null;
       File file = fcSave.getSelectedFile();
       String bundlePath = file.getAbsolutePath();
       if( !file.getAbsolutePath().endsWith(".sikuli") )
          bundlePath += ".sikuli";
+      saveAsBundle(bundlePath);
+      return getCurrentShortFilename();
+   }
+
+
+   public String exportAsZip() throws IOException, FileNotFoundException{
+      JFileChooser fcSave = createFileChooser();
+      fcSave.setFileFilter(new SourceFileFilter("skl", "Sikuli executable files (*.skl)"));
+      if(fcSave.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+         return null;
+      File file = fcSave.getSelectedFile();
+      String zipPath = file.getAbsolutePath();
+      String srcName = file.getName();
+      if( !file.getAbsolutePath().endsWith(".skl") ){
+         zipPath += ".skl";
+      }
+      else{
+         srcName = srcName.substring(0, srcName.lastIndexOf('.'));
+      }
+      writeFile(getSrcBundle() + srcName + ".py");
+      Utils.zip(getSrcBundle(), zipPath);
+      Debug.log(1, "export to executable file: " + zipPath);
+      return zipPath;
+   }
+
+   private void saveAsBundle(String bundlePath) throws IOException{
       bundlePath = Utils.slashify(bundlePath, true);
       if(_srcBundlePath != null)
          Utils.xcopy( _srcBundlePath, bundlePath );
@@ -185,9 +222,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
          Utils.mkdir(bundlePath);
       _srcBundlePath = bundlePath;
       _editingFilename = getSourceFilename(bundlePath);
-      System.out.println("save to " + _editingFilename);
-      writeFile();
-      return getCurrentShortFilename();
+      Debug.log(1, "save to bundle: " + _srcBundlePath);
+      writeSrcFile(true);
    }
    
    private String getSourceFilename(String filename){
@@ -214,7 +250,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
       JFileChooser fcLoad = new JFileChooser();
       fcLoad.setCurrentDirectory(new File(System.getProperty("user.dir")));
       fcLoad.setAcceptAllFileFilterUsed(false);
-      fcLoad.setFileFilter(new SourceFileFilter());
+      fcLoad.setFileFilter(new SourceFileFilter("sikuli", "Sikuli source files (*.sikuli)"));
+      //fcLoad.setFileFilter(new SourceFileFilter("skl", "Sikuli executable files (*.skl)"));
       fcLoad.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
       fcLoad.setSelectedFile(null);
       if(fcLoad.showDialog(this, null) != JFileChooser.APPROVE_OPTION)
@@ -942,6 +979,12 @@ class ImageFileFilter extends FileFilter{
 }
 
 class SourceFileFilter extends FileFilter{
+   private String _ext, _desc;
+   public SourceFileFilter(String ext, String desc){
+      _ext = ext;
+      _desc = desc;
+   }
+
    public boolean accept(File f)
    {
       if (f.isDirectory()) return true;
@@ -950,13 +993,13 @@ class SourceFileFilter extends FileFilter{
       int i = s.lastIndexOf('.');
       if (i > 0 && i < s.length()-1){
          String ext = s.substring(i+1).toLowerCase();
-         if(ext.equals("sikuli") )
+         if(ext.equals(_ext) )
             return true;
       }
       return false;
    }
    public String getDescription(){
-      return "Sikuli source files (*.sikuli)";
+      return _desc;
    }
 }
 

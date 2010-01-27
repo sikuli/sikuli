@@ -34,8 +34,18 @@ public class NativeLayerForMac implements NativeLayer {
       app.addApplicationListener(
          new ApplicationAdapter() {
             public void handleOpenFile(ApplicationEvent evt) {
-               Debug.log(1, "opening " + evt.getFilename());
-               ide.loadFile(evt.getFilename());
+               String fname = evt.getFilename();
+               Debug.log(1, "opening " + fname);
+               if(fname.endsWith("skl")){
+                  try{
+                     ide.runSkl(fname);
+                  }
+                  catch(Exception e){
+                     e.printStackTrace();
+                  }
+               }
+               else
+                  ide.preloadFile(fname);
             }
 
             public void handlePreferences(ApplicationEvent evt){

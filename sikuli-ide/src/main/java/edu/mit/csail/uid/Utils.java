@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.io.*;
 import java.util.*;
+import java.util.zip.*;
 import java.awt.image.*;
 import java.awt.event.KeyEvent;
 import javax.imageio.*;
@@ -38,6 +39,60 @@ public class Utils {
       catch(Exception e){
          return -1; 
       }
+   }
+
+   public static void zip(String path, String outZip) 
+                                    throws IOException, FileNotFoundException {
+      ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outZip)); 
+      zipDir(path, zos);
+      zos.close();
+   }
+
+   public static void unzip(String zip, String path)
+                                    throws IOException, FileNotFoundException {
+      final int BUF_SIZE = 2048;
+      FileInputStream fis = new FileInputStream(zip);
+      ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+      ZipEntry entry;
+      while((entry = zis.getNextEntry()) != null) {
+         int count;
+         byte data[] = new byte[BUF_SIZE];
+         FileOutputStream fos = new FileOutputStream(
+               new File(path, entry.getName()));
+         BufferedOutputStream dest = new BufferedOutputStream(fos, BUF_SIZE);
+         while ((count = zis.read(data, 0, BUF_SIZE)) != -1) {
+            dest.write(data, 0, count);
+         }
+         dest.close();
+      }
+      zis.close();
+   }
+
+   public static void zipDir(String dir, ZipOutputStream zos) throws IOException
+   { 
+      File zipDir = new File(dir); 
+      String[] dirList = zipDir.list(); 
+      byte[] readBuffer = new byte[1024]; 
+      int bytesIn = 0; 
+      for(int i=0; i<dirList.length; i++) { 
+         File f = new File(zipDir, dirList[i]); 
+         /*
+         if(f.isDirectory()) { 
+            String filePath = f.getPath(); 
+            zipDir(filePath, zos); 
+            continue; 
+         } 
+         */
+         if(f.isFile()) { 
+            FileInputStream fis = new FileInputStream(f); 
+            ZipEntry anEntry = new ZipEntry(f.getName()); 
+            zos.putNextEntry(anEntry); 
+            while((bytesIn = fis.read(readBuffer)) != -1) { 
+               zos.write(readBuffer, 0, bytesIn); 
+            } 
+            fis.close(); 
+         }
+      } 
    }
 
    public static String slashify(String path, boolean isDirectory) {

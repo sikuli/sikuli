@@ -43,6 +43,9 @@ public class SikuliIDE extends JFrame {
 
    private static Icon PY_SRC_ICON = getIconResource("/icons/py-src-16x16.png");
 
+   private String _preloadFilename = null;
+   private boolean _inited = false;
+
    public static Icon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
       if (url == null) {
@@ -108,6 +111,10 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.SAVE_AS)));
+      _fileMenu.add( createMenuItem("Export executable...", 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, 
+                  InputEvent.SHIFT_MASK | scMask),
+               new FileAction(FileAction.EXPORT)));
       _fileMenu.addSeparator();
       if(!isMacOSX()){
          _fileMenu.add( createMenuItem("Preferences",
@@ -277,8 +284,12 @@ public class SikuliIDE extends JFrame {
    static final int DEFAULT_WINDOW_H = 700;
    */
 
+
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
+
+      initNativeLayer();
+
       initMenuBars(this);
       final Container c = getContentPane();
       c.setLayout(new BorderLayout());
@@ -289,6 +300,8 @@ public class SikuliIDE extends JFrame {
 
       if(args!=null && args.length>=1)
          loadFile(args[0]);
+      else if(_preloadFilename != null)
+         loadFile(_preloadFilename);
       else
          (new FileAction()).doNew();
 
@@ -310,11 +323,33 @@ public class SikuliIDE extends JFrame {
       mainAndConsolePane.setDividerLocation(500);
 
       initShortcutKeys();
-      setVisible(true);
       setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-      initNativeLayer();
       initHotkeys();
+
+      _inited = true;
+      setVisible(true);
+   }
+
+   public boolean isInited(){ return _inited; }
+
+   public void preloadFile(String filename){
+      if(_inited)
+         loadFile(filename);
+      else
+         _preloadFilename = filename;
+   }
+
+   public void runSkl(String filename) throws IOException{
+      String name = (new File(filename)).getName();
+      name = name.substring(0, name.lastIndexOf('.'));
+      File tmpDir = Utils.createTempDir();
+      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
+      sikuliDir.mkdir();
+      Utils.unzip(filename, sikuliDir.getAbsolutePath());
+      ScriptRunner runner = new ScriptRunner();
+      runner.runPython(sikuliDir.getAbsolutePath());
+      System.exit(0);
    }
 
    public void installCaptureHotkey(int key, int mod){
@@ -510,6 +545,7 @@ public class SikuliIDE extends JFrame {
       static final String OPEN = "doLoad";
       static final String SAVE = "doSave";
       static final String SAVE_AS = "doSaveAs";
+      static final String EXPORT = "doExport";
       static final String CLOSE_TAB = "doCloseTab";
       static final String PREFERENCES = "doPreferences";
       static final String QUIT = "doQuit";
@@ -593,6 +629,17 @@ public class SikuliIDE extends JFrame {
             eio.printStackTrace();
          }
       }
+
+      public void doExport(){
+         try{
+            SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+            String fname = codePane.exportAsZip();
+         }
+         catch(Exception ex){
+            ex.printStackTrace();
+         }
+      }
+
 
       public void doCloseTab(){
          SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();

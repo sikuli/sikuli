@@ -12,6 +12,7 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>sikuli</string>
+				<string>skl</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>SikuliSrc.icns</string>
