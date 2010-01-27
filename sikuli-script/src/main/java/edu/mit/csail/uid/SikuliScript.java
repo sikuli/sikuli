@@ -551,6 +551,7 @@ public class SikuliScript {
          case '\u001b': doType(KeyEvent.VK_ESCAPE); break;
          case '\b': doType(KeyEvent.VK_BACK_SPACE); break;
          case '\t': doType(KeyEvent.VK_TAB); break;
+         case '\r': doType(KeyEvent.VK_ENTER); break;
          case '\n': doType(KeyEvent.VK_ENTER); break;
          case '[': doType(KeyEvent.VK_OPEN_BRACKET); break;
          case ']': doType(KeyEvent.VK_CLOSE_BRACKET); break;
