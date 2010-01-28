@@ -1,7 +1,7 @@
 # Usage: nmake -f Makefile.win32
 
 CLASSES_TARGET_PATH=target\classes
-CLASSPATH=..\lib\mx-native-loader-1.2\target\classes
+CLASSPATH=..\lib\mx-native-loader-1.2\target\classes;..\lib\jython-2.2.1.jar
 
 NATIVE_SRC_PATH=src\main\native
 NATIVE_TARGET_PATH=target\lib
@@ -20,11 +20,12 @@ $(NATIVE_TARGET_PATH):
 	mkdir $(NATIVE_TARGET_PATH)
 
 java: $(CLASSES_TARGET_PATH)
-	javac -sourcepath ..\java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) src\main\java\edu\mit\csail\uid\*.java
+	javac -sourcepath src\main\java\edu\mit\csail\uid -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) src\main\java\edu\mit\csail\uid\*.java
 
 dll: $(NATIVE_TARGET_PATH)
 	cd $(NATIVE_SRC_PATH)
 	nmake -f Makefile.win32 
+	cd ..\..\..
 
 $(JAR_PATH):
 	mkdir $(JAR_PATH)

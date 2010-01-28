@@ -358,7 +358,7 @@ public class SikuliIDE extends JFrame {
       sikuliDir.mkdir();
       Utils.unzip(filename, sikuliDir.getAbsolutePath());
       ScriptRunner runner = new ScriptRunner();
-      runner.runPython(sikuliDir.getAbsolutePath());
+      runner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
       System.exit(0);
    }
 
