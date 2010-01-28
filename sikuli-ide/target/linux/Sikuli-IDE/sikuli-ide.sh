@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar sikuli-ide.jar $*
+DIR=`dirname $0`
+java -jar $DIR/sikuli-ide.jar $*
