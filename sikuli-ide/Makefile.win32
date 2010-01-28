@@ -20,7 +20,7 @@ CLASSES_OUT_PATH=target/classes
 JAR_PATH=target/jar
 RELEASE_TMP_PATH=$(TARGET_PATH)/Sikuli-IDE
 RELEASE_PATH=../release
-RELEASE_FILES=*.exe,*.ico,sikuli-ide-full.jar,tmplib
+RELEASE_FILES=*.exe,*.ico,sikuli-ide-full.jar,tmplib,*.bat
 APP_FRAMEWORKS_PATH=$(TARGET_PATH)/$(APP)/Contents/Frameworks
 
 SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*Mac.java')
