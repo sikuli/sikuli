@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar sikuli-ide.jar
+java -jar sikuli-ide.jar $*

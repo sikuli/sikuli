@@ -290,6 +290,16 @@ public class SikuliIDE extends JFrame {
 
       initNativeLayer();
 
+      if(args!=null && args.length>=1){
+         try{
+            if(args[0].endsWith("skl"))
+               runSkl(args[0]);
+         }
+         catch(IOException e){
+            System.err.println("Can't open file: " + args[0] + "\n" + e);
+         }
+      }
+
       initMenuBars(this);
       final Container c = getContentPane();
       c.setLayout(new BorderLayout());
