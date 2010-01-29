@@ -19,8 +19,9 @@ JAVA_SRC=VDictProxy.java
 #TEST_PROXY_SRC=TestScreenMatchProxy.java
 #TEST_SRC=TestSikuliScript.java
 
-CLASSES_TARGET_PATH=../../../target/classes
-CLASSPATH=../java:../../../lib
+LIB_PATH=..\..\..\..\lib
+CLASSES_TARGET_PATH=..\..\..\target\classes
+CLASSPATH=$(LIB_PATH)\mx-native-loader-1.2\target\classes\;$(LIB_PATH)\jython-2.2.1.jar;..\java
 PACKAGE=edu.mit.csail.uid
 
 default: dll
@@ -34,9 +35,12 @@ exe: $(BIN)
 
 lib: $(DYN_LIB)
 
-jni:
-	javac -sourcepath ../java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) `find ../java -name \*.java`
-	javah -classpath $(CLASSES_TARGET_PATH) $(JAVA_SRC:%.java=$(PACKAGE).%) 
+$(CLASSES_TARGET_PATH):
+	mkdir $(CLASSES_TARGET_PATH)
+
+jni: $(CLASSES_TARGET_PATH)
+	javac -sourcepath ..\java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) ..\java\edu\mit\csail\uid\*.java
+	javah -classpath $(CLASSES_TARGET_PATH) $(PACKAGE).VDictProxy
 
 
 
@@ -60,6 +64,6 @@ vcvars:
 
 dll: vcvars
 	set LIB="$(OPENCV_DIR)\tmp\lib\Release";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
-	cl /o$(DYN_LIB) /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" cv200.lib highgui200.lib cxcore200.lib -LD VDict.cpp
+	cl /o$(DYN_LIB) /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" cv200.lib highgui200.lib cxcore200.lib -LD VDictProxy.cc
 	copy $(DYN_LIB) $(TARGET_DIR)
 
