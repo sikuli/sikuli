@@ -54,6 +54,7 @@ class LookaheadTemplateMatcher : public DownsampleTemplateMatcher{
 
 public:
   LookaheadTemplateMatcher(IplImage *img, IplImage *tpl, float downsample_ratio=1.0);
+  ~LookaheadTemplateMatcher();
   virtual Match next();
 
 private:

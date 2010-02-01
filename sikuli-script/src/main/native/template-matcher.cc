@@ -129,6 +129,11 @@ Match verify_match(IplImage *img, IplImage *tpl, CvRect roi){
 LookaheadTemplateMatcher::LookaheadTemplateMatcher(IplImage *img, IplImage *tpl, float downsample_ratio)
 : DownsampleTemplateMatcher(img,tpl,downsample_ratio){};
 
+LookaheadTemplateMatcher::~LookaheadTemplateMatcher(){
+  cvReleaseImage(&img_);
+  cvReleaseImage(&tpl_);  
+  cvReleaseImage(&res_);
+};
 
 Match 
 LookaheadTemplateMatcher::next(){
@@ -360,6 +365,7 @@ Matches match_by_template(const char* screen_image_filename,
 
     //DownsampleTemplateMatcher* matcher = new DownsampleTemplateMatcher(img, scaled_tpl, downsample_ratio);
     TemplateMatcher* matcher = new LookaheadTemplateMatcher(roi_img, scaled_tpl, downsample_ratio);
+    // released at the end
 
     matchers.push_back(matcher);
 
@@ -473,6 +479,8 @@ Matches match_by_template(const char* screen_image_filename,
     cvWaitKey( 0 );
   }
 
+
+
   cvReleaseImage( &img );
   cvReleaseImage( &tpl );
   cvReleaseImage( &roi_img);
@@ -487,7 +495,12 @@ Matches match_by_template(const char* screen_image_filename,
     cout << i+1 << "\t" << m.x << "\t" << m.y << "\t" << m.score << endl;
   }
 
+  for (int i=0; i<(int) matchers.size(); ++i){
+    delete matchers[i];
+  }
+
+
   return matches;
-}
+}     
 
 
