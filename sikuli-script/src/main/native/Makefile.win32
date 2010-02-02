@@ -67,13 +67,16 @@ jar: lib jni
 	jar cvf SikuliScript.jar edu/mit/csail/uid/*.class   libScreenMatchProxy.jnilib
 
 clean:
-	rm -f $(BIN_OBJS) $(OBJS) $(DYN_LIB) $(BIN)
+	del /q $(BIN_OBJS) $(OBJS) $(DYN_LIB) $(BIN)
 
 dll: vdict
 	set LIB="$(OPENCV_DIR)\tmp\lib\Release";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib";"$(TESSERACT_DIR)"
 	cl /oScreenMatchProxy.dll /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" -I"$(TESSERACT_DIR)\ccmain" cv200.lib highgui200.lib cxcore200.lib tesseract.lib ws2_32.lib user32.lib -LD ScreenMatchProxy.cc ocr-matcher.cc template-matcher.cc myocr.cc screendiff.cpp
 	copy ScreenMatchProxy.dll $(TARGET_DIR)
 
+init:
+	@echo "type nmake -f Makefile.win32"
+	@cmd /k "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
 #java:
 #        javac -classpath . edu\mit\csail\uid\*.java
