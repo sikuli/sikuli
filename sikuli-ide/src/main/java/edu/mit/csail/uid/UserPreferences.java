@@ -40,7 +40,7 @@ public class UserPreferences {
    public int getStopHotkeyModifiers(){
       String os = System.getProperty("os.name").toLowerCase();
       int mod = Event.SHIFT_MASK + Event.META_MASK; // mac default
-      if( os.startsWith("windows" ) )
+      if( os.startsWith("windows") || os.startsWith("linux"))
          mod = Event.SHIFT_MASK + Event.ALT_MASK; 
       return pref.getInt("GET_HOTKEY_MODIFIERS", mod);
    }
@@ -53,7 +53,7 @@ public class UserPreferences {
    public int getCaptureHotkeyModifiers(){
       String os = System.getProperty("os.name").toLowerCase();
       int mod = Event.SHIFT_MASK + Event.META_MASK; // mac default
-      if( os.startsWith("windows" ) )
+      if( os.startsWith("windows") || os.startsWith("linux"))
          mod = Event.SHIFT_MASK + Event.ALT_MASK; 
       return pref.getInt("CAPTURE_HOTKEY_MODIFIERS", mod);
    }

@@ -54,4 +54,8 @@ public class Debug {
   public static void info(String message, Object... args) {
     log(-1, message, args);
   }
+
+  public static void error(String message, Object... args) {
+    log(-1, message, args);
+  }
 }

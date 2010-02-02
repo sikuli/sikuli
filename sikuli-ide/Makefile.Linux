@@ -16,3 +16,10 @@ do_release:  app
 
 update-ver:
 
+test_release:
+	RELEASE_APP_ZIP=Sikuli-IDE-linux-`date "+%Y%m%d"`.zip; \
+	cd $(RELEASE_PATH); unzip $$RELEASE_APP_ZIP; \
+	cd -; $(RELEASE_PATH)/Sikuli-IDE/sikuli-ide.sh test-scripts/linux-basic.skl; \
+	rm -rf $(RELEASE_PATH)/Sikuli-IDE
+	
+

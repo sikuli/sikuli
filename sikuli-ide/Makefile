@@ -51,11 +51,17 @@ endif
 ifeq "$(UNAME)" "Linux"
    SRC+=$(SOURCE_PATH)/edu/mit/csail/uid/NativeLayerForLinux.java
    CLASSES+=$(CLASSES_OUT_PATH)/edu/mit/csail/uid/NativeLayerForLinux.class
+   CLASSPATH:=$(CLASSPATH):$(LIB_PATH)/jxgrabkey/lib/JXGrabKey.jar
 endif
 
 
 RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts
 TARGET_RESOURCES=$(RESOURCES:$(RESOURCE_PATH)/%=$(CLASSES_OUT_PATH)/%)
+ifeq "$(UNAME)" "Linux"
+   MANIFEST=META-INF/MANIFEST-linux.MF
+else
+   MANIFEST=META-INF/MANIFEST.MF
+endif
 
 JFLAGS=-sourcepath $(SOURCE_PATH) -d $(CLASSES_OUT_PATH) -cp $(CLASSPATH) 
 
@@ -81,8 +87,14 @@ $(JAR_PATH):
 	mkdir -p $(JAR_PATH)
 
 
-native-lib:
+native-lib: native-lib-linux
 	make -C $(NATIVE_SRC_PATH)
+
+
+native-lib-linux:
+ifeq "$(UNAME)" "Linux"
+	cp -f $(LIB_PATH)/jxgrabkey/lib/*.so $(NATIVE_TARGET_PATH)/
+endif
 
 debug:
 	jdb -Dsikuli.Debug=3  -classpath $(CLASSPATH):$(CLASSES_OUT_PATH) $(MAIN_CLASS) /Users/vgod/test.sikuli
@@ -107,7 +119,7 @@ prepare-jar: $(NATIVE_TARGET_PATH)
 
 	
 jar: $(JAR_PATH) all prepare-jar
-	cd $(JAR_PATH); jar cvmf META-INF/MANIFEST.MF ../$(JAR) *; cd -
+	cd $(JAR_PATH); jar cvmf $(MANIFEST) ../$(JAR) *; cd -
 
 install-jar: jar
 	cp $(JAR_PATH)/../$(JAR) $(LIB_PATH)
