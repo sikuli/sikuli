@@ -34,3 +34,9 @@ update-ver:
 	defaults write `pwd`/$(TARGET_PATH)/$(APP)/Contents/Info CFBundleVersion `cat latest-ver`
 	plutil -convert xml1 $(TARGET_PATH)/$(APP)/Contents/Info.plist
 
+
+test_release:
+	RELEASE_APP_ZIP=Sikuli-IDE-$(TARGET_OS)-`date "+%Y%m%d"`.zip; \
+	cd $(RELEASE_PATH); unzip $$RELEASE_APP_ZIP; \
+	cd -; open  $(RELEASE_PATH)/Sikuli-IDE.app --args test-scripts/mac-basic.sikuli; \
+	rm -rf $(RELEASE_PATH)/Sikuli-IDE.app
