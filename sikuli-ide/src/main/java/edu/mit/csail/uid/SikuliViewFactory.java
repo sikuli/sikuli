@@ -210,8 +210,8 @@ class HighlightLabelView extends LabelView {
 
    public void paint(Graphics g, Shape shape){
       Graphics2D g2d = (Graphics2D)g;
-      //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-      //      RenderingHints.VALUE_ANTIALIAS_ON);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
 
       //super.paint(g, shape); // for drawing selection
 
