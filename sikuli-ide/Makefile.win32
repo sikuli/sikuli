@@ -23,12 +23,15 @@ RELEASE_PATH=../release
 RELEASE_FILES=*.exe,*.ico,sikuli-ide-full.jar,tmplib,*.bat
 APP_FRAMEWORKS_PATH=$(TARGET_PATH)/$(APP)/Contents/Frameworks
 
-SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*Mac.java')
-CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java -and -not -regex '.*Mac.java'| perl -ple 's!^./(.*)\.java!$(CLASSES_OUT_PATH)/$$1.class!' )
+SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*/NativeLayerFor.*.java')
+CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java -and -not -regex '.*/NativeLayerFor.*.java'| perl -ple 's!^./(.*)\.java!$(CLASSES_OUT_PATH)/$$1.class!' )
 RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts
 TARGET_RESOURCES=$(RESOURCES:$(RESOURCE_PATH)/%=$(CLASSES_OUT_PATH)/%)
 
 JFLAGS=-sourcepath $(SOURCE_PATH) -d $(CLASSES_OUT_PATH) -cp "$(CLASSPATH)"
+
+SRC+=$(SOURCE_PATH)/edu/mit/csail/uid/NativeLayerForWindows.java
+CLASSES+=$(CLASSES_OUT_PATH)/edu/mit/csail/uid/NativeLayerForWindows.class
 
 default: test
 
@@ -89,3 +92,10 @@ release: jar $(RELEASE_TMP_PATH)
 	/cygdrive/c/Program\ Files/IzPack/utils/wrappers/izpack2exe/izpack2exe --file=install.jar --no-upx --with-7z=..\\utils\\7za.exe
 	mv setup.exe $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)
 	echo "Generated $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)"
+
+test_release:
+	cd $(RELEASE_PATH); \
+	unzip -qo $(RELEASE_APP_ZIP)
+	chmod -R +x $(RELEASE_PATH)/Sikuli-IDE/*
+	$(RELEASE_PATH)/Sikuli-IDE/Sikuli-IDE.bat test-scripts/win-basic.skl
+	rm -rf $(RELEASE_PATH)/Sikuli-IDE
