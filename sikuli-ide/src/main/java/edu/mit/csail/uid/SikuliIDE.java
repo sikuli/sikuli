@@ -807,8 +807,11 @@ public class SikuliIDE extends JFrame {
                try{
                   tmpFile = File.createTempFile("sikuli-tmp",".py");
                   try{
-                     FileWriter fw = new FileWriter(tmpFile, true);
-                     codePane.write(fw);
+                     BufferedWriter bw = new BufferedWriter(
+                                           new OutputStreamWriter( 
+                                             new FileOutputStream(tmpFile), 
+                                              "UTF8"));
+                     codePane.write(bw);
                      SikuliIDE.getInstance().setVisible(false);
                      _console.clear();
                      codePane.setErrorHighlight(-1);

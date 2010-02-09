@@ -393,6 +393,7 @@ public class SikuliScript {
          _robot.waitForIdle();
       }
       if( text != null ){
+         Debug.log(1, "paste: " + text);
          Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8, 
                            Clipboard.BYTE_BUFFER, text);
          int mod = getOSHotkeyModifier();
