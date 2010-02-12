@@ -9,6 +9,8 @@
 #include <algorithm>
 
 #include "template-matcher.h"
+//#define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_NN
+#define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_LINEAR
 
 vector<double> distances_to(CvPoint point, vector<CvPoint>& points){
   vector<double> distances;
@@ -160,19 +162,19 @@ DownsampleTemplateMatcher::DownsampleTemplateMatcher(IplImage *img, IplImage *tp
   if (downsample_ratio < 1.0)
     downsample_ratio = 1.0;
 
-  cout << "screen/template: (" << img->width << "," << img->height << ")";
-  cout << "/(" << tpl->width << "," << tpl->height << ")" << endl;
+  //cout << "screen/template: (" << img->width << "," << img->height << ")";
+  //cout << "/(" << tpl->width << "," << tpl->height << ")" << endl;
 
   IplImage* downsampled_img = cvCreateImage(cvSize(img->width/downsample_ratio, img->height/downsample_ratio), IPL_DEPTH_8U, 3 );
   // released in DownsampleTempalteMatcher's desctrutor
-  cvResize(img, downsampled_img);
+  cvResize(img, downsampled_img, CV_RESIZE_INTERPOLATION_OPTION);
 
   IplImage* downsampled_tpl = cvCreateImage(cvSize(tpl->width/downsample_ratio, tpl->height/downsample_ratio), IPL_DEPTH_8U, 3 );
   // released in DownsampleTempalteMatcher's desctrutor
-  cvResize(tpl, downsampled_tpl);
+  cvResize(tpl, downsampled_tpl, CV_RESIZE_INTERPOLATION_OPTION);
 
-  cout << "downsampled to: (" << downsampled_img->width << "," << downsampled_img->height << ")";
-  cout << "/(" << downsampled_tpl->width << "," << downsampled_tpl->height << ")" << " ratio = " << downsample_ratio << endl;
+  //cout << "downsampled to: (" << downsampled_img->width << "," << downsampled_img->height << ")";
+  //cout << "/(" << downsampled_tpl->width << "," << downsampled_tpl->height << ")" << " ratio = " << downsample_ratio << endl;
 
   //cout << "[time] after downsampling:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
 
@@ -239,10 +241,12 @@ Match TemplateMatcher::next(){
   CvPoint detection_loc;
   double detection_score=1.0;
 
+  // block out a padded window around the match by setting their correlation scores to zeros
+  // this removes overlapping duplicates (for now, we added 30% padding to each dimension)
   cvMinMaxLoc( res_, 0, &detection_score, 0, &detection_loc, 0 );
 
-  for(int i=detection_loc.y; i < min(detection_loc.y+tpl_->height, res_->height); i++) 
-    for(int j=detection_loc.x; j < min(detection_loc.x+tpl_->width, res_->width); j++) 
+  for(int i=max(0,detection_loc.y-tpl_->height/3); i < min(detection_loc.y+tpl_->height*1.3, res_->height); i++) 
+    for(int j=max(0,detection_loc.x-tpl_->width/3); j < min(detection_loc.x+tpl_->width*1.3, res_->width); j++) 
       cvSet2D(res_,i,j, cvScalar(0));
 
   Match match(detection_loc.x,detection_loc.y,tpl_->width,tpl_->height,detection_score);          
@@ -250,16 +254,15 @@ Match TemplateMatcher::next(){
 }
 
 
-
 Matches match_by_template(const char* screen_image_filename, 
-                          const char *template_image_filename,
+                          const char* template_image_filename,
                           int max_num_matches, 
                           double min_similarity_threshold,
                           bool search_multiscale,
-                          int x, int y, int w, int h,
-                          bool write_images, bool display_images)
+                          int x, int y, int w, int h,          
+                          bool display_images,
+                          const char* output_image_filename = 0)
 {
-
 
   IplImage  *img;
   IplImage  *tpl;
@@ -267,7 +270,10 @@ Matches match_by_template(const char* screen_image_filename,
 
   CvRect roi;
 
-
+  bool write_images;
+  if (output_image_filename){
+    write_images = true;
+  }
 
   float downsample_ratio = 1.0;
   int min_tpl_dimension = 12;
@@ -463,8 +469,8 @@ Matches match_by_template(const char* screen_image_filename,
 
 
 
-    cvSaveImage("output.jpg", img);
-    cvSaveImage("template.jpg", tpl);
+    cvSaveImage(output_image_filename, img);
+    //cvSaveImage("template.jpg", tpl);
     cout << "[time] after writing images:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
   }
 

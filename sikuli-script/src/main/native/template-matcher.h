@@ -67,10 +67,12 @@ private:
 
 Matches match_by_template(const char* screen_image_filename, 
                           const char *template_image_filename,
-                          int max_num_matches=10, 
-                          double min_similarity_threshold=0.7,
-                          bool search_multiscale=false,
-                          int x=0, int y=0, int w=0, int h=0,
-                          bool write_images=false, bool display_images=false);
+                          int max_num_matches, 
+                          double min_similarity_threshold,
+                          bool search_multiscale,
+                          int x, int y, int w, int h,
+                          bool write_images, bool display_images);
+
+
 
 #endif // _TEMPLATEMATCHER_H_

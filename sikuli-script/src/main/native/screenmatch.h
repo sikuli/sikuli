@@ -3,6 +3,7 @@
 
 #include <list>
 #include <vector>
+#include "template-matcher.h"
 /*
 extern "C" struct Match {
    int x, y;
@@ -20,9 +21,19 @@ extern "C" struct Match {
 
 /*extern "C"*/ 
 //typedef std::list<Match> Matches;
-//typedef std::vector<Match> Matches;
+
 
 //*extern "C"*/ Matches screen_match(const char *fname_tpl, const char* fname_img, int numMatches=10, double threshold=0.7);
+
+typedef std::vector<Match> Matches;
+Matches match_by_template(const char* screen_image_filename, 
+                          const char* template_image_filename,
+                          int max_num_matches, 
+                          double min_similarity_threshold,
+                          bool search_multiscale,
+                          int x, int y, int w, int h,                                    
+                          bool display_images,
+                          const char* output_image_filename);
 
 #endif
 
