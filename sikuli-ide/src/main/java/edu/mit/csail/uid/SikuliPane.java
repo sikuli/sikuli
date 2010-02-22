@@ -171,37 +171,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
    }
 
-   private FileDialog createFileDialog(String msg, int mode){
-      SikuliIDE ide = SikuliIDE.getInstance();
-      FileDialog fc = new FileDialog(ide, msg, mode);
-      //fc.setDirectory(new File(System.getProperty("user.dir")).getAbsolutePath());
-      return fc;
-   }
-
-   private JFileChooser createFileChooser(){
-      JFileChooser fc = new JFileChooser();
-      fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      fc.setAcceptAllFileFilterUsed(false);
-      fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
-      fc.setSelectedFile(null);
-      return fc;
-   }
-
    public String saveAsFile() throws IOException{
-      /*
-      JFileChooser fcSave = createFileChooser();
-      fcSave.setFileFilter(new SourceFileFilter("sikuli", "Sikuli source files (*.sikuli)"));
-      if(fcSave.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-         return null;
-      File file = fcSave.getSelectedFile();
-      */
-      FileDialog fcSave = createFileDialog("Save a Sikuli source code", FileDialog.SAVE);
-      fcSave.setFilenameFilter(
-            new SourceFileFilter("sikuli","Sikuli source files (*.sikuli)"));
-      fcSave.setVisible(true);
-      if(fcSave.getFile() == null)
-         return null;
-      File file = new File(fcSave.getDirectory(), fcSave.getFile());
+      File file = new FileChooser(SikuliIDE.getInstance()).save();
+      if(file == null)  return null;
+
       String bundlePath = file.getAbsolutePath();
       if( !file.getAbsolutePath().endsWith(".sikuli") )
          bundlePath += ".sikuli";
@@ -211,21 +184,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
 
    public String exportAsZip() throws IOException, FileNotFoundException{
-      /*
-      JFileChooser fcSave = createFileChooser();
-      fcSave.setFileFilter(new SourceFileFilter("skl", "Sikuli executable files (*.skl)"));
-      if(fcSave.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-         return null;
-      File file = fcSave.getSelectedFile();
-      */
-
-      FileDialog fcSave = createFileDialog("Export as a Sikuli executable file", FileDialog.SAVE);
-      fcSave.setFilenameFilter(
-            new SourceFileFilter("skl","Sikuli executable files (*.skl)"));
-      fcSave.setVisible(true);
-      if(fcSave.getFile() == null)
-         return null;
-      File file = new File(fcSave.getDirectory(), fcSave.getFile());
+      File file = new FileChooser(SikuliIDE.getInstance()).export();
+      if(file == null)  return null;
 
       String zipPath = file.getAbsolutePath();
       String srcName = file.getName();
@@ -274,25 +234,9 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public String loadFile() throws IOException{
-      /*
-      JFileChooser fcLoad = new JFileChooser();
-      fcLoad.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      fcLoad.setAcceptAllFileFilterUsed(false);
-      fcLoad.setFileFilter(new SourceFileFilter("sikuli", "Sikuli source files (*.sikuli)"));
-      //fcLoad.setFileFilter(new SourceFileFilter("skl", "Sikuli executable files (*.skl)"));
-      fcLoad.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
-      fcLoad.setSelectedFile(null);
-      if(fcLoad.showDialog(this, null) != JFileChooser.APPROVE_OPTION)
-         return null;
-      File file = fcLoad.getSelectedFile();
-      */
-      FileDialog fcLoad = createFileDialog("Open a Sikuli source file", FileDialog.LOAD);
-      fcLoad.setFilenameFilter(
-            new SourceFileFilter("sikuli","Sikuli source files (*.sikuli)"));
-      fcLoad.setVisible(true);
-      if(fcLoad.getFile() == null)
-         return null;
-      File file = new File(fcLoad.getDirectory(), fcLoad.getFile());
+      File file = new FileChooser(SikuliIDE.getInstance()).load();
+      if(file == null)  return null;
+
       String fname = Utils.slashify(file.getAbsolutePath(),false);
       loadFile(fname);
       return fname;
@@ -1006,62 +950,6 @@ class ScreenOverlay extends JWindow{
 
 }
 
-//FIXME: extract a suffix filter
-class ImageFileFilter extends FileFilter{
-   public boolean accept(File f)
-   {
-      if (f.isDirectory()) return true;
-
-      String s = f.getName();
-      int i = s.lastIndexOf('.');
-      if (i > 0 && i < s.length()-1){
-         String ext = s.substring(i+1).toLowerCase();
-         if(ext.equals("png") )
-            return true;
-      }
-      return false;
-   }
-   public String getDescription(){
-      return "PNG Image files (*.png)";
-   }
-}
-
-
-class SourceFileFilter extends FileFilter implements FilenameFilter{
-   private String _ext, _desc;
-   public SourceFileFilter(String ext, String desc){
-      _ext = ext;
-      _desc = desc;
-   }
-
-   public boolean accept(File dir, String fname)
-   {
-      int i = fname.lastIndexOf('.');
-      if (i > 0 && i < fname.length()-1){
-         String ext = fname.substring(i+1).toLowerCase();
-         if(ext.equals(_ext) )
-            return true;
-      }
-      return false;
-   }
-
-   public boolean accept(File f)
-   {
-      if (f.isDirectory()) return true;
-
-      String s = f.getName();
-      int i = s.lastIndexOf('.');
-      if (i > 0 && i < s.length()-1){
-         String ext = s.substring(i+1).toLowerCase();
-         if(ext.equals(_ext) )
-            return true;
-      }
-      return false;
-   }
-   public String getDescription(){
-      return _desc;
-   }
-}
 
 class RegionButton extends JButton {
    SikuliPane _pane;

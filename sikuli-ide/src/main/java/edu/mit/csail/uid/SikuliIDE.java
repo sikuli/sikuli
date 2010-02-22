@@ -852,14 +852,9 @@ class ButtonInsertImage extends JButton implements ActionListener{
 
    public void actionPerformed(ActionEvent ae) {
       SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
-      final JFileChooser fcLoad = new JFileChooser();
-      fcLoad.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      fcLoad.setAcceptAllFileFilterUsed(false);
-      fcLoad.setFileFilter(new ImageFileFilter());
-      fcLoad.setSelectedFile(null);
-      if(fcLoad.showDialog(codePane, null) != JFileChooser.APPROVE_OPTION)
+      File file = new FileChooser(SikuliIDE.getInstance()).loadImage();
+      if(file == null)
          return;
-      File file = fcLoad.getSelectedFile();
       String path = Utils.slashify(file.getAbsolutePath(), false);
       System.out.println("load: " + path);
       ImageButton icon = new ImageButton(codePane, 
