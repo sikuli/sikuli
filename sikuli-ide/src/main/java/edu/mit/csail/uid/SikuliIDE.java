@@ -745,7 +745,7 @@ public class SikuliIDE extends JFrame {
 
          String[] h = new String[]{
             "from python.edu.mit.csail.uid.Sikuli import *",
-            "setThrowException(False)",
+            "setThrowException(True)",
       	    "setShowActions(False)"
          };
          _headers = new LinkedList<String>(Arrays.asList(h));

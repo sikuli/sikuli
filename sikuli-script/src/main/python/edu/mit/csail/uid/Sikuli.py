@@ -9,6 +9,7 @@ from edu.mit.csail.uid import Pattern
 from edu.mit.csail.uid import Similar
 from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import VDictProxy
+from edu.mit.csail.uid import FindFailed
 from java.awt.event import InputEvent
 
 
