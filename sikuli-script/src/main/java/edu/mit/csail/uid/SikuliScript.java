@@ -620,10 +620,7 @@ public class SikuliScript {
 */
          for(int i=0; i < text.length(); i++){
             //boolean shift = needsShift(text.charAt(i));
-            if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
-            if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
-            if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
-            if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+            pressModifiers(modifiers);
             type_ch(text.charAt(i)); 
             /*
             if(shift) _robot.keyPress(KeyEvent.VK_SHIFT);
@@ -631,10 +628,7 @@ public class SikuliScript {
             _robot.keyRelease(bb.get(i));
             if(shift) _robot.keyRelease(KeyEvent.VK_SHIFT);
             */
-            if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
-            if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
-            if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
-            if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+            releaseModifiers(modifiers);
          }
          return 1;
       }
@@ -773,6 +767,20 @@ public class SikuliScript {
       return _click(new Matches(matches), buttons, modifiers, numClick, dblClick);
    }
 
+   private void releaseModifiers(int modifiers){
+      if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
+      if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
+      if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
+      if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+   }
+
+   private void pressModifiers(int modifiers){
+      if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
+      if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
+      if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
+      if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+   }
+
    private int _click(Matches matches, int buttons, int modifiers, 
                       int numClick, boolean dblClick) 
                                              throws IOException, AWTException{
@@ -790,8 +798,7 @@ public class SikuliScript {
          int y = _getCenterY(m);
          Debug.log("click on (" + x + "," + y + 
                    ") BTN: " + buttons + ", MOD: " + modifiers); 
-         if(modifiers!=0)
-            _robot.keyPress(modifiers);
+         pressModifiers(modifiers);
          _robot.mouseMove(x, y);
          showClick(m.x, m.y, m.w, m.h);
          _robot.mousePress(buttons);
@@ -800,8 +807,7 @@ public class SikuliScript {
             _robot.mousePress(buttons);
             _robot.mouseRelease(buttons);
          }
-         if(modifiers!=0)
-            _robot.keyRelease(modifiers);
+         releaseModifiers(modifiers);
          _robot.delay(500);
       }
       return numClick;
