@@ -635,6 +635,7 @@ public class SikuliScript {
             if(shift) _robot.keyRelease(KeyEvent.VK_SHIFT);
             */
             releaseModifiers(modifiers);
+            _robot.delay(20);
          }
          return 1;
       }
