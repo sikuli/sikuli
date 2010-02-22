@@ -833,7 +833,7 @@ public class SikuliScript {
          return KeyEvent.VK_CONTROL;
    }
 	
-   public String cmdexec(String cmdline){
+   public String run(String cmdline){
       String lines="";
 
       try {

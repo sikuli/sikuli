@@ -561,21 +561,24 @@ def sleep(sec):
 def popup(msg):
    _si.popup(msg)
 
+##
+# Runs the given string command.
+# @param msg The given string command.
+# @return Returns the output from the executed command.
+def run(cmd):
+    return _si.run(cmd)
 
 ############### HELPER FUNCTIONS ################
 
 #def toList(jarray):
 #   return map(lambda x:x, jarray)
 
-def cmdexec(cmd):
-    return _si.cmdexec(cmd)
-	
 def search(img, host):
-  id = cmdexec('curl -F query[photo_file]=@' + img + ';type=image/png ' + host + ':3000/screenshot/remote_query')
+  id = run('curl -F query[photo_file]=@' + img + ';type=image/png ' + host + ':3000/screenshot/remote_query')
   id = id.strip()
   url = host + ':3000/pdf_book/query_result?query_id=' + id
   print url
-  cmdexec('open ' + url)
+  run('open ' + url)
 
 ############### SECRET FUNCTIONS ################
 
