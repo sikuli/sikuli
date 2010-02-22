@@ -176,13 +176,19 @@ public class SikuliScript {
    public <T> Matches find(T pat) throws IOException, AWTException, FindFailed{
       if(_waitBeforeAction!=0)
          return wait(pat, _waitBeforeAction);
-      return find_without_wait(pat);
+      else{
+         Matches match = find_without_wait(pat);
+         if(match.size() == 0 && _stopIfWaitingFailed)
+            throw new FindFailed(pat + " can't be found.");
+         return match;
+      }
    }
 
    public <T> Matches find_without_wait(T pat) throws IOException, AWTException, FindFailed{
       ScreenCapturer capturer = new ScreenCapturer();
       String screen = capturer.capture();
-      return _find(pat, screen);
+      Matches match = _find(pat, screen);
+      return match;
    }
 
    /**
@@ -200,7 +206,7 @@ public class SikuliScript {
          _robot.delay(200);
       }
       if(_stopIfWaitingFailed)
-         throw new FindFailed("Failed on waiting " + img);
+         throw new FindFailed(img + " can't be found.");
       return match;
    }
 
@@ -214,7 +220,7 @@ public class SikuliScript {
          _robot.delay(200);
       }
       if(_stopIfWaitingFailed)
-         throw new FindFailed("Failed on waiting " + img);
+         throw new FindFailed(img + " can't be found.");
       return;
    }
    
