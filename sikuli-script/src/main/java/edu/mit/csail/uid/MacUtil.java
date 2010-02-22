@@ -5,22 +5,14 @@ import java.io.*;
 public class MacUtil implements OSUtil {
 
    public int switchApp(String appName){
+      return openApp(appName);
+   }
+
+   public int openApp(String appName){
       try{
          String cmd[] = {"open", "-a", appName};
          System.out.println("switchApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
-         p.waitFor();
-         return p.exitValue();
-      }
-      catch(Exception e){
-         return -1;
-      }
-   }
-
-   public int openApp(String appCmd){
-      try{
-         System.out.println("switchApp: " + appCmd);
-         Process p = Runtime.getRuntime().exec(appCmd);
          p.waitFor();
          return p.exitValue();
       }
