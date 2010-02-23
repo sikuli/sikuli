@@ -64,6 +64,6 @@ vcvars:
 
 dll: vcvars
 	set LIB="$(OPENCV_DIR)\tmp\lib\Release";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
-	cl /o$(DYN_LIB) /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" cv200.lib highgui200.lib cxcore200.lib -LD VDictProxy.cc
+	cl /O2 /o$(DYN_LIB) /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" cv200.lib highgui200.lib cxcore200.lib -LD VDictProxy.cc
 	copy $(DYN_LIB) $(TARGET_DIR)
 
