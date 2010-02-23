@@ -41,6 +41,28 @@ public class Utils {
       }
    }
 
+   public static boolean isWindows(){
+      String os = System.getProperty("os.name").toLowerCase();
+      if( os.startsWith("windows" ) )
+         return true;
+      return false;
+   }
+
+   public static boolean isLinux(){
+      String os = System.getProperty("os.name").toLowerCase();
+      if( os.startsWith("linux" ) )
+         return true;
+      return false;
+   }
+   
+   public static boolean isMacOSX(){
+      String os = System.getProperty("os.name").toLowerCase();
+      if( os.startsWith("mac os x" ) )
+         return true;
+      return false;
+   }
+
+
    public static void zip(String path, String outZip) 
                                     throws IOException, FileNotFoundException {
       ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outZip)); 

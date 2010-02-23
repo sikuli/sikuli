@@ -65,4 +65,13 @@ public class UserPreferences {
    public void setCaptureDelay(double v){
       pref.putDouble("CAPTURE_DELAY", v);
    }
+
+   public void put(String key, String val){
+      pref.put(key, val);
+   }
+
+   public String get(String key, String default_){
+      return pref.get(key, default_);
+   }
+
 }

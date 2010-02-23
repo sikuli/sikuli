@@ -116,7 +116,7 @@ public class SikuliIDE extends JFrame {
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.EXPORT)));
       _fileMenu.addSeparator();
-      if(!isMacOSX()){
+      if(!Utils.isMacOSX()){
          _fileMenu.add( createMenuItem("Preferences",
                   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, scMask),
                   new FileAction(FileAction.PREFERENCES)));
@@ -124,7 +124,7 @@ public class SikuliIDE extends JFrame {
       _fileMenu.add( createMenuItem("Close Tab", 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, scMask),
                new FileAction(FileAction.CLOSE_TAB)));
-      if(!isMacOSX()){
+      if(!Utils.isMacOSX()){
          _fileMenu.addSeparator();
          _fileMenu.add( createMenuItem("Quit", null, 
                   new FileAction(FileAction.QUIT)));
@@ -378,32 +378,11 @@ public class SikuliIDE extends JFrame {
                           "onStopRunning", "()V");
    }
 
-   private boolean isLinux(){
-      String os = System.getProperty("os.name").toLowerCase();
-      if( os.startsWith("linux" ) )
-         return true;
-      return false;
-   }
-
-   private boolean isWindows(){
-      String os = System.getProperty("os.name").toLowerCase();
-      if( os.startsWith("windows" ) )
-         return true;
-      return false;
-   }
-   
-   private boolean isMacOSX(){
-      String os = System.getProperty("os.name").toLowerCase();
-      if( os.startsWith("mac os x" ) )
-         return true;
-      return false;
-   }
-
    private void initNativeLayer(){
       String os = "unknown";
-      if(isWindows()) os = "Windows";
-      else if(isMacOSX()) os = "Mac";
-      else if(isLinux()) os = "Linux";
+      if(Utils.isWindows()) os = "Windows";
+      else if(Utils.isMacOSX()) os = "Mac";
+      else if(Utils.isLinux()) os = "Linux";
       String className = "edu.mit.csail.uid.NativeLayerFor" + os;
 
       try{

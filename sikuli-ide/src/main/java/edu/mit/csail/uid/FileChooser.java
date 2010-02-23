@@ -14,18 +14,24 @@ public class FileChooser {
    }
 
    protected File open(String msg, int mode, GeneralFileFilter[] filters){
-      FileDialog fd = new FileDialog(_parent, msg, mode);
-      for(GeneralFileFilter filter: filters)
-         fd.setFilenameFilter(filter);
-      fd.setVisible(true);
-      if(fd.getFile() == null)
-         return null;
-      return new File(fd.getDirectory(), fd.getFile());
+      if( Utils.isMacOSX() ){
+         FileDialog fd = new FileDialog(_parent, msg, mode);
+         for(GeneralFileFilter filter: filters)
+            fd.setFilenameFilter(filter);
+         fd.setVisible(true);
+         if(fd.getFile() == null)
+            return null;
+         return new File(fd.getDirectory(), fd.getFile());
+      }	
+      return openWithSwingDialog(msg, mode, filters);
    }
 
    protected File openWithSwingDialog(String msg, int mode, GeneralFileFilter[] filters){
       JFileChooser fcLoad = new JFileChooser();
-      //fcLoad.setCurrentDirectory(new File(System.getProperty("user.dir")));
+      UserPreferences pref = UserPreferences.getInstance();
+      String last_dir = pref.get("LAST_OPEN_DIR", "");
+      if(!last_dir.equals(""))
+         fcLoad.setCurrentDirectory(new File(last_dir));
       fcLoad.setAcceptAllFileFilterUsed(false);
       for(GeneralFileFilter filter: filters)
          fcLoad.setFileFilter(filter);
@@ -33,7 +39,10 @@ public class FileChooser {
       fcLoad.setSelectedFile(null);
       if(fcLoad.showDialog(_parent, null) != JFileChooser.APPROVE_OPTION)
          return null;
-      return fcLoad.getSelectedFile();
+      File ret = fcLoad.getSelectedFile();
+      String dir = ret.getParent();
+      UserPreferences.getInstance().put("LAST_OPEN_DIR",dir);
+      return ret;
    }
 
    public File loadImage(){

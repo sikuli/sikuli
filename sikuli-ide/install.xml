@@ -2,7 +2,7 @@
 <installation version="1.0">
 	<info>
 		<appname>Sikuli Script</appname>
-		<appversion>0.9.7</appversion>
+		<appversion>0.9.8</appversion>
 		<appsubpath>Sikuli</appsubpath>
 		<authors>
 			<author name="Tsung-Hsiang Chang" email="vgod@mit.edu"/>

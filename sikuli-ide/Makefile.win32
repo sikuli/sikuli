@@ -1,3 +1,4 @@
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAVAC=javac
@@ -57,7 +58,7 @@ debug:
 
 test:all
 	#open target/Sikuli-IDE.app --args ../evaluation/TestJEdit.sikuli
-	PATH=$$PATH:tmplib/ $(JAVA) -Dsikuli.Debug=3  -cp "$(CLASSPATH);$(CLASSES_OUT_PATH)" $(MAIN_CLASS) $(ARGS) #evaluation/TestCapivara.sikuli #testing/PythonTestCase.sikuli #evaluation/TestDrJava.py #testing/PythonTestCase.py
+	PATH=$$PATH:tmplib/ $(JAVA) $(JAVA_ARGS) -cp "$(CLASSPATH);$(CLASSES_OUT_PATH)" $(MAIN_CLASS) $(ARGS) #evaluation/TestCapivara.sikuli #testing/PythonTestCase.sikuli #evaluation/TestDrJava.py #testing/PythonTestCase.py
 
 
 all: $(CLASSES_OUT_PATH) $(CLASSES) $(TARGET_RESOURCES)
