@@ -3,9 +3,9 @@ include Makefile.common
 LDFLAGS+=-ltesseract_full -ltiff 
 BIN_LDFLAGS+=-ltesseract_full -ltiff 
 
-OBJS = ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o 
+OBJS = finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o 
 BIN_OBJS = $(OBJS) screenmatch.o
-BIN = $(TARGET_DIR)/screenmatch
+BIN = screenmatch
 
 DYN_LIB = $(TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
 
@@ -34,6 +34,8 @@ jni:
 	javac -sourcepath ../java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) `find ../java -name \*.java`
 	javah -classpath $(CLASSES_TARGET_PATH) $(JAVA_SRC:%.java=$(PACKAGE).%) 
 
+
+bin: $(BIN)
 
 
 test-proxy: lib jni

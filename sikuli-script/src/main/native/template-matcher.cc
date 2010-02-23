@@ -245,9 +245,11 @@ Match TemplateMatcher::next(){
   // this removes overlapping duplicates (for now, we added 30% padding to each dimension)
   cvMinMaxLoc( res_, 0, &detection_score, 0, &detection_loc, 0 );
 
-  for(int i=max(0,detection_loc.y-tpl_->height/3); i < min(detection_loc.y+tpl_->height*1.3, res_->height); i++) 
-    for(int j=max(0,detection_loc.x-tpl_->width/3); j < min(detection_loc.x+tpl_->width*1.3, res_->width); j++) 
-      cvSet2D(res_,i,j, cvScalar(0));
+  for(int i=max(0,(int)(detection_loc.y-tpl_->height/3.0)); 
+      i < min((int)(detection_loc.y+tpl_->height*1.3), res_->height); i++) 
+    for(int j=max(0,(int)(detection_loc.x-tpl_->width/3)); 
+        j < min((int)(detection_loc.x+tpl_->width*1.3), res_->width); j++) 
+         cvSet2D(res_,i,j, cvScalar(0));
 
   Match match(detection_loc.x,detection_loc.y,tpl_->width,tpl_->height,detection_score);          
   return match;    
@@ -261,7 +263,7 @@ Matches match_by_template(const char* screen_image_filename,
                           bool search_multiscale,
                           int x, int y, int w, int h,          
                           bool display_images,
-                          const char* output_image_filename = 0)
+                          const char* output_image_filename)
 {
 
   IplImage  *img;
