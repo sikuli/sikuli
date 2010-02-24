@@ -11,6 +11,7 @@ from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import VDictProxy
 from edu.mit.csail.uid import FindFailed
 from java.awt.event import InputEvent
+import java.io.File
 
 
 _si = SikuliScript()
@@ -170,7 +171,7 @@ class VDict(VDictProxy):
    _setBundlePath = classmethod(_setBundlePath)
 
    def _getInBundle(self, f):
-      if f[0] == '/':   return f
+      if java.io.File(f).isAbsolute(): return f
       return self._bundlePath + "/" + f
 
    ##
