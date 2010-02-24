@@ -34,6 +34,7 @@ TEST_CLASSES=$(shell cd $(TEST_PATH); find . -name \*.java | perl -ple 's!^./(.*
 TEST_CLASSPATH=$(JAR_PATH):$(CLASSPATH):$(JUNIT_JAR):$(TEST_TARGET_PATH):$(TARGET_PATH)
 TEST_JFLAGS=-sourcepath $(TEST_PATH) -d $(TEST_TARGET_PATH) -cp $(TEST_CLASSPATH)
 
+
 default: jar
 
 $(TEST_TARGET_PATH)/%.class: $(TEST_PATH)/%.java
@@ -71,6 +72,9 @@ install-doc:
 	cp -r $(DOC_PATH)/* ../../www/doc
 
 test: test-vdict test-sikuli-script
+
+test-native:
+	make -C src/test/native
 
 test-vdict-py:
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py
