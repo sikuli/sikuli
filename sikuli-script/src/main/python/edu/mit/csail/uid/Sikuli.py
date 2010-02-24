@@ -532,10 +532,11 @@ def type(*args):
 # @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
 # @return Returns 0 if nothing is pasted, otherwise returns 1.
 def paste(*args):
+   import java.lang.String
    if len(args) == 1:
-      return _si.paste(None, args[0])
+      return _si.paste(None, java.lang.String(args[0], "utf-8"))
    if len(args) == 2:
-      return _si.paste(args[0], args[1])
+      return _si.paste(args[0], java.lang.String(args[1], "utf-8"))
    return 0
 
 ##
