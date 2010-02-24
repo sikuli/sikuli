@@ -1,13 +1,15 @@
 #include "edu_mit_csail_uid_Win32Util.h"
 #include "windows.h"
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 
+const int BUF_SIZE = 128;
 
 static bool strstr_i(char const *haystack, const char *pneedle){
    int count = 0;
-   char buf[512];
+   char buf[BUF_SIZE];
    register char const *p;
    char *needle, *q, *foundto;
    if (!*pneedle) return true;
@@ -16,7 +18,7 @@ static bool strstr_i(char const *haystack, const char *pneedle){
    needle = buf;
    p = pneedle; q = needle;
    
-   while ((*q++ = tolower(*p++)) && count<512)
+   while ((*q++ = tolower(*p++)) && count<BUF_SIZE)
       count++;
    p = haystack - 1; foundto = needle;
    while (*++p) {
@@ -30,10 +32,10 @@ static bool strstr_i(char const *haystack, const char *pneedle){
 }
 
 
-const char *gAppName;
-static BOOL killWindow(HWND handle, long lParam){
-   char buf[255];
-   GetWindowText(handle, buf, 254);
+static const char *gAppName = NULL;
+static BOOL CALLBACK killWindow(HWND handle, long lParam){
+   char buf[BUF_SIZE];
+   GetWindowText(handle, buf, BUF_SIZE);
    if( strstr_i(buf, gAppName) != NULL ){
       DWORD pid;
       GetWindowThreadProcessId(handle, &pid);
@@ -45,9 +47,9 @@ static BOOL killWindow(HWND handle, long lParam){
    return TRUE;
 }
 
-static BOOL findWindow(HWND handle, long lParam){
-   char buf[255];
-   GetWindowText(handle, buf, 254);
+static BOOL CALLBACK findWindow(HWND handle, long lParam){
+   char buf[BUF_SIZE];
+   GetWindowText(handle, buf, BUF_SIZE);
    if( strstr_i(buf, gAppName) != NULL ){
       SetForegroundWindow(handle);
       return FALSE;
@@ -76,7 +78,7 @@ JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_openApp(JNIEnv *env, job
    buf[n+2] = 0;
    int result = WinExec(buf, SW_SHOWNORMAL);
    delete [] buf;
-   env->ReleaseStringUTFChars(jAppName, gAppName);
+   env->ReleaseStringUTFChars(jAppName, appName);
    if( result > 31 ) return 0;
    return -1;
 }
