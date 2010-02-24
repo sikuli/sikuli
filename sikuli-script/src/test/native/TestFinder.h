@@ -8,6 +8,8 @@
 
 class TestFinder : public CxxTest::TestSuite 
 {
+   const static bool DEBUG = false;
+
 private:
   string screen_image_path(int screen_i){
      stringstream ss;
@@ -31,26 +33,33 @@ public:
 
    void testAbove08(){ for(int i=1;i<=NUM_SCREEN;i++)   testAbove08(i); }
    void testTop(){ for(int i=1;i<=NUM_SCREEN;i++)   testTop(i); }
-   void testTop5(){ for(int i=1;i<=NUM_SCREEN;i++)   testTop5(i); }
-   void testROI_Right(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_Right(i); }
-   void testROI_Left(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_Left(i); }
-   void testROI_LowerRight(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_LowerRight(i); }
+//   void testTop5(){ for(int i=1;i<=NUM_SCREEN;i++)   testTop5(i); }
+//   void testROI_Right(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_Right(i); }
+//   void testROI_Left(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_Left(i); }
+//   void testROI_LowerRight(){ for(int i=1;i<=NUM_SCREEN;i++)   testROI_LowerRight(i); }
 
+   static const int Above08_Count[][1];
    void testAbove08(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(true);
+      f.debug(DEBUG);
       string testcase = "above-0.8";
       for (int target_i=1;target_i<=1;target_i++){
          f.find(target_image_path(screen_i,target_i).c_str(),0.8);
+         int count = 0;
          while (f.hasNext()){
             Match m;
             m = f.next();
-
+            count++;
          }
-         cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
-         f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
-         if (SHOW_DEBUG_IMAGE)
-            f.debug_show_image();
+         TS_ASSERT_EQUALS(count, Above08_Count[screen_i-1][target_i-1]);
+
+         if(DEBUG){
+            cout << "saving test result to " 
+                 << result_image_path(screen_i,target_i,testcase) << endl;
+            f.debug_save_image(
+               result_image_path(screen_i,target_i,testcase).c_str());
+            if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+         }
       }
    }
 
@@ -153,3 +162,4 @@ public:
 
 };
 
+const int TestFinder::Above08_Count[][1] = { {6}, {1}, {25}, {1}, {1} };
