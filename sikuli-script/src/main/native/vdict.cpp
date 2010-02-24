@@ -354,7 +354,7 @@ VizDict::lookup_similar_n(string filename, float similarity_threshold, int n){
 
 //===================================================================
 // VizDict test codes
-int main( int argc, char** argv ) {
+void test_vizdict( int argc, char** argv ) {
 
   int ret;
   {

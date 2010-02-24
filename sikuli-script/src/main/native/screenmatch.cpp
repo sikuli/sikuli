@@ -11,6 +11,17 @@
 #include "finder.h"
 #include "event-manager.h"
 
+
+#define SHOW_DEBUG_IMAGE 0
+
+// Finder Test Cases
+#define TOP1 1
+#define TOP5 1
+#define ABOVE_THRESHOLD 1
+#define ROI_LEFT 1
+#define ROI_RIGHT 1
+#define ROI_LOWER_RIGHT 1
+
 using namespace std;
 
 string screen_image_path(int screen_i){
@@ -44,6 +55,7 @@ void test_face_finder(){
     Match m = f.next();
     cout << "Face: " << m.x << "," << m.y << "," << m.w << "," << m.h << endl;
   }
+  
   f.debug_show_image();
 
 }
@@ -90,15 +102,41 @@ void test_sem(){
   }
 }
 
-void test_finder(){
+void test_finder(int screen_i, int target_i){
+    Finder f(screen_image_path(screen_i).c_str());
+    f.debug(true);
 
-  for (int screen_i=1; screen_i<=1; screen_i++){
+    string testcase = "single-case";   
+
+    Match m;
+    f.find(target_image_path(screen_i,target_i).c_str());
+    m = f.next();
+
+    cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
+    f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
+    if (SHOW_DEBUG_IMAGE)
+      f.debug_show_image();    
+
+}
+
+void test_finder_all(){
+
+  vector<int> screen_ids;
+  screen_ids.push_back(1);
+  screen_ids.push_back(2);
+  screen_ids.push_back(3);
+  screen_ids.push_back(4);
+  screen_ids.push_back(5);
+
+  for (int i=0; i < screen_ids.size(); i++){
+    int screen_i = screen_ids[i];
 
     Finder f(screen_image_path(screen_i).c_str());
     f.debug(true);
 
     string testcase;
-    /*
+
+#if TOP1    
     testcase = "top";
     for (int target_i=1;target_i<=4;target_i++){
 
@@ -110,12 +148,15 @@ void test_finder(){
 
     cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
     f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
-    //f.debug_show_image();
-    }
-    */
+    
+    if (SHOW_DEBUG_IMAGE)
+      f.debug_show_image();
 
+    }
+#endif  
+#if ABOVE_THRESHOLD
     testcase = "above-0.8";
-    for (int target_i=1;target_i<=4;target_i++){
+    for (int target_i=1;target_i<=1;target_i++){
 
       f.find(target_image_path(screen_i,target_i).c_str(),0.8);
 
@@ -127,26 +168,31 @@ void test_finder(){
 
       cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
       f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
-      f.debug_show_image();
+
+      if (SHOW_DEBUG_IMAGE)
+        f.debug_show_image();
+
     }
+#endif
+#if TOP5
+    testcase = "top-5";
+    for (int target_i=1;target_i<=4;target_i++){
 
-    //testcase = "top-5";
-    //for (int target_i=1;target_i<=4;target_i++){
+      f.find(target_image_path(screen_i,target_i).c_str());
 
-    //  f.find(target_image_path(screen_i,target_i).c_str());
+      for (int i=0;i<5;++i){      
+        Match m;
+        m = f.next();
+      }
 
-    //  for (int i=0;i<5;++i){      
-    //    Match m;
-    //    m = f.next();
-    //  }
-
-    //  cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
-    //  f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
-    //  f.debug_show_image();
-    //}//
-
-
-
+      cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
+      f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
+      
+      if (SHOW_DEBUG_IMAGE)
+        f.debug_show_image();
+    }
+#endif
+#if ROI_LEFT
     testcase = "roi-left-above-0.8";
     for (int target_i=1;target_i<=4;target_i++){
 
@@ -161,25 +207,51 @@ void test_finder(){
 
       cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
       f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
+
+      if (SHOW_DEBUG_IMAGE)
       f.debug_show_image();
+
     }
-    /*
-    testcase = "roi-lower-right";
+#endif
+#if ROI_RIGHT
+    testcase = "roi-right-above-0.9";
     for (int target_i=1;target_i<=4;target_i++){
+
+      Match m;
+
+      f.setROI(f.get_screen_width()/2,0,f.get_screen_width()/2,f.get_screen_height());
+      f.find(target_image_path(screen_i,target_i).c_str(),0.9);             
+
+      while (f.hasNext()){
+        f.next();   
+      }
+
+      cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
+      f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
+            
+      if (SHOW_DEBUG_IMAGE)
+        f.debug_show_image();
+    }
+#endif
+#if ROI_LOWER_RIGHT
+    testcase = "roi-lower-right";
+    for (int target_i=3;target_i<=3;target_i++){
 
     Match m;
 
     f.setROI(f.get_screen_width()/2,f.get_screen_height()/2,f.get_screen_width()/2,f.get_screen_height()/2);
     f.find(target_image_path(screen_i,target_i).c_str());             
 
-    for (int i=0; i < 5; i++)
-    m = f.next();   
+    for (int i=0; i < 5 && f.hasNext(); i++)
+      m = f.next();
 
     cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
     f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
-    //f.debug_show_image();
+    if (SHOW_DEBUG_IMAGE)
+      f.debug_show_image();
+
     }
-    */
+#endif
 
   }
 }
@@ -202,9 +274,13 @@ int main(int argc, char** argv){
 
   //while (true)
 
-  test_face_finder();
-  test_change_finder();  
-  test_sem();
-  test_finder();
+  //test_face_finder();
+  //test_change_finder();  
+  //test_sem();  
+  
+  test_finder_all();
+    
+  //test_finder(4,3);
+  
 
 }

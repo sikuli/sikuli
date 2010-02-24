@@ -11,11 +11,10 @@
 #include "finder.h"
 
 
-#define MIN_TPL_DIMENSION 12
+#define MIN_TPL_DIMENSION 24
 
 BaseFinder::BaseFinder(const char* screen_image_filename){
   // load the screen image (released in the desctrutor)
-  //img = cvLoadImage(screen_image_filename, CV_LOAD_IMAGE_COLOR );
   img = cvLoadImage(screen_image_filename);
   if( img == 0 ) {  
     cerr << "Cannot load screen image " << screen_image_filename << endl;
@@ -146,26 +145,9 @@ BaseFinder::debug_init_image(){
 Finder::Finder(const char* screen_image_filename)
 : BaseFinder(screen_image_filename){
   
-  //// load the screen image (released in the desctrutor)
-  //img = cvLoadImage( screen_image_filename, CV_LOAD_IMAGE_COLOR );
-  //if( img == 0 ) {  
-  //  cerr << "Cannot load screen image " << screen_image_filename << endl;
-  //  return;
-  //}
-
-
   tpl = 0;
   matcher = 0;
-
 }
-
-//void 
-//Finder::find(const char *template_image_filename, double min_similarity = 0.0){
-//  this->min_similarity = min_similarity;
-//
-//  find(template_image_filename);
-//}
-//
 
 void
 Finder::find(const IplImage* tpl_in){
@@ -208,23 +190,39 @@ Finder::find_helper(){
   BaseFinder::find();
 
   // compute downsample ratio
-  float downsample_ratio = 1.0*min(tpl->width,tpl->height) / MIN_TPL_DIMENSION;
-  //float downsample_ratio = 1.0;
-
-  if (matcher){
-    delete matcher;
-    matcher = 0;
-  }
-  // create a template matcher (released in the destructor)
-  matcher = new LookaheadTemplateMatcher(roi_img, tpl, downsample_ratio);
+  //float downsample_ratio = 1.0*min(tpl->width,tpl->height) / MIN_TPL_DIMENSION;  
 
   current_rank = 1;
 
-  current_match = matcher->next();
-  current_match.x = current_match.x + roi.x;
-  current_match.y = current_match.y + roi.y;
+  if (roi_img->width >= tpl->width && roi_img->height >= tpl->height){
+
+    // create a template matcher (released in the destructor)
+    if (matcher){
+      delete matcher;
+      matcher = 0;
+    }
+    float downsample_ratio = 1.0*min(tpl->width,tpl->height) / MIN_TPL_DIMENSION;
+    matcher = new LookaheadTemplateMatcher(roi_img, tpl, downsample_ratio);
+
+    
+    current_match = matcher->next();
+    if (current_match.score < 0.8){
+      delete matcher;
+      matcher = new TemplateMatcher(roi_img, tpl);
+      current_match = matcher->next();
+    }
 
 
+    current_match.x = current_match.x + roi.x;
+    current_match.y = current_match.y + roi.y;
+
+  }
+  else{
+
+    current_match.score = -1;
+
+  }
+  
   // [DEBUG] reset the debug image to the content of the input image
   debug_init_image();
 
@@ -289,16 +287,24 @@ Match
 Finder::next(){
   Match temp = current_match;
   
-  debug_draw_match(current_match, current_rank);
+  if (hasNext()){
+    debug_draw_match(current_match, current_rank);
 
-  current_match = matcher->next();
-  // convert from roi coordinate to the main coordinate
-  current_match.x = current_match.x + roi.x;
-  current_match.y = current_match.y + roi.y;
-  //current_match.rank = current_rank;
-  current_rank++;
+    // Todo: fetch next only when actually called
 
-  return temp;
+    current_match = matcher->next();
+    // convert from roi coordinate to the main coordinate
+    current_match.x = current_match.x + roi.x;
+    current_match.y = current_match.y + roi.y;
+    //current_match.rank = current_rank;
+    current_rank++;
+
+    return temp;
+  }else{
+
+      Match match;
+      match.score = -1;
+  }
 }
 
 
