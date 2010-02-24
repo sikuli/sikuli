@@ -31,7 +31,10 @@ public class Debug {
   /** Log message if the log level >= level. Uses printf. */
   public static void log(int level, String message, Object... args) {
     if (isEnabled(level)) {
-      System.out.printf("[sikuli] " + message, args);
+      if(args.length!=0)
+         System.out.printf("[sikuli] " + message, args);
+      else
+         System.out.print("[sikuli] " + message);
       System.out.println();
     }
   }

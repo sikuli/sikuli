@@ -21,7 +21,7 @@ LIB_PATH=../lib
 CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/swing-layout-1.0.1.jar
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
-JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3  
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAR=sikuli-ide.jar
@@ -45,7 +45,7 @@ CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java -and -not -regex '.*/Nat
 ifeq "$(UNAME)" "Darwin"
    SRC+=$(SOURCE_PATH)/edu/mit/csail/uid/NativeLayerForMac.java
    CLASSES+=$(CLASSES_OUT_PATH)/edu/mit/csail/uid/NativeLayerForMac.class
-   JAVA_ARGS+=-Xdock:name="Sikuli IDE"
+   JAVA_ARGS+=-Xdock:name="Sikuli IDE" 
 endif
 
 ifeq "$(UNAME)" "Linux"

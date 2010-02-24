@@ -9,7 +9,9 @@ from edu.mit.csail.uid import Pattern
 from edu.mit.csail.uid import Similar
 from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import VDictProxy
+from edu.mit.csail.uid import FindFailed
 from java.awt.event import InputEvent
+import java.io.File
 
 
 _si = SikuliScript()
@@ -169,7 +171,7 @@ class VDict(VDictProxy):
    _setBundlePath = classmethod(_setBundlePath)
 
    def _getInBundle(self, f):
-      if f[0] == '/':   return f
+      if java.io.File(f).isAbsolute(): return f
       return self._bundlePath + "/" + f
 
    ##
@@ -530,10 +532,11 @@ def type(*args):
 # @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
 # @return Returns 0 if nothing is pasted, otherwise returns 1.
 def paste(*args):
+   import java.lang.String
    if len(args) == 1:
-      return _si.paste(None, args[0])
+      return _si.paste(None, java.lang.String(args[0], "utf-8"))
    if len(args) == 2:
-      return _si.paste(args[0], args[1])
+      return _si.paste(args[0], java.lang.String(args[1], "utf-8"))
    return 0
 
 ##
@@ -560,21 +563,24 @@ def sleep(sec):
 def popup(msg):
    _si.popup(msg)
 
+##
+# Runs the given string command.
+# @param msg The given string command.
+# @return Returns the output from the executed command.
+def run(cmd):
+    return _si.run(cmd)
 
 ############### HELPER FUNCTIONS ################
 
 #def toList(jarray):
 #   return map(lambda x:x, jarray)
 
-def cmdexec(cmd):
-    return _si.cmdexec(cmd)
-	
 def search(img, host):
-  id = cmdexec('curl -F query[photo_file]=@' + img + ';type=image/png ' + host + ':3000/screenshot/remote_query')
+  id = run('curl -F query[photo_file]=@' + img + ';type=image/png ' + host + ':3000/screenshot/remote_query')
   id = id.strip()
   url = host + ':3000/pdf_book/query_result?query_id=' + id
   print url
-  cmdexec('open ' + url)
+  run('open ' + url)
 
 ############### SECRET FUNCTIONS ################
 

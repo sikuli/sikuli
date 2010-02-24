@@ -8,7 +8,7 @@ public class MacUtil implements OSUtil {
       return openApp(appName);
    }
 
-   public int openApp(String appCmd){
+   public int openApp(String appName){
       try{
          String cmd[] = {"open", "-a", appName};
          System.out.println("switchApp: " + appName);

@@ -16,8 +16,8 @@ ifeq "$(OS)" "Darwin"
 	endif
 endif
 
-CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
-LDFLAGS= $(DEBUG) $(ARCH) `pkg-config --libs opencv` 
+CXXFLAGS= -O2 -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
+LDFLAGS= -O2 $(DEBUG) $(ARCH) `pkg-config --libs opencv` 
 BIN_LDFLAGS=`pkg-config --libs opencv` 
 
 

@@ -176,13 +176,19 @@ public class SikuliScript {
    public <T> Matches find(T pat) throws IOException, AWTException, FindFailed{
       if(_waitBeforeAction!=0)
          return wait(pat, _waitBeforeAction);
-      return find_without_wait(pat);
+      else{
+         Matches match = find_without_wait(pat);
+         if(match.size() == 0 && _stopIfWaitingFailed)
+            throw new FindFailed(pat + " can't be found.");
+         return match;
+      }
    }
 
    public <T> Matches find_without_wait(T pat) throws IOException, AWTException, FindFailed{
       ScreenCapturer capturer = new ScreenCapturer();
       String screen = capturer.capture();
-      return _find(pat, screen);
+      Matches match = _find(pat, screen);
+      return match;
    }
 
    /**
@@ -200,7 +206,7 @@ public class SikuliScript {
          _robot.delay(200);
       }
       if(_stopIfWaitingFailed)
-         throw new FindFailed("Failed on waiting " + img);
+         throw new FindFailed(img + " can't be found.");
       return match;
    }
 
@@ -214,7 +220,7 @@ public class SikuliScript {
          _robot.delay(200);
       }
       if(_stopIfWaitingFailed)
-         throw new FindFailed("Failed on waiting " + img);
+         throw new FindFailed(img + " can't be found.");
       return;
    }
    
@@ -393,6 +399,7 @@ public class SikuliScript {
          _robot.waitForIdle();
       }
       if( text != null ){
+         Debug.log(1, "paste: " + text);
          Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8, 
                            Clipboard.BYTE_BUFFER, text);
          int mod = getOSHotkeyModifier();
@@ -619,10 +626,7 @@ public class SikuliScript {
 */
          for(int i=0; i < text.length(); i++){
             //boolean shift = needsShift(text.charAt(i));
-            if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
-            if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
-            if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
-            if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+            pressModifiers(modifiers);
             type_ch(text.charAt(i)); 
             /*
             if(shift) _robot.keyPress(KeyEvent.VK_SHIFT);
@@ -630,10 +634,8 @@ public class SikuliScript {
             _robot.keyRelease(bb.get(i));
             if(shift) _robot.keyRelease(KeyEvent.VK_SHIFT);
             */
-            if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
-            if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
-            if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
-            if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+            releaseModifiers(modifiers);
+            _robot.delay(20);
          }
          return 1;
       }
@@ -772,6 +774,20 @@ public class SikuliScript {
       return _click(new Matches(matches), buttons, modifiers, numClick, dblClick);
    }
 
+   private void releaseModifiers(int modifiers){
+      if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
+      if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
+      if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
+      if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+   }
+
+   private void pressModifiers(int modifiers){
+      if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
+      if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
+      if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
+      if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+   }
+
    private int _click(Matches matches, int buttons, int modifiers, 
                       int numClick, boolean dblClick) 
                                              throws IOException, AWTException{
@@ -789,8 +805,7 @@ public class SikuliScript {
          int y = _getCenterY(m);
          Debug.log("click on (" + x + "," + y + 
                    ") BTN: " + buttons + ", MOD: " + modifiers); 
-         if(modifiers!=0)
-            _robot.keyPress(modifiers);
+         pressModifiers(modifiers);
          _robot.mouseMove(x, y);
          showClick(m.x, m.y, m.w, m.h);
          _robot.mousePress(buttons);
@@ -799,8 +814,7 @@ public class SikuliScript {
             _robot.mousePress(buttons);
             _robot.mouseRelease(buttons);
          }
-         if(modifiers!=0)
-            _robot.keyRelease(modifiers);
+         releaseModifiers(modifiers);
          _robot.delay(500);
       }
       return numClick;
@@ -826,7 +840,7 @@ public class SikuliScript {
          return KeyEvent.VK_CONTROL;
    }
 	
-   public String cmdexec(String cmdline){
+   public String run(String cmdline){
       String lines="";
 
       try {
