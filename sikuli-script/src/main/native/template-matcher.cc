@@ -11,6 +11,7 @@
 #include "template-matcher.h"
 //#define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_NN
 #define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_LINEAR
+#define NUM_LOOKAHEAD 20
 
 vector<double> distances_to(CvPoint point, vector<CvPoint>& points){
   vector<double> distances;
@@ -117,8 +118,7 @@ Match verify_match(IplImage *img, IplImage *tpl, CvRect roi){
   cvMinMaxLoc( res, 0, &maxval, 0, &maxloc);
 
   Match match(roi.x+maxloc.x,roi.y+maxloc.y,tpl->width,tpl->height,maxval);
-  //Match match(maxloc.x,maxloc.y,tpl->width,tpl->height,maxval);
-
+  
   cvResetImageROI(img);
   cvReleaseImage(&res);
 
@@ -140,9 +140,21 @@ LookaheadTemplateMatcher::~LookaheadTemplateMatcher(){
 Match 
 LookaheadTemplateMatcher::next(){
   if (top_matches_.size() == 0){
-    for (int i=0;i<5;++i){
-      top_matches_.push_back(DownsampleTemplateMatcher::next());
+    for (int i=0;i<NUM_LOOKAHEAD;++i){
+      
+      Match match = DownsampleTemplateMatcher::next();
+      top_matches_.push_back(match);
+
+      // if a match is found to have high score, no need
+      // to look ahead for better matches, otheriwse
+      // continue to look for other better matches 
+      // that may be the lower ranked in the low scale
+      // space
+      if (match.score > 0.9){
+        break;
+      }
     }
+
     sort_matches(top_matches_);
   }
 
@@ -200,14 +212,13 @@ Match DownsampleTemplateMatcher::next(){
   int h = original_tpl_->height;
 
   // compute the parameter to define the neighborhood rectangle
-  int margin = 5;
+  int margin = 10*downsample_ratio_;
   int x0 = max(x-margin,0);
   int y0 = max(y-margin,0);
   int x1 = min(x+w+margin,original_img_->width);
   int y1 = min(y+h+margin,original_img_->height);
   CvRect roi = cvRect(x0,y0,x1-x0,y1-y0);
 
-  //cout << match.score << endl;
   // compute the actual template matching score within the neighborhood
   Match verified_match = verify_match(original_img_, original_tpl_, roi);
 
@@ -219,8 +230,8 @@ TemplateMatcher::TemplateMatcher(IplImage *img, IplImage *tpl){
 }
 
 TemplateMatcher::~TemplateMatcher(){
-  cvReleaseImage(&img_);
-  cvReleaseImage(&tpl_);
+ // cvReleaseImage(&img_);
+ // cvReleaseImage(&tpl_);
   cvReleaseImage(&res_);
 }
 
@@ -245,9 +256,23 @@ Match TemplateMatcher::next(){
   // this removes overlapping duplicates (for now, we added 30% padding to each dimension)
   cvMinMaxLoc( res_, 0, &detection_score, 0, &detection_loc, 0 );
 
-  for(int i=max(0,detection_loc.y-tpl_->height/3); i < min(detection_loc.y+tpl_->height*1.3, res_->height); i++) 
-    for(int j=max(0,detection_loc.x-tpl_->width/3); j < min(detection_loc.x+tpl_->width*1.3, res_->width); j++) 
-      cvSet2D(res_,i,j, cvScalar(0));
+  int xmargin = tpl_->width/3;
+  int ymargin = tpl_->height/3;
+
+  int& x = detection_loc.x;
+  int& y = detection_loc.y;
+  int& w = tpl_->width;
+  int& h = tpl_->height;
+
+  int x0 = max(x-xmargin,0);
+  int y0 = max(y-ymargin,0);
+  int x1 = min(x+w,res_->width);  // no need to blank right and bottom
+  int y1 = min(y+h,res_->height);
+
+
+  for(int i = y0 ; i < y1 ; i++) 
+    for(int j = x0 ; j < x1 ; j++)
+  cvSet2D(res_,i,j, cvScalar(0));
 
   Match match(detection_loc.x,detection_loc.y,tpl_->width,tpl_->height,detection_score);          
   return match;    
