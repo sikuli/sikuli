@@ -276,14 +276,9 @@ Match TemplateMatcher::next(){
 
 
   {
-     TimingBlock tb("TemplateMatcher::cvSet2D");
-     /*
+     //TimingBlock tb("TemplateMatcher::next():remove-overlaps");
      cvRectangle(res_, cvPoint(x0, y0), cvPoint(x1-1, y1-1), 
                        cvScalar(0), CV_FILLED);
-                       */
-     for(int i = y0 ; i < y1 ; i++) 
-        for(int j = x0 ; j < x1 ; j++)
-           cvSet2D(res_,i,j, cvScalar(0));
   }
 
   Match match(detection_loc.x,detection_loc.y,tpl_->width,tpl_->height,detection_score);          
@@ -300,6 +295,7 @@ Matches match_by_template(const char* screen_image_filename,
                           bool display_images,
                           const char* output_image_filename)
 {
+  TimingBlock tb("match_by_template()");
 
   IplImage  *img;
   IplImage  *tpl;
