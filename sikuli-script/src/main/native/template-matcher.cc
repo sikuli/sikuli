@@ -303,7 +303,7 @@ Matches match_by_template(const char* screen_image_filename,
 
   CvRect roi;
 
-  bool write_images;
+  bool write_images = false;
   if (output_image_filename){
     write_images = true;
   }

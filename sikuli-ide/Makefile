@@ -133,10 +133,10 @@ minor1-release: inc-minor1 update-ver do_release
 minor2-release: inc-minor2 update-ver do_release
 
 inc-major:
-	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/($$1+1).".$$2.$$3"/xe' latest-ver
+	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/($$1+1).".0.0"/xe' latest-ver
 
 inc-minor1:
-	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/"$$1.".($$2+1).".$$3"/xe' latest-ver
+	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/"$$1.".($$2+1).".0"/xe' latest-ver
 
 inc-minor2:
 	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/"$$1.$$2.".($$3+1)/xe' latest-ver
