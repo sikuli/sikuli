@@ -9,6 +9,8 @@
 #include <algorithm>
 
 #include "template-matcher.h"
+#include "TimingBlock.h"
+
 //#define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_NN
 #define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_LINEAR
 #define NUM_LOOKAHEAD 20
@@ -139,6 +141,7 @@ LookaheadTemplateMatcher::~LookaheadTemplateMatcher(){
 
 Match 
 LookaheadTemplateMatcher::next(){
+  TimingBlock tb("LookaheadTemplateMatcher::next()");
   if (top_matches_.size() == 0){
     for (int i=0;i<NUM_LOOKAHEAD;++i){
       
@@ -200,6 +203,7 @@ DownsampleTemplateMatcher::~DownsampleTemplateMatcher(){
 };
 
 Match DownsampleTemplateMatcher::next(){
+  TimingBlock tb("DownsampleTemplateMatcher::next()");
 
   Match match = TemplateMatcher::next();
 
@@ -248,6 +252,7 @@ TemplateMatcher::init(IplImage *img, IplImage *tpl){
 }
 
 Match TemplateMatcher::next(){
+  TimingBlock tb("TemplateMatcher::next()");
 
   CvPoint detection_loc;
   double detection_score=1.0;
@@ -270,9 +275,16 @@ Match TemplateMatcher::next(){
   int y1 = min(y+h,res_->height);
 
 
-  for(int i = y0 ; i < y1 ; i++) 
-    for(int j = x0 ; j < x1 ; j++)
-  cvSet2D(res_,i,j, cvScalar(0));
+  {
+     TimingBlock tb("TemplateMatcher::cvSet2D");
+     /*
+     cvRectangle(res_, cvPoint(x0, y0), cvPoint(x1-1, y1-1), 
+                       cvScalar(0), CV_FILLED);
+                       */
+     for(int i = y0 ; i < y1 ; i++) 
+        for(int j = x0 ; j < x1 ; j++)
+           cvSet2D(res_,i,j, cvScalar(0));
+  }
 
   Match match(detection_loc.x,detection_loc.y,tpl_->width,tpl_->height,detection_score);          
   return match;    

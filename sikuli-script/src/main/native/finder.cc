@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "finder.h"
+#include "TimingBlock.h"
 
 
 #define MIN_TPL_DIMENSION 24
@@ -45,7 +46,6 @@ BaseFinder::setROI(int x, int y, int w, int h){
 
 void
 BaseFinder::find(){
-
   // reset find specific data
   if (roi_img){
     cvReleaseImage(&roi_img);
@@ -165,6 +165,7 @@ Finder::find(const IplImage* tpl_in){
 
 void 
 Finder::find(const char *template_image_filename, double min_similarity){
+  TimingBlock tb("Finder::find()");
   this->min_similarity = min_similarity;
 
   if (tpl){
@@ -172,11 +173,14 @@ Finder::find(const char *template_image_filename, double min_similarity){
     tpl = 0;
   }
 
-  // load the target template image (released in the destrutor)
-  tpl = cvLoadImage( template_image_filename, CV_LOAD_IMAGE_COLOR );
-  if( tpl == 0 ) {  
-    cerr << "Cannot load target image " << template_image_filename << endl;
-    return;
+  {
+     TimingBlock tb("Finder::cvLoadImage()");
+     // load the target template image (released in the destrutor)
+     tpl = cvLoadImage( template_image_filename, CV_LOAD_IMAGE_COLOR );
+     if( tpl == 0 ) {  
+       cerr << "Cannot load target image " << template_image_filename << endl;
+       return;
+     }
   }
 
   find_helper();
@@ -185,6 +189,7 @@ Finder::find(const char *template_image_filename, double min_similarity){
 
 void
 Finder::find_helper(){
+  TimingBlock tb("Finder::find_helper()");
 
   // prepare the roi image
   BaseFinder::find();

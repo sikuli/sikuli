@@ -3,7 +3,7 @@ include Makefile.common
 LDFLAGS+=-ltesseract_full -ltiff 
 BIN_LDFLAGS+=-ltesseract_full -ltiff 
 
-OBJS = finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o 
+OBJS = finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o TimingBlock.o
 BIN_OBJS = $(OBJS) screenmatch.o
 BIN = screenmatch
 

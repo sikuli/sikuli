@@ -4,7 +4,7 @@ UNAME_R=$(shell uname -r)
 
 
 CXX=g++
-#DEBUG=-g -DDEBUG
+DEBUG=-O2 -DENABLE_TIMING #-g -DDEBUG
 
 ifeq "$(OS)" "Darwin"
 
@@ -16,8 +16,8 @@ ifeq "$(OS)" "Darwin"
 	endif
 endif
 
-CXXFLAGS= -O2 -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
-LDFLAGS= -O2 $(DEBUG) $(ARCH) `pkg-config --libs opencv` 
+CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` $(ARCH) $(DEBUG)
+LDFLAGS= $(DEBUG) $(ARCH) `pkg-config --libs opencv` 
 BIN_LDFLAGS=`pkg-config --libs opencv` 
 
 

@@ -4,7 +4,7 @@
 #include "finder.h"
 
 #define SHOW_DEBUG_IMAGE 0
-#define NUM_SCREEN 5
+#define NUM_SCREEN 2
 
 class TestFinder : public CxxTest::TestSuite 
 {
