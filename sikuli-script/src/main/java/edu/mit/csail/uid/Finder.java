@@ -1,10 +1,11 @@
 package edu.mit.csail.uid;
 
+import java.util.Iterator;
 import java.io.IOException;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
-public class Finder {
-   private long _instance;
+public class Finder implements Iterator<Match>{
+   private long _instance = 0;
    static {
       try{
          NativeLoader.loadLibrary("ScreenMatchProxy");
@@ -32,15 +33,30 @@ public class Finder {
    public void find(String templateFilename, double minSimilarity){
       find(_instance, templateFilename, minSimilarity);
    }
+
+   @Override
    public boolean hasNext(){
-      return hasNext(_instance);
+      if(_instance!=0)
+         return hasNext(_instance);
+      return false;
    }
+
+   @Override
    public Match next(){
-      return next(_instance);
+      if(_instance!=0)
+         return next(_instance);
+      return null;
+   }
+
+   @Override
+   public void remove(){
    }
 
    public void destroy(){  
-      destroy(_instance);  
+      if(_instance!=0){
+         destroy(_instance);  
+         _instance = 0;
+      }
    }
 
 
