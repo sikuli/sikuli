@@ -19,6 +19,10 @@ public class Finder {
       _instance = createFinder(screenFilename);
    }
 
+   protected void finalize() throws Throwable {
+      destroy();
+   }
+
    private native long createFinder(String screenFilename);
 
    public void find(String templateFilename){
@@ -35,8 +39,14 @@ public class Finder {
       return next(_instance);
    }
 
+   public void destroy(){  
+      destroy(_instance);  
+   }
+
+
    private native void find(long finder, String templateFilename, double minSimilarity);
    private native boolean hasNext(long finder);
    private native Match next(long finder);
+   private native void destroy(long finder);
 }
 

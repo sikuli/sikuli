@@ -39,6 +39,14 @@ JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_Finder_hasNext
 JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Finder_next
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     edu_mit_csail_uid_Finder
+ * Method:    destroy
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_destroy
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

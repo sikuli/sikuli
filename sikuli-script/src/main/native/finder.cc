@@ -12,7 +12,7 @@
 #include "TimingBlock.h"
 
 
-#define MIN_TPL_DIMENSION 24
+#define MIN_TPL_DIMENSION 12
 
 BaseFinder::BaseFinder(const char* screen_image_filename){
   // load the screen image (released in the desctrutor)
@@ -212,6 +212,7 @@ Finder::find_helper(){
     
     current_match = matcher->next();
     if (current_match.score < 0.8){
+      TimingBlock tb("find_helper():recreate a TemplateMatcher");
       delete matcher;
       matcher = new TemplateMatcher(roi_img, tpl);
       current_match = matcher->next();

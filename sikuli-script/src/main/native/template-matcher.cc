@@ -241,6 +241,7 @@ TemplateMatcher::~TemplateMatcher(){
 
 void
 TemplateMatcher::init(IplImage *img, IplImage *tpl){
+  TimingBlock tb("TemplateMatcher::init()");
   // create new image for template matching computation
   img_ = img;
   tpl_ = tpl;

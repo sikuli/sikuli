@@ -1,6 +1,8 @@
 #include "edu_mit_csail_uid_Finder.h"
 #include "finder.h"
 
+#include<iostream>
+
 #define CLASS_MATCH "edu/mit/csail/uid/Match"
 
 using namespace std;
@@ -66,4 +68,16 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Finder_next
    //env->SetObjectField(ret, match_parent, jscreen); 
    // FIXME: drop the parent filed
    return ret;
+}
+
+/*
+ * Class:     edu_mit_csail_uid_Finder
+ * Method:    destroy
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_destroy
+  (JNIEnv *env, jobject jobj, jlong jFinder){
+   Finder *finder = reinterpret_cast<Finder*>(jFinder);
+   delete finder;
+   cerr << "[JNI] destroy finder\n";
 }
