@@ -4,7 +4,7 @@ include Makefile.common
 
 LDFLAGS+=-ltesseract_full -ltiff 
 
-OBJS = finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o TimingBlock.o
+OBJS = FinderProxy.o finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o TimingBlock.o
 DYN_LIB = $(JNI_TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
 
 default $(DYN_LIB): $(OBJS)

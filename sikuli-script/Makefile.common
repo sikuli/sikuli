@@ -15,10 +15,14 @@ OS		= $(shell uname)
 UNAME_R		= $(shell uname -r)
 
 CXX		= g++
+JAVAC		= javac
+JAVAH		= javah
+
+JAVAC_OPTIONS	= -sourcepath $(JAVA_SOURCE_DIR) -d $(JAVA_TARGET_DIR) -cp $(CLASSPATH) 
 
 # Rule 1. Building a .class file from a .java file
 $(PACKAGE_DIR)/%.class :: $(JAVA_SOURCE_DIR)/$(PACKAGE_LOC)/%.java
-	$(JAVA_BIN)/$(JAVAC) $(JAVAC_OPTIONS) $< 
+	$(JAVAC) $(JAVAC_OPTIONS) $< 
 
 
 # Rule 2. Building a .class file from a .java file. Invokes rule 1.
@@ -27,7 +31,7 @@ $(PACKAGE_DIR)/%.class :: $(JAVA_SOURCE_DIR)/$(PACKAGE_LOC)/%.java
 
 # Rule 3. Building a JNI .h stub file from a .class file
 #$(JNI_SOURCE_DIR)/%.h : $(PACKAGE_DIR)/%.class
-#	$(JAVA_BIN)/$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE).$*
+#	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE).$*
 
 
 # Rule 4. Building a JNI .h stub file from a class file. Invokes rule 3.
@@ -38,3 +42,4 @@ _default: default
 
 $(JNI_HEADERS): $(JNI_CLASS_FILES)
 	javah -classpath $(JAVA_TARGET_DIR) $(patsubst %.java,$(PACKAGE).%,$(JNI_SOURCE))
+	
