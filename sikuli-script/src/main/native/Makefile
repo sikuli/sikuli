@@ -1,51 +1,21 @@
+OUTPUT_LIB_NAMES=libScreenMatchProxy libVDictProxy
+
+#############################################################
 include Makefile.common
 
-LDFLAGS+=-ltesseract_full -ltiff 
-BIN_LDFLAGS+=-ltesseract_full -ltiff 
+DEV_ROOT=../../..
+include ../java/Makefile
 
-OBJS = finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o TimingBlock.o
-BIN_OBJS = $(OBJS) screenmatch.o
-BIN = screenmatch
+OUTPUT_LIBS=$(OUTPUT_LIB_NAMES:%=$(JNI_TARGET_DIR)/%.$(DYN_LIB_POSTFIX))
 
-DYN_LIB = $(TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
+default: lib
 
-JAVA_SRC=ScreenMatchProxy.java
+jni: $(JNI_HEADERS) 
 
-TEST_PROXY_SRC=TestScreenMatchProxy.java
-TEST_SRC=TestSikuliScript.java
+lib: $(OUTPUT_LIBS)
 
-default: lib vdict
-
-vdict:
-	make -f Makefile.vdict
-
-$(DYN_LIB): $(OBJS)
-	mkdir -p $(TARGET_DIR)
-	$(CXX) $(OBJS) -o $(DYN_LIB) $(LDFLAGS) 
-
-exe: $(BIN)
-
-$(BIN): $(BIN_OBJS) 
-	$(CXX) $(BIN_OBJS) -o $(BIN) $(BIN_LDFLAGS) 
-
-lib: $(DYN_LIB)
-
-jni:
-	javac -sourcepath ../java -d $(CLASSES_TARGET_PATH) -cp $(CLASSPATH) `find ../java -name \*.java`
-	javah -classpath $(CLASSES_TARGET_PATH) $(JAVA_SRC:%.java=$(PACKAGE).%) 
-
-
-bin: $(BIN)
-
-
-test-proxy: lib jni
-	java -cp .:$(CLASSPATH) $(TEST_PROXY_SRC:%.java=$(PACKAGE).%) ../testimages/desktop.jpg ../testimages/word.jpg
-
-test-ocr: lib jni
-	java -cp .:$(CLASSPATH) $(TEST_PROXY_SRC:%.java=$(PACKAGE).%) testimages/mac-desktop.png "System Preferences"
-
-test: lib jni
-	java -Dsikuli.Debug=9 -cp .:$(CLASSPATH) $(TEST_SRC:%.java=$(PACKAGE).%) 
+$(JNI_TARGET_DIR)/%.$(DYN_LIB_POSTFIX):
+	$(MAKE) -f Makefile.$(basename $(notdir $@))
 
 clean:
-	rm -f $(BIN_OBJS) $(OBJS) $(DYN_LIB) $(BIN)
+	rm -f $(OUTPUT_LIBS) *.o

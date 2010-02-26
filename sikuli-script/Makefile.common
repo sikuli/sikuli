@@ -1,0 +1,40 @@
+DEV_ROOT	?= .
+JAVA_SOURCE_DIR = $(DEV_ROOT)/src/main/java
+JNI_SOURCE_DIR  = $(DEV_ROOT)/src/main/native
+JAVA_TARGET_DIR = $(DEV_ROOT)/target/classes
+JNI_TARGET_DIR  = $(DEV_ROOT)/target/lib
+PACKAGE_LOC     = $(subst .,/,$(PACKAGE))
+PACKAGE_DIR     = $(JAVA_TARGET_DIR)/$(PACKAGE_LOC)
+JAVA_FILES      = $(filter  %.java,$(SOURCE))
+CLASS_FILES     = $(JAVA_FILES:%.java=$(PACKAGE_DIR)/%.class)
+JNI_CLASS_FILES = $(JNI_SOURCE:%.java=$(PACKAGE_DIR)/%.class)
+JNI_PREFIX	= $(subst .,_,$(PACKAGE))_
+JNI_HEADERS     = $(JNI_SOURCE:%.java=$(JNI_PREFIX)%.h)
+
+OS		= $(shell uname)
+UNAME_R		= $(shell uname -r)
+
+CXX		= g++
+
+# Rule 1. Building a .class file from a .java file
+$(PACKAGE_DIR)/%.class :: $(JAVA_SOURCE_DIR)/$(PACKAGE_LOC)/%.java
+	$(JAVA_BIN)/$(JAVAC) $(JAVAC_OPTIONS) $< 
+
+
+# Rule 2. Building a .class file from a .java file. Invokes rule 1.
+%.class : $(JAVA_SOURCE_DIR)/$(PACKAGE_LOC)/%.java
+	$(MAKE) -k $(PACKAGE_DIR)/$@
+
+# Rule 3. Building a JNI .h stub file from a .class file
+#$(JNI_SOURCE_DIR)/%.h : $(PACKAGE_DIR)/%.class
+#	$(JAVA_BIN)/$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE).$*
+
+
+# Rule 4. Building a JNI .h stub file from a class file. Invokes rule 3.
+#%.h : $(subst $(JNI_PREFIX),,%.class)
+#	$(MAKE) -k $(JNI_SOURCE_DIR)/$@
+
+_default: default
+
+$(JNI_HEADERS): $(JNI_CLASS_FILES)
+	javah -classpath $(JAVA_TARGET_DIR) $(patsubst %.java,$(PACKAGE).%,$(JNI_SOURCE))
