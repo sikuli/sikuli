@@ -40,9 +40,15 @@ public class Region {
       else
          f.find((String)ptn);
       if(f.hasNext())
-         ret = f.next();
+         ret = toGlobalCord(f.next());
       f.destroy();
       return ret;
+   }
+
+   protected Match toGlobalCord(Match m){
+      m.x += x;
+      m.y += y;
+      return m;
    }
 
    private ScreenCapturer getCapturer() throws AWTException{

@@ -33,10 +33,10 @@ public class SikuliScriptTest
     public void testRegion() throws Exception
     {
       Screen scr = new Screen();
-      Region region = new Region(0,0,200,200);
       Match ret = scr.find("test-res/apple.png");
       assertEquals(ret.x,16);
       assertEquals(ret.y,0);
+      Region region = new Region(10,0,200,200);
       ret = region.find("test-res/apple.png");
       assertEquals(ret.x,16);
       assertEquals(ret.y,0);
