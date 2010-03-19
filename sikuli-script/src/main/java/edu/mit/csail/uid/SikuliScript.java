@@ -75,10 +75,12 @@ public class SikuliScript {
       return file;
    }
 
-   public String captureScreen(int x, int y, int w, int h) 
+   // FIXME: change from String to ScreenImage
+   // should we expose ScreenImage to users?
+   public ScreenImage captureScreen(int x, int y, int w, int h) 
                                           throws AWTException, IOException{
       ScreenCapturer capturer = new ScreenCapturer();
-      String screen = capturer.capture(x,y,w,h);
+      ScreenImage screen = capturer.capture(x,y,w,h);
       return screen;
    }
 
@@ -116,8 +118,8 @@ public class SikuliScript {
 
    public <T> Matches find_without_wait(T pat) throws IOException, AWTException, FindFailed{
       ScreenCapturer capturer = new ScreenCapturer();
-      String screen = capturer.capture();
-      Matches match = _find(pat, screen);
+      ScreenImage screen = capturer.capture();
+      Matches match = _find(pat, screen.getFilename());
       return match;
    }
 

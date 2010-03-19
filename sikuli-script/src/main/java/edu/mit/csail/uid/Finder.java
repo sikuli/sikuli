@@ -1,5 +1,6 @@
 package edu.mit.csail.uid;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.io.IOException;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
@@ -20,11 +21,17 @@ public class Finder implements Iterator<Match>{
       _instance = createFinder(screenFilename);
    }
 
+   public Finder(ScreenImage img){
+      byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
+      _instance = createFinder(data, img.w, img.h);
+   }
+
    protected void finalize() throws Throwable {
       destroy();
    }
 
    private native long createFinder(String screenFilename);
+   private native long createFinder(byte[] screenImage, int w, int h);
 
    public void find(String templateFilename){
       find(templateFilename, 0.0);
@@ -61,6 +68,7 @@ public class Finder implements Iterator<Match>{
 
 
    private native void find(long finder, String templateFilename, double minSimilarity);
+   private native void find(long finder, byte[] templateImage, int w, int h, double minSimilarity);
    private native boolean hasNext(long finder);
    private native Match next(long finder);
    private native void destroy(long finder);

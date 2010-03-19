@@ -12,24 +12,41 @@ public class ScreenCapturer implements Observer{
    Robot _robot;
    BufferedImage _screen;
    File _tmp;
+   Rectangle _roi = null;
 
    static Rectangle fullscreen = new Rectangle(
          Toolkit.getDefaultToolkit().getScreenSize() );
+
+   public ScreenCapturer(int x, int y, int w, int h) throws AWTException{ 
+      //FIXME: get screen device according to x,y,w,h
+      _robot = new Robot();
+      _robot.setAutoDelay(100);
+      _roi = new Rectangle(x, y, w, h);
+   }
 
    public ScreenCapturer() throws AWTException{ 
       _robot = new Robot();
       _robot.setAutoDelay(100);
    }
 
-   public String capture(int x, int y, int w, int h) throws IOException{
+   public ScreenImage capture() {
+      if(_roi!=null)
+         return capture(_roi);
+      return capture(fullscreen);
+   }
+
+   public ScreenImage capture(int x, int y, int w, int h) {
       Rectangle rect = new Rectangle(x,y,w,h);
       return capture(rect);
    }
 
-   public String capture() throws IOException{
-      return capture(fullscreen);
+   public ScreenImage capture(Rectangle rect) {
+      Debug.log(1, "capture: " + rect);
+      BufferedImage img = _robot.createScreenCapture(rect);
+      return new ScreenImage(rect, img);
    }
 
+   /*
    public String capture(Rectangle rect) throws IOException{
       System.out.println( "capture: " + rect );
       _screen = _robot.createScreenCapture(rect);
@@ -38,6 +55,7 @@ public class ScreenCapturer implements Observer{
       ImageIO.write(_screen, "png", _tmp);
       return _tmp.getAbsolutePath();
    }
+   */
 
    protected void finalize() throws Throwable {
       _tmp.delete();

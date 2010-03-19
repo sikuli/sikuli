@@ -11,6 +11,7 @@ class BaseFinder{
 
 public:
 
+  BaseFinder(const IplImage* screen_image);
   BaseFinder(const char* screen_image_filename);
   ~BaseFinder();
 
@@ -46,11 +47,12 @@ class Finder : public BaseFinder{
 
 public:
 
+  Finder(const IplImage* screen_image);
   Finder(const char* screen_image_filename);
   ~Finder();
   
 
-  void find(const IplImage* tpl);  
+  void find(const IplImage* tpl, double min_similarity = 0.0);
   void find(const char *template_image_filename, double min_similarity = 0.0);  
 
   bool hasNext();

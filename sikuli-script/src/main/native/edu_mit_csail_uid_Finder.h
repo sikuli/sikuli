@@ -12,16 +12,32 @@ extern "C" {
  * Method:    createFinder
  * Signature: (Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Finder_createFinder
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Finder_createFinder__Ljava_lang_String_2
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     edu_mit_csail_uid_Finder
+ * Method:    createFinder
+ * Signature: ([BII)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Finder_createFinder___3BII
+  (JNIEnv *, jobject, jbyteArray, jint, jint);
 
 /*
  * Class:     edu_mit_csail_uid_Finder
  * Method:    find
  * Signature: (JLjava/lang/String;D)V
  */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_find
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_find__JLjava_lang_String_2D
   (JNIEnv *, jobject, jlong, jstring, jdouble);
+
+/*
+ * Class:     edu_mit_csail_uid_Finder
+ * Method:    find
+ * Signature: (J[BIID)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_find__J_3BIID
+  (JNIEnv *, jobject, jlong, jbyteArray, jint, jint, jdouble);
 
 /*
  * Class:     edu_mit_csail_uid_Finder

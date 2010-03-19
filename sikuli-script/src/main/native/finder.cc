@@ -30,6 +30,20 @@ BaseFinder::BaseFinder(const char* screen_image_filename){
   debug_img = 0;
 }
 
+BaseFinder::BaseFinder(const IplImage *screen_image){
+  img = cvCreateImage(cvGetSize(screen_image),
+                      screen_image->depth,screen_image->nChannels);
+  cvCopy(screen_image, img);  
+
+  // roi default to the entire image
+  roi = cvRect(0,0,img->width,img->height);
+  roi_img = 0;
+
+  is_debug = false;
+  debug_img = 0;
+}
+
+
 BaseFinder::~BaseFinder(){
   if (img)
     cvReleaseImage(&img);
@@ -144,13 +158,20 @@ BaseFinder::debug_init_image(){
 //=======================================================================================
 Finder::Finder(const char* screen_image_filename)
 : BaseFinder(screen_image_filename){
-  
+  tpl = 0;
+  matcher = 0;
+}
+
+Finder::Finder(const IplImage* screen_image)
+: BaseFinder(screen_image){
   tpl = 0;
   matcher = 0;
 }
 
 void
-Finder::find(const IplImage* tpl_in){
+Finder::find(const IplImage* tpl_in, double min_similarity){
+  TimingBlock tb("Finder::find()");
+  this->min_similarity = min_similarity;
 
   if (tpl){    
     cvReleaseImage(&tpl);

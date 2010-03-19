@@ -29,6 +29,19 @@ public class SikuliScriptTest
         return new TestSuite( SikuliScriptTest.class );
     }
 
+    // assume the tester is on a mac
+    public void testRegion() throws Exception
+    {
+      Screen scr = new Screen();
+      Region region = new Region(0,0,200,200);
+      Match ret = scr.find("test-res/apple.png");
+      assertEquals(ret.x,16);
+      assertEquals(ret.y,0);
+      ret = region.find("test-res/apple.png");
+      assertEquals(ret.x,16);
+      assertEquals(ret.y,0);
+    }
+
     /**
      * Rigourous Test :-)
      */
@@ -40,7 +53,7 @@ public class SikuliScriptTest
        assertTrue(ret>0);
     }
 
-    public void testPaste() throws Exception
+    public void _testPaste() throws Exception
     {
        SikuliScript script = new SikuliScript();
        script.switchApp("TextEdit.app");

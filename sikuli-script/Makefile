@@ -84,7 +84,7 @@ test-vdict: vdict $(TEST_CLASSES)
 	rm -rf tmplib
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.VDictTest
 
-test-sikuli-script: $(TEST_CLASSES)
+test-sikuli-script: $(TEST_TARGET_PATH) $(TEST_CLASSES) 
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.SikuliScriptTest
 
 vdict:
