@@ -145,10 +145,31 @@ public class Region {
       return null;
    }
 
-   public <PSRL> int click(PSRL target, int modifiers) 
+   public <PSRML> int click(PSRML target, int modifiers) 
                                                 throws AWTException, FindFailed{
-      Location loc = getLocationFromPSRL(target);
+      Location loc = getLocationFromPSRML(target);
       return _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
+   }
+
+   public <PSRML> int doubleClick(PSRML target, int modifiers) 
+                                                throws AWTException, FindFailed{
+      Location loc = getLocationFromPSRML(target);
+      return _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
+   }
+
+   public <PSRML> int rightClick(PSRML target, int modifiers) 
+                                                throws AWTException, FindFailed{
+      Location loc = getLocationFromPSRML(target);
+      return _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
+   }
+
+   public <PSRML> int hover(PSRML target) throws AWTException, FindFailed{
+      Location loc = getLocationFromPSRML(target);
+      if( loc != null){
+         _robot.mouseMove(loc.x, loc.y);
+         return 1;
+      }
+      return 0;
    }
 
    ////////////////////////////////////////////////////////////////
@@ -160,7 +181,7 @@ public class Region {
    static final int K_META = InputEvent.META_MASK;
    static final int K_ALT = InputEvent.ALT_MASK;
 
-   private <PSRL> Location getLocationFromPSRL(PSRL target) 
+   private <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws AWTException, FindFailed {
       if(target instanceof Pattern || target instanceof String){
          Match m = find(target);
