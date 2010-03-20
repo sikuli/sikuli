@@ -34,7 +34,7 @@ public class Finder implements Iterator<Match>{
    private native long createFinder(byte[] screenImage, int w, int h);
 
    public void find(String templateFilename){
-      find(templateFilename, 0.0);
+      find(templateFilename, Settings.MinSimilarity);
    }
 
    public void find(String templateFilename, double minSimilarity){

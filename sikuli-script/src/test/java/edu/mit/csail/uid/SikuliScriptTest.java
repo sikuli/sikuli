@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.awt.event.InputEvent;
+import java.util.Date;
+
 /**
  * Unit test for simple SikuliScript.
  */
@@ -30,7 +32,7 @@ public class SikuliScriptTest
     }
 
     // assume the tester is on a mac
-    public void _testRegion() throws Exception
+    public void testRegion() throws Exception
     {
       Screen scr = new Screen();
       Match ret = scr.find("test-res/apple.png");
@@ -58,6 +60,31 @@ public class SikuliScriptTest
       Pattern ptn = new Pattern("test-res/apple.png").targetOffset(30,-2);
       int ret = scr.click(ptn, 0);
       assertTrue(ret==1);
+    }
+
+    public void testRegionFind() throws Exception
+    {
+      Screen scr = new Screen();
+      scr.setAutoWaitTimeout(2);
+      scr.setThrowException(true);
+      long begin = (new Date()).getTime();
+      boolean gotFindFailed = false;
+      try{
+         scr.find("test-res/google.png");
+      }
+      catch(FindFailed e){
+         gotFindFailed = true;
+      }
+      long end = (new Date()).getTime();
+      assertTrue(gotFindFailed);
+      assertTrue(end-begin >= 2000);
+
+      scr.setAutoWaitTimeout(0);
+      scr.setThrowException(false);
+      begin = (new Date()).getTime();
+      scr.find("test-res/google.png");
+      end = (new Date()).getTime();
+      assertTrue(end-begin < 2000);
     }
 
     /**

@@ -15,6 +15,9 @@ public class Region {
    public int x, y, w, h;
    public Rectangle ROI;
 
+   private boolean _stopIfWaitingFailed = true;
+   private double _waitBeforeAction = 3.0;
+
    private Location _center;
 
    public Region(int x_, int y_, int w_, int h_) throws AWTException{
@@ -61,12 +64,38 @@ public class Region {
 
    public Location getCenter(){ return _center; }
 
+   //////////// Settings
+   public void setThrowException(boolean flag){ _stopIfWaitingFailed = flag; } 
+   public void setAutoWaitTimeout(double sec){ _waitBeforeAction = sec; }
+
+   public boolean getThrowException(){ return _stopIfWaitingFailed; }
+   public double getAutoWaitTimeout(){ return _waitBeforeAction; }
+
+
+   ////////////
 
    /**
     * Match find( Pattern/String/PatternClass ) 
     * finds the given pattern on the screen and returns the best match.
+    * If AutoWaitTimeout is set, this is equivalent to wait().
     */
    public <T> Match find(T ptn) throws AWTException, FindFailed{
+      if(_waitBeforeAction > 0)
+         return wait(ptn, _waitBeforeAction);
+      else{
+         Match match = findNow(ptn);
+         if(match == null && _stopIfWaitingFailed)
+            throw new FindFailed(ptn + " can't be found.");
+         return match;
+      }
+   }
+
+   /**
+    * Match findNow( Pattern/String/PatternClass ) 
+    * finds the given pattern on the screen and returns the best match 
+    * without waiting.
+    */
+   public <T> Match findNow(T ptn) throws AWTException, FindFailed{
       ScreenImage simg = getCapturer().capture();
       Finder f = new Finder(simg);
       Match ret = null;
@@ -80,15 +109,40 @@ public class Region {
       else{
          throw new FindFailed("doesn't support the type of target: " + ptn);
       }
-      if(f.hasNext())
+      if(f.hasNext()){
          ret = toGlobalCoord(f.next());
-      if( ptn instanceof Pattern ){
-         Location c = ret.getCenter();
-         Location offset = ((Pattern)ptn).getTargetOffset();
-         ret.setTargetOffset(offset);
+         if( ptn instanceof Pattern ){
+            Location c = ret.getCenter();
+            Location offset = ((Pattern)ptn).getTargetOffset();
+            ret.setTargetOffset(offset);
+         }
       }
       f.destroy();
       return ret;
+   }
+
+   /**
+    *  Match wait(Pattern/String/PatternClass target, timeout-sec)
+    *  waits until target appears or timeout (in second) is passed
+    */
+   public <T> Match wait(T target, double timeout) 
+                                             throws AWTException, FindFailed{
+      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+      long begin_t = (new Date()).getTime();
+      while( begin_t + timeout*1000 > (new Date()).getTime() ){
+         long before_find = (new Date()).getTime();
+         Match match = findNow(target);
+         if(match != null)
+            return match;
+         long after_find = (new Date()).getTime();
+         if(after_find-before_find<MaxTimePerScan)
+            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+         else
+            _robot.delay(10);
+      }
+      if(_stopIfWaitingFailed)
+         throw new FindFailed(target + " can't be found.");
+      return null;
    }
 
    public <PSRL> int click(PSRL target, int modifiers) 
