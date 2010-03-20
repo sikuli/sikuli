@@ -51,6 +51,15 @@ public class SikuliScriptTest
       assertTrue(ret==1);
     }
 
+    // assume the tester is on a mac
+    public void testRegionClickOffset() throws Exception
+    {
+      Screen scr = new Screen();
+      Pattern ptn = new Pattern("test-res/apple.png").targetOffset(30,-2);
+      int ret = scr.click(ptn, 0);
+      assertTrue(ret==1);
+    }
+
     /**
      * Rigourous Test :-)
      */
