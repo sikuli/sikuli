@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 
 import java.awt.event.InputEvent;
 import java.util.Date;
+import javax.swing.*;
 
 /**
  * Unit test for simple SikuliScript.
@@ -32,7 +33,7 @@ public class SikuliScriptTest
     }
 
     // assume the tester is on a mac
-    public void testRegion() throws Exception
+    public void _testRegion() throws Exception
     {
       Screen scr = new Screen();
       Match ret = scr.find("test-res/apple.png");
@@ -46,7 +47,7 @@ public class SikuliScriptTest
 
 
     // assume the tester is on a mac
-    public void testRegionClick() throws Exception
+    public void _testRegionClick() throws Exception
     {
       Screen scr = new Screen();
       int ret = scr.click("test-res/apple.png", 0);
@@ -54,12 +55,21 @@ public class SikuliScriptTest
     }
 
     // assume the tester is on a mac
-    public void testRegionClickOffset() throws Exception
+    public void _testRegionClickOffset() throws Exception
     {
       Screen scr = new Screen();
       Pattern ptn = new Pattern("test-res/apple.png").targetOffset(30,-2);
       int ret = scr.click(ptn, 0);
       assertTrue(ret==1);
+    }
+
+    public void testDragDrop() throws Exception {
+        JFrame frame = DragListDemo.createAndShowGUI();
+        Screen scr = new Screen();
+        scr.wait("test-res/item1-list2.png", 3);
+        scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",1.0,1.0);
+        assertNotNull(scr.wait("test-res/draglist-result.png",3));
+        frame.dispose();
     }
 
     public void testRegionFind() throws Exception
@@ -86,6 +96,7 @@ public class SikuliScriptTest
       end = (new Date()).getTime();
       assertTrue(end-begin < 2000);
     }
+
 
     /**
      * Rigourous Test :-)

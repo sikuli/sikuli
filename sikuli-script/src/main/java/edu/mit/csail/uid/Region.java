@@ -172,6 +172,36 @@ public class Region {
       return 0;
    }
 
+   public <PSRML> int dragDrop(PSRML t1, PSRML t2, double delay1, double delay2)
+                                             throws AWTException, FindFailed {
+      if(drag(t1)!=0){
+         _robot.delay((int)(delay1*1000));
+         return dropAt(t2, delay2);
+      }
+      return 0;
+   }
+
+   public <PSRML> int drag(PSRML target) throws AWTException, FindFailed{
+      Location loc = getLocationFromPSRML(target);
+      if(loc != null){
+         _robot.mouseMove(loc.x, loc.y);
+         _robot.mousePress(InputEvent.BUTTON1_MASK);
+         return 1;
+      }
+      return 0;
+   }
+
+   public <PSRML> int dropAt(PSRML target, double delay) throws AWTException, FindFailed{
+      Location loc = getLocationFromPSRML(target);
+      if(loc != null){
+         _robot.mouseMove(loc.x, loc.y);
+         _robot.delay((int)(delay*1000));
+         _robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         return 1;
+      }
+      return 0;
+   }
+
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS
    ////////////////////////////////////////////////////////////////
