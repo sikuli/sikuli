@@ -30,7 +30,7 @@ public class SikuliScriptTest
     }
 
     // assume the tester is on a mac
-    public void testRegion() throws Exception
+    public void _testRegion() throws Exception
     {
       Screen scr = new Screen();
       Match ret = scr.find("test-res/apple.png");
@@ -40,6 +40,15 @@ public class SikuliScriptTest
       ret = region.find("test-res/apple.png");
       assertEquals(ret.x,16);
       assertEquals(ret.y,0);
+    }
+
+
+    // assume the tester is on a mac
+    public void testRegionClick() throws Exception
+    {
+      Screen scr = new Screen();
+      int ret = scr.click("test-res/apple.png", 0);
+      assertTrue(ret==1);
     }
 
     /**

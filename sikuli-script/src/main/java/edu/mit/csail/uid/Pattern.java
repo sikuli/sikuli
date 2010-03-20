@@ -6,6 +6,8 @@ public class Pattern {
    protected float similarity = 0.7f;
    protected int numMatches = 10;
 
+   int dx=0, dy=0;
+
    public Pattern(){ }
    public Pattern(String imgURL_){
       imgURL = imgURL_;
@@ -21,16 +23,28 @@ public class Pattern {
       return this;
    }
 
+   public Pattern targetOffset(int dx_, int dy_){
+      dx = dx_;
+      dy = dy_;
+      return this;
+   }
+
+   /*
    public Pattern firstN(int numMatches_){
       numMatches = numMatches_;
       return this;
    }
+   */
 
    public String toString(){
      String ret = "Pattern(\"" + imgURL + "\")";
      ret += ".similar(" + similarity +")";
      ret += ".firstN(" + numMatches + ")";
      return ret;
+   }
+
+   Location getTargetOffset(){
+      return new Location(dx, dy);
    }
 
 }

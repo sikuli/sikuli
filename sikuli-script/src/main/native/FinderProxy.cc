@@ -124,19 +124,13 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Finder_next
    Match m = finder->next();
    jclass jClassMatch = env->FindClass(CLASS_MATCH);
    jobject ret = env->AllocObject(jClassMatch);
-   jfieldID match_x = env->GetFieldID(jClassMatch, "x", "I");
-   jfieldID match_y = env->GetFieldID(jClassMatch, "y", "I");
-   jfieldID match_w = env->GetFieldID(jClassMatch, "w", "I");
-   jfieldID match_h = env->GetFieldID(jClassMatch, "h", "I");
+
    jfieldID match_score = env->GetFieldID(jClassMatch, "score", "D");
-   //jfieldID match_parent = env->GetFieldID(jClassMatch, "parent", "Ljava/lang/String;");
-   env->SetIntField(ret, match_x, m.x);
-   env->SetIntField(ret, match_y, m.y);
-   env->SetIntField(ret, match_w, m.w);
-   env->SetIntField(ret, match_h, m.h);
    env->SetDoubleField(ret, match_score, m.score);
-   //env->SetObjectField(ret, match_parent, jscreen); 
-   // FIXME: drop the parent filed
+   jmethodID initMethod = env->GetMethodID(jClassMatch, "init", "(IIII)V");
+   if(initMethod!=NULL)
+      env->CallVoidMethod(ret, initMethod, m.x, m.y, m.w, m.h);
+
    return ret;
 }
 
