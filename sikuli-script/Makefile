@@ -2,12 +2,14 @@ JAVAC=javac
 PYTHON_DOC=pythondoc.py
 PYTHON_DOC_FLAGS=-Dstyle=css/pydoc.css -p python.edu.mit.csail.uid
 
-LIB_PATH=$(shell pwd)/../lib
-CLASSPATH=$(INCLUDE_LIB_PATH):../lib/jython-2.2.1.jar
-
 JAR=sikuli-script.jar
+JYTHON_JAR=$(LIB_PATH)/jython-2.5.1.jar
+JYTHON_LIB=$(LIB_PATH)/jython-lib-2.5.1.zip
 JYTHON_CLASS=org.python.util.jython
 JYTHON_SRC_CLASS=python/edu/mit/csail/uid/
+
+LIB_PATH=$(shell pwd)/../lib
+CLASSPATH=$(INCLUDE_LIB_PATH):$(JYTHON_JAR)
 
 DOC_PATH=doc/
 SOURCE_PATH=src/main/java
@@ -108,11 +110,11 @@ prepare-jar: $(JAR_PATH) native-loader
 	cp -rf $(NATIVE_TARGET_PATH) $(JAR_PATH)/META-INF
 	cp -RLf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) # Linux -rLf
 	@echo Including jython-*.jar ...
-	cd $(JAR_PATH); jar xf $(LIB_PATH)/jython-*.jar 
+	cd $(JAR_PATH); jar xf $(JYTHON_JAR)
 	mkdir -p $(JAR_PATH)/Lib
 	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
 	@echo Including jython libs
-	cd $(JAR_PATH)/Lib; unzip -n $(LIB_PATH)/jython-lib.zip
+	cd $(JAR_PATH)/Lib; unzip -nq $(JYTHON_LIB)
 	
 jar: all prepare-jar
 	@echo Creating JAR..
