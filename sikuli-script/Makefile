@@ -1,12 +1,12 @@
 JAVAC=javac
 PYTHON_DOC=pythondoc.py
-PYTHON_DOC_FLAGS=-Dstyle=css/pydoc.css -p python.edu.mit.csail.uid
+PYTHON_DOC_FLAGS=-Dstyle=css/pydoc.css -p sikuli
 
 JAR=sikuli-script.jar
 JYTHON_JAR=$(LIB_PATH)/jython-2.5.1.jar
 JYTHON_LIB=$(LIB_PATH)/jython-lib-2.5.1.zip
 JYTHON_CLASS=org.python.util.jython
-JYTHON_SRC_CLASS=python/edu/mit/csail/uid/
+JYTHON_SRC_CLASS=sikuli/
 
 LIB_PATH=$(shell pwd)/../lib
 CLASSPATH=$(INCLUDE_LIB_PATH):$(JYTHON_JAR)
@@ -16,7 +16,7 @@ SOURCE_PATH=src/main/java
 TARGET_PATH=target/classes
 NATIVE_SRC_PATH=src/main/native
 NATIVE_TARGET_PATH=target/lib
-JYTHON_SRC_PATH=src/main/python
+JYTHON_SRC_PATH=src/main/python/sikuli
 TEST_PATH=src/test/java
 TEST_TARGET_PATH=target/test-classes
 INCLUDE_LIB_PATH=lib

@@ -4,6 +4,8 @@
 ##
 import time
 from edu.mit.csail.uid import SikuliScript
+from edu.mit.csail.uid import Region
+from edu.mit.csail.uid import Screen
 from edu.mit.csail.uid import Match
 from edu.mit.csail.uid import Pattern
 from edu.mit.csail.uid import Similar
