@@ -73,10 +73,16 @@ python-doc:
 install-doc:
 	cp -r $(DOC_PATH)/* ../../www/doc
 
-test: test-vdict test-sikuli-script
+update-python:
+	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
+
+test: test-python test-vdict test-sikuli-script
 
 test-native:
 	make -C src/test/native
+
+test-python: update-python
+	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-sikuli.py
 
 test-vdict-py:
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py

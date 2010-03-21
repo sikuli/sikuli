@@ -4,8 +4,8 @@
 ##
 import time
 from edu.mit.csail.uid import SikuliScript
-from edu.mit.csail.uid import Region
-from edu.mit.csail.uid import Screen
+from edu.mit.csail.uid import Region as JRegion
+from edu.mit.csail.uid import Screen as JScreen
 from edu.mit.csail.uid import Match
 from edu.mit.csail.uid import Pattern
 from edu.mit.csail.uid import Similar
@@ -14,6 +14,32 @@ from edu.mit.csail.uid import VDictProxy
 from edu.mit.csail.uid import FindFailed
 from java.awt.event import InputEvent
 import java.io.File
+
+
+class Region(JRegion):
+   def wait(self, target, timeout=3):
+      return JRegion.wait(self, target, timeout)
+
+class Screen(Region):
+   def __init__(self, id=None):
+      if id != None:
+         r = JScreen.getBounds(id)
+      else:
+         r = self.getBounds()
+      (x, y, w, h) = (int(r.getX()), int(r.getY()), \
+                      int(r.getWidth()), int(r.getHeight()))
+      JRegion.__init__(self, x, y, w, h)
+
+   @classmethod
+   def getNumberScreens(cls):
+      return JScreen.getNumberScreens()
+
+   @classmethod
+   def getBounds(cls, screen_id):
+      return JScreen.getBounds(screen_id)
+
+   def getBounds(self):
+      return JScreen().getBounds()
 
 
 _si = SikuliScript()
