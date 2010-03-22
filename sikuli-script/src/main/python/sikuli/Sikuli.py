@@ -13,11 +13,34 @@ from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import VDictProxy
 from edu.mit.csail.uid import FindFailed
 from java.awt.event import InputEvent
+import functools
 import java.io.File
+import __builtin__
+import types
+import inspect
+import __main__
 
+
+#todo: expose Screen's methods to __main__ at first
 
 class Region(JRegion):
+   # override all global sikuli functions by Region's methods.
+   def __enter__(self):
+      for name in dir(self):
+         if inspect.ismethod(getattr(self,name)) and __main__.__dict__.has_key(name):
+            __main__.__dict__["__old_"+name] = __main__.__dict__[name]
+            __main__.__dict__[name] = eval("self."+name)
+
+   def __exit__(self, type, value, traceback):
+      for name in dir(__main__):
+         if name[0:6] == "__old_":
+            orig_name = name[6:]
+            __main__.__dict__[orig_name] = __main__.__dict__[name]
+            del __main__.__dict__[name]
+
+
    def wait(self, target, timeout=3):
+      print self, target, timeout
       return JRegion.wait(self, target, timeout)
 
 class Screen(Region):
@@ -538,8 +561,6 @@ def rightClick(img, modifiers=0):
 # @param *args The parameters can be (string), (string, modifiers), (image pattern, string), or (image pattern, string, modifiers). The string specifies the string to be typed in, which can be concatenated with the special keys defined in {@link #Key the Key class}.  The image pattern specifies the object that needs the focus before typing. The modifiers specifies the key modifiers to be pressed while typing.
 # @return Returns 0 if nothing is typed, otherwise returns 1.
 def type(*args):
-   import __builtin__
-   import types
    if len(args) == 1:
       return _si.type(None, args[0])
    if len(args) == 2:
