@@ -58,6 +58,10 @@ public class Region {
       _center = new Location((int)ROI.getCenterX(), (int)ROI.getCenterY());
    }
 
+   public Rectangle getRect(){ return getROI(); }
+   public void setRect(Rectangle roi){ setROI(roi); }
+
+   
    private void updateROI(){
       setROI(new Rectangle(x, y, w, h));
    }

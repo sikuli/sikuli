@@ -18,7 +18,6 @@ from Screen import *
 from VDict import *
 
 
-Screen()._exposeAllMethods()
 
 _si = SikuliScript()
 
@@ -169,11 +168,11 @@ def findAll(img):
 # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
 # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
 #
-def wait(img, timeout=3000):
-   wait.regions = _si.wait(img, timeout)
-   if len(wait.regions) > 0:
-      wait.region = wait.regions[0]
-   return wait.regions
+#def wait(img, timeout=3000):
+#   wait.regions = _si.wait(img, timeout)
+#   if len(wait.regions) > 0:
+#      wait.region = wait.regions[0]
+#   return wait.regions
 
 ##
 # Keeps waiting the disapearance of the given image on the screen until 
@@ -361,3 +360,6 @@ def search(img, host):
 
 def getSikuliScript():
    return _si
+
+
+Screen()._exposeAllMethods()

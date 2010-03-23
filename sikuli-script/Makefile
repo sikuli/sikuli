@@ -83,8 +83,8 @@ test-native:
 
 test-python: update-python
 #	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-sikuli.py
-#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-with.py
-	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-basic.py
+	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-with.py
+#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-basic.py
 
 test-vdict-py:
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py
