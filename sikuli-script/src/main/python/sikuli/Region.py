@@ -30,8 +30,8 @@ class Region(JRegion):
    # just return <i>None</i> if nothing is found. <br/>
    # The default value of thie flag is <i>True</i>.
    #
-   def setThrowException(flag):
-      return JRegion.setThrowException(flag)
+   def setThrowException(self, flag):
+      return JRegion.setThrowException(self, flag)
 
    ##
    # Sets the maximum waiting time in seconds for {@link #find find()}. <br/>
@@ -40,6 +40,6 @@ class Region(JRegion):
    # time has elapsed. <br/>
    # The default timeout is <i>3.0 sec</i>.
    #
-   def setAutoWaitTimeout(sec):
-      return JRegion.setAutoWaitTimeout(sec)
+   def setAutoWaitTimeout(self, sec):
+      return JRegion.setAutoWaitTimeout(self, sec)
 

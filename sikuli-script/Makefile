@@ -82,10 +82,14 @@ test-native:
 	make -C src/test/native
 
 test-python: update-python
+	TESTS="sikuli with basic capture"; \
+	for t in $$TESTS; do \
+		java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-$${t}.py; \
+	done
 #	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-sikuli.py
 #	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-with.py
 #	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-basic.py
-	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-capture.py
+#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-capture.py
 
 test-vdict-py:
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py
