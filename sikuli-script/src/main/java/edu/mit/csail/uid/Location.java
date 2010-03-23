@@ -11,6 +11,11 @@ public class Location extends Point{
       super(loc.x, loc.y);
    }
 
+   public Location offset(int dx, int dy){
+      translate(dx, dy);
+      return this;
+   }
+
    public String toString(){
       return "(" + x + "," + y + ")";
    }
