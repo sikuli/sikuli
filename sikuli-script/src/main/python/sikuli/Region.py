@@ -19,5 +19,27 @@ class Region(JRegion):
 
 
    def wait(self, target, timeout=3):
-      #print self, target, timeout
       return JRegion.wait(self, target, timeout)
+   
+   ##
+   # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
+   # Setting this flag to <i>True</i> enables all methods that use 
+   # find() throws an exception if the find()
+   # can not find anything similar on the screen.
+   # Once the flag is set to <i>False</i>, all methods that use find()
+   # just return <i>None</i> if nothing is found. <br/>
+   # The default value of thie flag is <i>True</i>.
+   #
+   def setThrowException(flag):
+      return JRegion.setThrowException(flag)
+
+   ##
+   # Sets the maximum waiting time in seconds for {@link #find find()}. <br/>
+   # Setting this time to a non-zero value enables all methods that use find()
+   # wait the appearing of the given image pattern until the specified amount of
+   # time has elapsed. <br/>
+   # The default timeout is <i>3.0 sec</i>.
+   #
+   def setAutoWaitTimeout(sec):
+      return JRegion.setAutoWaitTimeout(sec)
+

@@ -12,6 +12,7 @@ from edu.mit.csail.uid import FindFailed
 import __builtin__
 import types
 
+from edu.mit.csail.uid import Region as JRegion
 from Key import *
 from Region import *
 from Screen import *
@@ -37,27 +38,6 @@ def setBundlePath(path):
    VDict._setBundlePath(path)
    _si.setBundlePath(path)
 
-##
-# Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
-# Setting this flag to <i>True</i> enables all methods that use 
-# find() throws an exception if the find()
-# can not find anything similar on the screen.
-# Once the flag is set to <i>False</i>, all methods that use find()
-# just return <i>None</i> if nothing is found. <br/>
-# The default value of thie flag is <i>True</i>.
-#
-def setThrowException(flag):
-   _si.setThrowException(flag)
-
-##
-# Sets the maximum waiting time in milliseconds for {@link #find find()}. <br/>
-# Setting this time to a non-zero value enables all methods that use find()
-# wait the appearing of the given image pattern until the specified amount of
-# time has elapsed. <br/>
-# The default timeout is <i>3000ms</i>.
-#
-def setAutoWaitTimeout(ms):
-   _si.setAutoWaitTimeout(ms)
 
 
 ##
@@ -81,21 +61,20 @@ def input(msg=""):
 # the screen if no arguments are given.
 # If any arguments are specified, capture() automatically captures the given
 # region of the screen.
-# @param *args The args can be 4 integers: x, y, w, and h, a <a href="edu/mit/csail/uid/Match.html">Match</a> object or a {@link #Subregion} object.
+# @param *args The args can be 4 integers: x, y, w, and h, a <a href="edu/mit/csail/uid/Match.html">Match</a> object or a {@link #Region} object.
 # @return The path to the captured image.
 #
 def capture(*args):
    if len(args) == 0:
       return _si.capture()
    else:
-      if isinstance(args[0],Subregion):
+      if isinstance(args[0],JRegion):
          r = args[0]
-         return _si.captureScreen(r.x, r.y, r.w, r.h)
-      elif isinstance(args[0],Match):
-         r = args[0]
-         return _si.captureScreen(r.getX(), r.getY(), r.getW(), r.getH())
+         return _si.captureScreen(r.x, r.y, r.w, r.h).getFilename()
+      elif len(args) == 4:
+         return _si.captureScreen(args[0], args[1], args[2], args[3]).getFilename()
       else:
-         return _si.captureScreen(args[0], args[1], args[2], args[3])
+         return None
 
 
 ##
