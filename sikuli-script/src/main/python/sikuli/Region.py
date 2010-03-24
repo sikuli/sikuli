@@ -23,6 +23,30 @@ class Region(JRegion):
          #print "restore " + name + " :" + str(self._global_funcs[name])
          __main__.__dict__[name] = self._global_funcs[name]
 
+   #######################################################################
+   #---- SIKULI  PUBLIC  API
+   #######################################################################
+
+   ##
+   # Looks for the best match of a particular GUI element to interact with. 
+   # It takes the file name of
+   # an image that specifies the element's appearance, 
+   # searches the whole screen 
+   # and returns the best region matching this pattern or 
+   # None if no such region can be found. <br/>
+   # In addition to the return value, find() also stores the returning matched 
+   # region in find.region. <br/>
+   # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to 
+   # a non-zero
+   # value, all find() just act as the {@link #wait} method.
+   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
+   # @return a <a href="edu/mit/csail/uid/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
+   #
+   def find(self, target):
+      ret = JRegion.find(self, target)
+      if ret != None:
+         self.lastMatch = ret
+      return ret
 
    ##
    # Keeps searching the given image on the screen until the image appears or 

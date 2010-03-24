@@ -102,25 +102,6 @@ def openApp(app):
 def closeApp(app):
    return _si.closeApp(app)
 
-##
-# Looks for the best match of a particular GUI element to interact with. It takes the file name of
-# an image that specifies the element's appearance, searches the whole screen 
-# and returns the best region matching this pattern or None if no such region can 
-# be found. <br/>
-# In addition to the return value, find() also stores the returning matched 
-# region in find.region. <br/>
-# If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
-# value, all find() just act as the {@link #wait} method.
-# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-# @return a <a href="edu/mit/csail/uid/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
-#
-def find(img):
-   find.regions = _si.find(img)
-   if len(find.regions) > 0:
-      find.region = find.regions[0]
-   else:
-      find.region = None
-   return find.region
 
 ##
 # Looks for all instance of a particular GUI element to interact with. It takes the file name of
