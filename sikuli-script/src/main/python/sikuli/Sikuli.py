@@ -103,23 +103,6 @@ def closeApp(app):
    return _si.closeApp(app)
 
 
-##
-# Looks for all instance of a particular GUI element to interact with. It takes the file name of
-# an image that specifies the element's appearance, searches the whole screen 
-# and returns the regions matching this pattern or None if no such region can 
-# be found. <br/>
-# In addition to the return value, findAll() also stores the returning matched 
-# regions in find.regions and the best matched region in find.region. <br/>
-# If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
-# value, all findAll() just act as the {@link #wait} method.
-# @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-# @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if nothing is found.
-#
-def findAll(img):
-   find.regions = _si.findAll(img)
-   if len(find.regions) > 0:
-      find.region = find.regions[0]
-   return find.regions
 
 
 ##
@@ -153,15 +136,6 @@ class Subregion(SubregionJ):
 def hover(img):
    return _si.hover(img)
 
-##
-# Performs a mouse clicking on the best matched position of the 
-# given image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. <br/> Returns -1 if find() fails.
-def click(img, modifiers=0):
-   return _si.click(img, modifiers)
 
 ##
 # Performs a mouse clicking for each matched position of the given image pattern. It calls

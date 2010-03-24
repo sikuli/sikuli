@@ -49,6 +49,26 @@ class Region(JRegion):
       return ret
 
    ##
+   # Looks for all instance of a particular GUI element to interact with. 
+   # It takes the file name of an image that specifies the element's 
+   # appearance, searches the whole screen 
+   # and returns the regions matching this pattern 
+   # or None if no such region can be found. <br/>
+   # In addition to the return value, findAll() also stores the returning matched 
+   # regions in find.regions and the best matched region in find.region. <br/>
+   # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
+   # value, all findAll() just act as the {@link #wait} method.
+   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
+   # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if nothing is found.
+   #
+   def findAll(self, target):
+      ret = JRegion.findAll(self, target)
+      if ret != None:
+         self.lastMatch = ret[0]
+         self.lastMatches = ret
+      return ret
+
+   ##
    # Keeps searching the given image on the screen until the image appears or 
    # the specified amount of time has elapsed.
    # @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
@@ -60,6 +80,16 @@ class Region(JRegion):
          self.lastMatch = ret
       return ret
    
+   ##
+   # Performs a mouse clicking on the best matched position of the 
+   # given image pattern. It calls
+   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
+   # @return The number of performed clicking. <br/> Returns -1 if find() fails.
+   def click(self, target, modifiers=0):
+      return JRegion.click(self, target, modifiers)
+
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
    # Setting this flag to <i>True</i> enables all methods that use 

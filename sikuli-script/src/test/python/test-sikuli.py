@@ -1,7 +1,16 @@
 from sikuli.Sikuli import *
 
-r = Region(0, 0, 200,200)
-print r.wait("test-res/apple.png")
+r = Region(10, 0, 200,200)
+p = Pattern("test-res/apple.png").targetOffset(30,5)
+m = r.wait(p)
+click(m)
+print "center: " + str(r.lastMatch.getCenter())
+print "target(+30,+5): " + str(r.lastMatch.getTarget())
+
+print "ctrl-click below the apple icon"
+p.targetOffset(0,30)
+click(p, KEY_CTRL)
+
 print "number of screens: " + str(Screen.getNumberScreens())
 s = Screen()
 print "default screen bound: " + str(s.getBounds())

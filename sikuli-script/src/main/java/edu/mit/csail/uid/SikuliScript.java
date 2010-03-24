@@ -97,10 +97,12 @@ public class SikuliScript {
    }
    
 
+   /*
    public Matches findAll(String img) throws IOException, AWTException, FindFailed{
       Pattern p = new Pattern(img).firstN(-1);
       return find(p);
    }
+   */
    /**
     *  Matches find(ImageURL img, boolean confirm?)
     */

@@ -14,7 +14,7 @@ public class Matches extends LinkedList<Match>{
 
    public Matches(Match[] matches, SikuliScript script){
       for(int i=0;i<matches.length;i++){
-         matches[i].setSikuliScript(script);
+         //matches[i].setSikuliScript(script);
          this.add(matches[i]);
       }
       _script = script;
@@ -42,35 +42,5 @@ public class Matches extends LinkedList<Match>{
       return this;
    }
 
-   public <T> Matches find(T img) throws IOException, AWTException, FindFailed{
-      Matches ret = new Matches();
-      if(_script != null && size()>0){
-         File fParent = new File(getFirst().parent);
-         BufferedImage parentImg = ImageIO.read(fParent);
-         for(Match m : this){
-            if( m.x + m.w >= parentImg.getWidth() )
-               m.w -= (m.x + m.w - parentImg.getWidth());
-            if( m.y + m.h >= parentImg.getHeight() )
-               m.h -= (m.y + m.h - parentImg.getHeight());
-            BufferedImage region = parentImg.getSubimage(m.x, m.y, m.w, m.h);
-            File tmp = File.createTempFile("sikuli-region",".png");
-            //tmp.deleteOnExit();
-            ImageIO.write(region, "png", tmp);
-            System.out.println("region: " + tmp.getAbsolutePath());
-            Matches subMatches = _script._find(img, tmp.getAbsolutePath());
-            ret.addAll(toGlobalCord(subMatches, m.x, m.y));
-            //TODO: filter redundant matches
-         }
-      }
-      return ret;
-   }
-
-   private Matches toGlobalCord(Matches ms, int x, int y){
-      for(Match m : ms){
-         m.x += x;
-         m.y += y;
-      }
-      return ms;
-   }
 }
 

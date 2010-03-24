@@ -13,7 +13,6 @@ public class Region {
    private Robot _robot;
 
    public int x, y, w, h;
-   public Rectangle ROI;
 
    private boolean _stopIfWaitingFailed = true;
    private double _waitBeforeAction = 3.0;
@@ -31,10 +30,10 @@ public class Region {
       y = y_;
       w = w_;
       h = h_;
-      setROI(new Rectangle(x, y, w, h));
+      Rectangle roi = new Rectangle(x, y, w, h);
       for(int i=0;i<Screen.getNumberScreens();i++){
          Rectangle scrBound = Screen.getBounds(i);
-         if(scrBound.contains(ROI)){
+         if(scrBound.contains(roi)){
             _robot = new Robot(Screen.getGraphicsDevice(i));
             return;
          }
@@ -47,26 +46,25 @@ public class Region {
    public int getW(){ return w; }
    public int getH(){ return h; }
 
-   public void setX(int _x){ x = _x; updateROI(); }
-   public void setY(int _y){ y = _y; updateROI(); }
-   public void setW(int _w){ w = _w; updateROI(); }
-   public void setH(int _h){ h = _h; updateROI(); }
+   public void setX(int _x){ x = _x; }
+   public void setY(int _y){ y = _y; }
+   public void setW(int _w){ w = _w; }
+   public void setH(int _h){ h = _h; }
 
-   public Rectangle getROI(){ return ROI; }
+   public Rectangle getROI(){ return new Rectangle(x,y,w,h); }
    public void setROI(Rectangle roi){
-      ROI = new Rectangle(roi); 
-      _center = new Location((int)ROI.getCenterX(), (int)ROI.getCenterY());
+      x = (int)roi.getX();
+      y = (int)roi.getY();
+      w = (int)roi.getWidth();
+      h = (int)roi.getHeight();
    }
 
    public Rectangle getRect(){ return getROI(); }
    public void setRect(Rectangle roi){ setROI(roi); }
 
-   
-   private void updateROI(){
-      setROI(new Rectangle(x, y, w, h));
+   public Location getCenter(){ 
+      return new Location(x+w/2, y+h/2);
    }
-
-   public Location getCenter(){ return _center; }
 
    //////////// Settings
    public void setThrowException(boolean flag){ _stopIfWaitingFailed = flag; } 
@@ -83,7 +81,7 @@ public class Region {
     * finds the given pattern on the screen and returns the best match.
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
-   public <T> Match find(T ptn) throws AWTException, FindFailed{
+   public <PSC> Match find(PSC ptn) throws AWTException, FindFailed{
       if(_waitBeforeAction > 0)
          return wait(ptn, _waitBeforeAction);
       else{
@@ -99,28 +97,13 @@ public class Region {
     * finds the given pattern on the screen and returns the best match 
     * without waiting.
     */
-   public <T> Match findNow(T ptn) throws AWTException, FindFailed{
+   public <PSC> Match findNow(PSC ptn) throws AWTException, FindFailed{
       ScreenImage simg = getCapturer().capture();
-      Finder f = new Finder(simg);
+      Finder f = new Finder(simg, this);
       Match ret = null;
-      if( ptn instanceof Pattern ){
-         Pattern p = (Pattern)ptn;
-         f.find(p.imgURL, p.similarity);
-      }
-      else if( ptn instanceof String){
-         f.find((String)ptn);
-      }
-      else{
-         throw new FindFailed("doesn't support the type of target: " + ptn);
-      }
-      if(f.hasNext()){
-         ret = toGlobalCoord(f.next());
-         if( ptn instanceof Pattern ){
-            Location c = ret.getCenter();
-            Location offset = ((Pattern)ptn).getTargetOffset();
-            ret.setTargetOffset(offset);
-         }
-      }
+      f.find(ptn);
+      if(f.hasNext())
+         ret = f.next();
       f.destroy();
       return ret;
    }
@@ -129,7 +112,7 @@ public class Region {
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
-   public <T> Match wait(T target, double timeout) 
+   public <PSC> Match wait(PSC target, double timeout) 
                                              throws AWTException, FindFailed{
       int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
       long begin_t = (new Date()).getTime();
@@ -257,8 +240,7 @@ public class Region {
       if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
    }
 
-
-   protected Match toGlobalCoord(Match m){
+   Match toGlobalCoord(Match m){
       m.x += x;
       m.y += y;
       return m;
