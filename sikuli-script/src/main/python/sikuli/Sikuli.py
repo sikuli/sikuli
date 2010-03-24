@@ -140,18 +140,6 @@ def findAll(img):
       find.region = find.regions[0]
    return find.regions
 
-##
-# Keeps searching the given image on the screen until the image appears or 
-# the specified amount of time has elapsed.
-# @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
-# @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
-# @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
-#
-#def wait(img, timeout=3000):
-#   wait.regions = _si.wait(img, timeout)
-#   if len(wait.regions) > 0:
-#      wait.region = wait.regions[0]
-#   return wait.regions
 
 ##
 # Keeps waiting the disapearance of the given image on the screen until 

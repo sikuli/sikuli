@@ -3,6 +3,12 @@ import inspect
 import __main__
 
 class Region(JRegion):
+
+   def __init__(self, x, y, w, h):
+      JRegion.__init__(self, x, y, w, h)
+      self.lastMatch = None
+      self.lastMatches = None
+
    # override all global sikuli functions by Region's methods.
    def __enter__(self):
       self._global_funcs = {}
@@ -18,8 +24,17 @@ class Region(JRegion):
          __main__.__dict__[name] = self._global_funcs[name]
 
 
+   ##
+   # Keeps searching the given image on the screen until the image appears or 
+   # the specified amount of time has elapsed.
+   # @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
+   # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
+   # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
    def wait(self, target, timeout=3):
-      return JRegion.wait(self, target, timeout)
+      ret = JRegion.wait(self, target, timeout)
+      if ret != None:
+         self.lastMatch = ret
+      return ret
    
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
