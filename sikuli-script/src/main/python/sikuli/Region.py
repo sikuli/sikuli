@@ -1,6 +1,9 @@
 from edu.mit.csail.uid import Region as JRegion
 import inspect
+import types
+import time
 import __main__
+import __builtin__
 
 class Region(JRegion):
 
@@ -17,6 +20,7 @@ class Region(JRegion):
             self._global_funcs[name] = __main__.__dict__[name]
             #print "save " + name + " :" + str(__main__.__dict__[name])
             __main__.__dict__[name] = eval("self."+name)
+      return self
 
    def __exit__(self, type, value, traceback):
       for name in self._global_funcs.keys():
@@ -74,6 +78,9 @@ class Region(JRegion):
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
    # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
    def wait(self, target, timeout=3):
+      if __builtin__.type(target) is types.IntType:
+         time.sleep(target)
+         return
       ret = JRegion.wait(self, target, timeout)
       if ret != None:
          self.lastMatch = ret

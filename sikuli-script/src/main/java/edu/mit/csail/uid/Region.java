@@ -17,7 +17,6 @@ public class Region {
    private boolean _stopIfWaitingFailed = true;
    private double _waitBeforeAction = 3.0;
 
-   private Location _center;
 
    public Region(int x_, int y_, int w_, int h_) throws AWTException{
       init(x_,y_,w_,h_);
@@ -133,9 +132,40 @@ public class Region {
    public <PSC> Match wait(PSC target, double timeout) 
                                              throws AWTException, FindFailed{
       Iterator<Match> ms = waitAll(target, timeout);
+      Match ret = null;
       if(ms != null)
-         return ms.next();
-      return null;
+         ret = ms.next();
+      if(ms instanceof Finder)
+         ((Finder)ms).destroy();
+      return ret;
+   }
+
+   /**
+    *  boolean waitVanish(Pattern/String/PatternClass target, timeout-sec)
+    *  waits until target vanishes or timeout (in second) is passed
+    *  @return true if the target vanishes, otherwise returns false.
+    */
+   public <PSC> boolean waitVanish(PSC target, double timeout) 
+                                             throws AWTException {
+      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+      long begin_t = (new Date()).getTime();
+      while( begin_t + timeout*1000 > (new Date()).getTime() ){
+         long before_find = (new Date()).getTime();
+         try{
+            Match ms = findNow(target);
+            if(ms == null)
+               return true;
+         }
+         catch(FindFailed e){
+            return true;
+         }
+         long after_find = (new Date()).getTime();
+         if(after_find-before_find<MaxTimePerScan)
+            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+         else
+            _robot.delay(10);
+      }
+      return false;
    }
 
    public <PSRML> int click(PSRML target, int modifiers) 
