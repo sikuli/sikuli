@@ -20,6 +20,14 @@ public class Finder implements Iterator<Match>{
       }
    }
 
+   public Finder __enter__(){
+      return this;
+   }
+
+   public void __exit__(Object type, Object value, Object trackback){
+      destroy();
+   }
+
    public Finder(String screenFilename, Region region){
       _instance = createFinder(screenFilename);
       _region = region;
@@ -29,6 +37,10 @@ public class Finder implements Iterator<Match>{
       byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
       _instance = createFinder(data, img.w, img.h);
       _region = region;
+   }
+
+   public void __del__(){
+      destroy();
    }
 
    protected void finalize() throws Throwable {
@@ -64,6 +76,7 @@ public class Finder implements Iterator<Match>{
       return false;
    }
 
+
    @Override
    public Match next(){
       if(_instance!=0){
@@ -83,6 +96,7 @@ public class Finder implements Iterator<Match>{
    }
 
    public void destroy(){  
+      Debug.log("destroy finder " + _instance);
       if(_instance!=0){
          destroy(_instance);  
          _instance = 0;

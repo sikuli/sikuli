@@ -64,7 +64,6 @@ class Region(JRegion):
    def findAll(self, target):
       ret = JRegion.findAll(self, target)
       if ret != None:
-         self.lastMatch = ret[0]
          self.lastMatches = ret
       return ret
 

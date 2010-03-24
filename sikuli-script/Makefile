@@ -82,8 +82,8 @@ test-native:
 	make -C src/test/native
 
 test-python: update-python
-#	TESTS="sikuli with basic capture"; 
-	TESTS="sikuli"; \
+#	TESTS="sikuli with basic capture findAll"; 
+	TESTS="findAll"; \
 	for t in $$TESTS; do \
 		java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-$${t}.py; \
 	done

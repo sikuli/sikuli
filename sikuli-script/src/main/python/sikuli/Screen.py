@@ -14,7 +14,7 @@ class Screen(Region):
          r = self.getBounds()
       (x, y, w, h) = (int(r.getX()), int(r.getY()), \
                       int(r.getWidth()), int(r.getHeight()))
-      JRegion.__init__(self, x, y, w, h)
+      Region.__init__(self, x, y, w, h)
 
    @classmethod
    def getNumberScreens(cls):

@@ -10,6 +10,7 @@ from edu.mit.csail.uid import Similar
 from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import FindFailed
 import __builtin__
+import __main__
 import types
 
 from edu.mit.csail.uid import Region as JRegion
@@ -284,4 +285,5 @@ def getSikuliScript():
    return _si
 
 
-Screen()._exposeAllMethods()
+__main__.screen = Screen()
+__main__.screen._exposeAllMethods()

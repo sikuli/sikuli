@@ -93,6 +93,23 @@ public class Region {
    }
 
    /**
+    * Iterator<Match> findAll( Pattern/String/PatternClass ) 
+    * finds the given pattern on the screen and returns the best match.
+    * If AutoWaitTimeout is set, this is equivalent to wait().
+    */
+   public <PSC> Iterator<Match> findAll(PSC ptn) 
+                                             throws AWTException, FindFailed{
+      if(_waitBeforeAction > 0)
+         return waitAll(ptn, _waitBeforeAction);
+      else{
+         Iterator<Match> ms = findAllNow(ptn);
+         if(ms == null && _stopIfWaitingFailed)
+            throw new FindFailed(ptn + " can't be found.");
+         return ms;
+      }
+   }
+
+   /**
     * Match findNow( Pattern/String/PatternClass ) 
     * finds the given pattern on the screen and returns the best match 
     * without waiting.
@@ -108,27 +125,16 @@ public class Region {
       return ret;
    }
 
+
    /**
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
    public <PSC> Match wait(PSC target, double timeout) 
                                              throws AWTException, FindFailed{
-      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
-      long begin_t = (new Date()).getTime();
-      while( begin_t + timeout*1000 > (new Date()).getTime() ){
-         long before_find = (new Date()).getTime();
-         Match match = findNow(target);
-         if(match != null)
-            return match;
-         long after_find = (new Date()).getTime();
-         if(after_find-before_find<MaxTimePerScan)
-            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
-         else
-            _robot.delay(10);
-      }
-      if(_stopIfWaitingFailed)
-         throw new FindFailed(target + " can't be found.");
+      Iterator<Match> ms = waitAll(target, timeout);
+      if(ms != null)
+         return ms.next();
       return null;
    }
 
@@ -197,6 +203,45 @@ public class Region {
    static final int K_CTRL = InputEvent.CTRL_MASK;
    static final int K_META = InputEvent.META_MASK;
    static final int K_ALT = InputEvent.ALT_MASK;
+
+   /**
+    * Match findAllNow( Pattern/String/PatternClass ) 
+    * finds the given pattern on the screen and returns the best match 
+    * without waiting.
+    */
+   public <PSC> Iterator<Match> findAllNow(PSC ptn) 
+                                             throws AWTException, FindFailed{
+      ScreenImage simg = getCapturer().capture();
+      Finder f = new Finder(simg, this);
+      Match ret = null;
+      f.find(ptn);
+      //f.destroy(); FIXME: can't destroy here. where to destroy f??
+      return f;
+   }
+
+   /**
+    *  Iterator<Match> waitAll(Pattern/String/PatternClass target, timeout-sec)
+    *  waits until target appears or timeout (in second) is passed
+    */
+   public <PSC> Iterator<Match> waitAll(PSC target, double timeout) 
+                                             throws AWTException, FindFailed{
+      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+      long begin_t = (new Date()).getTime();
+      while( begin_t + timeout*1000 > (new Date()).getTime() ){
+         long before_find = (new Date()).getTime();
+         Iterator<Match> ms = findAllNow(target);
+         if(ms != null)
+            return ms;
+         long after_find = (new Date()).getTime();
+         if(after_find-before_find<MaxTimePerScan)
+            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+         else
+            _robot.delay(10);
+      }
+      if(_stopIfWaitingFailed)
+         throw new FindFailed(target + " can't be found.");
+      return null;
+   }
 
    private <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws AWTException, FindFailed {
