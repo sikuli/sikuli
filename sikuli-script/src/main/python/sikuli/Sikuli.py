@@ -14,6 +14,8 @@ import __main__
 import types
 
 from edu.mit.csail.uid import Region as JRegion
+from edu.mit.csail.uid import Location
+from edu.mit.csail.uid import Settings
 from Key import *
 from Region import *
 from Screen import *
@@ -104,97 +106,14 @@ def closeApp(app):
    return _si.closeApp(app)
 
 
-
-
-##
-# Keeps waiting the disapearance of the given image on the screen until 
-# the specified amount of time has elapsed.
-# @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
-# @param timeout The amount of waiting time, in milliseconds. 
-#
-def untilNotExist(img, timeout=3000):
-   _si.waitNotExist(img, timeout)
-
-############### SUBREGION ###############
-
-class Subregion(SubregionJ):
-   def __init__(self, x, y, w, h):
-      SubregionJ.__init__(self, x, y, w, h, _si)
-
-
-########### SPATIAL OPERATORS ###########
-#def anyscale(): FIXME
-
-
 ############ ACTIONS ############ 
 
-##
-# Move the mouse cursor to the best matched position of the 
-# given image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a>  object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @return 0 <br/> Returns -1 if find() fails.
-def hover(img):
-   return _si.hover(img)
-
-
-##
-# Performs a mouse clicking for each matched position of the given image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. <br/> Returns -1 if find() fails.
-def clickAll(img, modifiers=0):
-   return _si.clickAll(img, modifiers)
-
-##
-# Repeatedly performs a mouse clicking for each matched position of the 
-# given image pattern until no more matching can be found. It keeps calling
-# find() to locate the pattern on the screen for clicking, and stops if
-# nothing is found.
-# @param img The file name of an image, or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. 
-def repeatClickAll(img, modifiers=0):
-   return _si.repeatClickAll(img, modifiers)
-
-
-##
-# Performs a double clicking for each matched position of the given image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. <br/> Returns -1 if find() fails.
-def doubleClickAll(img, modifiers=0):
-   return _si.doubleClickAll(img, modifiers)
-
-
-##
-# Repeatedly performs a double clicking for each matched position of the 
-# given image pattern until no more matching can be found. It keeps calling
-# find() to locate the pattern on the screen for clicking, and stops if
-# nothing is found.
-# @param img The file name of an image, or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. 
-def repeatDoubleClickAll(img, modifiers=0):
-   return _si.repeatDoubleClickAll(img, modifiers)
 
 
 
 
 
-##
-# Drags from the position of <i>src</i>, 
-# and drops on the position of <i>dest</i>.
-# @param src This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object.
-# @param dest This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
-# @return Returns 1 if both src and dest can be found, otherwise returns 0.
-def dragDrop(src, dest):
-   if isinstance(dest, list) or isinstance(dest, tuple):
-      return _si.dragDrop(src, dest[0], dest[1])
-   else:
-      return _si.dragDrop(src, dest)
+
 
 ##
 # Sleeps until the given amount of time in seconds has elapsed.

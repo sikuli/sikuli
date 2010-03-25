@@ -1,4 +1,6 @@
 from edu.mit.csail.uid import Region as JRegion
+from edu.mit.csail.uid import Location
+from edu.mit.csail.uid import Settings
 import inspect
 import types
 import time
@@ -118,6 +120,15 @@ class Region(JRegion):
       return JRegion.rightClick(self, target, modifiers)
 
    ##
+   # Move the mouse cursor to the best matched position of the 
+   # given image pattern. It calls
+   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a>  object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # @return 0 <br/> Returns -1 if find() fails.
+   def hover(self, target):
+      return JRegion.hover(self, target)
+
+   ##
    # Simulate keyboard typing on the best matched position of the given 
    # image pattern. It performs a mouse clicking on the matched position to gain 
    # the focus automatically before typing. If args contains only a string, it
@@ -151,6 +162,26 @@ class Region(JRegion):
       elif len(args) == 2:
          return JRegion.paste(self, args[0], java.lang.String(args[1], "utf-8"))
       return 0
+
+   ##
+   # Drags from the position of <i>src</i>, 
+   # and drops on the position of <i>dest</i>.
+   # @param src This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object.
+   # @param dest This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
+   # @return Returns 1 if both src and dest can be found, otherwise returns 0.
+   def dragDrop(self, src, dest):
+      if isinstance(dest, list) or isinstance(dest, tuple):
+         return JRegion.dragDrop(self, src, Location(dest[0], dest[1]), 0)
+      else:
+         return JRegion.dragDrop(self, src, dest, 0)
+
+   def drag(self, target):
+      return JRegion.drag(self, target)
+
+   def dropAt(self, target, delay=None):
+      if delay == None:
+         delay = Settings.DelayBeforeDrop
+      return JRegion.dropAt(self, target, delay)
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>

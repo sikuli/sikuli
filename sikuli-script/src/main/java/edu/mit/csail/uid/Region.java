@@ -186,13 +186,16 @@ public class Region {
       return 0;
    }
 
-   public <PSRML> int dragDrop(PSRML t1, PSRML t2, double delay1, double delay2)
+   public <PSRML> int dragDrop(PSRML t1, PSRML t2, int modifiers)
                                              throws AWTException, FindFailed {
+      int ret = 0;
+      pressModifiers(modifiers);
       if(drag(t1)!=0){
-         _robot.delay((int)(delay1*1000));
-         return dropAt(t2, delay2);
+         _robot.delay((int)(Settings.DelayAfterDrag*1000));
+         ret = dropAt(t2, Settings.DelayBeforeDrop);
       }
-      return 0;
+      releaseModifiers(modifiers);
+      return ret;
    }
 
    public <PSRML> int drag(PSRML target) throws AWTException, FindFailed{
