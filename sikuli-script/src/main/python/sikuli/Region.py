@@ -2,6 +2,7 @@ from edu.mit.csail.uid import Region as JRegion
 import inspect
 import types
 import time
+import java.lang.String
 import __main__
 import __builtin__
 
@@ -97,6 +98,26 @@ class Region(JRegion):
       return JRegion.click(self, target, modifiers)
 
    ##
+   # Performs a double clicking on the best matched position of the given 
+   # image pattern. It calls
+   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
+   # @return The number of performed clicking. <br/> Returns -1 if find() fails.
+   def doubleClick(self, target, modifiers=0):
+      return JRegion.doubleClick(self, target, modifiers)
+
+   ##
+   # Performs a right clicking on the best matched position of the given 
+   # image pattern. It calls
+   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
+   # @return The number of performed clicking. <br/> Returns -1 if find() fails.
+   def rightClick(self, target, modifiers=0):
+      return JRegion.rightClick(self, target, modifiers)
+
+   ##
    # Simulate keyboard typing on the best matched position of the given 
    # image pattern. It performs a mouse clicking on the matched position to gain 
    # the focus automatically before typing. If args contains only a string, it
@@ -113,6 +134,23 @@ class Region(JRegion):
          else:
             return JRegion.type(self, args[0], args[1], 0)
       return JRegion.type(self, args[0], args[1], args[2])
+
+   ##
+   # Paste the given string to the best matched position of the given 
+   # image pattern. It performs a mouse clicking on the matched position to gain 
+   # the focus automatically before pasting. If args contains only a string, it
+   # performs the pasting on the current focused component. Pasting is performed 
+   # using OS-level shortcut (Ctrl-V or Cmd-V), so it would mess up the clipboard.
+   # paste() is a temporary solution for typing international characters or 
+   # typing on different keyboard layouts.
+   # @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
+   # @return Returns 0 if nothing is pasted, otherwise returns 1.
+   def paste(self, *args):
+      if len(args) == 1:
+         return JRegion.paste(self, None, java.lang.String(args[0], "utf-8"))
+      elif len(args) == 2:
+         return JRegion.paste(self, args[0], java.lang.String(args[1], "utf-8"))
+      return 0
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>

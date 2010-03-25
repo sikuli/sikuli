@@ -44,6 +44,16 @@ public class RegionTest extends TestCase
        assertEquals("", f.getText(1));
     }
 
+    public void testPaste() throws Exception
+    {
+       InputsFrame f = new InputsFrame();
+       Region r = new Region(0,0,200,200);
+       String s = "123!!";
+       r.paste("test-res/input-y.png", s);
+       Thread.sleep(500);
+       assertEquals(s, f.getText(1));
+    }
+
     public void testRegion() throws Exception
     {
       JButtons frame = new JButtons();

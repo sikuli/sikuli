@@ -229,8 +229,24 @@ public class Region {
          return 1;
       }
       return 0;
-
    }
+
+   public <PSRML> int paste(PSRML target, String text) 
+                                                throws AWTException, FindFailed{
+      click(target, 0);
+      if(text != null){
+         Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8, 
+                           Clipboard.BYTE_BUFFER, text);
+         int mod = Env.getHotkeyModifier();
+         _robot.keyPress(mod);
+         _robot.keyPress(KeyEvent.VK_V);
+         _robot.keyRelease(KeyEvent.VK_V);
+         _robot.keyRelease(mod);
+         return 1;
+      }
+      return 0;
+   }
+
 
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS

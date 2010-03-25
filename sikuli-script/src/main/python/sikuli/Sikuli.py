@@ -158,15 +158,6 @@ def clickAll(img, modifiers=0):
 def repeatClickAll(img, modifiers=0):
    return _si.repeatClickAll(img, modifiers)
 
-##
-# Performs a double clicking on the best matched position of the given 
-# image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. <br/> Returns -1 if find() fails.
-def doubleClick(img, modifiers=0):
-   return _si.doubleClick(img, modifiers)
 
 ##
 # Performs a double clicking for each matched position of the given image pattern. It calls
@@ -189,35 +180,9 @@ def doubleClickAll(img, modifiers=0):
 def repeatDoubleClickAll(img, modifiers=0):
    return _si.repeatDoubleClickAll(img, modifiers)
 
-##
-# Performs a right clicking on the best matched position of the given 
-# image pattern. It calls
-# find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-# @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
-# @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
-# @return The number of performed clicking. <br/> Returns -1 if find() fails.
-def rightClick(img, modifiers=0):
-   return _si.rightClick(img, modifiers)
 
 
 
-##
-# Paste the given string to the best matched position of the given 
-# image pattern. It performs a mouse clicking on the matched position to gain 
-# the focus automatically before pasting. If args contains only a string, it
-# performs the pasting on the current focused component. Pasting is performed 
-# using OS-level shortcut (Ctrl-V or Cmd-V), so it would mess up the clipboard.
-# paste() is a temporary solution for typing international characters or 
-# typing on different keyboard layouts.
-# @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
-# @return Returns 0 if nothing is pasted, otherwise returns 1.
-def paste(*args):
-   import java.lang.String
-   if len(args) == 1:
-      return _si.paste(None, java.lang.String(args[0], "utf-8"))
-   if len(args) == 2:
-      return _si.paste(args[0], java.lang.String(args[1], "utf-8"))
-   return 0
 
 ##
 # Drags from the position of <i>src</i>, 
