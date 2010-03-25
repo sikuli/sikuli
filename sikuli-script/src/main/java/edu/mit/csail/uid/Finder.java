@@ -79,7 +79,7 @@ public class Finder implements Iterator<Match>{
 
    @Override
    public Match next(){
-      if(_instance!=0){
+      if(_instance!=0 ){
          Match ret = next(_instance);
          ret = _region.toGlobalCoord(ret);
          if(_pattern != null){
@@ -96,8 +96,8 @@ public class Finder implements Iterator<Match>{
    }
 
    public void destroy(){  
-      Debug.log("destroy finder " + _instance);
       if(_instance!=0){
+         Debug.log(6,"destroy finder " + _instance);
          destroy(_instance);  
          _instance = 0;
       }

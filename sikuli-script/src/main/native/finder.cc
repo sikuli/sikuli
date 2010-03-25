@@ -328,9 +328,9 @@ Finder::next(){
 
     return temp;
   }else{
-
-      Match match;
-      match.score = -1;
+     Match match;
+     match.score = -1;
+     return match;
   }
 }
 

@@ -31,6 +31,19 @@ public class RegionTest extends TestCase
         return new TestSuite( RegionTest.class );
     }
 
+    public void testType() throws Exception
+    {
+       InputsFrame f = new InputsFrame();
+       Region r = new Region(0,0,200,200);
+       String s = "123!!";
+       r.type("test-res/input-y.png", s, 0);
+       Thread.sleep(500);
+       assertEquals(s, f.getText(1));
+       r.type(null, "\b\b\b\b\b", 0);
+       Thread.sleep(500);
+       assertEquals("", f.getText(1));
+    }
+
     public void testRegion() throws Exception
     {
       JButtons frame = new JButtons();
@@ -85,12 +98,14 @@ public class RegionTest extends TestCase
     public void testRegionFind() throws Exception
     {
       Screen scr = new Screen();
+      scr.setROI(new Region(0,0,300,300));
       scr.setAutoWaitTimeout(2);
       scr.setThrowException(true);
       long begin = (new Date()).getTime();
       boolean gotFindFailed = false;
       try{
-         scr.find("test-res/google.png");
+         Match m = scr.find("test-res/google.png");
+         System.out.println("match: " + m);
       }
       catch(FindFailed e){
          gotFindFailed = true;

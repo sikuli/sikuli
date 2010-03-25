@@ -21,12 +21,12 @@ public:
    inline ~TimingBlock(){
       gettimeofday(&_end, NULL);
       _depth--;
-      for(int i=0;i<_depth;i++)  std::cout << "  ";
+      for(int i=0;i<_depth;i++)  std::cerr << "  ";
       long begin = ((long)_begin.tv_sec*1000000)+_begin.tv_usec;
       long end = ((long)_end.tv_sec*1000000)+_end.tv_usec;
-      std::cout << "[time] " << _name << " "
+      std::cerr << "[time] " << _name << " "
                 << (end-begin)/1000.0 << "ms" << std::endl;
-      if(_depth==0)   std::cout << std::endl;
+      if(_depth==0)   std::cerr << std::endl;
    }
 };
 

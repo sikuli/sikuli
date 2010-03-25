@@ -52,11 +52,6 @@ public class JButtons extends JFrame {
     });
 
     content.add(button3);
-    /*
-    JButton button4 = new JButton("Java", cup);
-    button4.setHorizontalTextPosition(SwingConstants.LEFT);
-    content.add(button4);
-    */
     pack();
     setVisible(true);
   }

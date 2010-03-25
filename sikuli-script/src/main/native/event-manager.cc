@@ -40,6 +40,7 @@ SikuliEventManager::~SikuliEventManager(){
 vector<Event>
 SikuliEventManager::update(const char* screen_image_filename){
 
+   const double MIN_SIMILARITY = 0.8;
   Match top_match;
   Finder f(screen_image_filename);
   f.debug(debug_mode);
@@ -59,12 +60,12 @@ SikuliEventManager::update(const char* screen_image_filename){
   
    
     f.setROI(ob.x,ob.y,ob.w,ob.h);
-    f.find(ob.param_img);   
+    f.find(ob.param_img, MIN_SIMILARITY);   
 
     top_match = f.next();
 
 
-        if (top_match.score > 0.8){
+        if (top_match.score > MIN_SIMILARITY){
 
           if (!ob.active){
             
@@ -92,11 +93,11 @@ SikuliEventManager::update(const char* screen_image_filename){
 
   
       f.setROI(ob.x,ob.y,ob.w,ob.h);
-      f.find(ob.param_img);   
+      f.find(ob.param_img, MIN_SIMILARITY);   
     
       top_match = f.next();
 
-        if (top_match.score < 0.8){
+        if (top_match.score < MIN_SIMILARITY){
 
           if (!ob.active){
             

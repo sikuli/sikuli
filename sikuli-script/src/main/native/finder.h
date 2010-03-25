@@ -52,8 +52,8 @@ public:
   ~Finder();
   
 
-  void find(const IplImage* tpl, double min_similarity = 0.0);
-  void find(const char *template_image_filename, double min_similarity = 0.0);  
+  void find(const IplImage* tpl, double min_similarity);
+  void find(const char *template_image_filename, double min_similarity);  
 
   bool hasNext();
   Match next();
