@@ -3,9 +3,12 @@ package edu.mit.csail.uid;
 import java.awt.*;
 import java.awt.image.*;
 
-public class Screen extends Region {
+public class Screen extends Region implements Observer {
    private GraphicsDevice _curGD;
    private int _curID = 0;
+
+   private boolean _waitPrompt;
+   private CapturePrompt _prompt;
 
    static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
@@ -38,6 +41,10 @@ public class Screen extends Region {
    
    public Robot getRobot(){
       return _robots[_curID];
+   }
+
+   public GraphicsDevice getGraphicsDevice(){
+      return _curGD;
    }
 
    public static Rectangle getBounds(int id){
@@ -88,5 +95,33 @@ public class Screen extends Region {
       Debug.log(3, "capture: " + rect);
       BufferedImage img = _robots[_curID].createScreenCapture(rect);
       return new ScreenImage(rect, img);
+   }
+
+   public ScreenImage userCapture() {
+      _waitPrompt = true;
+      Thread th = new Thread(){
+         public void run(){
+            System.out.println("starting CapturePrompt...");
+            _prompt = new CapturePrompt(Screen.this);
+         }
+      };
+      th.start();
+      try{
+         int count=0;
+         while(_waitPrompt){ 
+            Thread.sleep(100); 
+            if(count++ > 1000) return null;
+         }
+      }
+      catch(InterruptedException e){
+         e.printStackTrace();
+      }
+      ScreenImage ret = _prompt.getSelection();
+      _prompt.close();
+      return ret;
+   }
+
+   public void update(Subject s){
+      _waitPrompt = false;
    }
 }

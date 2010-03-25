@@ -184,6 +184,7 @@ class Region(JRegion):
          delay = Settings.DelayBeforeDrop
       return JRegion.dropAt(self, target, delay)
 
+
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
    # Setting this flag to <i>True</i> enables all methods that use 

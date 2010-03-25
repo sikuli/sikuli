@@ -32,21 +32,6 @@ public class SikuliScript {
       return (String)JOptionPane.showInputDialog(msg);
    }
    
-   public String capture() throws AWTException{
-      ScreenCapturer capturer = new ScreenCapturer();
-      String file = capturer.promptCapture();
-      return file;
-   }
-
-   // FIXME: change from String to ScreenImage
-   // should we expose ScreenImage to users?
-   public ScreenImage captureScreen(int x, int y, int w, int h) 
-                                          throws AWTException, IOException{
-      ScreenCapturer capturer = new ScreenCapturer();
-      ScreenImage screen = capturer.capture(x,y,w,h);
-      return screen;
-   }
-
    public int switchApp(String appName){
       return _osUtil.switchApp(appName);
    }

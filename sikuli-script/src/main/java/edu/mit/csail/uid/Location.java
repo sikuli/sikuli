@@ -30,8 +30,7 @@ public class Location extends Point{
    public Location below(int dy){
       return new Location(x, y+dy);
    }
-
-
+   
    public String toString(){
       return "(" + x + "," + y + ")";
    }

@@ -130,14 +130,14 @@ class CapturePrompt extends JWindow implements Subject{
       return crop;
    }
 
-   public String getSelection(){
+   public ScreenImage getSelection(){
       BufferedImage cropImg = cropSelection();
-      String filename = saveTmpImage(cropImg);
-      return filename;
+      ScreenImage ret = new ScreenImage(rectSelection, cropImg);
+      return ret;
    }
 
-   public CapturePrompt(Observer ob){
-      addObserver(ob);
+   public CapturePrompt(Screen scr){
+      addObserver(scr);
       init();
       try{
          captureScreen();
@@ -145,7 +145,7 @@ class CapturePrompt extends JWindow implements Subject{
       catch(AWTException e){
          e.printStackTrace();
       }
-      _gdev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+      _gdev = scr.getGraphicsDevice();
       if( _gdev.isFullScreenSupported() ){
          _gdev.setFullScreenWindow(this);
       }
@@ -155,19 +155,5 @@ class CapturePrompt extends JWindow implements Subject{
       setLocation(0,0);
    }
    
-   private static String saveTmpImage(BufferedImage img){
-      File tempFile;
-      try{
-         tempFile = File.createTempFile("sikuli-tmp", ".png" );
-         tempFile.deleteOnExit();
-         ImageIO.write(img, "png", tempFile);
-         return tempFile.getAbsolutePath();
-      }
-      catch(IOException e){
-         e.printStackTrace();
-      }
-      return null;
-   }
-
 
 }

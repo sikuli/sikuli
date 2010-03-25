@@ -51,25 +51,6 @@ def setShowActions(flag):
 def input(msg=""):
    return _si.input(msg)
 
-##
-# Enters the screen-capture mode asking the user to capture a region of 
-# the screen if no arguments are given.
-# If any arguments are specified, capture() automatically captures the given
-# region of the screen.
-# @param *args The args can be 4 integers: x, y, w, and h, a <a href="edu/mit/csail/uid/Match.html">Match</a> object or a {@link #Region} object.
-# @return The path to the captured image.
-#
-def capture(*args):
-   if len(args) == 0:
-      return _si.capture()
-   else:
-      if isinstance(args[0],JRegion):
-         r = args[0]
-         return _si.captureScreen(r.x, r.y, r.w, r.h).getFilename()
-      elif len(args) == 4:
-         return _si.captureScreen(args[0], args[1], args[2], args[3]).getFilename()
-      else:
-         return None
 
 
 ##

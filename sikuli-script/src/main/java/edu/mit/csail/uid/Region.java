@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 
 
 public class Region {
-   private ScreenCapturer _capturer;
    private Robot _robot;
    private Screen _scr;
 
@@ -59,6 +58,8 @@ public class Region {
       _scr = new Screen();
       _robot = _scr.getRobot();
    }
+
+   public Screen getScreen(){ return _scr;   }
 
    public int getX(){ return x; }
    public int getY(){ return y; }
