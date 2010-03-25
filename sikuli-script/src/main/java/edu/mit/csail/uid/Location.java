@@ -12,9 +12,25 @@ public class Location extends Point{
    }
 
    public Location offset(int dx, int dy){
-      translate(dx, dy);
-      return this;
+      return new Location(x+dx, y+dy);
    }
+
+   public Location left(int dx){
+      return new Location(x-dx, y);
+   }
+
+   public Location right(int dx){
+      return new Location(x+dx, y);
+   }
+
+   public Location above(int dy){
+      return new Location(x, y-dy);
+   }
+
+   public Location below(int dy){
+      return new Location(x, y+dy);
+   }
+
 
    public String toString(){
       return "(" + x + "," + y + ")";
