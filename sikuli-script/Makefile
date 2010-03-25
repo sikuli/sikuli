@@ -25,6 +25,7 @@ JAR_PATH=target/jar/
 RELEASE_TMP_PATH=target/sikuli-script
 
 PY_TEST_PATH=src/test/python
+PYTHON_TESTS=sikuli with basic capture findAll dragdrop type wait
 
 SRC=$(shell find $(SOURCE_PATH) -name \*.java)
 CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java | perl -ple 's!^./(.*)\.java!$(TARGET_PATH)/$$1.class!' )
@@ -82,15 +83,9 @@ test-native:
 	make -C src/test/native
 
 test-python: update-python
-#	TESTS="sikuli with basic capture findAll"; 
-	TESTS="dragdrop"; \
-	for t in $$TESTS; do \
+	for t in $(PYTHON_TESTS); do \
 		java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-$${t}.py; \
 	done
-#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-sikuli.py
-#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-with.py
-#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-basic.py
-#	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-capture.py
 
 test-vdict-py:
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py

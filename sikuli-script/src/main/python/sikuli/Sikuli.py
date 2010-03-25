@@ -6,8 +6,6 @@ import time
 from edu.mit.csail.uid import SikuliScript
 from edu.mit.csail.uid import Match
 from edu.mit.csail.uid import Pattern
-from edu.mit.csail.uid import Similar
-from edu.mit.csail.uid import SubregionJ
 from edu.mit.csail.uid import FindFailed
 import __builtin__
 import __main__
@@ -21,15 +19,7 @@ from Region import *
 from Screen import *
 from VDict import *
 
-
-
 _si = SikuliScript()
-
-
-
-
-
-#print dir(SikuliScript)
 
 ##
 # Sets the path for searching images in all Sikuli Script methods. <br/>
@@ -38,9 +28,8 @@ _si = SikuliScript()
 # not call this method.
 #
 def setBundlePath(path):
+   Settings.BundlePath = path
    VDict._setBundlePath(path)
-   _si.setBundlePath(path)
-
 
 
 ##
@@ -48,7 +37,7 @@ def setBundlePath(path):
 # The default setting is <i>False</i>.
 #
 def setShowActions(flag):
-   _si.setShowActions(flag)
+   Settings.ShowActions = flag
 
 
 ##
@@ -105,16 +94,6 @@ def openApp(app):
 def closeApp(app):
    return _si.closeApp(app)
 
-
-############ ACTIONS ############ 
-
-
-
-
-
-
-
-
 ##
 # Sleeps until the given amount of time in seconds has elapsed.
 # @param sec The amount of sleeping time in seconds.
@@ -136,9 +115,6 @@ def run(cmd):
 
 ############### HELPER FUNCTIONS ################
 
-#def toList(jarray):
-#   return map(lambda x:x, jarray)
-
 def search(img, host):
   id = run('curl -F query[photo_file]=@' + img + ';type=image/png ' + host + ':3000/screenshot/remote_query')
   id = id.strip()
@@ -150,7 +126,6 @@ def search(img, host):
 
 def getSikuliScript():
    return _si
-
 
 __main__.screen = Screen()
 __main__.screen._exposeAllMethods()
