@@ -19,6 +19,17 @@ public class Env {
       return OS.NOT_SUPPORTED;
    }
 
+   public static OSUtil createOSUtil(){
+      switch(getOS()){
+         case MAC:       return new MacUtil();
+         case WINDOWS:   return new Win32Util();
+         case LINUX:     return new LinuxUtil();
+         default:
+            System.err.println("Warning: Sikuli doesn't fully support your OS");
+            return new DummyOSUtil();
+      }
+   }
+
    public static int getHotkeyModifier(){
       if(getOS() == OS.MAC)
          return KeyEvent.VK_META;

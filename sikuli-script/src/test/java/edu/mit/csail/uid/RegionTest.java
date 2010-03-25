@@ -100,7 +100,7 @@ public class RegionTest extends TestCase
         JFrame frame = DragListDemo.createAndShowGUI();
         Screen scr = new Screen();
         scr.wait("test-res/item1-list2.png", 3);
-        scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",1.0,1.0);
+        scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",0);
         assertNotNull(scr.wait("test-res/draglist-result.png",3));
         frame.dispose();
     }

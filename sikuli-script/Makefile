@@ -88,22 +88,21 @@ test-python: update-python
 	done
 
 test-vdict-py:
+	rm -rf tmplib
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestSikuliScript.py
 	java -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/TestVDict.py
 	
-test-vdict: vdict $(TEST_CLASSES) 
+test-vdict: $(TEST_CLASSES) 
 	rm -rf tmplib
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.VDictTest
 
 test-sikuli-script: $(TEST_TARGET_PATH) $(TEST_CLASSES) 
+	rm -rf tmplib
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.SikuliScriptTest
-
-vdict:
-	make -C $(NATIVE_SRC_PATH) -f Makefile.vdict
-	cp $(NATIVE_TARGET_PATH)/* $(JAR_PATH)/META-INF/lib/
 
 clean:
 	rm $(CLASSES)
+	rm -rf tmplib
 
 native-loader:
 	cd $(NATIVE_LOADER_PATH); mvn compile

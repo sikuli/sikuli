@@ -3,7 +3,10 @@ from sikuli.Sikuli import *
 
 setThrowException(False)
 setAutoWaitTimeout(0.3)
-assert( find("apple.png") == None )
+print "(before setting bundle path) can't find the image: "
+find("apple.png")
 setThrowException(True)
 setBundlePath("test-res/")
-assert( find("apple.png") != None )
+m = find("apple.png")
+print "(fter setting bundle path) found: " + str(m) 
+assert( m != None )

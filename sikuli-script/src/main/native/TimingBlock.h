@@ -32,10 +32,11 @@ public:
 
 #else
 class TimingBlock {
-   TimingBlock(std::string name){ }
-   ~TimingBlock();
-}
+public:
+   inline TimingBlock(std::string name){ }
+   inline ~TimingBlock(){}
+};
 
-#endif
+#endif // #ifdef ENABLE_TIMING
 
-#endif
+#endif // #ifndef TIMING_BLOCK_H

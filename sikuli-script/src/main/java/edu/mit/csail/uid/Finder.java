@@ -68,7 +68,7 @@ public class Finder implements Iterator<Match>{
 
    public void find(String templateFilename, double minSimilarity){
       String fname = templateFilename;
-      if( !(new File(templateFilename)).exists() )
+      if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + templateFilename;
       find(_instance, fname, minSimilarity);
    }

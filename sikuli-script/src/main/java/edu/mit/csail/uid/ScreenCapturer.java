@@ -41,7 +41,7 @@ public class ScreenCapturer implements Observer{
    }
 
    public ScreenImage capture(Rectangle rect) {
-      Debug.log(1, "capture: " + rect);
+      Debug.log(3, "capture: " + rect);
       BufferedImage img = _robot.createScreenCapture(rect);
       return new ScreenImage(rect, img);
    }
