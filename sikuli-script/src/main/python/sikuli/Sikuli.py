@@ -200,23 +200,6 @@ def rightClick(img, modifiers=0):
    return _si.rightClick(img, modifiers)
 
 
-##
-# Simulate keyboard typing on the best matched position of the given 
-# image pattern. It performs a mouse clicking on the matched position to gain 
-# the focus automatically before typing. If args contains only a string, it
-# performs the typing on the current focused component.
-# See {@link #Key the Key class} for typing special keys, and {@link #paste paste()} if you need to "type" international characters or you are using diffrent keymaps other than QWERTY.
-# @param *args The parameters can be (string), (string, modifiers), (image pattern, string), or (image pattern, string, modifiers). The string specifies the string to be typed in, which can be concatenated with the special keys defined in {@link #Key the Key class}.  The image pattern specifies the object that needs the focus before typing. The modifiers specifies the key modifiers to be pressed while typing.
-# @return Returns 0 if nothing is typed, otherwise returns 1.
-def type(*args):
-   if len(args) == 1:
-      return _si.type(None, args[0])
-   if len(args) == 2:
-      if __builtin__.type(args[1]) is types.IntType:
-         return _si.type(None, args[0], args[1])
-      else:
-         return _si.type(args[0], args[1])
-   return _si.type(args[0], args[1], args[2])
 
 ##
 # Paste the given string to the best matched position of the given 

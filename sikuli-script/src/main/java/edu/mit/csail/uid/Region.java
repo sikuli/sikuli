@@ -310,9 +310,9 @@ public class Region {
 
    private int _click(Location loc, int buttons, int modifiers, 
                       boolean dblClick) {
-      Debug.log("click on " + loc + " BTN: " + buttons + ", MOD: " +modifiers); 
       if(loc == null)
          return 0;
+      Debug.log("click on " + loc + " BTN: " + buttons + ", MOD: " +modifiers); 
       pressModifiers(modifiers);
       _robot.mouseMove(loc.x, loc.y);
       //showClick(m.x, m.y, m.w, m.h); FIXME
