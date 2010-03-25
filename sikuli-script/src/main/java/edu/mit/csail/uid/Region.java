@@ -308,7 +308,7 @@ public class Region {
       if(text != null){
          for(int i=0; i < text.length(); i++){
             pressModifiers(modifiers);
-            type_ch(text.charAt(i)); 
+            type_ch(text.charAt(i), PRESS_RELEASE); 
             releaseModifiers(modifiers);
             _robot.delay(20);
          }
@@ -347,6 +347,36 @@ public class Region {
          _robot.mouseRelease(_hold_buttons);
       else
          _robot.mouseRelease(buttons);
+      _robot.waitForIdle();
+   }
+
+   private String _hold_keys = "";
+   public void keyDown(String keys){
+      if(keys != null){
+         for(int i=0; i < keys.length(); i++){
+            if(_hold_keys.indexOf(keys.charAt(i)) == -1){
+               Debug.log(5, "press: " + keys.charAt(i));
+               type_ch(keys.charAt(i), PRESS_ONLY); 
+               _hold_keys += keys.charAt(i);
+            }
+         }
+         _robot.waitForIdle();
+         return;
+      }
+   }
+
+   public void keyUp(String keys){
+      if(keys == null)
+         keys = _hold_keys;
+      for(int i=0; i < keys.length(); i++){
+         int pos;
+         if( (pos=_hold_keys.indexOf(keys.charAt(i))) != -1 ){
+            Debug.log(5, "release: " + keys.charAt(i));
+            type_ch(keys.charAt(i), RELEASE_ONLY); 
+            _hold_keys = _hold_keys.substring(0,pos) + 
+                         _hold_keys.substring(pos+1);
+         }
+      }
       _robot.waitForIdle();
    }
 
@@ -465,150 +495,158 @@ public class Region {
       return m;
    }
 
-   private void doType(int... keyCodes) {
-      doType(keyCodes, 0, keyCodes.length);
-   }
-
-   private void doType(int[] keyCodes, int offset, int length) {
-      if (length == 0) {
-         return;
+   static final int PRESS_ONLY = 0;
+   static final int RELEASE_ONLY = 1;
+   static final int PRESS_RELEASE = 2;
+   private void doType(int mode, int... keyCodes) {
+      for(int i=0;i<keyCodes.length;i++){
+         if(mode==PRESS_ONLY){
+            _robot.keyPress(keyCodes[i]);
+         }
+         else if(mode==RELEASE_ONLY){
+            _robot.keyRelease(keyCodes[i]);
+         }
+         else{
+            _robot.keyPress(keyCodes[i]);
+            _robot.keyRelease(keyCodes[i]);
+         }
       }
-
-      _robot.keyPress(keyCodes[offset]);
-      doType(keyCodes, offset + 1, length - 1);
-      _robot.keyRelease(keyCodes[offset]);
    }
 
 
-   private void type_ch(char character) {
+   private void type_ch(char character, int mode) {
       switch (character) {
-         case 'a': doType(KeyEvent.VK_A); break;
-         case 'b': doType(KeyEvent.VK_B); break;
-         case 'c': doType(KeyEvent.VK_C); break;
-         case 'd': doType(KeyEvent.VK_D); break;
-         case 'e': doType(KeyEvent.VK_E); break;
-         case 'f': doType(KeyEvent.VK_F); break;
-         case 'g': doType(KeyEvent.VK_G); break;
-         case 'h': doType(KeyEvent.VK_H); break;
-         case 'i': doType(KeyEvent.VK_I); break;
-         case 'j': doType(KeyEvent.VK_J); break;
-         case 'k': doType(KeyEvent.VK_K); break;
-         case 'l': doType(KeyEvent.VK_L); break;
-         case 'm': doType(KeyEvent.VK_M); break;
-         case 'n': doType(KeyEvent.VK_N); break;
-         case 'o': doType(KeyEvent.VK_O); break;
-         case 'p': doType(KeyEvent.VK_P); break;
-         case 'q': doType(KeyEvent.VK_Q); break;
-         case 'r': doType(KeyEvent.VK_R); break;
-         case 's': doType(KeyEvent.VK_S); break;
-         case 't': doType(KeyEvent.VK_T); break;
-         case 'u': doType(KeyEvent.VK_U); break;
-         case 'v': doType(KeyEvent.VK_V); break;
-         case 'w': doType(KeyEvent.VK_W); break;
-         case 'x': doType(KeyEvent.VK_X); break;
-         case 'y': doType(KeyEvent.VK_Y); break;
-         case 'z': doType(KeyEvent.VK_Z); break;
-         case 'A': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_A); break;
-         case 'B': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_B); break;
-         case 'C': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_C); break;
-         case 'D': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_D); break;
-         case 'E': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_E); break;
-         case 'F': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_F); break;
-         case 'G': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_G); break;
-         case 'H': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_H); break;
-         case 'I': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_I); break;
-         case 'J': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_J); break;
-         case 'K': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_K); break;
-         case 'L': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_L); break;
-         case 'M': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_M); break;
-         case 'N': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_N); break;
-         case 'O': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_O); break;
-         case 'P': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_P); break;
-         case 'Q': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_Q); break;
-         case 'R': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_R); break;
-         case 'S': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_S); break;
-         case 'T': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_T); break;
-         case 'U': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_U); break;
-         case 'V': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_V); break;
-         case 'W': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_W); break;
-         case 'X': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_X); break;
-         case 'Y': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_Y); break;
-         case 'Z': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_Z); break;
-         case '`': doType(KeyEvent.VK_BACK_QUOTE); break;
-         case '0': doType(KeyEvent.VK_0); break;
-         case '1': doType(KeyEvent.VK_1); break;
-         case '2': doType(KeyEvent.VK_2); break;
-         case '3': doType(KeyEvent.VK_3); break;
-         case '4': doType(KeyEvent.VK_4); break;
-         case '5': doType(KeyEvent.VK_5); break;
-         case '6': doType(KeyEvent.VK_6); break;
-         case '7': doType(KeyEvent.VK_7); break;
-         case '8': doType(KeyEvent.VK_8); break;
-         case '9': doType(KeyEvent.VK_9); break;
-         case '-': doType(KeyEvent.VK_MINUS); break;
-         case '=': doType(KeyEvent.VK_EQUALS); break;
-         case '~': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_BACK_QUOTE); break;
-         case '!': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_1); break;
-         case '@': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_2); break;
-         case '#': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_3); break;
-         case '$': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_4); break;
-         case '%': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_5); break;
-         case '^': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_6); break;
-         case '&': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_7); break;
-         case '*': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_8); break;
-         case '(': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_9); break;
-         case ')': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_0); break;
-         case '_': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_MINUS); break;
-         case '+': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_EQUALS); break;
-         case '\b': doType(KeyEvent.VK_BACK_SPACE); break;
-         case '\t': doType(KeyEvent.VK_TAB); break;
-         case '\r': doType(KeyEvent.VK_ENTER); break;
-         case '\n': doType(KeyEvent.VK_ENTER); break;
-         case '[': doType(KeyEvent.VK_OPEN_BRACKET); break;
-         case ']': doType(KeyEvent.VK_CLOSE_BRACKET); break;
-         case '\\': doType(KeyEvent.VK_BACK_SLASH); break;
-         case '{': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_OPEN_BRACKET); break;
-         case '}': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_CLOSE_BRACKET); break;
-         case '|': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_BACK_SLASH); break;
-         case ';': doType(KeyEvent.VK_SEMICOLON); break;
-         case ':': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_SEMICOLON); break;
-         case '\'': doType(KeyEvent.VK_QUOTE); break;
-         case '"': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_QUOTE); break;
-         case ',': doType(KeyEvent.VK_COMMA); break;
-         case '<': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_COMMA); break;
-         case '.': doType(KeyEvent.VK_PERIOD); break;
-         case '>': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_PERIOD); break;
-         case '/': doType(KeyEvent.VK_SLASH); break;
-         case '?': doType(KeyEvent.VK_SHIFT, KeyEvent.VK_SLASH); break;
-         case ' ': doType(KeyEvent.VK_SPACE); break;
-         case '\u001b': doType(KeyEvent.VK_ESCAPE); break;
-         case '\ue000': doType(KeyEvent.VK_UP); break;
-         case '\ue001': doType(KeyEvent.VK_RIGHT); break;
-         case '\ue002': doType(KeyEvent.VK_DOWN); break;
-         case '\ue003': doType(KeyEvent.VK_LEFT); break;
-         case '\ue004': doType(KeyEvent.VK_PAGE_UP); break;
-         case '\ue005': doType(KeyEvent.VK_PAGE_DOWN); break;
-         case '\ue006': doType(KeyEvent.VK_DELETE); break;
-         case '\ue007': doType(KeyEvent.VK_END); break;
-         case '\ue008': doType(KeyEvent.VK_HOME); break;
-         case '\ue009': doType(KeyEvent.VK_INSERT); break;
-         case '\ue011': doType(KeyEvent.VK_F1); break;
-         case '\ue012': doType(KeyEvent.VK_F2); break;
-         case '\ue013': doType(KeyEvent.VK_F3); break;
-         case '\ue014': doType(KeyEvent.VK_F4); break;
-         case '\ue015': doType(KeyEvent.VK_F5); break;
-         case '\ue016': doType(KeyEvent.VK_F6); break;
-         case '\ue017': doType(KeyEvent.VK_F7); break;
-         case '\ue018': doType(KeyEvent.VK_F8); break;
-         case '\ue019': doType(KeyEvent.VK_F9); break;
-         case '\ue01A': doType(KeyEvent.VK_F10); break;
-         case '\ue01B': doType(KeyEvent.VK_F11); break;
-         case '\ue01C': doType(KeyEvent.VK_F12); break;
-         case '\ue01D': doType(KeyEvent.VK_F13); break;
-         case '\ue01E': doType(KeyEvent.VK_F14); break;
-         case '\ue01F': doType(KeyEvent.VK_F15); break;
+         case 'a': doType(mode,KeyEvent.VK_A); break;
+         case 'b': doType(mode,KeyEvent.VK_B); break;
+         case 'c': doType(mode,KeyEvent.VK_C); break;
+         case 'd': doType(mode,KeyEvent.VK_D); break;
+         case 'e': doType(mode,KeyEvent.VK_E); break;
+         case 'f': doType(mode,KeyEvent.VK_F); break;
+         case 'g': doType(mode,KeyEvent.VK_G); break;
+         case 'h': doType(mode,KeyEvent.VK_H); break;
+         case 'i': doType(mode,KeyEvent.VK_I); break;
+         case 'j': doType(mode,KeyEvent.VK_J); break;
+         case 'k': doType(mode,KeyEvent.VK_K); break;
+         case 'l': doType(mode,KeyEvent.VK_L); break;
+         case 'm': doType(mode,KeyEvent.VK_M); break;
+         case 'n': doType(mode,KeyEvent.VK_N); break;
+         case 'o': doType(mode,KeyEvent.VK_O); break;
+         case 'p': doType(mode,KeyEvent.VK_P); break;
+         case 'q': doType(mode,KeyEvent.VK_Q); break;
+         case 'r': doType(mode,KeyEvent.VK_R); break;
+         case 's': doType(mode,KeyEvent.VK_S); break;
+         case 't': doType(mode,KeyEvent.VK_T); break;
+         case 'u': doType(mode,KeyEvent.VK_U); break;
+         case 'v': doType(mode,KeyEvent.VK_V); break;
+         case 'w': doType(mode,KeyEvent.VK_W); break;
+         case 'x': doType(mode,KeyEvent.VK_X); break;
+         case 'y': doType(mode,KeyEvent.VK_Y); break;
+         case 'z': doType(mode,KeyEvent.VK_Z); break;
+         case 'A': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_A); break;
+         case 'B': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_B); break;
+         case 'C': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_C); break;
+         case 'D': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_D); break;
+         case 'E': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_E); break;
+         case 'F': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_F); break;
+         case 'G': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_G); break;
+         case 'H': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_H); break;
+         case 'I': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_I); break;
+         case 'J': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_J); break;
+         case 'K': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_K); break;
+         case 'L': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_L); break;
+         case 'M': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_M); break;
+         case 'N': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_N); break;
+         case 'O': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_O); break;
+         case 'P': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_P); break;
+         case 'Q': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_Q); break;
+         case 'R': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_R); break;
+         case 'S': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_S); break;
+         case 'T': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_T); break;
+         case 'U': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_U); break;
+         case 'V': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_V); break;
+         case 'W': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_W); break;
+         case 'X': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_X); break;
+         case 'Y': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_Y); break;
+         case 'Z': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_Z); break;
+         case '`': doType(mode,KeyEvent.VK_BACK_QUOTE); break;
+         case '0': doType(mode,KeyEvent.VK_0); break;
+         case '1': doType(mode,KeyEvent.VK_1); break;
+         case '2': doType(mode,KeyEvent.VK_2); break;
+         case '3': doType(mode,KeyEvent.VK_3); break;
+         case '4': doType(mode,KeyEvent.VK_4); break;
+         case '5': doType(mode,KeyEvent.VK_5); break;
+         case '6': doType(mode,KeyEvent.VK_6); break;
+         case '7': doType(mode,KeyEvent.VK_7); break;
+         case '8': doType(mode,KeyEvent.VK_8); break;
+         case '9': doType(mode,KeyEvent.VK_9); break;
+         case '-': doType(mode,KeyEvent.VK_MINUS); break;
+         case '=': doType(mode,KeyEvent.VK_EQUALS); break;
+         case '~': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_BACK_QUOTE); break;
+         case '!': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_1); break;
+         case '@': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_2); break;
+         case '#': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_3); break;
+         case '$': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_4); break;
+         case '%': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_5); break;
+         case '^': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_6); break;
+         case '&': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_7); break;
+         case '*': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_8); break;
+         case '(': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_9); break;
+         case ')': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_0); break;
+         case '_': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_MINUS); break;
+         case '+': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_EQUALS); break;
+         case '\b': doType(mode,KeyEvent.VK_BACK_SPACE); break;
+         case '\t': doType(mode,KeyEvent.VK_TAB); break;
+         case '\r': doType(mode,KeyEvent.VK_ENTER); break;
+         case '\n': doType(mode,KeyEvent.VK_ENTER); break;
+         case '[': doType(mode,KeyEvent.VK_OPEN_BRACKET); break;
+         case ']': doType(mode,KeyEvent.VK_CLOSE_BRACKET); break;
+         case '\\': doType(mode,KeyEvent.VK_BACK_SLASH); break;
+         case '{': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_OPEN_BRACKET); break;
+         case '}': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_CLOSE_BRACKET); break;
+         case '|': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_BACK_SLASH); break;
+         case ';': doType(mode,KeyEvent.VK_SEMICOLON); break;
+         case ':': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_SEMICOLON); break;
+         case '\'': doType(mode,KeyEvent.VK_QUOTE); break;
+         case '"': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_QUOTE); break;
+         case ',': doType(mode,KeyEvent.VK_COMMA); break;
+         case '<': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_COMMA); break;
+         case '.': doType(mode,KeyEvent.VK_PERIOD); break;
+         case '>': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_PERIOD); break;
+         case '/': doType(mode,KeyEvent.VK_SLASH); break;
+         case '?': doType(mode,KeyEvent.VK_SHIFT, KeyEvent.VK_SLASH); break;
+         case ' ': doType(mode,KeyEvent.VK_SPACE); break;
+         case '\u001b': doType(mode,KeyEvent.VK_ESCAPE); break;
+         case '\ue000': doType(mode,KeyEvent.VK_UP); break;
+         case '\ue001': doType(mode,KeyEvent.VK_RIGHT); break;
+         case '\ue002': doType(mode,KeyEvent.VK_DOWN); break;
+         case '\ue003': doType(mode,KeyEvent.VK_LEFT); break;
+         case '\ue004': doType(mode,KeyEvent.VK_PAGE_UP); break;
+         case '\ue005': doType(mode,KeyEvent.VK_PAGE_DOWN); break;
+         case '\ue006': doType(mode,KeyEvent.VK_DELETE); break;
+         case '\ue007': doType(mode,KeyEvent.VK_END); break;
+         case '\ue008': doType(mode,KeyEvent.VK_HOME); break;
+         case '\ue009': doType(mode,KeyEvent.VK_INSERT); break;
+         case '\ue011': doType(mode,KeyEvent.VK_F1); break;
+         case '\ue012': doType(mode,KeyEvent.VK_F2); break;
+         case '\ue013': doType(mode,KeyEvent.VK_F3); break;
+         case '\ue014': doType(mode,KeyEvent.VK_F4); break;
+         case '\ue015': doType(mode,KeyEvent.VK_F5); break;
+         case '\ue016': doType(mode,KeyEvent.VK_F6); break;
+         case '\ue017': doType(mode,KeyEvent.VK_F7); break;
+         case '\ue018': doType(mode,KeyEvent.VK_F8); break;
+         case '\ue019': doType(mode,KeyEvent.VK_F9); break;
+         case '\ue01A': doType(mode,KeyEvent.VK_F10); break;
+         case '\ue01B': doType(mode,KeyEvent.VK_F11); break;
+         case '\ue01C': doType(mode,KeyEvent.VK_F12); break;
+         case '\ue01D': doType(mode,KeyEvent.VK_F13); break;
+         case '\ue01E': doType(mode,KeyEvent.VK_F14); break;
+         case '\ue01F': doType(mode,KeyEvent.VK_F15); break;
+         case '\ue020': doType(mode,KeyEvent.VK_SHIFT); break;
+         case '\ue021': doType(mode,KeyEvent.VK_CONTROL); break;
+         case '\ue022': doType(mode,KeyEvent.VK_ALT); break;
+         case '\ue023': doType(mode,KeyEvent.VK_META); break;
          default:
-                   throw new IllegalArgumentException("Cannot type character " + character);
+            throw new IllegalArgumentException("Cannot type character " + character);
       }
    }
 

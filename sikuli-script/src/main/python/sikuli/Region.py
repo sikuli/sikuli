@@ -191,8 +191,13 @@ class Region(JRegion):
       return JRegion.mouseDown(self, buttons)
 
    def mouseUp(self, buttons=0):
-      return JRegion.mouseDown(self, buttons)
+      return JRegion.mouseUp(self, buttons)
 
+   def keyDown(self, keys):
+      return JRegion.keyDown(self, keys)
+
+   def keyUp(self, keys=None):
+      return JRegion.keyUp(self, keys)
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>

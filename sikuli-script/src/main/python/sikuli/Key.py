@@ -115,3 +115,22 @@ class Key:
    ##
    # F15
    F15         = u"\ue01F"
+   ##
+   # SHIFT
+   SHIFT       = u"\ue020"
+   ##
+   # CTRL
+   CTRL        = u"\ue021"
+   ##
+   # ALT
+   ALT         = u"\ue022"
+   ##
+   # META
+   META        = u"\ue023"
+   ##
+   # META
+   CMD         = u"\ue023"
+   ##
+   # META
+   WIN         = u"\ue023"
+
