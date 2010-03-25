@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.awt.*;
 import java.util.Iterator;
+import java.io.File;
 import java.io.IOException;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
@@ -66,7 +67,10 @@ public class Finder implements Iterator<Match>{
    }
 
    public void find(String templateFilename, double minSimilarity){
-      find(_instance, templateFilename, minSimilarity);
+      String fname = templateFilename;
+      if( !(new File(templateFilename)).exists() )
+         fname = Settings.BundlePath + File.separator + templateFilename;
+      find(_instance, fname, minSimilarity);
    }
 
    @Override

@@ -2,6 +2,7 @@
 # This module provides a Jython interface of Sikuli Script to automate GUI
 # interactions.
 ##
+import java.io.File
 import time
 from edu.mit.csail.uid import SikuliScript
 from edu.mit.csail.uid import Match
@@ -28,6 +29,8 @@ _si = SikuliScript()
 # not call this method.
 #
 def setBundlePath(path):
+   if path[-1:] == java.io.File.separator:
+      path = path[:-1]
    Settings.BundlePath = path
    VDict._setBundlePath(path)
 

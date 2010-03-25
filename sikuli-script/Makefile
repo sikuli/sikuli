@@ -25,7 +25,7 @@ JAR_PATH=target/jar/
 RELEASE_TMP_PATH=target/sikuli-script
 
 PY_TEST_PATH=src/test/python
-PYTHON_TESTS=sikuli with basic capture findAll dragdrop type wait
+PYTHON_TESTS=sikuli with basic capture findAll dragdrop type wait bundle
 
 SRC=$(shell find $(SOURCE_PATH) -name \*.java)
 CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java | perl -ple 's!^./(.*)\.java!$(TARGET_PATH)/$$1.class!' )
