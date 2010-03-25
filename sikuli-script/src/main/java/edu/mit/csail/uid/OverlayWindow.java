@@ -9,17 +9,16 @@ import javax.swing.*;
 class OverlayWindow extends JWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
-   static Rectangle fullscreenRect = new Rectangle(
-         Toolkit.getDefaultToolkit().getScreenSize() );
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
-   static GraphicsDevice _gdev;
    static int MARGIN = 20;
 
 
+   Screen _scr;
    VizMode _mode = null;
    BufferedImage _screen = null;
    BufferedImage _darker_screen = null;
    int srcx, srcy, destx, desty;
+   Location _lastTarget;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -40,10 +39,9 @@ class OverlayWindow extends JWindow implements MouseListener {
       dispose(); 
    }
 
-   private void captureScreen(int x, int y, int w, int h) throws AWTException{
-      Robot _robot = new Robot();
-      Rectangle rect = new Rectangle(x, y, w, h);
-      _screen = _robot.createScreenCapture(rect);
+   private void captureScreen(int x, int y, int w, int h) {
+      ScreenImage img = _scr.capture(x, y, w, h);
+      _screen = img.getImage();
 
       float scaleFactor = .6f;
       RescaleOp op = new RescaleOp(scaleFactor, 0, null);
@@ -98,8 +96,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    }
 
    private void close(){
-      //_gdev.setFullScreenWindow(null);
-      this.setVisible(false);
+      dispose();
    }
 
 
@@ -114,28 +111,30 @@ class OverlayWindow extends JWindow implements MouseListener {
       showWindow(x1-MARGIN, y1-MARGIN, x2-x1+2*MARGIN, y2-y1+2*MARGIN);
    }
 
-   public void showTarget(int x, int y, int w, int h){
-      _mode = VizMode.ONE_TARGET;
-      Debug.log(1, "showTarget " + x + " " + y + " " + w + " " + h);
+   public void showDropTarget(Location loc){
+      showDragDrop(_lastTarget.x, _lastTarget.y, loc.x, loc.y);
+   }
 
+   public void showTarget(Location loc){
+      _mode = VizMode.ONE_TARGET;
+      final int w = 50, h = 50;
+      int x = loc.x-w/2, y = loc.y-w/2;
+      _lastTarget = loc;
+
+      Debug.log(1, "showTarget " + x + " " + y + " " + w + " " + h);
       srcx = 0; destx = w;
       srcy = 0; desty = h;
       showWindow(x, y, w, h);
    }
 
    private void showWindow(int x, int y, int w, int h){
-      try{
-         captureScreen(x, y, w, h);
-      }
-      catch(AWTException e){
-         e.printStackTrace();
-      }
+      captureScreen(x, y, w, h);
       setLocation(x,y);
       setSize(w, h);
       setVisible(true);
       toFront();
       try{
-         Thread.sleep(3000);
+         Thread.sleep((int)Settings.ShowActionDelay*1000);
       }
       catch(InterruptedException e){
          close();
@@ -144,10 +143,10 @@ class OverlayWindow extends JWindow implements MouseListener {
       close();
    }
 
-   public OverlayWindow(){
+   public OverlayWindow(Screen scr){
+      _scr = scr;
       init();
       setVisible(false);
-      _gdev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
       setAlwaysOnTop(true);
    }
 

@@ -280,6 +280,7 @@ public class Region {
    public <PSRML> int drag(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
+         _scr.showTarget(loc);
          _robot.mouseMove(loc.x, loc.y);
          _robot.mousePress(InputEvent.BUTTON1_MASK);
          _robot.waitForIdle();
@@ -291,6 +292,7 @@ public class Region {
    public <PSRML> int dropAt(PSRML target, double delay) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
+         _scr.showDropTarget(loc);
          _robot.mouseMove(loc.x, loc.y);
          _robot.delay((int)(delay*1000));
          _robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -416,7 +418,7 @@ public class Region {
       Debug.log("click on " + loc + " BTN: " + buttons + ", MOD: " +modifiers); 
       pressModifiers(modifiers);
       _robot.mouseMove(loc.x, loc.y);
-      //showClick(m.x, m.y, m.w, m.h); FIXME
+      _scr.showTarget(loc);
       _robot.mousePress(buttons);
       _robot.mouseRelease(buttons);
       if( dblClick ){

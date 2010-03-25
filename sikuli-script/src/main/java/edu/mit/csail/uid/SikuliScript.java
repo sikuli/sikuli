@@ -13,14 +13,10 @@ import javax.swing.*;
 
 
 public class SikuliScript {
-   private OverlayWindow _overlay;
    private OSUtil _osUtil;
-   private int _waitBeforeAction = 3000;
-   private boolean _stopIfWaitingFailed = true;
    private boolean _showActions = false;
 
    public SikuliScript() throws AWTException{
-      _overlay = new OverlayWindow();
       _osUtil = Env.createOSUtil();
    }
 
@@ -49,18 +45,6 @@ public class SikuliScript {
                                     "Sikuli", JOptionPane.PLAIN_MESSAGE);
    }
 
-   private void showClick(int x, int y, int w, int h){
-      if(_showActions){
-         _overlay.showTarget(x,y,w,h);
-      }
-   }
-
-   private void showDragDrop(int x, int y, int x2, int y2){
-      if(_showActions){
-         _overlay.showDragDrop(x,y, x2, y2);
-      }
-   }
-	
    public String run(String cmdline){
       String lines="";
 

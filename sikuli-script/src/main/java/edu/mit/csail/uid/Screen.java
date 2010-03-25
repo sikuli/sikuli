@@ -9,6 +9,7 @@ public class Screen extends Region implements Observer {
 
    private boolean _waitPrompt;
    private CapturePrompt _prompt;
+   private OverlayWindow _overlay;
 
    static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
@@ -17,6 +18,10 @@ public class Screen extends Region implements Observer {
    static{
       _genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
       _gdev = _genv.getScreenDevices();
+      initRobots();
+   }
+
+   private static void initRobots(){
       try{
          _robots = new Robot[_gdev.length];
          for(int i=0;i<_gdev.length;i++){
@@ -62,9 +67,14 @@ public class Screen extends Region implements Observer {
       }
       else
          initGD();
+      initBounds();
+   }
+
+   private void initBounds(){
       Rectangle bounds = getBounds();
       init((int)bounds.getX(), (int)bounds.getY(),
             (int)bounds.getWidth(), (int)bounds.getHeight(), this);
+      _overlay = new OverlayWindow(this);
    }
 
    private void initGD(){
@@ -76,10 +86,7 @@ public class Screen extends Region implements Observer {
 
    public Screen() {
       initGD();
-      Rectangle bounds = getBounds();
-      init((int)bounds.getX(), (int)bounds.getY(),
-            (int)bounds.getWidth(), (int)bounds.getHeight(), this);
-
+      initBounds();
    }
 
    public ScreenImage capture() {
@@ -123,5 +130,17 @@ public class Screen extends Region implements Observer {
 
    public void update(Subject s){
       _waitPrompt = false;
+   }
+
+   void showTarget(Location loc){
+      if(Settings.ShowActions){
+         _overlay.showTarget(loc);
+      }
+   }
+
+   void showDropTarget(Location loc){
+      if(Settings.ShowActions){
+         _overlay.showDropTarget(loc);
+      }
    }
 }
