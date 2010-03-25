@@ -335,6 +335,21 @@ public class Region {
    }
 
 
+   private int _hold_buttons = 0;
+   public void mouseDown(int buttons) {
+      _hold_buttons = buttons;
+      _robot.mousePress(buttons);
+      _robot.waitForIdle();
+   }
+
+   public void mouseUp(int buttons) {
+      if(buttons==0)
+         _robot.mouseRelease(_hold_buttons);
+      else
+         _robot.mouseRelease(buttons);
+      _robot.waitForIdle();
+   }
+
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS
    ////////////////////////////////////////////////////////////////

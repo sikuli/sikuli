@@ -184,6 +184,15 @@ class Region(JRegion):
          delay = Settings.DelayBeforeDrop
       return JRegion.dropAt(self, target, delay)
 
+   def mouseMove(self, target):
+      return JRegion.hover(self, target)
+
+   def mouseDown(self, buttons):
+      return JRegion.mouseDown(self, buttons)
+
+   def mouseUp(self, buttons=0):
+      return JRegion.mouseDown(self, buttons)
+
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
