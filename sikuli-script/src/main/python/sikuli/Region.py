@@ -81,7 +81,8 @@ class Region(JRegion):
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
    # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
    def wait(self, target, timeout=3):
-      if __builtin__.type(target) is types.IntType:
+      ttype = __builtin__.type(target)
+      if ttype is types.IntType or ttype is types.FloatType:
          time.sleep(target)
          return
       ret = JRegion.wait(self, target, timeout)

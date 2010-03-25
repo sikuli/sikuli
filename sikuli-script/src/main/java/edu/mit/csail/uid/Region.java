@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 public class Region {
    private ScreenCapturer _capturer;
    private Robot _robot;
+   private Screen _scr;
 
    public int x, y, w, h;
 
@@ -18,26 +19,45 @@ public class Region {
    private double _waitBeforeAction = 3.0;
 
 
-   public Region(int x_, int y_, int w_, int h_) throws AWTException{
+   public Region(int x_, int y_, int w_, int h_) {
       init(x_,y_,w_,h_);
+   }
+
+   public Region(Region r) {
+      init(r.x, r.y, r.w, r.h);
    }
 
    protected Region(){}
 
-   void init(int x_, int y_, int w_, int h_) throws AWTException{
+   void init(int x_, int y_, int w_, int h_) {
       x = x_;
       y = y_;
       w = w_;
       h = h_;
+      initScreen();
+   }
+
+   void init(int x_, int y_, int w_, int h_, Screen scr) {
+      x = x_;
+      y = y_;
+      w = w_;
+      h = h_;
+      _scr = scr;
+      _robot = scr.getRobot();
+   }
+
+   void initScreen(){
       Rectangle roi = new Rectangle(x, y, w, h);
       for(int i=0;i<Screen.getNumberScreens();i++){
          Rectangle scrBound = Screen.getBounds(i);
          if(scrBound.contains(roi)){
-            _robot = new Robot(Screen.getGraphicsDevice(i));
+            _scr = new Screen(i);
+            _robot = _scr.getRobot();
             return;
          }
       }
-      _robot = new Robot();
+      _scr = new Screen();
+      _robot = _scr.getRobot();
    }
 
    public int getX(){ return x; }
@@ -71,6 +91,65 @@ public class Region {
       return new Location(x+w/2, y+h/2);
    }
 
+   ///// SPATIAL OPERATORS
+   public Region nearby(){
+      final int PADDING = 100;
+      return nearby(PADDING);
+   }
+
+   public Region nearby(int range){
+      Region r = new Region(this);
+      r.x = x<range? 0 : x-range;
+      r.y = y<range? 0 : y-range;
+      r.w += range*2; 
+      r.h += range*2;
+      return r;
+   }
+
+   public Region right(){  return right(9999999); }
+   public Region right(int range){
+      Region r = new Region(this);
+      r.x = x+w;
+      r.y = y;
+      r.w = range;
+      r.h = h;
+      return r;
+   }
+
+   public Region left(){   return left(9999999);   }
+   public Region left(int range){
+      Region r = new Region(this);
+      r.x = x-range < 0? 0: x-range;
+      r.y = y;
+      r.w = x;
+      r.h = h;
+      return r;
+   }
+
+   public Region above(){    return above(9999999);    }
+   public Region above(int range){
+      Region r = new Region(this);
+      r.x = x;
+      r.y = y-range < 0? 0:y-range;
+      r.w = w;
+      r.h = y;
+      return r;
+   }
+
+   public Region below(){     return below(999999);   }
+   public Region below(int range){
+      Region r = new Region(this);
+      r.x = x;
+      r.y = y+h;
+      r.w = w;
+      r.h = range;
+      return r;
+   }
+
+   public Region inside(){ 
+      return this;
+   }
+
    //////////// Settings
    public void setThrowException(boolean flag){ _stopIfWaitingFailed = flag; } 
    public void setAutoWaitTimeout(double sec){ _waitBeforeAction = sec; }
@@ -86,7 +165,7 @@ public class Region {
     * finds the given pattern on the screen and returns the best match.
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
-   public <PSC> Match find(PSC ptn) throws AWTException, FindFailed{
+   public <PSC> Match find(PSC ptn) throws FindFailed{
       if(_waitBeforeAction > 0)
          return wait(ptn, _waitBeforeAction);
       else{
@@ -103,7 +182,7 @@ public class Region {
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
    public <PSC> Iterator<Match> findAll(PSC ptn) 
-                                             throws AWTException, FindFailed{
+                                             throws  FindFailed{
       if(_waitBeforeAction > 0)
          return waitAll(ptn, _waitBeforeAction);
       else{
@@ -120,8 +199,7 @@ public class Region {
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
-   public <PSC> Match wait(PSC target, double timeout) 
-                                             throws AWTException, FindFailed{
+   public <PSC> Match wait(PSC target, double timeout) throws FindFailed{
       Iterator<Match> ms = waitAll(target, timeout);
       Match ret = null;
       if(ms != null)
@@ -136,8 +214,7 @@ public class Region {
     *  waits until target vanishes or timeout (in second) is passed
     *  @return true if the target vanishes, otherwise returns false.
     */
-   public <PSC> boolean waitVanish(PSC target, double timeout) 
-                                             throws AWTException {
+   public <PSC> boolean waitVanish(PSC target, double timeout) {
       int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
       long begin_t = (new Date()).getTime();
       while( begin_t + timeout*1000 > (new Date()).getTime() ){
@@ -160,34 +237,35 @@ public class Region {
    }
 
    public <PSRML> int click(PSRML target, int modifiers) 
-                                                throws AWTException, FindFailed{
+                                                throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       return _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
    }
 
    public <PSRML> int doubleClick(PSRML target, int modifiers) 
-                                                throws AWTException, FindFailed{
+                                                throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       return _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
    }
 
    public <PSRML> int rightClick(PSRML target, int modifiers) 
-                                                throws AWTException, FindFailed{
+                                                throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       return _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
    }
 
-   public <PSRML> int hover(PSRML target) throws AWTException, FindFailed{
+   public <PSRML> int hover(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
          _robot.mouseMove(loc.x, loc.y);
+         _robot.waitForIdle();
          return 1;
       }
       return 0;
    }
 
    public <PSRML> int dragDrop(PSRML t1, PSRML t2, int modifiers)
-                                             throws AWTException, FindFailed {
+                                             throws  FindFailed {
       int ret = 0;
       pressModifiers(modifiers);
       if(drag(t1)!=0){
@@ -198,29 +276,31 @@ public class Region {
       return ret;
    }
 
-   public <PSRML> int drag(PSRML target) throws AWTException, FindFailed{
+   public <PSRML> int drag(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
          _robot.mouseMove(loc.x, loc.y);
          _robot.mousePress(InputEvent.BUTTON1_MASK);
+         _robot.waitForIdle();
          return 1;
       }
       return 0;
    }
 
-   public <PSRML> int dropAt(PSRML target, double delay) throws AWTException, FindFailed{
+   public <PSRML> int dropAt(PSRML target, double delay) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
          _robot.mouseMove(loc.x, loc.y);
          _robot.delay((int)(delay*1000));
          _robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         _robot.waitForIdle();
          return 1;
       }
       return 0;
    }
 
    public <PSRML> int type(PSRML target, String text, int modifiers) 
-                                                throws AWTException, FindFailed{
+                                                throws  FindFailed{
       click(target, 0);
       if(text != null){
          for(int i=0; i < text.length(); i++){
@@ -229,13 +309,14 @@ public class Region {
             releaseModifiers(modifiers);
             _robot.delay(20);
          }
+         _robot.waitForIdle();
          return 1;
       }
       return 0;
    }
 
    public <PSRML> int paste(PSRML target, String text) 
-                                                throws AWTException, FindFailed{
+                                                throws  FindFailed{
       click(target, 0);
       if(text != null){
          Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8, 
@@ -265,8 +346,8 @@ public class Region {
     * finds the given pattern on the screen and returns the best match 
     * without waiting.
     */
-   public <PSC> Match findNow(PSC ptn) throws AWTException, FindFailed{
-      ScreenImage simg = getCapturer().capture();
+   public <PSC> Match findNow(PSC ptn) throws  FindFailed{
+      ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
       Match ret = null;
       f.find(ptn);
@@ -282,8 +363,8 @@ public class Region {
     * without waiting.
     */
    public <PSC> Iterator<Match> findAllNow(PSC ptn) 
-                                             throws AWTException, FindFailed{
-      ScreenImage simg = getCapturer().capture();
+                                             throws  FindFailed{
+      ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
       f.find(ptn);
       if(f.hasNext()) 
@@ -296,7 +377,7 @@ public class Region {
     *  waits until target appears or timeout (in second) is passed
     */
    public <PSC> Iterator<Match> waitAll(PSC target, double timeout) 
-                                             throws AWTException, FindFailed{
+                                             throws  FindFailed{
       int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
       long begin_t = (new Date()).getTime();
       while( begin_t + timeout*1000 > (new Date()).getTime() ){
@@ -316,7 +397,7 @@ public class Region {
    }
 
    private <PSRML> Location getLocationFromPSRML(PSRML target) 
-                                             throws AWTException, FindFailed {
+                                             throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
          Match m = find(target);
          return m.getTarget();
@@ -342,6 +423,7 @@ public class Region {
          _robot.mouseRelease(buttons);
       }
       releaseModifiers(modifiers);
+      _robot.waitForIdle();
       return 1;
    }
 
@@ -363,12 +445,6 @@ public class Region {
       m.x += x;
       m.y += y;
       return m;
-   }
-
-   private ScreenCapturer getCapturer() throws AWTException{
-      if(_capturer == null)
-         _capturer = new ScreenCapturer(x, y, w, h);
-      return _capturer;
    }
 
    private void doType(int... keyCodes) {
