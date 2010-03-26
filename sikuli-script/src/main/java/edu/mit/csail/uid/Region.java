@@ -160,7 +160,7 @@ public class Region {
    public double getAutoWaitTimeout(){ return _waitBeforeAction; }
 
 
-   ////////////
+   //////////// CORE FUNCTIONS
 
    /**
     * Match find( Pattern/String/PatternClass ) 
@@ -379,6 +379,22 @@ public class Region {
          }
       }
       _robot.waitForIdle();
+   }
+
+
+   public <PSC> void onAppear(PSC target, SikuliEventObserver observer){
+      EventManager em = EventManager.getInstance();
+      em.addAppearObserver(target, this, observer);
+   }
+
+   public <PSC> void onVanish(PSC target, SikuliEventObserver observer){
+      EventManager em = EventManager.getInstance();
+      em.addVanishObserver(target, this, observer);
+   }
+
+   public <PSC> void onChange(PSC target, SikuliEventObserver observer){
+      EventManager em = EventManager.getInstance();
+      em.addChangeObserver(target, this, observer);
    }
 
    ////////////////////////////////////////////////////////////////
