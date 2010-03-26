@@ -132,6 +132,13 @@ public class Screen extends Region implements Observer {
       _waitPrompt = false;
    }
 
+   public Region selectRegion(){
+      ScreenImage sim = userCapture();
+      Rectangle r = sim.getROI();
+      return new Region((int)r.getX(), (int)r.getY(), 
+                        (int)r.getWidth(), (int)r.getHeight());
+   }
+
    void showTarget(Location loc){
       if(Settings.ShowActions){
          _overlay.showTarget(loc);

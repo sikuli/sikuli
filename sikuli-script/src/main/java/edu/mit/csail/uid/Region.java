@@ -26,6 +26,7 @@ public class Region {
       init(r.x, r.y, r.w, r.h);
    }
 
+
    protected Region(){}
 
    void init(int x_, int y_, int w_, int h_) {

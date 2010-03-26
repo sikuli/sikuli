@@ -27,3 +27,6 @@ $(NATIVE_TEST_RUNNER_BIN): $(NATIVE_TEST_RUNNER) $(OBJS)
 
 run-test: $(NATIVE_TEST_RUNNER_BIN)
 	time $(NATIVE_TEST_RUNNER_BIN)
+
+screenmatch: $(OBJS) screenmatch.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^

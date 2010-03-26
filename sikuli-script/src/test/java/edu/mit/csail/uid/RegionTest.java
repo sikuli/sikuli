@@ -31,6 +31,23 @@ public class RegionTest extends TestCase
         return new TestSuite( RegionTest.class );
     }
 
+    /*
+    public void testSpatialOperators() throws Exception{
+       GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
+       //Thread.sleep(50000);
+       Screen s = new Screen();
+       Match b5 = s.find((new Pattern("test-res/button-5.png")).similar(0.98f));
+       s.click(b5, 0);
+       assertEquals("clicked", f.getText(5));
+       s.click(b5.above().find("test-res/button-2.png"), 0);
+       s.click(b5.left().find("test-res/button-4.png"), 0);
+       s.click(b5.right().find("test-res/button-6.png"), 0);
+       s.click(b5.below().find("test-res/button-8.png"), 0);
+       f.setVisible(false);
+       f.dispose();
+    }
+    */
+
     public void testType() throws Exception
     {
        InputsFrame f = new InputsFrame();

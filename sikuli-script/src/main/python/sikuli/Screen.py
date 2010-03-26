@@ -27,6 +27,9 @@ class Screen(Region):
    def getBounds(self):
       return JScreen().getBounds()
 
+   def selectRegion(self):
+      return JScreen().selectRegion()
+
    ##
    # Enters the screen-capture mode asking the user to capture a region of 
    # the screen if no arguments are given.

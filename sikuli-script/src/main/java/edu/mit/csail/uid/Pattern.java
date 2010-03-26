@@ -2,9 +2,7 @@ package edu.mit.csail.uid;
 
 public class Pattern {
    protected String imgURL = null;
-   protected Pattern parent = null;
    protected float similarity = 0.7f;
-   protected int numMatches = 10;
 
    int dx=0, dy=0;
 
@@ -29,17 +27,9 @@ public class Pattern {
       return this;
    }
 
-   /*
-   public Pattern firstN(int numMatches_){
-      numMatches = numMatches_;
-      return this;
-   }
-   */
-
    public String toString(){
      String ret = "Pattern(\"" + imgURL + "\")";
      ret += ".similar(" + similarity +")";
-     ret += ".firstN(" + numMatches + ")";
      return ret;
    }
 
