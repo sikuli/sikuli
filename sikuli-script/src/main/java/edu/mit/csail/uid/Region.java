@@ -95,7 +95,7 @@ public class Region {
 
    ///// SPATIAL OPERATORS
    public Region nearby(){
-      final int PADDING = 100;
+      final int PADDING = 50;
       return nearby(PADDING);
    }
 
