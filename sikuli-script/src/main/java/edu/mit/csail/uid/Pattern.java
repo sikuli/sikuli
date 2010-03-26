@@ -23,8 +23,9 @@ public class Pattern {
    }
 
    public Pattern exact(){
-      similarity = 1.0f;
-      return this;
+      Pattern ret = new Pattern(this);
+      ret.similarity = 1.0f;
+      return ret;
    }
 
    public Pattern targetOffset(int dx_, int dy_){
