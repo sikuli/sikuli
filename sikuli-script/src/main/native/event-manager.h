@@ -52,8 +52,10 @@ public:
   ~SikuliEventManager();
 
   void addObserver(int event_type, const char* param_image_filename, int handler_id, int x, int y, int w, int h);
+  //void addObserver(int event_type, const IplImage* param_image, int handler_id, int x, int y, int w, int h);
 
   vector<Event> update(const char* screen_image_filename);
+  vector<Event> update(const IplImage* screen_image);
 
   void setDebugMode(bool debug_mode);
   

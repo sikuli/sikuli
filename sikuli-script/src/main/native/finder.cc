@@ -454,6 +454,12 @@ ChangeFinder::ChangeFinder(const char* screen_image_filename)
   storage = 0;
 }
 
+ChangeFinder::ChangeFinder(const IplImage* screen_image)
+: BaseFinder(screen_image){
+  is_identical = false;
+  storage = 0;
+}
+
 ChangeFinder::~ChangeFinder(){
   if (storage)
     cvReleaseMemStorage(&storage);

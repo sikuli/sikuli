@@ -40,12 +40,20 @@ SikuliEventManager::~SikuliEventManager(){
 vector<Event>
 SikuliEventManager::update(const char* screen_image_filename){
 
-   const double MIN_SIMILARITY = 0.8;
+   IplImage* img = cvLoadImage(screen_image_filename);
+   vector<Event> ret = update(img);
+   cvReleaseImage(&img);
+   return ret;
+}
+
+
+vector<Event> SikuliEventManager::update(const IplImage* screen_image){
+  const double MIN_SIMILARITY = 0.8;
   Match top_match;
-  Finder f(screen_image_filename);
+  Finder f(screen_image);
   f.debug(debug_mode);
 
-  ChangeFinder cf(screen_image_filename);
+  ChangeFinder cf(screen_image);
   cf.debug(debug_mode);
   
   vector<Event> events;
@@ -156,12 +164,11 @@ SikuliEventManager::update(const char* screen_image_filename){
       cvReleaseImage(&prev_screen_image); 
       prev_screen_image = 0;
     }    
-    prev_screen_image = cvLoadImage(screen_image_filename);
-    
+    prev_screen_image = cvCloneImage(screen_image);
 
   return events;
 
-};
+}
 
 
 

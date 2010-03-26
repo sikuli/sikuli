@@ -47,6 +47,14 @@ public class EventManager {
    
    }
 
+   private native long createEventManager(); 
+   private native void addObserver(long sem_instance, 
+                                   int evt_type, String target_image_filename,
+                                   int handler_id, int x, int y, int w, int h); 
+
+   private native void _update(long sem_instance, 
+                               byte[] screenImage, int w, int h);
+
 }
 
 

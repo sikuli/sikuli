@@ -1,32 +1,35 @@
 PACKAGE = edu.mit.csail.uid
 
 SOURCE  = \
-   CapturePrompt.java \
-   Clipboard.java \
-   Debug.java \
-   DummyOSUtil.java \
-   Finder.java \
-   FindFailed.java \
-   KeyCodeConverter.java \
-   LinuxUtil.java \
-   MacUtil.java \
-   Match.java \
-   Matches.java \
-   Observer.java \
-   OSUtil.java \
-   OverlayWindow.java \
-   Pattern.java \
-   ScreenMatchProxy.java \
-   ScriptRunner.java \
-   SikuliScript.java \
-   Similar.java \
-   Subject.java \
-   SubregionJ.java \
-   TestScreenMatchProxy.java \
-   TestSikuliScript.java \
-   VDictProxy.java \
-   Win32Util.java
+CapturePrompt.java \
+Clipboard.java \
+Debug.java \
+DummyOSUtil.java \
+Env.java \
+EventManager.java \
+FindFailed.java \
+Finder.java \
+KeyCodeConverter.java \
+LinuxUtil.java \
+Location.java \
+MacUtil.java \
+Match.java \
+OSUtil.java \
+Observer.java \
+OpenCV.java \
+OverlayWindow.java \
+Pattern.java \
+Region.java \
+Screen.java \
+ScreenImage.java \
+ScriptRunner.java \
+Settings.java \
+SikuliEventObserver.java \
+SikuliScript.java \
+Subject.java \
+VDictProxy.java \
+Win32Util.java 
 
-JNI_SOURCE = VDictProxy.java ScreenMatchProxy.java Finder.java 
+JNI_SOURCE = VDictProxy.java ScreenMatchProxy.java Finder.java EventManager.java
 
 include $(DEV_ROOT)/Makefile.common

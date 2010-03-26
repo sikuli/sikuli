@@ -104,6 +104,7 @@ class ChangeFinder : public BaseFinder {
 
 public:
 
+  ChangeFinder(const IplImage* screen_image);
   ChangeFinder(const char* screen_image_filename);
   ~ChangeFinder();
 
