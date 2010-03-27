@@ -34,5 +34,5 @@ with Region(1000,0,280,100) as r2:
 
 wait(8)
 print "stop observing..."
-r1.stopObserving()
-r2.stopObserving()
+r1.stopObserver()
+r2.stopObserver()

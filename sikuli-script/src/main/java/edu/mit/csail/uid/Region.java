@@ -402,7 +402,7 @@ public class Region {
       th.start();
    }
 
-   public void stopObserving(){
+   public void stopObserver(){
       _observing = false;
    }
 
