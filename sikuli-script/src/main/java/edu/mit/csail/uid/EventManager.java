@@ -13,6 +13,7 @@ public class EventManager {
    private static EventManager _instance = null;
    private long _c_instance = 0;
    private Map<Integer, SikuliEventObserver> _obMap;
+   private Region _region;
 
    static {
       try{
@@ -24,15 +25,18 @@ public class EventManager {
       }
    }
 
+   /*
    public static EventManager getInstance(){
       if(_instance==null)
          _instance = new EventManager();
       return _instance;
    }
+   */
 
-   protected EventManager(){
+   public EventManager(Region region){
       _c_instance = createEventManager();
       _obMap = new HashMap<Integer, SikuliEventObserver>();
+      _region = region;
    }
 
    private <PSC> String getFilename(PSC ptn){
@@ -58,25 +62,23 @@ public class EventManager {
       return _obMap.get(id);
    }
 
-   public <PSC> void addAppearObserver(PSC ptn, Region r, 
-                                       SikuliEventObserver ob){
+   public <PSC> void addAppearObserver(PSC ptn, SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
       addObserver(_c_instance, APPEAR, getFilename(ptn), handler_id,
-                  r.x, r.y, r.w, r.h);
+                  0, 0, _region.w, _region.h);
    }
 
-   public <PSC> void addVanishObserver(PSC ptn, Region r, 
-                                       SikuliEventObserver ob){
+   public <PSC> void addVanishObserver(PSC ptn, SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
       addObserver(_c_instance, VANISH, getFilename(ptn), handler_id,
-                  r.x, r.y, r.w, r.h);
+                  0, 0, _region.w, _region.h);
    
    }
 
-   public void addChangeObserver(Region r, SikuliEventObserver ob){
+   public void addChangeObserver(SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
       addObserver(_c_instance, CHANGE, "", handler_id,
-                  r.x, r.y, r.w, r.h);
+                  0, 0, _region.w, _region.h);
    }
 
    public void update(ScreenImage img){
@@ -86,6 +88,8 @@ public class EventManager {
          return;
       for(SikuliEvent e : events){
          SikuliEventObserver ob = getObserverFromId(e.handler_id);
+         e.x += _region.x;
+         e.y += _region.y;
          switch(e.type){
             case APPEAR:
                ob.targetAppeared(new AppearEvent(e));

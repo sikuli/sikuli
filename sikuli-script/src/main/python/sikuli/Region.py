@@ -221,7 +221,7 @@ class Region(JRegion):
 
    def observe(self, background=False, time=-1):
       if background:
-         return self.observeInBackground(time)
+         return self.observeInBackground()
       else:
          return JRegion.observe(self, time)
 

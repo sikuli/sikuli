@@ -17,7 +17,8 @@ public class Region {
    private boolean _stopIfWaitingFailed = true;
    private double _waitBeforeAction = 3.0;
 
-   private boolean _observing = false;
+   protected boolean _observing = false;
+   protected EventManager _evtMgr;
 
 
    public Region(int x_, int y_, int w_, int h_) {
@@ -37,6 +38,7 @@ public class Region {
       w = w_;
       h = h_;
       initScreen();
+      _evtMgr = new EventManager(this);
    }
 
    void init(int x_, int y_, int w_, int h_, Screen scr) {
@@ -46,6 +48,7 @@ public class Region {
       h = h_;
       _scr = scr;
       _robot = scr.getRobot();
+      _evtMgr = new EventManager(scr);
    }
 
    void initScreen(){
@@ -385,28 +388,25 @@ public class Region {
 
 
    public <PSC> void onAppear(PSC target, SikuliEventObserver observer){
-      EventManager em = EventManager.getInstance();
-      em.addAppearObserver(target, this, observer);
+      _evtMgr.addAppearObserver(target, observer);
    }
 
    public <PSC> void onVanish(PSC target, SikuliEventObserver observer){
-      EventManager em = EventManager.getInstance();
-      em.addVanishObserver(target, this, observer);
+      _evtMgr.addVanishObserver(target, observer);
    }
 
    public void onChange(SikuliEventObserver observer){
-      EventManager em = EventManager.getInstance();
-      em.addChangeObserver(this, observer);
+      _evtMgr.addChangeObserver(observer);
    }
 
    public void observe(){
       observe(-1.0);
    }
 
-   public void observeInBackground(final int secs){
+   public void observeInBackground(){
       Thread th = new Thread(){
          public void run(){
-            observe(secs);
+            observe();
          }
       };
       th.start();
@@ -417,7 +417,6 @@ public class Region {
    }
 
    public void observe(double secs){
-      EventManager em = EventManager.getInstance();
       int MaxTimePerScan = (int)(1000.0/Settings.ObserveScanRate); 
       long begin_t = (new Date()).getTime();
       _observing = true;
@@ -425,7 +424,7 @@ public class Region {
              (secs==-1.0 || begin_t + secs*1000 > (new Date()).getTime()) ){
          long before_find = (new Date()).getTime();
          ScreenImage simg = _scr.capture(x, y, w, h);
-         em.update(simg);
+         _evtMgr.update(simg);
          long after_find = (new Date()).getTime();
          try{
             if(after_find-before_find<MaxTimePerScan)
