@@ -11,7 +11,7 @@ import javax.swing.*;
 /**
  * Unit test for simple SikuliScript.
  */
-public class RegionTest extends TestCase
+public class RegionTest extends TestCase implements SikuliEventObserver
 {
     /**
      * Create the test case
@@ -31,23 +31,28 @@ public class RegionTest extends TestCase
         return new TestSuite( RegionTest.class );
     }
 
+    public void targetAppeared(AppearEvent e){
+       System.out.println("targetAppeared: " + e);
+       appear_count++;
+    }
+
+    public void targetVanished(VanishEvent e){
+       System.out.println("targetVanished: " + e);
+       vanish_count++;
+    }
+
+    public void targetChanged(ChangeEvent e){
+       System.out.println("targetChanged: " + e);
+       change_count++;
+    }
+
+    int appear_count = 0, vanish_count = 0, change_count = 0;
+
     public void testObserve() throws Exception {
       Region r = new Region(0, 0, 300, 300);
-      r.onAppear("test-res/cup-btn.png", new SikuliEventObserver(){
-         public void targetAppeared(AppearEvent e){
-            System.out.println("targetAppeared: " + e);
-         }
-      });
-      r.onVanish("test-res/cup-btn.png", new SikuliEventObserver(){
-         public void targetVanished(VanishEvent e){
-            System.out.println("targetVanished: " + e);
-         }
-      });
-      r.onChange(new SikuliEventObserver(){
-         public void targetChanged(ChangeEvent e){
-            System.out.println("targetChanged: " + e);
-         }
-      });
+      r.onAppear("test-res/cup-btn.png", this);
+      r.onVanish("test-res/cup-btn.png", this);
+      r.onChange(this);
       Thread th = new Thread(){
          public void run(){
             JButtons frame = new JButtons();
@@ -63,6 +68,9 @@ public class RegionTest extends TestCase
       };
       th.start();
       r.observe(6);
+      assertEquals(1, appear_count);
+      assertEquals(2, change_count);
+      assertEquals(2, vanish_count);
     }
 
     /*

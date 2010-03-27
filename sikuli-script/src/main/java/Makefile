@@ -1,7 +1,9 @@
 PACKAGE = edu.mit.csail.uid
 
 SOURCE  = \
+AppearEvent.java \
 CapturePrompt.java \
+ChangeEvent.java \
 Clipboard.java \
 Debug.java \
 DummyOSUtil.java \
@@ -24,10 +26,13 @@ Screen.java \
 ScreenImage.java \
 ScriptRunner.java \
 Settings.java \
+SikuliEvent.java \
+SikuliEventAdapter.java \
 SikuliEventObserver.java \
 SikuliScript.java \
 Subject.java \
 VDictProxy.java \
+VanishEvent.java \
 Win32Util.java 
 
 JNI_SOURCE = VDictProxy.java ScreenMatchProxy.java Finder.java EventManager.java
