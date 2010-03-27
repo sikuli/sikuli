@@ -32,9 +32,9 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_addObserver
 /*
  * Class:     edu_mit_csail_uid_EventManager
  * Method:    _update
- * Signature: (J[BII)V
+ * Signature: (J[BII)[Ljava/util/EventObject;
  */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager__1update
+JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
   (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 
 #ifdef __cplusplus

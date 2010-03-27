@@ -392,9 +392,29 @@ public class Region {
       em.addVanishObserver(target, this, observer);
    }
 
-   public <PSC> void onChange(PSC target, SikuliEventObserver observer){
+   public void onChange(SikuliEventObserver observer){
       EventManager em = EventManager.getInstance();
-      em.addChangeObserver(target, this, observer);
+      em.addChangeObserver(this, observer);
+   }
+
+   public void observe(){
+      observe(-1.0);
+   }
+   public void observe(double secs){
+      EventManager em = EventManager.getInstance();
+      int MaxTimePerScan = (int)(1000.0/Settings.ObserveScanRate); 
+      long begin_t = (new Date()).getTime();
+      while( secs==-1.0 || begin_t + secs*1000 > (new Date()).getTime() ){
+         long before_find = (new Date()).getTime();
+         ScreenImage simg = _scr.capture(x, y, w, h);
+         em.update(simg);
+         long after_find = (new Date()).getTime();
+         try{
+            if(after_find-before_find<MaxTimePerScan)
+               Thread.sleep((int)(MaxTimePerScan-(after_find-before_find)));
+         }
+         catch(Exception e){ }
+      }
    }
 
    ////////////////////////////////////////////////////////////////

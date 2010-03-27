@@ -31,6 +31,40 @@ public class RegionTest extends TestCase
         return new TestSuite( RegionTest.class );
     }
 
+    public void testObserve() throws Exception {
+      Region r = new Region(0, 0, 300, 300);
+      r.onAppear("test-res/cup-btn.png", new SikuliEventObserver(){
+         public void targetAppeared(AppearEvent e){
+            System.out.println("targetAppeared: " + e);
+         }
+      });
+      r.onVanish("test-res/cup-btn.png", new SikuliEventObserver(){
+         public void targetVanished(VanishEvent e){
+            System.out.println("targetVanished: " + e);
+         }
+      });
+      r.onChange(new SikuliEventObserver(){
+         public void targetChanged(ChangeEvent e){
+            System.out.println("targetChanged: " + e);
+         }
+      });
+      Thread th = new Thread(){
+         public void run(){
+            JButtons frame = new JButtons();
+            try{
+               Thread.sleep(2000);
+            }
+            catch(Exception e){
+               e.printStackTrace();
+            }
+            frame.setVisible(false);
+            frame.dispose();
+         }
+      };
+      th.start();
+      r.observe(6);
+    }
+
     /*
     public void testSpatialOperators() throws Exception{
        GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
@@ -48,6 +82,7 @@ public class RegionTest extends TestCase
     }
     */
 
+    /*
     public void testType() throws Exception
     {
        InputsFrame f = new InputsFrame();
@@ -149,6 +184,7 @@ public class RegionTest extends TestCase
       assertTrue(end-begin < 2500);
     }
 
+    */
 
 }
 
