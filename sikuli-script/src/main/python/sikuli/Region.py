@@ -219,11 +219,11 @@ class Region(JRegion):
             handler(event)
       return JRegion.onChange(self, AnonyObserver())
 
-   def observe(self, background=False, secs=-1):
+   def observe(self, background=False, time=-1):
       if background:
-         return self.observeInBackground(secs)
+         return self.observeInBackground(time)
       else:
-         return JRegion.observe(self, secs)
+         return JRegion.observe(self, time)
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
