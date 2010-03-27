@@ -73,7 +73,7 @@ public class Screen extends Region implements Observer {
    private void initBounds(){
       Rectangle bounds = getBounds();
       init((int)bounds.getX(), (int)bounds.getY(),
-            (int)bounds.getWidth(), (int)bounds.getHeight(), this);
+            (int)bounds.getWidth(), (int)bounds.getHeight());
       _overlay = new OverlayWindow(this);
    }
 

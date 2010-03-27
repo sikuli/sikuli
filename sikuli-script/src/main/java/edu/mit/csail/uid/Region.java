@@ -37,32 +37,22 @@ public class Region {
       y = y_;
       w = w_;
       h = h_;
-      initScreen();
+      _scr = initScreen();
+      _robot = _scr.getRobot();
       _evtMgr = new EventManager(this);
    }
 
-   void init(int x_, int y_, int w_, int h_, Screen scr) {
-      x = x_;
-      y = y_;
-      w = w_;
-      h = h_;
-      _scr = scr;
-      _robot = scr.getRobot();
-      _evtMgr = new EventManager(scr);
-   }
-
-   void initScreen(){
+   private Screen initScreen(){
+      if(this instanceof Screen)
+         return (Screen)this;
       Rectangle roi = new Rectangle(x, y, w, h);
       for(int i=0;i<Screen.getNumberScreens();i++){
          Rectangle scrBound = Screen.getBounds(i);
          if(scrBound.contains(roi)){
-            _scr = new Screen(i);
-            _robot = _scr.getRobot();
-            return;
+            return new Screen(i);
          }
       }
-      _scr = new Screen();
-      _robot = _scr.getRobot();
+      return new Screen();
    }
 
    public Screen getScreen(){ return _scr;   }
