@@ -1,6 +1,8 @@
 from edu.mit.csail.uid import Region as JRegion
 from edu.mit.csail.uid import Location
 from edu.mit.csail.uid import Settings
+from edu.mit.csail.uid import SikuliEventAdapter
+from edu.mit.csail.uid import SikuliEventObserver
 import inspect
 import types
 import time
@@ -198,6 +200,27 @@ class Region(JRegion):
 
    def keyUp(self, keys=None):
       return JRegion.keyUp(self, keys)
+
+   def onAppear(self, target, handler):
+      class AnonyObserver(SikuliEventAdapter):
+         def targetAppeared(self, event):
+            handler(event)
+      return JRegion.onAppear(self, target, AnonyObserver())
+
+   def onVanish(self, target, handler):
+      class AnonyObserver(SikuliEventAdapter):
+         def targetVanished(self, event):
+            handler(event)
+      return JRegion.onVanish(self, target, AnonyObserver())
+
+   def onChange(self, handler):
+      class AnonyObserver(SikuliEventAdapter):
+         def targetChanged(self, event):
+            handler(event)
+      return JRegion.onChange(self, AnonyObserver())
+
+   def observe(self, secs=-1):
+      return JRegion.observe(self, secs)
 
    ##
    # Sets the flag of throwing exceptions if {@link #find find()} fails. <br/>
