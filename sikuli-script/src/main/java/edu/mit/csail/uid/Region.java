@@ -403,10 +403,10 @@ public class Region {
       observe(-1.0);
    }
 
-   public void observeInBackground(){
+   public void observeInBackground(final int secs){
       Thread th = new Thread(){
          public void run(){
-            observe();
+            observe(secs);
          }
       };
       th.start();
