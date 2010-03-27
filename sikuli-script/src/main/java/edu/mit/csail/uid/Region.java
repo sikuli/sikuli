@@ -17,6 +17,8 @@ public class Region {
    private boolean _stopIfWaitingFailed = true;
    private double _waitBeforeAction = 3.0;
 
+   private boolean _observing = false;
+
 
    public Region(int x_, int y_, int w_, int h_) {
       init(x_,y_,w_,h_);
@@ -400,11 +402,27 @@ public class Region {
    public void observe(){
       observe(-1.0);
    }
+
+   public void observeInBackground(){
+      Thread th = new Thread(){
+         public void run(){
+            observe();
+         }
+      };
+      th.start();
+   }
+
+   public void stopObserving(){
+      _observing = false;
+   }
+
    public void observe(double secs){
       EventManager em = EventManager.getInstance();
       int MaxTimePerScan = (int)(1000.0/Settings.ObserveScanRate); 
       long begin_t = (new Date()).getTime();
-      while( secs==-1.0 || begin_t + secs*1000 > (new Date()).getTime() ){
+      _observing = true;
+      while( _observing && 
+             (secs==-1.0 || begin_t + secs*1000 > (new Date()).getTime()) ){
          long before_find = (new Date()).getTime();
          ScreenImage simg = _scr.capture(x, y, w, h);
          em.update(simg);

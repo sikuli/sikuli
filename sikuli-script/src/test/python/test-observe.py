@@ -14,4 +14,8 @@ with Region(0,0,300,300):
    onChange(changed)
    onAppear("test-res/apple.png", appeared)
    onVanish("test-res/apple.png", vanished)
-   observe(5)
+   print "start observing..."
+   observe(background=True)
+   wait(6)
+   print "stop observing..."
+   stopObserving()
