@@ -832,7 +832,7 @@ class ButtonInsertImage extends JButton implements ActionListener{
       setIcon(new ImageIcon(imageURL));
       setMaximumSize(new Dimension(26,26));
       setBorderPainted(false);
-      setToolTipText("Insert an image");
+      setToolTipText("Insert an image from disks");
       addActionListener(this);
    }
 
@@ -856,7 +856,7 @@ class ButtonSubregion extends JButton implements ActionListener{
       setIcon(new ImageIcon(imageURL));
       setMaximumSize(new Dimension(26,26));
       setBorderPainted(false);
-      setToolTipText("Find within a subregion");
+      setToolTipText("Find within a region");
       addActionListener(this);
    }
 

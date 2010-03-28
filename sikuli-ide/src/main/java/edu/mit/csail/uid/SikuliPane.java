@@ -971,13 +971,7 @@ class RegionButton extends JButton {
       _y = y;
       _w = w;
       _h = h;
-      try{
-         String imgFilename = Utils.saveTmpImage(getRegionImage(x,y,w,h));
-         setIcon(new ImageIcon(imgFilename));
-      }
-      catch(Exception e){
-         e.printStackTrace();
-      }
+      setIcon(new ImageIcon(getRegionImage(x,y,w,h)));
       setBorderPainted(true);
       setToolTipText( this.toString() );
    }
@@ -986,21 +980,20 @@ class RegionButton extends JButton {
       return String.format("Region(%d,%d,%d,%d)", _x, _y, _w, _h);
    }
 
-   static Rectangle fullscreenRect = new Rectangle(
-         Toolkit.getDefaultToolkit().getScreenSize() );
-   private BufferedImage getRegionImage(int x, int y, int w, int h) throws AWTException{
-      Robot _robot = new Robot();
-      BufferedImage _screen = _robot.createScreenCapture(fullscreenRect);
-      int scr_w = _screen.getWidth(), scr_h = _screen.getHeight();
-      int max_h = 80;
+   private BufferedImage getRegionImage(int x, int y, int w, int h) {
+      Region region = new Region(x, y, w, h);
+      Screen _screen = region.getScreen();
+      ScreenImage simg = _screen.capture();
+      int scr_w = _screen.w, scr_h = _screen.h;
+      int max_h = 80; // FIXME: put max_h in UserPreferences
       float scale = (float)max_h/scr_h;
       scr_w *= scale;
       scr_h *= scale;
       BufferedImage screen = new BufferedImage(scr_w, scr_h, BufferedImage.TYPE_INT_RGB);
       Graphics2D screen_g2d = screen.createGraphics();
       try {
-         screen_g2d.drawImage(_screen, 0, 0,  scr_w, scr_h, null);
-         int sx = (int)(x*scale), sy = (int)(y*scale),
+         screen_g2d.drawImage(simg.getImage(), 0, 0,  scr_w, scr_h, null);
+         int sx = (int)((x-_screen.x)*scale), sy = (int)((y-_screen.y)*scale),
              sw = (int)(w*scale), sh = (int)(h*scale);
          screen_g2d.setColor(new Color(255,0,0, 150));
          screen_g2d.fillRect(sx, sy, sw, sh);
