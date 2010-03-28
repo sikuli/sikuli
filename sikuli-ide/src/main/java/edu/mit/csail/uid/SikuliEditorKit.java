@@ -20,6 +20,7 @@ public class SikuliEditorKit extends StyledEditorKit {
    private static final TextAction[] defaultActions = {
       new InsertTabAction(),
       new DeindentAction(),
+      new InsertBreakAction(),
    };
 
    public Action[] getActions() {
@@ -200,6 +201,110 @@ public class SikuliEditorKit extends StyledEditorKit {
             }
          }
       }
+   }
+
+   public static class InsertBreakAction extends TextAction {
+
+      public InsertBreakAction() {
+         super(insertBreakAction);
+      }
+
+      public InsertBreakAction(String name) {
+         super(name);
+      }
+
+      public void actionPerformed(ActionEvent e) {
+         JTextComponent textArea = (JTextComponent)e.getSource();
+
+         boolean noSelection = textArea.getSelectionStart()==textArea.getSelectionEnd();
+
+         if (noSelection ) {
+            insertNewlineWithAutoIndent(textArea);
+         }
+         else {
+            textArea.replaceSelection("\n");
+         }
+
+
+      }
+
+      static boolean isWhitespace(char ch){
+         return ch==' ' || ch=='\t';
+      }
+
+      static String getLeadingWhitespace(String text) {
+         int count = 0;
+         int len = text.length();
+         while (count<len && isWhitespace(text.charAt(count))) 
+            count++;
+         return text.substring(0, count);
+      }
+
+      private static final int atEndOfLine(int pos, String s, int sLen) {
+         for (int i=pos; i<sLen; i++) {
+            if (!isWhitespace(s.charAt(i)))
+               return i;
+         }
+         return -1;
+      }
+
+      private void insertNewlineWithAutoIndent(JTextComponent txt) {
+
+         try {
+            int caretPos = txt.getCaretPosition();
+            Document doc = txt.getDocument();
+            Element map = doc.getDefaultRootElement();
+            int lineNum = map.getElementIndex(caretPos);
+            Element line = map.getElement(lineNum);
+            int start = line.getStartOffset();
+            int end = line.getEndOffset()-1; 
+            int len = end-start;
+            String s = doc.getText(start, len);
+
+            String leadingWS = getLeadingWhitespace(s);
+            StringBuffer sb = new StringBuffer("\n");
+            sb.append(leadingWS);
+
+            // If there is only whitespace between the caret and
+            // the EOL, pressing Enter auto-indents the new line to
+            // the same place as the previous line.
+            int nonWhitespacePos = atEndOfLine(caretPos-start, s, len);
+            if (nonWhitespacePos==-1) {
+               if (leadingWS.length()==len) {
+                  // If the line was nothing but whitespace, select it
+                  // so its contents get removed.
+                  txt.setSelectionStart(start);
+                  txt.setSelectionEnd(end);
+               }
+               txt.replaceSelection(sb.toString());
+            }
+
+            // If there is non-whitespace between the caret and the
+            // EOL, pressing Enter takes that text to the next line
+            // and auto-indents it to the same place as the last
+            // line.
+            else {
+               sb.append(s.substring(nonWhitespacePos));
+               ((AbstractDocument)doc).replace(caretPos, end - caretPos, sb.toString(), null);
+               txt.setCaretPosition(caretPos + leadingWS.length()+1);
+            }
+
+            // FIXME: examine the previous line and do auto-indent if 
+            // 'if', 'while', 'for', or 'with' is seen.
+            /*
+            if (txt.getShouldIndentNextLine(lineNum)) {
+               txt.replaceSelection("\t");
+            }
+            */
+
+         } catch (BadLocationException ble) { 
+            txt.replaceSelection("\n");
+            ble.printStackTrace();
+         }
+
+      }
+
+
    }
 
 }
