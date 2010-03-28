@@ -33,6 +33,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
       setContentType("text/python");
+      initKeyMap();
       addKeyListener(this);
       _highlighter = new CurrentLineHighlighter(this);
       addCaretListener(_highlighter);
@@ -41,6 +42,14 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setMargin( new Insets( 3, 3, 3, 3 ) );
       setTabs(3);
       setBackground(Color.WHITE);
+   }
+
+
+   private void initKeyMap(){
+      InputMap map = this.getInputMap();
+      int shift = InputEvent.SHIFT_MASK;
+      map.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, shift),          
+              SikuliEditorKit.sklDeindentAction);
    }
 
    public void setTabs(int spaceForTab)
@@ -350,7 +359,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    public void keyTyped(java.awt.event.KeyEvent ke) { 
       _dirty = true;
       try{
-         if(ke.getKeyChar() == '\t') expandTab();
+         //if(ke.getKeyChar() == '\t') expandTab();
          checkCompletion(ke);
       }
       catch(BadLocationException e){
