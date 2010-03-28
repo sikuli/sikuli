@@ -46,6 +46,8 @@ public class SikuliIDE extends JFrame {
    private String _preloadFilename = null;
    private boolean _inited = false;
 
+   PythonInterpreter _pyi;
+
    public static Icon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
       if (url == null) {
@@ -195,7 +197,7 @@ public class SikuliIDE extends JFrame {
       });
 
       _mainPane.addChangeListener(new ChangeListener(){
-         public void stateChanged(ChangeEvent e){
+         public void stateChanged(javax.swing.event.ChangeEvent e){
             JTabbedPane tab = (JTabbedPane)e.getSource();
             int i = tab.getSelectedIndex();
             if(i>=0)
@@ -223,7 +225,7 @@ public class SikuliIDE extends JFrame {
    private void initSidePane(){
       _sidePane = new CloseableTabbedPane();
       _sidePane.addChangeListener(new ChangeListener(){
-         public void stateChanged(ChangeEvent e){
+         public void stateChanged(javax.swing.event.ChangeEvent e){
             JTabbedPane pane = (JTabbedPane)e.getSource();
             int sel = pane.getSelectedIndex();
             if( sel == -1 ) { // all tabs closed
@@ -287,6 +289,9 @@ public class SikuliIDE extends JFrame {
 
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
+
+      PythonInterpreter.initialize(System.getProperties(),null,args);
+      _pyi = new PythonInterpreter();
 
       initNativeLayer();
 
@@ -722,8 +727,10 @@ public class SikuliIDE extends JFrame {
       public ButtonRun(){
          super();
 
+         //FIXME: use ScriptRunner instead
          String[] h = new String[]{
-            "from python.edu.mit.csail.uid.Sikuli import *",
+            "from __future__ import with_statement",
+            "from sikuli.Sikuli import *",
             "setThrowException(True)",
       	    "setShowActions(False)"
          };
@@ -762,13 +769,13 @@ public class SikuliIDE extends JFrame {
 
 
       private void runPython(File f) throws IOException{
-         PythonInterpreter py = new PythonInterpreter();
          Iterator<String> it = _headers.iterator();
          while(it.hasNext())
-            py.exec(it.next());
+            _pyi.exec(it.next());
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
-         py.exec("setBundlePath('" + path + "')");
-         py.execfile( f.getAbsolutePath() );
+         _pyi.exec("setBundlePath('" + path + "')");
+         _pyi.execfile( f.getAbsolutePath() );
+         //py.cleanup();
       }
 
       public void stopRunning(){

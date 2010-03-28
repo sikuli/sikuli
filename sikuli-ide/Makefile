@@ -100,7 +100,7 @@ debug:
 	jdb -Dsikuli.Debug=3  -classpath $(CLASSPATH):$(CLASSES_OUT_PATH) $(MAIN_CLASS) /Users/vgod/test.sikuli
 
 test:all
-	#open target/Sikuli-IDE.app --args ../evaluation/TestJEdit.sikuli
+	rm -rf tmplib
 	if [ -e $(NATIVE_TARGET_PATH) ]; \
 	then cp -rf $(NATIVE_TARGET_PATH) $(CLASSES_OUT_PATH)/META-INF; \
 	fi

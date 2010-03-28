@@ -237,6 +237,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
                                              throws IOException, AWTException{
       if( !_runFind ){
          _runFind = true;
+         /*
          Thread thread = new Thread(new Runnable(){
             public void run(){
                try{
@@ -253,6 +254,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
             }
          });
          thread.start();
+         */
       }
       else
          setParameters(exact, similarity, numMatches);
@@ -328,7 +330,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
    
    }
 
-   public void stateChanged(ChangeEvent e) {
+   public void stateChanged(javax.swing.event.ChangeEvent e) {
       Object src = e.getSource();
       if( src instanceof JSlider){
          JSlider source = (JSlider)e.getSource();
