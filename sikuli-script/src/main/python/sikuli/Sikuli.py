@@ -112,5 +112,11 @@ def search(img, host):
 def getSikuliScript():
    return _si
 
-__main__.screen = Screen()
-__main__.screen._exposeAllMethods()
+def initSikuli():
+   if not 'screen' in dir(__main__):
+      __main__.screen = Screen()
+      __main__.screen._exposeAllMethods()
+      print "Sikuli is initialized." 
+
+
+initSikuli()

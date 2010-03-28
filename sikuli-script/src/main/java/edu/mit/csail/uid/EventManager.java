@@ -40,13 +40,16 @@ public class EventManager {
    }
 
    private <PSC> String getFilename(PSC ptn){
+      String fname = null;
       if( ptn instanceof Pattern ){
-         return ((Pattern)ptn).imgURL;
+         fname = ((Pattern)ptn).imgURL;
       }
       else if( ptn instanceof String){
-         return (String)ptn;
+         fname = (String)ptn;
       }
-      return null;
+      if( !(new File(fname)).exists() && Settings.BundlePath!=null)
+         fname = Settings.BundlePath + File.separator + fname;
+      return fname;
    }
 
    private int getObserverId(SikuliEventObserver ob){

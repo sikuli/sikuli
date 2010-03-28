@@ -4,7 +4,7 @@ import __main__
 
 from Region import *
 
-DEBUG=False
+DEBUG=True
 
 class Screen(Region):
    def __init__(self, id=None):
@@ -52,12 +52,14 @@ class Screen(Region):
             return None
 
    def _exposeAllMethods(self):
-      exclude_list = [ 'classDictInit', 'clone', 'equals', 'finalize', 
+      exclude_list = [ 'class', 'classDictInit', 'clone', 'equals', 'finalize', 
                        'getClass', 'hashCode', 'notify', 'notifyAll', 
-                       'super__wait', 'toGlobalCoord', 'toString' ]
+                       'toGlobalCoord', 'toString' ]
       for name in dir(self):
          if inspect.ismethod(getattr(self,name)) \
-          and name[0] != '_' and not name in exclude_list:
+          and name[0] != '_' and name[:7] != 'super__' and \
+          not name in exclude_list:
             if DEBUG: print "expose " + name
+            #exec("__main__.%s = self.%s" %(name, name))
             __main__.__dict__[name] = eval("self."+name)
 

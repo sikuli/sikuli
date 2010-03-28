@@ -15,27 +15,47 @@ public class ScriptRunner {
 
    void init(){
       String[] h = new String[]{
-         "from python.edu.mit.csail.uid.Sikuli import *",
-         "setThrowException(False)",
+         "from __future__ import with_statement",
+         "from sikuli.Sikuli import *",
+/*
+         "from sikuli import Sikuli",
+         "import __main__",
+         "__main__.screen = Screen()",
+         "__main__.screen._exposeAllMethods()",
+         "print dir()",
+*/
+         "setThrowException(True)",
          "setShowActions(False)"
       };
       _headers = new LinkedList<String>(Arrays.asList(h));
    }
 
-   public void runPython(String dotSikuliPath) throws IOException{
-      PythonInterpreter py = new PythonInterpreter();
-      Iterator<String> it = _headers.iterator();
-      while(it.hasNext())
-         py.exec(it.next());
-      py.exec("setBundlePath('" + dotSikuliPath + "')");
-      File pyFile = getPyFrom(dotSikuliPath);
-      py.execfile(pyFile.getAbsolutePath());
+   public void addHeader(String line){
+      _headers.add(line);
    }
 
-   private File getPyFrom(String dotSikuliPath) throws IOException{
-      String name = new File(dotSikuliPath).getName();
+   public void runPython(String bundlePath, File pyFile, String[] args) throws IOException{
+      PythonInterpreter.initialize(System.getProperties(),null, args);
+      PythonInterpreter py = new PythonInterpreter();
+      Iterator<String> it = _headers.iterator();
+      while(it.hasNext()){
+         String line = it.next();
+         py.exec(line);
+      }
+      py.exec("setBundlePath('" + bundlePath + "')");
+      py.execfile(pyFile.getAbsolutePath());
+      py.cleanup();
+   }
+
+   public void runPython(String bundlePath) throws IOException {
+      File pyFile = getPyFrom(bundlePath);
+      runPython(bundlePath, pyFile, null);
+   }
+
+   private File getPyFrom(String bundlePath) throws IOException{
+      String name = new File(bundlePath).getName();
       String prefix = name.substring(0, name.lastIndexOf('.'));
-      return new File(dotSikuliPath + "/"+ prefix + ".py");
+      return new File(bundlePath + "/"+ prefix + ".py");
    }
 }
 
