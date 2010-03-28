@@ -484,7 +484,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    static Pattern patPatternStr = Pattern.compile(
             "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
    static Pattern patSubregionStr = Pattern.compile(
-            "\\b(Subregion\\s*\\(.*?\\))");
+            "\\b(Region\\s*\\([\\d\\s,]+\\))");
 
    int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException{
       //System.out.println(startOff + " " + endOff);
@@ -559,14 +559,23 @@ public class SikuliPane extends JTextPane implements KeyListener,
             }
          }
       }
-      else if( imgStr.startsWith("Subregion") ){
+      else if( imgStr.startsWith("Region") ){
          String[] tokens = imgStr.split("[(),]");
-         int x = Integer.valueOf(tokens[1]), y = Integer.valueOf(tokens[2]), 
-             w = Integer.valueOf(tokens[3]), h = Integer.valueOf(tokens[4]);
-         this.select(startOff, endOff);
-         RegionButton icon = new RegionButton(this, x, y, w, h);
-         this.insertComponent(icon);
-         return true;
+         try{
+            int x = Integer.valueOf(tokens[1]), y = Integer.valueOf(tokens[2]), 
+                w = Integer.valueOf(tokens[3]), h = Integer.valueOf(tokens[4]);
+            this.select(startOff, endOff);
+            RegionButton icon = new RegionButton(this, x, y, w, h);
+            this.insertComponent(icon);
+            return true;
+         }
+         catch(NumberFormatException e){
+            return false;
+         }
+         catch(Exception e){
+            e.printStackTrace();
+            return false;
+         }
       }
       else if( patHistoryBtnStr.matcher(imgStr).matches() ){
          Element root = doc.getDefaultRootElement();
@@ -974,7 +983,7 @@ class RegionButton extends JButton {
    }
 
    public String toString(){
-      return String.format("Subregion(%d,%d,%d,%d)", _x, _y, _w, _h);
+      return String.format("Region(%d,%d,%d,%d)", _x, _y, _w, _h);
    }
 
    static Rectangle fullscreenRect = new Rectangle(

@@ -164,17 +164,20 @@ class HighlightLabelView extends LabelView {
        "break",     "else",      "global",    "not",       "try",      
        "class",     "except",    "if",        "or",        "while",    
        "continue",  "exec",      "import",    "pass",      "yield",    
-       "def",       "finally",   "in",        "print"
+       "def",       "finally",   "in",        "print",     "with"
     };
 
     private static String[] keywordsSikuli = {
-       "find", "wait", "findAll",
-       "click", "clickAll", "repeatClickAll", "doubleClick",
-       "doubleClickAll", "repeatDoubleClickAll", "rightClick",
-       "dragDrop", "type", "sleep", "popup", "capture", "input",
-       "assertExist", "assertNotExist",
+       "find", "wait", "findAll", "waitVanish",
+       "click", "doubleClick", "rightClick", "hover", 
+       "type", "paste",
+       "dragDrop", "drag", "dropAt",
+       "mouseMove", "mouseDown", "mouseUp",
+       "keyDown", "keyUp",
+       "onAppear", "onVanish", "onChange", "observe", "stopObserver",
+       "popup", "capture", "input",
        "switchApp", "openApp", "closeApp",
-       "hover", "paste"
+       "assertExist", "assertNotExist",
     };
 
     static {

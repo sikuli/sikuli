@@ -869,7 +869,7 @@ class ButtonSubregion extends JButton implements ActionListener{
    }
 
    public void complete(int x, int y, int w, int h){
-      Debug.log(7,"subregion: %d %d %d %d", x, y, w, h);
+      Debug.log(7,"Region: %d %d %d %d", x, y, w, h);
       SikuliIDE ide = SikuliIDE.getInstance();
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
