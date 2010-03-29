@@ -40,7 +40,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       addCaretListener(this);
       setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
-      setTabs(3);
+      setTabSize(4);
       setBackground(Color.WHITE);
    }
 
@@ -51,6 +51,30 @@ public class SikuliPane extends JTextPane implements KeyListener,
       map.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, shift),          
               SikuliEditorKit.sklDeindentAction);
    }
+
+
+   public void setTabSize(int charactersPerTab)
+   {
+      FontMetrics fm = this.getFontMetrics( this.getFont() );
+      int charWidth = fm.charWidth( 'w' );
+      int tabWidth = charWidth * charactersPerTab;
+
+      TabStop[] tabs = new TabStop[10];
+
+      for (int j = 0; j < tabs.length; j++) {
+         int tab = j + 1;
+         tabs[j] = new TabStop( tab * tabWidth );
+      }
+
+      TabSet tabSet = new TabSet(tabs);
+      SimpleAttributeSet attributes = new SimpleAttributeSet();
+      StyleConstants.setFontSize(attributes, 18);
+      StyleConstants.setFontFamily(attributes, "Osaka-Mono");
+      StyleConstants.setTabSet(attributes, tabSet);
+      int length = getDocument().getLength();
+      getStyledDocument().setParagraphAttributes(0, length, attributes, true);
+   }
+ 
 
    public void setTabs(int spaceForTab)
    {
@@ -300,7 +324,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
                   return;
                }
                if(tarLine>getNumLines()){
-                  setCaretPosition(getDocument().getLength()-1);
+                  pos = getDocument().getLength()-1;
+                  setCaretPosition(pos>=0?pos:0);
                   return;
                }
 

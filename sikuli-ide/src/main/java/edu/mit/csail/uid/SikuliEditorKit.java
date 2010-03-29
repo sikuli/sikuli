@@ -20,7 +20,7 @@ public class SikuliEditorKit extends StyledEditorKit {
    private static final TextAction[] defaultActions = {
       new InsertTabAction(),
       new DeindentAction(),
-      new InsertBreakAction(),
+      //new InsertBreakAction(),
    };
 
    public Action[] getActions() {

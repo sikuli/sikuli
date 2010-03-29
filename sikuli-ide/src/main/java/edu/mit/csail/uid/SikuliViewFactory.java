@@ -72,12 +72,12 @@ class MyParagraphView extends ParagraphView
 
 
 
-class LineBoxView extends BoxView
+class LineBoxView extends BoxView 
 {
-  public LineBoxView(Element elem, int axis)
-  {
-     super(elem,axis);
-  }
+   public LineBoxView(Element elem, int axis)
+   {
+      super(elem,axis);
+   }
 
    // for Utilities.getRowStart
    public Shape modelToView(int pos, Shape a, Position.Bias b) throws BadLocationException {
@@ -97,19 +97,20 @@ class LineBoxView extends BoxView
       return r;
    }
 
-  protected void layoutMinorAxis(int targetSpan, int axis, int[] offsets, int[] spans)
-  {
-     super.layoutMinorAxis(targetSpan,axis,offsets,spans);
+   protected void layoutMinorAxis(int targetSpan, int axis, int[] offsets, int[] spans)
+   {
+      super.layoutMinorAxis(targetSpan,axis,offsets,spans);
 
-     int maxH = 0;
-     int offset = 0;
+      int maxH = 0;
+      int offset = 0;
 
-     for (int i = 0; i < spans.length; i++)
-        if( spans[i] > maxH )
-           maxH = spans[i];
-     for (int i = 0; i < offsets.length; i++)
-        offsets[i] = (maxH - spans[i])/2;
-  }
+      for (int i = 0; i < spans.length; i++)
+         if( spans[i] > maxH )
+            maxH = spans[i];
+      for (int i = 0; i < offsets.length; i++)
+         offsets[i] = (maxH - spans[i])/2;
+   }
+
 }
 
 class SectionBoxView extends BoxView
@@ -152,7 +153,8 @@ class SectionBoxView extends BoxView
 
 class HighlightLabelView extends LabelView {
 
-   FontMetrics _fMetrics;
+   static FontMetrics _fMetrics = null;
+   final String tabStr = "    "; // default tab size: 4
 
 
    private static Map<Pattern, Color> patternColors;
@@ -211,6 +213,155 @@ class HighlightLabelView extends LabelView {
       super(elm);
    }
 
+   private int countTab(String str){
+      int pos = -1;
+      int count = 0;
+      while((pos=str.indexOf('\t', pos+1))!=-1){
+         count++;
+      }
+      return count;
+   }
+
+   private int tabbedWidth(){
+      if(_fMetrics==null)
+         return -1;
+      String str = getText(getStartOffset(), getEndOffset()).toString();
+      int tab = countTab(str);
+      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
+      return _fMetrics.stringWidth(str) + tabWidth*tab;
+   }
+
+   public float getMinimumSpan(int axis) {
+      float f = super.getMinimumSpan(axis);
+      if(axis == View.X_AXIS && _fMetrics!=null){
+         f = tabbedWidth();
+      }
+      return f;
+   }
+
+   public float getMaximumSpan(int axis) {
+      float f = super.getMaximumSpan(axis);
+      if(axis == View.X_AXIS && _fMetrics!=null ){
+         f = tabbedWidth();
+      }
+      return f;
+   }
+
+   public float getPreferredSpan(int axis) {
+      float f = super.getPreferredSpan(axis);
+      if(axis == View.X_AXIS && _fMetrics!=null){
+         f = tabbedWidth();
+      }
+      return f;
+   }
+
+
+   public int viewToModel(float fx, float fy, Shape a, Position.Bias[] bias) {
+      bias[0] = Position.Bias.Forward;
+
+      Debug.log(3, "viewToModel: " + fx + " " + fy);
+      String str = getText(getStartOffset(), getEndOffset()).toString();
+
+      int left = getStartOffset(), right = getEndOffset();
+      int pos = 0;
+      while(left<right){
+         Debug.log(3, "viewToModel: " + left + " " + right + " " + pos);
+         pos = (left+right)/2;
+         try{
+            Shape s = modelToView(pos, a, bias[0]);
+            float sx = s.getBounds().x;
+            if( sx > fx )
+               right = pos;
+            else if( sx < fx )
+               left = pos+1;
+            else
+               break;
+         }
+         catch(BadLocationException ble){
+            break;
+         }
+      }
+      pos = left-1>=getStartOffset()? left-1 : getStartOffset();
+      try{
+         Debug.log(3, "viewToModel: try " + pos);
+         Shape s1 = modelToView(pos, a, bias[0]);
+         Shape s2 = modelToView(pos+1, a, bias[0]);
+         if( Math.abs(s1.getBounds().x-fx) < Math.abs(s2.getBounds().x-fx) )
+            return pos;
+         else
+            return pos+1;
+      }
+      catch(BadLocationException ble){}
+      return pos;
+
+      /*
+      int pos = super.viewToModel(fx, fy, a, bias);
+      Debug.log(3, "viewToModel: super.pos " + pos); 
+      String strHead = getText(getStartOffset(), pos).toString();
+      int tabHead = countTab(strHead);
+      if(tabHead>0){
+         // super:  TEXT 
+         //   new:[\t][\t]TEXT
+         Debug.log(3, "viewToModel: tab count " + tabHead);
+         int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
+         pos = viewToModel(fx-tabWidth*tabHead, fy, a, bias);
+      }
+      return pos;
+      */
+
+      /*
+      Rectangle alloc = a.getBounds();
+      Document doc = getDocument();
+      int x = (int) fx;
+      int y = (int) fy;
+
+      // If they're asking about a view position above the area covered by      
+      // this view, then the position is assumed to be the starting position
+      // of this view.
+      if (y < alloc.y) {
+         return getStartOffset();
+      }
+      // If they're asking about a position below this view, the position
+      // is assumed to be the ending position of this view.
+      else if (y > alloc.y + alloc.height) {
+         return getEndOffset() - 1;
+      }
+      else {
+
+         // If the point is to the left of the line...
+         if (x < alloc.x)
+            return getStartOffset();
+         // If the point is to the right of the line...
+         else if (x > alloc.x + alloc.width)
+            return getEndOffset() - 1;
+         else {
+            // Determine the offset into the text
+         }
+
+      }
+      */
+
+   }
+
+
+   public Shape modelToView(int pos, Shape a, Position.Bias b)
+                                             throws BadLocationException {
+      
+      if(_fMetrics==null)  
+         return super.modelToView(pos, a, b);
+      String strHead = getText(getStartOffset(), pos).toString();
+      String strTail = getText(pos, getEndOffset()).toString();
+      //System.out.println("modelToView: [" + strHead + "] [" + strTail+"]");
+      int tabHead = countTab(strHead), tabTail = countTab(strTail);
+      //System.out.println("modelToView: " + tabHead + " " + tabTail);
+      Shape s = super.modelToView(pos, a, b);
+      Rectangle ret = s.getBounds();
+      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
+      ret.x += tabHead*tabWidth;
+      ret.width += tabTail*tabWidth;
+      return ret;
+   }
+
    public void paint(Graphics g, Shape shape){
       Graphics2D g2d = (Graphics2D)g;
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -225,7 +376,8 @@ class HighlightLabelView extends LabelView {
       SortedMap<Integer, Color> colorMap = new TreeMap<Integer, Color>();
       buildColorMaps(text, posMap, colorMap);
 
-      _fMetrics = g2d.getFontMetrics();
+      if(_fMetrics == null)
+         _fMetrics = g2d.getFontMetrics();
       Rectangle alloc = (shape instanceof Rectangle)? 
                            (Rectangle)shape : shape.getBounds();
 
@@ -265,9 +417,24 @@ class HighlightLabelView extends LabelView {
 
    }
 
+   int drawTab(Graphics2D g2d, int x, int y){
+      drawString(g2d, tabStr, x, y);
+      return x + _fMetrics.stringWidth(tabStr);
+   }
+
    int drawString(Graphics2D g2d, String str, int x, int y){
-      g2d.drawString(str, x, y);
-      x += _fMetrics.stringWidth(str);
+      if(str.length()==0)
+         return x;
+      int tabPos = str.indexOf('\t');
+      if( tabPos != -1){
+         x = drawString(g2d, str.substring(0, tabPos), x, y);
+         x = drawTab(g2d, x, y);
+         x = drawString(g2d, str.substring(tabPos+1), x, y);
+      }
+      else{
+         g2d.drawString(str, x, y);
+         x += _fMetrics.stringWidth(str);
+      }
       return x;
    }
 
@@ -279,6 +446,7 @@ class HighlightLabelView extends LabelView {
       g2d.setFont(origFont);
       return x;
    }
+
 
    void buildColorMaps(String text, Map<Integer, Integer> posMap, 
                                     Map<Integer,Color> colorMap){
