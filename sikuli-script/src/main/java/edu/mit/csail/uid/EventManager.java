@@ -95,13 +95,13 @@ public class EventManager {
          e.y += _region.y;
          switch(e.type){
             case APPEAR:
-               ob.targetAppeared(new AppearEvent(e));
+               ob.targetAppeared(new AppearEvent(e, _region));
                break;
             case VANISH:
-               ob.targetVanished(new VanishEvent(e));
+               ob.targetVanished(new VanishEvent(e, _region));
                break;
             case CHANGE:
-               ob.targetChanged(new ChangeEvent(e));
+               ob.targetChanged(new ChangeEvent(e, _region));
                break;
          }
       }
