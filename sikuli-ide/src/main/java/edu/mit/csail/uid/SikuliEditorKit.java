@@ -281,7 +281,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             int len = end-start;
             String s = doc.getText(start, len);
 
-            String leadingWS = getLeadingWhitespace(doc, start, len);
+            String leadingWS = getLeadingWhitespace(doc, start, caretPos-start);
             StringBuffer sb = new StringBuffer("\n");
             sb.append(leadingWS);
 
@@ -304,6 +304,11 @@ public class SikuliEditorKit extends StyledEditorKit {
             // and auto-indents it to the same place as the last
             // line.
             else {
+               /*
+               sb.append(s.substring(nonWhitespacePos));
+               ((AbstractDocument)doc).replace(caretPos, end - caretPos, sb.toString(), null);
+               txt.setCaretPosition(caretPos + leadingWS.length()+1);
+               */
                doc.insertString(caretPos, sb.toString(), null);
             }
 
