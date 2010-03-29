@@ -259,13 +259,13 @@ class HighlightLabelView extends LabelView {
    public int viewToModel(float fx, float fy, Shape a, Position.Bias[] bias) {
       bias[0] = Position.Bias.Forward;
 
-      Debug.log(3, "viewToModel: " + fx + " " + fy);
+      Debug.log(9, "viewToModel: " + fx + " " + fy);
       String str = getText(getStartOffset(), getEndOffset()).toString();
 
       int left = getStartOffset(), right = getEndOffset();
       int pos = 0;
       while(left<right){
-         Debug.log(3, "viewToModel: " + left + " " + right + " " + pos);
+         Debug.log(9, "viewToModel: " + left + " " + right + " " + pos);
          pos = (left+right)/2;
          try{
             Shape s = modelToView(pos, a, bias[0]);
@@ -283,7 +283,7 @@ class HighlightLabelView extends LabelView {
       }
       pos = left-1>=getStartOffset()? left-1 : getStartOffset();
       try{
-         Debug.log(3, "viewToModel: try " + pos);
+         Debug.log(9, "viewToModel: try " + pos);
          Shape s1 = modelToView(pos, a, bias[0]);
          Shape s2 = modelToView(pos+1, a, bias[0]);
          if( Math.abs(s1.getBounds().x-fx) < Math.abs(s2.getBounds().x-fx) )
@@ -293,53 +293,6 @@ class HighlightLabelView extends LabelView {
       }
       catch(BadLocationException ble){}
       return pos;
-
-      /*
-      int pos = super.viewToModel(fx, fy, a, bias);
-      Debug.log(3, "viewToModel: super.pos " + pos); 
-      String strHead = getText(getStartOffset(), pos).toString();
-      int tabHead = countTab(strHead);
-      if(tabHead>0){
-         // super:  TEXT 
-         //   new:[\t][\t]TEXT
-         Debug.log(3, "viewToModel: tab count " + tabHead);
-         int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
-         pos = viewToModel(fx-tabWidth*tabHead, fy, a, bias);
-      }
-      return pos;
-      */
-
-      /*
-      Rectangle alloc = a.getBounds();
-      Document doc = getDocument();
-      int x = (int) fx;
-      int y = (int) fy;
-
-      // If they're asking about a view position above the area covered by      
-      // this view, then the position is assumed to be the starting position
-      // of this view.
-      if (y < alloc.y) {
-         return getStartOffset();
-      }
-      // If they're asking about a position below this view, the position
-      // is assumed to be the ending position of this view.
-      else if (y > alloc.y + alloc.height) {
-         return getEndOffset() - 1;
-      }
-      else {
-
-         // If the point is to the left of the line...
-         if (x < alloc.x)
-            return getStartOffset();
-         // If the point is to the right of the line...
-         else if (x > alloc.x + alloc.width)
-            return getEndOffset() - 1;
-         else {
-            // Determine the offset into the text
-         }
-
-      }
-      */
 
    }
 

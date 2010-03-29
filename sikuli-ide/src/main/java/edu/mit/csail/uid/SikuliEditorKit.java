@@ -20,7 +20,7 @@ public class SikuliEditorKit extends StyledEditorKit {
    private static final TextAction[] defaultActions = {
       new InsertTabAction(),
       new DeindentAction(),
-      //new InsertBreakAction(),
+      new InsertBreakAction(),
    };
 
    public Action[] getActions() {
@@ -232,9 +232,29 @@ public class SikuliEditorKit extends StyledEditorKit {
          return ch==' ' || ch=='\t';
       }
 
-      static String getLeadingWhitespace(String text) {
-         int count = 0;
+      static String getLeadingWhitespace(StyledDocument doc, int head, int len)
+                                                   throws BadLocationException{
+         String ret = "";
+
+         int pos = head;
+         while(pos<head+len){
+            Element e = doc.getCharacterElement(pos);
+            int eStart = e.getStartOffset(), eEnd = e.getEndOffset();
+            if(e.getName().equals(StyleConstants.ComponentElementName))
+               break;
+            String space=getLeadingWhitespace(doc.getText(eStart, eEnd-eStart));
+            ret += space;
+            if(space.length() < eEnd - eStart)
+               break;
+
+            pos = eEnd;
+         }
+         return ret;
+      }
+      
+      static String getLeadingWhitespace(String text){
          int len = text.length();
+         int count = 0;
          while (count<len && isWhitespace(text.charAt(count))) 
             count++;
          return text.substring(0, count);
@@ -252,7 +272,7 @@ public class SikuliEditorKit extends StyledEditorKit {
 
          try {
             int caretPos = txt.getCaretPosition();
-            Document doc = txt.getDocument();
+            StyledDocument doc = (StyledDocument)txt.getDocument();
             Element map = doc.getDefaultRootElement();
             int lineNum = map.getElementIndex(caretPos);
             Element line = map.getElement(lineNum);
@@ -261,7 +281,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             int len = end-start;
             String s = doc.getText(start, len);
 
-            String leadingWS = getLeadingWhitespace(s);
+            String leadingWS = getLeadingWhitespace(doc, start, len);
             StringBuffer sb = new StringBuffer("\n");
             sb.append(leadingWS);
 
@@ -284,9 +304,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             // and auto-indents it to the same place as the last
             // line.
             else {
-               sb.append(s.substring(nonWhitespacePos));
-               ((AbstractDocument)doc).replace(caretPos, end - caretPos, sb.toString(), null);
-               txt.setCaretPosition(caretPos + leadingWS.length()+1);
+               doc.insertString(caretPos, sb.toString(), null);
             }
 
             // FIXME: examine the previous line and do auto-indent if 
