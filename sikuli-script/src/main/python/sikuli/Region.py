@@ -91,6 +91,13 @@ class Region(JRegion):
       if ret != None:
          self.lastMatch = ret
       return ret
+
+   def exists(self, target, timeout=3):
+      ttype = __builtin__.type(target)
+      ret = JRegion.exists(self, target, timeout)
+      if ret != None:
+         self.lastMatch = ret
+      return ret
    
    ##
    # Performs a mouse clicking on the best matched position of the 

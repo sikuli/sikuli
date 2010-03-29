@@ -17,3 +17,9 @@ v["test-res/apple.png"]="apple"
 if v["test-res/apple.png"][0] == "apple": 
    print "VDict works"
 
+setThrowException(True)
+if exists(Pattern("test-res/apple.png").similar(0.9)): 
+   print "apple exists " + str(screen.lastMatch)
+else: # should not throw exception
+   print "apple doesn not exist"
+

@@ -207,6 +207,20 @@ public class Region {
    }
 
    /**
+    *  Match exists(Pattern/String/PatternClass target, timeout-sec)
+    *  waits until target appears or timeout (in second) is passed. 
+    *  No FindFailed exception will be thrown even if the target is not found.
+    */
+   public <PSC> Match exists(PSC target, double timeout) {
+      try{
+         return wait(target, timeout);
+      }
+      catch(FindFailed ff){
+         return null;
+      }
+   }
+
+   /**
     *  boolean waitVanish(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target vanishes or timeout (in second) is passed
     *  @return true if the target vanishes, otherwise returns false.
@@ -232,6 +246,7 @@ public class Region {
       }
       return false;
    }
+
 
    public <PSRML> int click(PSRML target, int modifiers) 
                                                 throws  FindFailed{
