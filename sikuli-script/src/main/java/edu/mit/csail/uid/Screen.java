@@ -60,6 +60,10 @@ public class Screen extends Region implements Observer {
       return _curGD.getDefaultConfiguration().getBounds();
    }
 
+   public int getID(){
+      return _curID;
+   }
+
    public Screen(int id) {
       if(id<_gdev.length){
          _curGD = _gdev[id];
@@ -99,7 +103,9 @@ public class Screen extends Region implements Observer {
    }
 
    public ScreenImage capture(Rectangle rect) {
-      Debug.log(3, "capture: " + rect);
+      Debug.log(5, "capture: " + rect);
+      rect.x -= x;
+      rect.y -= y;
       BufferedImage img = _robots[_curID].createScreenCapture(rect);
       return new ScreenImage(rect, img);
    }
@@ -108,7 +114,6 @@ public class Screen extends Region implements Observer {
       _waitPrompt = true;
       Thread th = new Thread(){
          public void run(){
-            System.out.println("starting CapturePrompt...");
             _prompt = new CapturePrompt(Screen.this);
          }
       };
@@ -149,5 +154,12 @@ public class Screen extends Region implements Observer {
       if(Settings.ShowActions){
          _overlay.showDropTarget(loc);
       }
+   }
+
+   public String toString(){
+      Rectangle r = getBounds();
+      return String.format("Screen(%d) [%d,%d %dx%d]",
+               _curID, (int)r.getX(), (int)r.getY(), 
+               (int)r.getWidth(), (int)r.getHeight() );
    }
 }

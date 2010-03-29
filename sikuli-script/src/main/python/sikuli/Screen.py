@@ -24,7 +24,7 @@ class Screen(Region):
       return self.getScreen().getBounds()
 
    def selectRegion(self):
-      return self.getScreen().selectRegion() 
+      return Region(self.getScreen().selectRegion())
 
    ##
    # Enters the screen-capture mode asking the user to capture a region of 

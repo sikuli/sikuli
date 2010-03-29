@@ -12,8 +12,13 @@ import __builtin__
 
 class Region(JRegion):
 
-   def __init__(self, x, y, w, h):
-      JRegion.__init__(self, x, y, w, h)
+   def __init__(self, *args):
+      if len(args)==4:
+         JRegion.__init__(self, args[0], args[1], args[2], args[3])
+      elif len(args)==1:
+         JRegion.__init__(self, args[0])
+      else:
+         raise Exception("Wrong number of parameters of Region's contructor")
       self.lastMatch = None
       self.lastMatches = None
 
