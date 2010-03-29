@@ -4,14 +4,14 @@ import __main__
 
 from Region import *
 
-DEBUG=True
+DEBUG=False
 
 class Screen(Region):
    def __init__(self, id=None):
       if id != None:
          r = JScreen.getBounds(id)
       else:
-         r = self.getBounds()
+         r = JScreen().getBounds()
       (x, y, w, h) = (int(r.getX()), int(r.getY()), \
                       int(r.getWidth()), int(r.getHeight()))
       Region.__init__(self, x, y, w, h)
@@ -20,15 +20,11 @@ class Screen(Region):
    def getNumberScreens(cls):
       return JScreen.getNumberScreens()
 
-   @classmethod
-   def getBounds(cls, screen_id):
-      return JScreen.getBounds(screen_id)
-
    def getBounds(self):
-      return JScreen().getBounds()
+      return self.getScreen().getBounds()
 
    def selectRegion(self):
-      return JScreen().selectRegion()
+      return self.getScreen().selectRegion() 
 
    ##
    # Enters the screen-capture mode asking the user to capture a region of 
