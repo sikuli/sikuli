@@ -38,7 +38,8 @@ public class Region {
       w = w_;
       h = h_;
       _scr = initScreen();
-      _robot = _scr.getRobot();
+      //_robot = _scr.getRobot();
+      _robot = Screen.getRobot(0); // mouseMove only works on the primary robot
       _evtMgr = new EventManager(this);
    }
 
@@ -546,6 +547,10 @@ public class Region {
       if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
       if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
       if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+   }
+
+   Location toRobotCoord(Location l){
+      return new Location(l.x-x, l.y-y);
    }
 
    Match toGlobalCoord(Match m){
