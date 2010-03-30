@@ -44,6 +44,8 @@ class CapturePrompt extends JWindow implements Subject{
       _darker_screen = op.filter(_scr_img, null);
    }
 
+   private Color selFrameColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+   private Color selCrossColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
    private void drawSelection(Graphics2D g2d){
       if (srcx != destx || srcy != desty)
       {
@@ -61,13 +63,13 @@ class CapturePrompt extends JWindow implements Subject{
             g2d.drawImage(_scr_img.getSubimage(x1, y1,x2-x1+1, y2-y1+1),
                           null, x1, y1);
 
-         g2d.setColor(Color.white);
+         g2d.setColor(selFrameColor);
          g2d.setStroke(bs);
          g2d.draw(rectSelection);
 
          int cx = (x1+x2)/2;
          int cy = (y1+y2)/2;
-         g2d.setColor(Color.red);
+         g2d.setColor(selCrossColor);
          g2d.setStroke(_StrokeCross);
          g2d.drawLine(cx, y1, cx, y2);
          g2d.drawLine(x1, cy, x2, cy);
