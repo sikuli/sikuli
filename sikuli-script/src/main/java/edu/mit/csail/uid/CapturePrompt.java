@@ -57,12 +57,17 @@ class CapturePrompt extends JWindow implements Subject{
          rectSelection.width = (x2-x1)+1;
          rectSelection.height = (y2-y1)+1;
 
+         if(rectSelection.width>0 && rectSelection.height>0)
+            g2d.drawImage(_scr_img.getSubimage(x1, y1,x2-x1+1, y2-y1+1),
+                          null, x1, y1);
+
          g2d.setColor(Color.white);
          g2d.setStroke(bs);
          g2d.draw(rectSelection);
 
          int cx = (x1+x2)/2;
          int cy = (y1+y2)/2;
+         g2d.setColor(Color.red);
          g2d.setStroke(_StrokeCross);
          g2d.drawLine(cx, y1, cx, y2);
          g2d.drawLine(x1, cy, x2, cy);
@@ -83,9 +88,10 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    void init(){
+      getContentPane().setCursor(
+            Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
       rectSelection = new Rectangle ();
-      bs = new BasicStroke (3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-            0, new float [] { 12, 12 }, 0);
+      bs = new BasicStroke(1);
       addMouseListener(new MouseAdapter(){
          public void mousePressed(java.awt.event.MouseEvent e){
             if (_scr_img == null) return;
