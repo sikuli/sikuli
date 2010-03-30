@@ -96,6 +96,10 @@ class CapturePrompt extends JWindow implements Subject{
 
          public void mouseReleased(java.awt.event.MouseEvent e){
             if (_scr_img == null) return;
+            if( e.getButton() == java.awt.event.MouseEvent.BUTTON3 ){
+               close();
+               return;  // don't notify the observers
+            }
             notifyObserver();
          }
       });
@@ -171,6 +175,8 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public CapturePrompt(Screen scr){
+      if(scr == null)
+         scr = new Screen(); // FIXME: scr == null means all screens
       _scr = scr;
       init();
    }

@@ -692,7 +692,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
 }
 
-class CaptureButton extends JButton implements ActionListener, Cloneable{
+class CaptureButton extends JButton implements ActionListener, Cloneable, Observer{
    protected Element _line;
    protected SikuliPane _codePane;
    protected boolean _isCapturing;
@@ -783,6 +783,25 @@ class CaptureButton extends JButton implements ActionListener, Cloneable{
    
    }
 
+   public void update(Subject s){
+      if(s instanceof CapturePrompt){
+         CapturePrompt cp = (CapturePrompt)s;
+         ScreenImage simg = cp.getSelection();
+         cp.close();
+         if(simg == null)
+            captureCompleted(null);
+         else {
+            SikuliIDE ide = SikuliIDE.getInstance();
+            SikuliPane pane = ide.getCurrentCodePane();
+            String filename = 
+               Utils.saveImage(simg.getImage(), pane.getSrcBundle());
+            if(filename != null){
+               String fullpath = pane.getFileInBundle(filename).getAbsolutePath();
+               captureCompleted(Utils.slashify(fullpath,false));
+            }
+         }
+      }
+   }
 
    public void capture(final int delay){
       if(_isCapturing)
@@ -796,7 +815,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable{
                Thread.sleep(delay);
             }
             catch(Exception e){}
-            new ScreenOverlay(ide.getCurrentCodePane(), CaptureButton.this);
+            (new CapturePrompt(null, CaptureButton.this)).prompt();
             if(delay!=0) ide.setVisible(true);
          }
       };
@@ -1034,7 +1053,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
       SikuliIDE ide = SikuliIDE.getInstance();
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
-      CapturePrompt prompt = new CapturePrompt(new Screen(), this);
+      CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt();
       ide.setVisible(true);
    }
