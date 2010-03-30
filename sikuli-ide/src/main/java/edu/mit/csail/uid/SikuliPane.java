@@ -994,7 +994,7 @@ class ScreenOverlay extends JWindow{
 }
 
 
-class RegionButton extends JButton {
+class RegionButton extends JButton implements ActionListener, Observer{
    SikuliPane _pane;
    int _x, _y, _w, _h;
 
@@ -1008,10 +1008,35 @@ class RegionButton extends JButton {
       setIcon(new ImageIcon(getRegionImage(x,y,w,h)));
       setBorderPainted(true);
       setToolTipText( this.toString() );
+      addActionListener(this);
    }
 
    public String toString(){
       return String.format("Region(%d,%d,%d,%d)", _x, _y, _w, _h);
+   }
+
+   public void update(Subject s){
+      if(s instanceof CapturePrompt){
+         CapturePrompt cp = (CapturePrompt)s;
+         ScreenImage r = cp.getSelection();
+         cp.close();
+         Rectangle roi = r.getROI();
+         _x = (int)roi.getX();
+         _y = (int)roi.getY();
+         _w = (int)roi.getWidth();
+         _h = (int)roi.getHeight();
+         BufferedImage img = getRegionImage(_x, _y, _w, _h);
+         setIcon(new ImageIcon(img));
+      }
+   }
+
+   public void actionPerformed(ActionEvent ae){
+      SikuliIDE ide = SikuliIDE.getInstance();
+      SikuliPane codePane = ide.getCurrentCodePane();
+      ide.setVisible(false);
+      CapturePrompt prompt = new CapturePrompt(new Screen(), this);
+      prompt.prompt();
+      ide.setVisible(true);
    }
 
    private BufferedImage getRegionImage(int x, int y, int w, int h) {

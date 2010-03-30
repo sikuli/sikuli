@@ -144,20 +144,17 @@ class CapturePrompt extends JWindow implements Subject{
       return ret;
    }
 
-   public CapturePrompt(Screen scr){
-      _scr = scr;
-      Debug.log(3, "starting CapturePrompt..." + scr);
-      addObserver(scr);
-      init();
-      captureScreen(scr);
-      setLocation(scr.x, scr.y);
-      this.setSize(new Dimension(scr.w, scr.h));
-      this.setBounds(scr.x, scr.y, scr.w, scr.h);
+   public void prompt(){
+      Debug.log(3, "starting CapturePrompt @" + _scr);
+      captureScreen(_scr);
+      setLocation(_scr.x, _scr.y);
+      this.setSize(new Dimension(_scr.w, _scr.h));
+      this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
       this.setVisible(true);
       this.setAlwaysOnTop(true);
 
-      if( scr.getID()==0 ){
-         _gdev = scr.getGraphicsDevice();
+      if( _scr.getID()==0 ){
+         _gdev = _scr.getGraphicsDevice();
          if( _gdev.isFullScreenSupported() ){
             _gdev.setFullScreenWindow(this);
          }
@@ -165,6 +162,17 @@ class CapturePrompt extends JWindow implements Subject{
             Debug.log("Fullscreen mode is not supported.");
          }
       }
+   }
+
+
+   public CapturePrompt(Screen scr, Observer ob){
+      this(scr);
+      addObserver(ob);
+   }
+
+   public CapturePrompt(Screen scr){
+      _scr = scr;
+      init();
    }
    
 

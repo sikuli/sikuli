@@ -849,7 +849,7 @@ class ButtonInsertImage extends JButton implements ActionListener{
    }
 }
 
-class ButtonSubregion extends JButton implements ActionListener{
+class ButtonSubregion extends JButton implements ActionListener, Observer{
    public ButtonSubregion(){
       super();
       URL imageURL = SikuliIDE.class.getResource("/icons/subregion.png");
@@ -860,11 +860,24 @@ class ButtonSubregion extends JButton implements ActionListener{
       addActionListener(this);
    }
 
+   public void update(Subject s){
+      if(s instanceof CapturePrompt){
+         CapturePrompt cp = (CapturePrompt)s;
+         ScreenImage r = cp.getSelection();
+         cp.close();
+         Rectangle roi = r.getROI();
+         complete((int)roi.getX(), (int)roi.getY(),
+                  (int)roi.getWidth(), (int)roi.getHeight());
+      }
+   }
+
    public void actionPerformed(ActionEvent ae) {
       SikuliIDE ide = SikuliIDE.getInstance();
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
-      new ScreenOverlay(codePane, this);
+      //FIXME use all screens
+      CapturePrompt prompt = new CapturePrompt(new Screen(), this);
+      prompt.prompt();
       ide.setVisible(true);
    }
 
@@ -874,7 +887,7 @@ class ButtonSubregion extends JButton implements ActionListener{
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       JButton icon = new RegionButton(codePane, x, y, w, h);
-      ide.setVisible(true);
       codePane.insertComponent(icon);
+      ide.setVisible(true);
    }
 }

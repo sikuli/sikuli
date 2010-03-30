@@ -114,7 +114,8 @@ public class Screen extends Region implements Observer {
       _waitPrompt = true;
       Thread th = new Thread(){
          public void run(){
-            _prompt = new CapturePrompt(Screen.this);
+            _prompt = new CapturePrompt(Screen.this, Screen.this);
+            _prompt.prompt();
          }
       };
       th.start();
