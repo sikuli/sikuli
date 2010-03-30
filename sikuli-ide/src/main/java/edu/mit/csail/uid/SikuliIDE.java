@@ -287,6 +287,10 @@ public class SikuliIDE extends JFrame {
    */
 
 
+   PythonInterpreter getPythonI(){
+      return _pyi;
+   }
+
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
@@ -804,6 +808,7 @@ public class SikuliIDE extends JFrame {
                      runPython(tmpFile);
                   }
                   catch(Exception e){
+                     Debug.info("Stopped");
                      int srcLine = findErrorSource(e, tmpFile.getAbsolutePath());
                      if(srcLine != -1){
                         Debug.info("[Error] source lineNo: " + srcLine);
