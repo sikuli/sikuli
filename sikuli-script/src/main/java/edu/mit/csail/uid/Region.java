@@ -15,7 +15,7 @@ public class Region {
    public int x, y, w, h;
 
    private boolean _stopIfWaitingFailed = true;
-   private double _waitBeforeAction = 3.0;
+   private double _autoWaitTimeout = 3.0;
 
    protected boolean _observing = false;
    protected EventManager _evtMgr;
@@ -150,10 +150,10 @@ public class Region {
 
    //////////// Settings
    public void setThrowException(boolean flag){ _stopIfWaitingFailed = flag; } 
-   public void setAutoWaitTimeout(double sec){ _waitBeforeAction = sec; }
+   public void setAutoWaitTimeout(double sec){ _autoWaitTimeout = sec; }
 
    public boolean getThrowException(){ return _stopIfWaitingFailed; }
-   public double getAutoWaitTimeout(){ return _waitBeforeAction; }
+   public double getAutoWaitTimeout(){ return _autoWaitTimeout; }
 
 
    //////////// CORE FUNCTIONS
@@ -164,8 +164,8 @@ public class Region {
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
    public <PSC> Match find(PSC ptn) throws FindFailed{
-      if(_waitBeforeAction > 0)
-         return wait(ptn, _waitBeforeAction);
+      if(_autoWaitTimeout > 0)
+         return wait(ptn, _autoWaitTimeout);
       else{
          Match match = findNow(ptn);
          if(match == null && _stopIfWaitingFailed)
@@ -181,8 +181,8 @@ public class Region {
     */
    public <PSC> Iterator<Match> findAll(PSC ptn) 
                                              throws  FindFailed{
-      if(_waitBeforeAction > 0)
-         return waitAll(ptn, _waitBeforeAction);
+      if(_autoWaitTimeout > 0)
+         return waitAll(ptn, _autoWaitTimeout);
       else{
          Iterator<Match> ms = findAllNow(ptn);
          if(ms == null && _stopIfWaitingFailed)
@@ -192,6 +192,10 @@ public class Region {
    }
 
 
+
+   public <PSC> Match wait(PSC target) throws FindFailed{
+      return wait(target, _autoWaitTimeout);
+   }
 
    /**
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
@@ -207,6 +211,10 @@ public class Region {
       return ret;
    }
 
+   public <PSC> Match exists(PSC target) {
+      return exists(target, _autoWaitTimeout);
+   }
+
    /**
     *  Match exists(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed. 
@@ -219,6 +227,11 @@ public class Region {
       catch(FindFailed ff){
          return null;
       }
+   }
+
+
+   public <PSC> boolean waitVanish(PSC target) {
+      return waitVanish(target, _autoWaitTimeout);
    }
 
    /**
