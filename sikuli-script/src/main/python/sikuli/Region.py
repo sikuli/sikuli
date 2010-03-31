@@ -3,6 +3,7 @@ from edu.mit.csail.uid import Location
 from edu.mit.csail.uid import Settings
 from edu.mit.csail.uid import SikuliEventAdapter
 from edu.mit.csail.uid import SikuliEventObserver
+from Constants import *
 import inspect
 import types
 import time
@@ -244,10 +245,9 @@ class Region(JRegion):
             handler(event)
       return JRegion.onChange(self, AnonyObserver())
 
-   def observe(self, time=-1, background=False):
+   def observe(self, time=FOREVER, background=False):
       if background:
-         return self.observeInBackground() 
-         # FIXME: time should be passed into this
+         return self.observeInBackground(time) 
       else:
          return JRegion.observe(self, time)
 

@@ -419,13 +419,13 @@ public class Region {
    }
 
    public void observe(){
-      observe(-1.0);
+      observe(Float.POSITIVE_INFINITY);
    }
 
-   public void observeInBackground(){
+   public void observeInBackground(final double secs){
       Thread th = new Thread(){
          public void run(){
-            observe();
+            observe(secs);
          }
       };
       th.start();
@@ -439,8 +439,7 @@ public class Region {
       int MaxTimePerScan = (int)(1000.0/Settings.ObserveScanRate); 
       long begin_t = (new Date()).getTime();
       _observing = true;
-      while( _observing && 
-             (secs==-1.0 || begin_t + secs*1000 > (new Date()).getTime()) ){
+      while( _observing && begin_t + secs*1000 > (new Date()).getTime() ){
          long before_find = (new Date()).getTime();
          ScreenImage simg = _scr.capture(x, y, w, h);
          _evtMgr.update(simg);

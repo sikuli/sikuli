@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 
 import java.awt.event.InputEvent;
 import java.util.Date;
+import java.util.Iterator;
 import javax.swing.*;
 
 /**
@@ -31,6 +32,29 @@ public class RegionTest extends TestCase implements SikuliEventObserver
         return new TestSuite( RegionTest.class );
     }
 
+       /*
+    public void testSpatialOperators() throws Exception{
+       GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
+       Thread.sleep(5000);
+       Screen s = new Screen();
+       Iterator<Match> b5 = s.findAll((new Pattern("test-res/button-5.png")).similar(0.70f));
+       s.click(b5.next(), 0);
+       Thread.sleep(3000);
+       s.click(b5.next(), 0);
+       Thread.sleep(3000);
+       s.click(b5.next(), 0);
+//       s.click(b5, 0);
+       Thread.sleep(2000);
+       assertEquals("clicked", f.getText(5));
+       s.click(b5.above().find("test-res/button-2.png"), 0);
+       s.click(b5.left().find("test-res/button-4.png"), 0);
+       s.click(b5.right().find("test-res/button-6.png"), 0);
+       s.click(b5.below().find("test-res/button-8.png"), 0);
+       f.setVisible(false);
+       f.dispose();
+    }
+       */
+
     public void targetAppeared(AppearEvent e){
        System.out.println("targetAppeared: " + e);
        appear_count++;
@@ -48,6 +72,7 @@ public class RegionTest extends TestCase implements SikuliEventObserver
 
     int appear_count = 0, vanish_count = 0, change_count = 0;
 
+    /*
     public void testObserve() throws Exception {
       Region r = new Region(0, 0, 300, 300);
       r.onAppear("test-res/cup-btn.png", this);
@@ -72,23 +97,8 @@ public class RegionTest extends TestCase implements SikuliEventObserver
       assertEquals(2, change_count);
       assertEquals(2, vanish_count);
     }
-
-    /*
-    public void testSpatialOperators() throws Exception{
-       GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
-       //Thread.sleep(50000);
-       Screen s = new Screen();
-       Match b5 = s.find((new Pattern("test-res/button-5.png")).similar(0.98f));
-       s.click(b5, 0);
-       assertEquals("clicked", f.getText(5));
-       s.click(b5.above().find("test-res/button-2.png"), 0);
-       s.click(b5.left().find("test-res/button-4.png"), 0);
-       s.click(b5.right().find("test-res/button-6.png"), 0);
-       s.click(b5.below().find("test-res/button-8.png"), 0);
-       f.setVisible(false);
-       f.dispose();
-    }
     */
+
 
     /*
     public void testType() throws Exception

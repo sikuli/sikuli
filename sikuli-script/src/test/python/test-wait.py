@@ -3,6 +3,7 @@ from sikuli.Sikuli import *
 
 with Region(10, 0, 200,200) as r:
    p = Pattern("test-res/apple.png").targetOffset(30,5)
+   r.setAutoWaitTimeout(1)
    m = r.wait(p)
    print "center: " + str(r.lastMatch.getCenter())
    print "target(+30,+5): " + str(r.lastMatch.getTarget())

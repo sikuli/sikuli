@@ -24,7 +24,7 @@ with Region(0,0,200,200) as r1:
    onAppear("test-res/apple.png", appeared)
    onVanish("test-res/apple.png", vanished)
    print "start observing on r1..."
-   observe(background=True)
+   observe(time=FOREVER, background=True)
    addCount()
 
 with Region(1000,0,280,100) as r2: 

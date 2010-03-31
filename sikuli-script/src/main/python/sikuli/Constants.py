@@ -1,0 +1,2 @@
+
+FOREVER = float('inf')
