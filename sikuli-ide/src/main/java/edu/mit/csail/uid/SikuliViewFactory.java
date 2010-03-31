@@ -302,16 +302,22 @@ class HighlightLabelView extends LabelView {
       
       if(_fMetrics==null)  
          return super.modelToView(pos, a, b);
-      String strHead = getText(getStartOffset(), pos).toString();
-      String strTail = getText(pos, getEndOffset()).toString();
-      //System.out.println("modelToView: [" + strHead + "] [" + strTail+"]");
+      int start = getStartOffset(), end = getEndOffset();
+      Debug.log(9,"[modelToView] start: " + start + 
+                  " end: " + end + " pos:" + pos);
+      String strHead = getText(start, pos).toString();
+      String strTail = getText(pos, end).toString();
+      Debug.log(9, "[modelToView] [" + strHead + "]-pos-[" + strTail+"]");
       int tabHead = countTab(strHead), tabTail = countTab(strTail);
-      //System.out.println("modelToView: " + tabHead + " " + tabTail);
+      Debug.log(9, "[modelToView] " + tabHead + " " + tabTail);
       Shape s = super.modelToView(pos, a, b);
       Rectangle ret = s.getBounds();
+      Debug.log(9, "[modelToView] super.bounds: " + ret);
       int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
-      ret.x += tabHead*tabWidth;
-      ret.width += tabTail*tabWidth;
+      if(pos!=end)
+         ret.x += tabHead*tabWidth;
+      //ret.width += tabTail*tabWidth;
+      Debug.log(9, "[modelToView] new bounds: " + ret);
       return ret;
    }
 
