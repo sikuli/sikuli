@@ -857,6 +857,10 @@ class RegionButton extends JButton implements ActionListener, Observer{
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage r = cp.getSelection();
          cp.close();
+         try{
+            Thread.sleep(300);
+         }
+         catch(InterruptedException ie){}
          Rectangle roi = r.getROI();
          _x = (int)roi.getX();
          _y = (int)roi.getY();
@@ -872,7 +876,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
-      prompt.prompt();
+      prompt.prompt(500);
       ide.setVisible(true);
    }
 

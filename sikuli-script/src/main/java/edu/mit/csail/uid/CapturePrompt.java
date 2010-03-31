@@ -156,6 +156,15 @@ class CapturePrompt extends JWindow implements Subject{
       return ret;
    }
 
+   public void prompt(int delayMS){
+      try{
+         Thread.sleep(delayMS);
+      }
+      catch(InterruptedException ie){
+      }
+      prompt();
+   }
+
    public void prompt(){
       Debug.log(3, "starting CapturePrompt @" + _scr);
       captureScreen(_scr);
@@ -165,7 +174,7 @@ class CapturePrompt extends JWindow implements Subject{
       this.setVisible(true);
       this.setAlwaysOnTop(true);
 
-      if( _scr.getID()==0 ){
+      if( _scr.useFullscreen() ){
          _gdev = _scr.getGraphicsDevice();
          if( _gdev.isFullScreenSupported() ){
             _gdev.setFullScreenWindow(this);
@@ -183,8 +192,12 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public CapturePrompt(Screen scr){
-      if(scr == null)
-         scr = new Screen(); // FIXME: scr == null means all screens
+      if(scr == null){
+         if(Screen.getNumberScreens()>1)
+            scr = new UnionScreen(); 
+         else
+            scr = new Screen();
+      }
       _scr = scr;
       init();
    }

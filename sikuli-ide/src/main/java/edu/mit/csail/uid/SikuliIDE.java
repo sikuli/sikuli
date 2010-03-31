@@ -760,11 +760,15 @@ public class SikuliIDE extends JFrame {
          Throwable t = thr;
          while (t != null) {
             s = t.getStackTrace();
-            for (int i = 0; i < s.length; i++) {
+            Debug.log(1, "stack trace:");
+            for (int i = s.length-1; i >= 0 ; i--){
                StackTraceElement si = s[i];
-               if( filename.equals( si.getFileName() ) ){
+               Debug.log(1, si.getLineNumber() + " " + si.getFileName());
+               /*
+               if( si.getLineNumber()>=0 && filename.equals( si.getFileName() ) ){
                   return si.getLineNumber();
                }
+               */
             }
             t = t.getCause();
          }
@@ -880,9 +884,8 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       SikuliIDE ide = SikuliIDE.getInstance();
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
-      //FIXME use all screens
-      CapturePrompt prompt = new CapturePrompt(new Screen(), this);
-      prompt.prompt();
+      CapturePrompt prompt = new CapturePrompt(null, this);
+      prompt.prompt(500);
       ide.setVisible(true);
    }
 

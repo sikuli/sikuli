@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.image.*;
 
 public class Screen extends Region implements Observer {
-   private GraphicsDevice _curGD;
-   private int _curID = 0;
+   protected GraphicsDevice _curGD;
+   protected int _curID = 0;
 
-   private boolean _waitPrompt;
-   private CapturePrompt _prompt;
-   private OverlayWindow _overlay;
+   protected boolean _waitPrompt;
+   protected CapturePrompt _prompt;
+   protected OverlayWindow _overlay;
 
    static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
@@ -27,7 +27,7 @@ public class Screen extends Region implements Observer {
          for(int i=0;i<_gdev.length;i++){
             _robots[i] = new Robot(_gdev[i]);
             _robots[i].setAutoWaitForIdle(false);
-            _robots[i].setAutoDelay(0);
+            _robots[i].setAutoDelay(10);
          }
       }
       catch(AWTException e){
@@ -74,7 +74,7 @@ public class Screen extends Region implements Observer {
       initBounds();
    }
 
-   private void initBounds(){
+   protected void initBounds(){
       Rectangle bounds = getBounds();
       init((int)bounds.getX(), (int)bounds.getY(),
             (int)bounds.getWidth(), (int)bounds.getHeight());
@@ -155,6 +155,12 @@ public class Screen extends Region implements Observer {
       if(Settings.ShowActions){
          _overlay.showDropTarget(loc);
       }
+   }
+
+   boolean useFullscreen(){
+      if( _curID == 0 )
+         return true;
+      return false;
    }
 
    public String toString(){
