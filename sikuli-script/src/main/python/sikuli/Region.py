@@ -87,19 +87,32 @@ class Region(JRegion):
    # @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
    # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
-   def wait(self, target, timeout=3):
+   # FIXME: default timeout should be autoWaitTimeout
+   def wait(self, target, timeout=None):
       ttype = __builtin__.type(target)
       if ttype is types.IntType or ttype is types.FloatType:
          time.sleep(target)
          return
-      ret = JRegion.wait(self, target, timeout)
+      if timeout == None:
+         ret = JRegion.wait(self, target)
+      else:
+         ret = JRegion.wait(self, target, timeout)
       if ret != None:
          self.lastMatch = ret
       return ret
 
-   def exists(self, target, timeout=3):
-      ttype = __builtin__.type(target)
-      ret = JRegion.exists(self, target, timeout)
+   def waitVanish(self, target, timeout=None):
+      if timeout == None:
+         ret = JRegion.waitVanish(self, target)
+      else:
+         ret = JRegion.waitVanish(self, target, timeout)
+      return ret
+
+   def exists(self, target, timeout=None):
+      if timeout == None:
+         ret = JRegion.exists(self, target)
+      else:
+         ret = JRegion.exists(self, target, timeout)
       if ret != None:
          self.lastMatch = ret
       return ret
@@ -184,11 +197,11 @@ class Region(JRegion):
    # @param src This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object.
    # @param dest This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
    # @return Returns 1 if both src and dest can be found, otherwise returns 0.
-   def dragDrop(self, src, dest):
+   def dragDrop(self, src, dest, modifiers=0):
       if isinstance(dest, list) or isinstance(dest, tuple):
-         return JRegion.dragDrop(self, src, Location(dest[0], dest[1]), 0)
+         return JRegion.dragDrop(self, src, Location(dest[0], dest[1]), modifiers)
       else:
-         return JRegion.dragDrop(self, src, dest, 0)
+         return JRegion.dragDrop(self, src, dest, modifiers)
 
    def drag(self, target):
       return JRegion.drag(self, target)
@@ -231,9 +244,10 @@ class Region(JRegion):
             handler(event)
       return JRegion.onChange(self, AnonyObserver())
 
-   def observe(self, background=False, time=-1):
+   def observe(self, time=-1, background=False):
       if background:
-         return self.observeInBackground()
+         return self.observeInBackground() 
+         # FIXME: time should be passed into this
       else:
          return JRegion.observe(self, time)
 
