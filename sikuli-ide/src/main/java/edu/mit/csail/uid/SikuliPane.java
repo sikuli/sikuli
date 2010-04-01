@@ -942,7 +942,7 @@ class ImageButton extends JButton implements ActionListener /*, MouseListener*/ 
    }
 
    private String createThumbnail(String imgFname){
-      final int max_h = 40;
+      final int max_h = UserPreferences.getInstance().getDefaultThumbHeight();
       Image img = new ImageIcon(imgFname).getImage();
       int w = img.getWidth(null), h = img.getHeight(null);
       if(max_h >= h)  return imgFname;

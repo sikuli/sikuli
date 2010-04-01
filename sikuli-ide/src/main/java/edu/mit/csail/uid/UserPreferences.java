@@ -66,6 +66,14 @@ public class UserPreferences {
       pref.putDouble("CAPTURE_DELAY", v);
    }
 
+   public int getDefaultThumbHeight(){
+      return pref.getInt("DEFAULT_THUMB_HEIGHT", 50);
+   }
+
+   public void setDefaultThumbHeight(int h){
+      pref.putInt("DEFAULT_THUMB_HEIGHT", h);
+   }
+
    public void put(String key, String val){
       pref.put(key, val);
    }
