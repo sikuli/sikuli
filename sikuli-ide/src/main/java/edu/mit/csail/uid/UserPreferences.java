@@ -74,6 +74,14 @@ public class UserPreferences {
       pref.putInt("DEFAULT_THUMB_HEIGHT", h);
    }
 
+   public boolean getAutoCaptureForCmdButtons(){
+      return pref.getInt("AUTO_CAPTURE_FOR_CMD_BUTTONS",1)!=0;
+   }
+
+   public void setAutoCaptureForCmdButtons(boolean flag){
+      pref.putInt("AUTO_CAPTURE_FOR_CMD_BUTTONS", flag?1:0);
+   }
+
    public void put(String key, String val){
       pref.put(key, val);
    }

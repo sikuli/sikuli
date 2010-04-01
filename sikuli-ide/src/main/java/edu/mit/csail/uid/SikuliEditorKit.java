@@ -213,9 +213,7 @@ public class SikuliEditorKit extends StyledEditorKit {
          super(name);
       }
 
-      public void actionPerformed(ActionEvent e) {
-         JTextComponent textArea = (JTextComponent)e.getSource();
-
+      public void insertBreak(JTextComponent textArea){
          boolean noSelection = textArea.getSelectionStart()==textArea.getSelectionEnd();
 
          if (noSelection ) {
@@ -224,8 +222,11 @@ public class SikuliEditorKit extends StyledEditorKit {
          else {
             textArea.replaceSelection("\n");
          }
+      }
 
-
+      public void actionPerformed(ActionEvent e) {
+         JTextComponent textArea = (JTextComponent)e.getSource();
+         insertBreak(textArea);
       }
 
       static boolean isWhitespace(char ch){

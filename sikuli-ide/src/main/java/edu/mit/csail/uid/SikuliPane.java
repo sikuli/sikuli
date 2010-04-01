@@ -678,6 +678,20 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    }
 
+   void insertString(String str){
+      insertString(getCaretPosition(), str);
+   }
+
+   void insertString(int pos, String str){
+      Document doc = getDocument();
+      try{
+         doc.insertString( pos, str, null );
+      }
+      catch(Exception e){
+         e.printStackTrace();
+      }
+   }
+
    void appendString(String str){
       Document doc = getDocument();
       try{

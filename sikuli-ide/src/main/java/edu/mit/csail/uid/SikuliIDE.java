@@ -152,6 +152,12 @@ public class SikuliIDE extends JFrame {
       frame.setJMenuBar(_menuBar);
    }
 
+   private JToolBar initCmdToolbar(){
+      JToolBar toolbar = new JToolBar();
+      toolbar.add(new ButtonGenCommand("click", "PATTERN","[modifiers]"));
+      return toolbar;
+   }
+
    private JToolBar initToolbar(){
       JToolBar toolbar = new JToolBar();
       _btnRun = new ButtonRun();
@@ -324,6 +330,7 @@ public class SikuliIDE extends JFrame {
             JSplitPane.VERTICAL_SPLIT, true, _codeAndUnitPane, _auxPane);
 
       c.add(initToolbar(), BorderLayout.NORTH);
+      c.add(initCmdToolbar(), BorderLayout.WEST);
       c.add(mainAndConsolePane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
