@@ -15,29 +15,30 @@ public class ButtonGenCommand extends JButton implements ActionListener{
       _cmd = cmd;
       _params = params;
       setToolTipText(getRichRepresentation(cmd, params, true));
+      setHorizontalAlignment(SwingConstants.LEFT);
       addActionListener(this);
    }
 
    static String getRichRepresentation(String cmd, String[] params, boolean showOptParam){
       URL imgPattern = SikuliIDE.class.getResource("/icons/capture-small.png");
-      String ret = "<html><table><tr><td valign=\"middle\">" + cmd + "(";
+      String ret = "<html><table><tr><td valign=\"middle\"><b>" + cmd + "</b>(";
       int count = 0;
       for(String p : params){
          String item = "";
          if(count++ != 0)
             item += ", ";
          if(p.equals("PATTERN"))
-            item += "<td><img src=\"" + imgPattern + "\">";
+            item += "<img src=\"" + imgPattern + "\">";
          else{
             if(p.startsWith("[") && p.endsWith("]")){
                if(showOptParam)
-                  item += "<td valign=\"middle\">" + p;
+                  item += "<i>" + p +"</i>";
             }
             else
-               item += "<td valign=\"middle\">" + p;
+               item += p;
          }
          if(!item.equals(", "))
-            ret += item;
+            ret += "<td valign=\"middle\">" + item;
       }
       ret += "<td>)";
       return ret;
@@ -74,7 +75,7 @@ public class ButtonGenCommand extends JButton implements ActionListener{
             CaptureButton btnCapture = new CaptureButton(pane, line);
             pane.insertComponent(btnCapture);
             if( pref.getAutoCaptureForCmdButtons() ){
-               btnCapture.capture(300);
+               btnCapture.capture(300, false);
             }
          }
       }

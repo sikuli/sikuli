@@ -818,6 +818,18 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       }
    }
 
+   public void capture(final int delay, boolean waitCompleted){
+      capture(delay);
+      if(waitCompleted){
+         try{
+            while(_isCapturing){
+               Thread.sleep(50);
+            }
+         }
+         catch(InterruptedException ie){}
+      }
+   }
+
    public void capture(final int delay){
       if(_isCapturing)
          return;

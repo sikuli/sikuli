@@ -31,13 +31,6 @@ class CapturePrompt extends JWindow implements Subject{
 
    private void captureScreen(Screen scr) {
       ScreenImage simg = scr.capture();
-      /*
-      try{
-         System.out.println( "screen file: " + simg.getFilename() );
-      }
-      catch(IOException e){}
-      */
-
       _scr_img = simg.getImage();
       float scaleFactor = .6f;
       RescaleOp op = new RescaleOp(scaleFactor, 0, null);

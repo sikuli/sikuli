@@ -152,6 +152,31 @@ public class SikuliIDE extends JFrame {
       frame.setJMenuBar(_menuBar);
    }
 
+   private String[][] CommandsOnToolbar = {
+      {"find"}, {"PATTERN"},
+      {"findAll"}, {"PATTERN"},
+      {"wait"}, {"PATTERN", "[timeout]"},
+      {"waitVanish"}, {"PATTERN", "[timeout]"},
+      {"exists"}, {"PATTERN"},
+      {"----"},{},
+      {"click"}, {"PATTERN","[modifiers]"},
+      {"doubleClick"}, {"PATTERN","[modifiers]"},
+      {"rightClick"}, {"PATTERN","[modifiers]"},
+      {"hover"}, {"PATTERN"},
+      {"dragDrop"}, {"PATTERN", "PATTERN", "[modifiers]"},
+      {"drag"}, {"PATTERN"},
+      {"dropAt"}, {"PATTERN", "[delay]"},
+      {"type"}, {"text", "[modifiers]"},
+      {"type"}, {"PATTERN", "text", "[modifiers]"},
+      {"paste"}, {"text", "[modifiers]"},
+      {"paste"}, {"PATTERN", "text", "[modifiers]"},
+      {"----"},{},
+      {"onAppear"}, {"PATTERN", "handler"},
+      {"onVanish"}, {"PATTERN", "handler"},
+      {"onChange"}, {"handler"},
+      {"observe"}, {},
+   };
+
    private JToolBar initCmdToolbar(){
       JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
       UserPreferences pref = UserPreferences.getInstance();
@@ -165,9 +190,14 @@ public class SikuliIDE extends JFrame {
          }
       });
       toolbar.add(chkAutoCapture);
-      toolbar.add(new ButtonGenCommand("click", "PATTERN","[modifiers]"));
-      toolbar.add(new ButtonGenCommand("doubleClick", "PATTERN","[modifiers]"));
-      toolbar.add(new ButtonGenCommand("rightClick", "PATTERN","[modifiers]"));
+      for(int i=0;i<CommandsOnToolbar.length;i++){
+         String cmd = CommandsOnToolbar[i++][0];
+         String[] params = CommandsOnToolbar[i];
+         if( cmd.equals("----") )
+            toolbar.addSeparator();
+         else
+            toolbar.add(new ButtonGenCommand(cmd, params));
+      }
       return toolbar;
    }
 
@@ -872,7 +902,7 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       setIcon(new ImageIcon(imageURL));
       setMaximumSize(new Dimension(26,26));
       setBorderPainted(false);
-      setToolTipText("Find within a region");
+      setToolTipText("Create a region to restrict screen matching");
       addActionListener(this);
    }
 
