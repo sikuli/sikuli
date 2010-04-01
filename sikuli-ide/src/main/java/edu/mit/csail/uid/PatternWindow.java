@@ -92,7 +92,7 @@ public class PatternWindow extends JFrame implements Observer {
 
       sldSimilar = createSlider();
       JLabel lblNumMatches = new JLabel("Number of matches:");
-      SpinnerNumberModel model = new SpinnerNumberModel(50, 0, 100, 1); 
+      SpinnerNumberModel model = new SpinnerNumberModel(50, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
       txtNumMatches = new JSpinner(model);
       lblNumMatches.setLabelFor(txtNumMatches);
       JButton btnOK = new JButton("OK");
@@ -176,10 +176,10 @@ public class PatternWindow extends JFrame implements Observer {
 
 class ScreenshotPane extends JPanel implements ChangeListener, Subject{
    final static int MAX_H = 300;
-   static int MAX_NUM_MATCHING = 50;
+   static int MAX_NUM_MATCHING = 100;
 
-   static Rectangle fullscreenRect = new Rectangle(
-         Toolkit.getDefaultToolkit().getScreenSize() );
+   Region _match_region;
+   ScreenImage _simg;
    BufferedImage _screen = null;
    int _width, _height;
    double _scale;
@@ -188,11 +188,13 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
 
    float _similarity;
    int _numMatches;
-   Matches _fullMatches = null, _showMatches = null;
+   Set<Match> _fullMatches = null;
+   Vector<Match> _showMatches = null;
    Observer _observer = null;
 
    public ScreenshotPane(){
-      int w = fullscreenRect.width, h = fullscreenRect.height;
+      _match_region = new UnionScreen();
+      int w = _match_region.w, h = _match_region.h;
       _scale = (double)MAX_H/h;
       _width = (int)(w * _scale);
       _height = MAX_H;
@@ -206,19 +208,19 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
       else
          _similarity = 1.0f;
       _numMatches = numMatches;
-      _showMatches = filterMatches(_similarity, _numMatches);
+      filterMatches(_similarity, _numMatches);
       repaint();
    }
 
    public void setSimilarity(float similarity){
       _similarity = similarity;
-      _showMatches = filterMatches(_similarity, _numMatches);
+      filterMatches(_similarity, _numMatches);
       repaint();
    }
 
    public void setNumMatches(int numMatches){
       _numMatches = numMatches;
-      _showMatches = filterMatches(_similarity, _numMatches);
+      filterMatches(_similarity, _numMatches);
       repaint();
    }
 
@@ -237,16 +239,30 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
                                              throws IOException, AWTException{
       if( !_runFind ){
          _runFind = true;
-         /*
          Thread thread = new Thread(new Runnable(){
             public void run(){
                try{
-                  File screenFile = File.createTempFile("sikuli-screen",".png");
-                  ImageIO.write(_screen, "png", screenFile);
-                  SikuliScript script = new SikuliScript();
-                  _fullMatches = script._find(patFilename, screenFile.getAbsolutePath(), 0.0f, MAX_NUM_MATCHING);
-                  setParameters(exact, similarity, numMatches);
-                  notifyObserver();
+                  Finder f = new Finder(_simg, _match_region);
+                  f.find(new Pattern(patFilename).similar(0f));
+                  _fullMatches = new TreeSet<Match>(new Comparator(){
+                     public int compare(Object o1, Object o2){
+                        return -1 * ((Comparable)o1).compareTo(o2);
+                     }
+                     public boolean equals(Object o){
+                        return false;
+                     }
+                  });
+                  int count=0;
+                  while(f.hasNext()){
+                     if(++count > MAX_NUM_MATCHING)
+                        break;
+                     Match m = f.next();
+                     synchronized(_fullMatches){
+                        _fullMatches.add(m);
+                     }
+                     setParameters(exact, similarity, numMatches);
+                     notifyObserver();
+                  }
                }
                catch(Exception e){
                   e.printStackTrace();
@@ -254,45 +270,45 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
             }
          });
          thread.start();
-         */
       }
       else
          setParameters(exact, similarity, numMatches);
    }
 
-   Matches filterMatches(float similarity, int numMatches){
+   void filterMatches(float similarity, int numMatches){
       int count = 0;
-      if(_fullMatches != null && numMatches>0){
+      if(_fullMatches != null && numMatches>=0){
          Debug.log(7, "filterMatches(%.2f,%d): %d", 
                    similarity, numMatches, count);
-         Matches matches = new Matches();
-         for(Match m : _fullMatches){
-            if( m.score >= similarity ){
-               matches.add(m);
-               if( ++count >= numMatches )
-                  break;
+         if(_showMatches == null)
+            _showMatches = new Vector<Match>();
+         synchronized(_showMatches){
+            _showMatches.clear();
+            if(numMatches == 0) return;
+            synchronized(_fullMatches){
+               for(Match m : _fullMatches){
+                  if( m.score >= similarity ){
+                     _showMatches.add(m);
+                     if( ++count >= numMatches )
+                        break;
+                  }
+               }
             }
          }
-         return matches;
       }
-      return null;
+      return;
    }
 
    void takeScreenshot(){
+      SikuliIDE ide = SikuliIDE.getInstance();
+      ide.setVisible(false);
       try{
-         SikuliIDE ide = SikuliIDE.getInstance();
-         ide.setVisible(false);
-            try{
-               Thread.sleep(500);
-            }
-            catch(Exception e){}
-         Robot robot = new Robot();
-         _screen = robot.createScreenCapture(fullscreenRect);
-         ide.setVisible(true);
+         Thread.sleep(500);
       }
-      catch(AWTException e){
-         e.printStackTrace();
-      }
+      catch(Exception e){}
+      _simg = _match_region.getScreen().capture();
+      _screen = _simg.getImage();
+      ide.setVisible(true);
    }
 
    public void paint(Graphics g){
@@ -312,20 +328,22 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
    }
 
    void paintMatches(Graphics2D g2d){
-      for(Match m : _showMatches){
-         int x = (int)(m.x*_scale);
-         int y = (int)(m.y*_scale);
-         int w = (int)(m.w*_scale);
-         int h = (int)(m.h*_scale);
-         // map hue to 0.5~1.0
-         Color c = new Color(
-               Color.HSBtoRGB( 0.5f+(float)m.score/2, 1.0f, 1.0f));
-         // map alpha to 20~150
-         Color cMask = new Color(
-               c.getRed(), c.getGreen(), c.getBlue(), 20+(int)(m.score*130));
-         g2d.setColor(cMask);
-         g2d.fillRect(x, y, w, h);
-         g2d.drawRect(x, y, w-1, h-1);
+      synchronized(_showMatches){
+         for(Match m : _showMatches){
+            int x = (int)(m.x*_scale);
+            int y = (int)(m.y*_scale);
+            int w = (int)(m.w*_scale);
+            int h = (int)(m.h*_scale);
+            // map hue to 0.5~1.0
+            Color c = new Color(
+                  Color.HSBtoRGB( 0.5f+(float)m.score/2, 1.0f, 1.0f));
+            // map alpha to 20~150
+            Color cMask = new Color(
+                  c.getRed(), c.getGreen(), c.getBlue(), 20+(int)(m.score*130));
+            g2d.setColor(cMask);
+            g2d.fillRect(x, y, w, h);
+            g2d.drawRect(x, y, w-1, h-1);
+         }
       }
    
    }
