@@ -175,7 +175,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
    static String pyConverter = Utils.convertStreamToString(SikuliToHtmlConverter);
 
    private void convertSrcToHtml(String bundle){
-      PythonInterpreter py = SikuliIDE.getInstance().getPythonI();
+      PythonInterpreter py = 
+         ScriptRunner.getInstance(null).getPythonInterpreter();
       Debug.log(1, "Convert Sikuli source code " + bundle + " to HTML");
       py.set("local_convert", true);
       py.set("sikuli_src", bundle);

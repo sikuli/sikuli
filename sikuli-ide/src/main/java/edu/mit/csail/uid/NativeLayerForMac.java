@@ -38,7 +38,7 @@ public class NativeLayerForMac implements NativeLayer {
                Debug.log(1, "opening " + fname);
                if(fname.endsWith("skl")){
                   try{
-                     ide.runSkl(fname);
+                     ide.runSkl(fname, null); // FIXME: get args???
                   }
                   catch(Exception e){
                      e.printStackTrace();

@@ -196,8 +196,8 @@ class Parser:
 srcs = []
 if locals().has_key('sikuli_src'):
    srcs.append(sikuli_src)
-if len(sys.argv) > 1:
-   srcs += sys.argv[1:]
+#if len(sys.argv) > 1:
+#   srcs += sys.argv[1:]
 
 for sikuli in srcs:
    f_py = glob.glob(sikuli + "/*.py")

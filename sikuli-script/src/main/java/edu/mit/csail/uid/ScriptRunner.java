@@ -7,23 +7,26 @@ import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
 public class ScriptRunner {
+   private static ScriptRunner _instance = null;
    private java.util.List<String> _headers;
+   private PythonInterpreter py; 
 
-   public ScriptRunner(){
-      init();
+   public static ScriptRunner getInstance(String[] args){
+      if(_instance == null)
+         _instance = new ScriptRunner(args);
+      return _instance;
    }
 
-   void init(){
+   protected ScriptRunner(String[] args){
+      init(args);
+   }
+
+   void init(String[] args){
+      PythonInterpreter.initialize(System.getProperties(),null, args);
+      py = new PythonInterpreter();
       String[] h = new String[]{
          "from __future__ import with_statement",
          "from sikuli.Sikuli import *",
-/*
-         "from sikuli import Sikuli",
-         "import __main__",
-         "__main__.screen = Screen()",
-         "__main__.screen._exposeAllMethods()",
-         "print dir()",
-*/
          "setThrowException(True)",
          "setShowActions(False)"
       };
@@ -34,9 +37,11 @@ public class ScriptRunner {
       _headers.add(line);
    }
 
-   public void runPython(String bundlePath, File pyFile, String[] args) throws IOException{
-      PythonInterpreter.initialize(System.getProperties(),null, args);
-      PythonInterpreter py = new PythonInterpreter();
+   public PythonInterpreter getPythonInterpreter(){
+      return py;
+   }
+
+   public void runPython(String bundlePath, File pyFile) throws IOException{
       Iterator<String> it = _headers.iterator();
       while(it.hasNext()){
          String line = it.next();
@@ -44,12 +49,12 @@ public class ScriptRunner {
       }
       py.exec("setBundlePath('" + bundlePath + "')");
       py.execfile(pyFile.getAbsolutePath());
-      py.cleanup();
+      //py.cleanup();
    }
 
    public void runPython(String bundlePath) throws IOException {
       File pyFile = getPyFrom(bundlePath);
-      runPython(bundlePath, pyFile, null);
+      runPython(bundlePath, pyFile);
    }
 
    private File getPyFrom(String bundlePath) throws IOException{

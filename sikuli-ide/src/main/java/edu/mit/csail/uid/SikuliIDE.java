@@ -14,9 +14,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
 
-import org.python.util.PythonInterpreter; 
-import org.python.core.*; 
-
 
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
@@ -46,7 +43,6 @@ public class SikuliIDE extends JFrame {
    private String _preloadFilename = null;
    private boolean _inited = false;
 
-   PythonInterpreter _pyi;
 
    public static Icon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
@@ -287,22 +283,17 @@ public class SikuliIDE extends JFrame {
    */
 
 
-   PythonInterpreter getPythonI(){
-      return _pyi;
-   }
-
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
-      PythonInterpreter.initialize(System.getProperties(),null,args);
-      _pyi = new PythonInterpreter();
+      ScriptRunner srunner = ScriptRunner.getInstance(args);
 
       initNativeLayer();
 
       if(args!=null && args.length>=1){
          try{
             if(args[0].endsWith("skl"))
-               runSkl(args[0]);
+               runSkl(args[0], args);
          }
          catch(IOException e){
             System.err.println("Can't open file: " + args[0] + "\n" + e);
@@ -359,14 +350,14 @@ public class SikuliIDE extends JFrame {
          _preloadFilename = filename;
    }
 
-   public void runSkl(String filename) throws IOException{
+   public void runSkl(String filename, String[] args) throws IOException{
       String name = (new File(filename)).getName();
       name = name.substring(0, name.lastIndexOf('.'));
       File tmpDir = Utils.createTempDir();
       File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
       sikuliDir.mkdir();
       Utils.unzip(filename, sikuliDir.getAbsolutePath());
-      ScriptRunner runner = new ScriptRunner();
+      ScriptRunner runner = new ScriptRunner(args);
       runner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
       System.exit(0);
    }
@@ -777,13 +768,9 @@ public class SikuliIDE extends JFrame {
 
 
       private void runPython(File f) throws IOException{
-         Iterator<String> it = _headers.iterator();
-         while(it.hasNext())
-            _pyi.exec(it.next());
+         ScriptRunner srunner = ScriptRunner.getInstance(null);
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
-         _pyi.exec("setBundlePath('" + path + "')");
-         _pyi.execfile( f.getAbsolutePath() );
-         //py.cleanup();
+         srunner.runPython(path, f);
       }
 
       public void stopRunning(){

@@ -104,7 +104,7 @@ test:all
 	if [ -e $(NATIVE_TARGET_PATH) ]; \
 	then cp -rf $(NATIVE_TARGET_PATH) $(CLASSES_OUT_PATH)/META-INF; \
 	fi
-	$(JAVA) $(JAVA_ARGS) -cp $(CLASSES_OUT_PATH):$(CLASSPATH) $(MAIN_CLASS) $(ARGS) #evaluation/TestCapivara.sikuli #testing/PythonTestCase.sikuli #evaluation/TestDrJava.py #testing/PythonTestCase.py
+	$(JAVA) $(JAVA_ARGS) -cp $(CLASSES_OUT_PATH):$(CLASSPATH) $(MAIN_CLASS) $(ARGS) 
 
 
 all: $(CLASSES_OUT_PATH) $(CLASSES) $(TARGET_RESOURCES) native-lib
