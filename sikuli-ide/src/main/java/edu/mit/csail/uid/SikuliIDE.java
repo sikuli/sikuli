@@ -153,8 +153,21 @@ public class SikuliIDE extends JFrame {
    }
 
    private JToolBar initCmdToolbar(){
-      JToolBar toolbar = new JToolBar();
+      JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
+      UserPreferences pref = UserPreferences.getInstance();
+      JCheckBox chkAutoCapture = 
+         new JCheckBox("Auto capture", pref.getAutoCaptureForCmdButtons());
+      chkAutoCapture.addChangeListener(new ChangeListener(){
+         public void stateChanged(javax.swing.event.ChangeEvent e){
+            boolean flag = ((JCheckBox)e.getSource()).isSelected();
+            UserPreferences pref = UserPreferences.getInstance();
+            pref.setAutoCaptureForCmdButtons(flag);
+         }
+      });
+      toolbar.add(chkAutoCapture);
       toolbar.add(new ButtonGenCommand("click", "PATTERN","[modifiers]"));
+      toolbar.add(new ButtonGenCommand("doubleClick", "PATTERN","[modifiers]"));
+      toolbar.add(new ButtonGenCommand("rightClick", "PATTERN","[modifiers]"));
       return toolbar;
    }
 

@@ -3,6 +3,7 @@ package edu.mit.csail.uid;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.text.*;
+import java.net.URL;
 
 
 public class ButtonGenCommand extends JButton implements ActionListener{
@@ -10,10 +11,36 @@ public class ButtonGenCommand extends JButton implements ActionListener{
    String[] _params;
 
    public ButtonGenCommand(String cmd, String... params){
-      super(getTextRepresentation(cmd, params));
+      super(getRichRepresentation(cmd, params, false));
       _cmd = cmd;
       _params = params;
+      setToolTipText(getRichRepresentation(cmd, params, true));
       addActionListener(this);
+   }
+
+   static String getRichRepresentation(String cmd, String[] params, boolean showOptParam){
+      URL imgPattern = SikuliIDE.class.getResource("/icons/capture-small.png");
+      String ret = "<html><table><tr><td valign=\"middle\">" + cmd + "(";
+      int count = 0;
+      for(String p : params){
+         String item = "";
+         if(count++ != 0)
+            item += ", ";
+         if(p.equals("PATTERN"))
+            item += "<td><img src=\"" + imgPattern + "\">";
+         else{
+            if(p.startsWith("[") && p.endsWith("]")){
+               if(showOptParam)
+                  item += "<td valign=\"middle\">" + p;
+            }
+            else
+               item += "<td valign=\"middle\">" + p;
+         }
+         if(!item.equals(", "))
+            ret += item;
+      }
+      ret += "<td>)";
+      return ret;
    }
 
    static String getTextRepresentation(String cmd, String[] params){
