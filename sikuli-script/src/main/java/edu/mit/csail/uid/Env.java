@@ -1,13 +1,19 @@
 package edu.mit.csail.uid;
 
+import java.awt.*;
 import java.awt.event.*;
+import java.awt.MouseInfo;
 
-enum OS {
-   MAC, WINDOWS, LINUX,
-   NOT_SUPPORTED
-}
 
 public class Env {
+   public static Location getMouseLocation() throws HeadlessException{
+      Point loc = MouseInfo.getPointerInfo().getLocation();
+      return new Location(loc.x, loc.y);
+   }
+
+   public static String getOSVersion(){
+      return System.getProperty("os.version");
+   }
    public static OS getOS(){
       String os = System.getProperty("os.name").toLowerCase();
       if( os.startsWith("mac os x") )
@@ -19,7 +25,7 @@ public class Env {
       return OS.NOT_SUPPORTED;
    }
 
-   public static OSUtil createOSUtil(){
+   static OSUtil createOSUtil(){
       switch(getOS()){
          case MAC:       return new MacUtil();
          case WINDOWS:   return new Win32Util();
@@ -30,7 +36,7 @@ public class Env {
       }
    }
 
-   public static int getHotkeyModifier(){
+   static int getHotkeyModifier(){
       if(getOS() == OS.MAC)
          return KeyEvent.VK_META;
       else
