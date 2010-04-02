@@ -29,8 +29,15 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
+   public Finder(String screenFilename){
+      this(screenFilename, null);
+   }
+
    public Finder(String screenFilename, Region region){
-      _instance = createFinder(screenFilename);
+      String fname = screenFilename;
+      if( !(new File(screenFilename)).exists() && Settings.BundlePath!=null)
+         fname = Settings.BundlePath + File.separator + screenFilename;
+      _instance = createFinder(fname);
       _region = region;
    }
 
@@ -85,7 +92,8 @@ public class Finder implements Iterator<Match>{
    public Match next(){
       if(_instance!=0 ){
          Match ret = next(_instance);
-         ret = _region.toGlobalCoord(ret);
+         if(_region != null)
+            ret = _region.toGlobalCoord(ret);
          if(_pattern != null){
             Location offset = _pattern.getTargetOffset();
             ret.setTargetOffset(offset);

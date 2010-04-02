@@ -13,6 +13,7 @@ import __main__
 import types
 
 from edu.mit.csail.uid import Region as JRegion
+from edu.mit.csail.uid import Finder
 from edu.mit.csail.uid import Location
 from edu.mit.csail.uid import Settings
 from edu.mit.csail.uid import Env

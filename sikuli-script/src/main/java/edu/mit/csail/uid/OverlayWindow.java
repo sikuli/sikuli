@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 
 
 class OverlayWindow extends JWindow implements MouseListener {
@@ -19,6 +20,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    BufferedImage _darker_screen = null;
    int srcx, srcy, destx, desty;
    Location _lastTarget;
+   boolean _borderOnly = false;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -78,11 +80,17 @@ class OverlayWindow extends JWindow implements MouseListener {
    {
       if( _screen != null ){
          Graphics2D g2d = (Graphics2D)g;
-
-         g2d.drawImage(_darker_screen,0,0,this);
-         switch(_mode){
-            case ONE_TARGET: drawTarget(g2d); break;
-            case DRAG_DROP:  drawDragDrop(g2d); break;
+         if(_borderOnly){
+            g2d.drawImage(_screen, 0, 0, this);
+            g2d.setColor(Color.red);
+            g2d.drawRect(0, 0, _screen.getWidth()-1, _screen.getHeight()-1);
+         }
+         else{
+            g2d.drawImage(_darker_screen,0,0,this);
+            switch(_mode){
+               case ONE_TARGET: drawTarget(g2d); break;
+               case DRAG_DROP:  drawDragDrop(g2d); break;
+            }
          }
          setVisible(true);
       }
@@ -92,6 +100,12 @@ class OverlayWindow extends JWindow implements MouseListener {
    }
 
    void init(){
+      JPanel pan = new JPanel();
+      pan.setBorder(new LineBorder(Color.red));
+      getContentPane().add(pan,"Center");
+      //pan.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.5f));
+      //getRootPane().putClientProperty("Window.alpha", new Float(0.5f));
+      getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       addMouseListener(this);
    }
 
@@ -113,6 +127,17 @@ class OverlayWindow extends JWindow implements MouseListener {
 
    public void showDropTarget(Location loc){
       showDragDrop(_lastTarget.x, _lastTarget.y, loc.x, loc.y);
+   }
+
+   public void showRegion(Region r_){
+      _borderOnly = true;
+      Region r = new Region(r_);
+      r.setROI(new Rectangle(r_.x-5, r_.y-5, r_.w+10, r_.h+10));
+      captureScreen(r.x, r.y, r.w, r.h);
+      setLocation(r.x,r.y);
+      setSize(r.w, r.h);
+      setVisible(true);
+      toFront();
    }
 
    public void showTarget(Location loc){
