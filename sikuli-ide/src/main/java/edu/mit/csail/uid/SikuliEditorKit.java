@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 
 import javax.swing.*;
@@ -72,6 +73,7 @@ public class SikuliEditorKit extends StyledEditorKit {
       }
       out.close();
    }
+
 
    public static class InsertTabAction extends TextAction {
          

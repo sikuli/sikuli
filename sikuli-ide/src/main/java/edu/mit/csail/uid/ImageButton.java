@@ -9,7 +9,7 @@ import java.util.Locale;
 import javax.swing.*;
 import javax.swing.text.*;
 
-class ImageButton extends JButton implements ActionListener /*, MouseListener*/ {
+class ImageButton extends JButton implements ActionListener, Serializable /*, MouseListener*/ {
    static final int DEFAULT_NUM_MATCHES = 10;
    static final float DEFAULT_SIMILARITY = 0.7f;
 

@@ -246,7 +246,7 @@ public class SikuliIDE extends JFrame {
             JTabbedPane tab = (JTabbedPane)e.getSource();
             int i = tab.getSelectedIndex();
             if(i>=0)
-               SikuliIDE.this.setTitle("Sikuli - " + tab.getTitleAt(i));
+               SikuliIDE.this.setTitle(tab.getTitleAt(i));
 
          }
       });
@@ -324,13 +324,6 @@ public class SikuliIDE extends JFrame {
    
    static final int DEFAULT_WINDOW_W = 1024;
    static final int DEFAULT_WINDOW_H = 700;
-
-   // for uist demo
-   /*
-   static final int DEFAULT_WINDOW_W = 500; 
-   static final int DEFAULT_WINDOW_H = 700;
-   */
-
 
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
@@ -501,7 +494,11 @@ public class SikuliIDE extends JFrame {
       int i = _mainPane.getSelectedIndex();
       fname = fname.substring(fname.lastIndexOf("/")+1);
       _mainPane.setTitleAt(i, fname);
-      this.setTitle("Sikuli - " + fname);
+      this.setTitle(fname);
+   }
+
+   public void setTitle(String title){
+      super.setTitle("Sikuli " + IDESettings.SikuliVersion + " - " + title);
    }
 
    public String getCurrentBundlePath(){

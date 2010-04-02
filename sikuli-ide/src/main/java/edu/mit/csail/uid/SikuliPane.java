@@ -32,8 +32,9 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setContentType("text/python");
       initKeyMap();
       addKeyListener(this);
+      //setTransferHandler(new JTextPaneTransferHandler());
       _highlighter = new CurrentLineHighlighter(this);
-      addCaretListener(_highlighter);
+      //addCaretListener(_highlighter);
       addCaretListener(this);
       setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
@@ -358,18 +359,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public void keyReleased(java.awt.event.KeyEvent ke) {
-      /*
-      final int S_MOD = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-      if( ke.getModifiers()==S_MOD ) {
-         if (ke.getKeyCode()==KeyEvent.VK_X){
-            this.cut();
-         } else if (ke.getKeyCode()==KeyEvent.VK_C) {
-            this.copy();
-         } else if (ke.getKeyCode()==KeyEvent.VK_V) {
-            this.paste();
-         }
-      }
-      */
    }
 
    private void expandTab() throws BadLocationException{
@@ -701,6 +690,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          e.printStackTrace();
       }
    }
+
 
 }
 
