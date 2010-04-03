@@ -84,7 +84,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
                AttributeSet attr=elm.getAttributes();
                Component com=StyleConstants.getComponent(attr);
                if( com instanceof CaptureButton ){
-                  Debug.log("button is at " + i);
+                  Debug.log(5, "button is at " + i);
                   int oldCaretPos = _codePane.getCaretPosition();
                   _codePane.select(i, i+1);
                   ImageButton icon = new ImageButton(_codePane, imgFullPath);
@@ -105,6 +105,10 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage simg = cp.getSelection();
+         if(simg==null){
+            captureCompleted(null);
+            return;
+         }
          cp.close();
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliPane pane = ide.getCurrentCodePane();

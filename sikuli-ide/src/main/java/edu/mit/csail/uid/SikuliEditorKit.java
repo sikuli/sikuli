@@ -22,6 +22,17 @@ public class SikuliEditorKit extends StyledEditorKit {
       new InsertTabAction(),
       new DeindentAction(),
       new InsertBreakAction(),
+      /*
+      new NextVisualPositionAction(forwardAction, false, SwingConstants.EAST),
+      new NextVisualPositionAction(backwardAction, false, SwingConstants.WEST),
+      new NextVisualPositionAction(selectionForwardAction, true, SwingConstants.EAST),
+      new NextVisualPositionAction(selectionBackwardAction, true, SwingConstants.WEST),
+      new NextVisualPositionAction(upAction, false, SwingConstants.NORTH),
+      new NextVisualPositionAction(downAction, false, SwingConstants.SOUTH),
+      new NextVisualPositionAction(selectionUpAction, true, SwingConstants.NORTH),   
+      new NextVisualPositionAction(selectionDownAction, true, SwingConstants.SOUTH),
+      */
+
    };
 
    public Action[] getActions() {
@@ -72,6 +83,91 @@ public class SikuliEditorKit extends StyledEditorKit {
          i = end;
       }
       out.close();
+   }
+
+   public static class NextVisualPositionAction extends TextAction {
+
+      private boolean select;
+      private int direction;
+
+      public NextVisualPositionAction(String nm, boolean select, int dir) {
+         super(nm);
+         this.select = select;
+         this.direction = dir;
+      }
+
+      public void actionPerformed(ActionEvent e) {
+         JTextComponent textArea = (JTextComponent)e.getSource();
+
+         Caret caret = textArea.getCaret();
+         int dot = caret.getDot();
+
+         /*
+          * Move to the beginning/end of selection on a "non-shifted"
+          * left- or right-keypress.  We shouldn't have to worry about
+          * navigation filters as, if one is being used, it let us get
+          * to that position before.
+          */
+         if (!select) {
+            switch (direction) {
+               case SwingConstants.EAST:
+                  int mark = caret.getMark();
+                  if (dot!=mark) {
+                     caret.setDot(Math.max(dot, mark));
+                     return;
+                  }
+                  break;
+               case SwingConstants.WEST:
+                  mark = caret.getMark();
+                  if (dot!=mark) {
+                     caret.setDot(Math.min(dot, mark));
+                     return;
+                  }
+                  break;
+               default:
+            }
+         }
+
+         Position.Bias[] bias = new Position.Bias[1];
+         Point magicPosition = caret.getMagicCaretPosition();
+
+         try {
+
+            if(magicPosition == null &&
+                  (direction == SwingConstants.NORTH ||
+                   direction == SwingConstants.SOUTH)) {
+               Rectangle r = textArea.modelToView(dot);
+               magicPosition = new Point(r.x, r.y);
+            }
+
+            NavigationFilter filter = textArea.getNavigationFilter();
+
+            if (filter != null) {
+               dot = filter.getNextVisualPositionFrom(textArea, dot,
+                     Position.Bias.Forward, direction, bias);
+            }
+            else {
+               dot = textArea.getUI().getNextVisualPositionFrom(
+                     textArea, dot,
+                     Position.Bias.Forward, direction, bias);
+            }
+            if (select)
+               caret.moveDot(dot);
+            else
+               caret.setDot(dot);
+
+            if(magicPosition != null &&
+                  (direction == SwingConstants.NORTH ||
+                   direction == SwingConstants.SOUTH)) {
+               caret.setMagicCaretPosition(magicPosition);
+                   }
+
+         } catch (BadLocationException ble) {
+            ble.printStackTrace();
+         }
+
+      }
+
    }
 
 

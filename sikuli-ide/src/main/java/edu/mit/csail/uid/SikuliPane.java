@@ -34,7 +34,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       addKeyListener(this);
       //setTransferHandler(new JTextPaneTransferHandler());
       _highlighter = new CurrentLineHighlighter(this);
-      //addCaretListener(_highlighter);
+      addCaretListener(_highlighter);
       addCaretListener(this);
       setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
@@ -303,6 +303,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    // see: getMagicCaretPosition, getNextVisualPositionFrom
    // FIXME: dirty hack for fixing cursor movement
    public void keyPressed(java.awt.event.KeyEvent ke) {
+      /*
       boolean up = false;
       int pos;
       if(ke.getModifiers()!=0)
@@ -344,7 +345,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
                else{
                   pos = viewToModel(new Point(_caret_last_x, tarEndRect.y));
                   if(up && getLineAtCaret(pos)==getLineAtCaret(pos+1) 
-                        /*&& _caret_last_x == curRect.x*/)
+                        //&& _caret_last_x == curRect.x
+                        )
                      pos++;
                }
                setCaretPosition(pos);
@@ -355,6 +357,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
             ke.consume();
             break;
       }
+   */
    
    }
 

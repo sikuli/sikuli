@@ -19,6 +19,7 @@ class CapturePrompt extends JWindow implements Subject{
    Rectangle rectSelection;
    BasicStroke bs;
    int srcx, srcy, destx, desty;
+   boolean _canceled = false;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -83,6 +84,7 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    void init(){
+      _canceled = false;
       getContentPane().setCursor(
             Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
       rectSelection = new Rectangle ();
@@ -98,8 +100,8 @@ class CapturePrompt extends JWindow implements Subject{
          public void mouseReleased(java.awt.event.MouseEvent e){
             if (_scr_img == null) return;
             if( e.getButton() == java.awt.event.MouseEvent.BUTTON3 ){
+               _canceled = true;
                close();
-               return;  // don't notify the observers
             }
             notifyObserver();
          }
@@ -142,6 +144,8 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public ScreenImage getSelection(){
+      if(_canceled)
+         return null;
       BufferedImage cropImg = cropSelection();
       rectSelection.x += _scr.x;
       rectSelection.y += _scr.y;

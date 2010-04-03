@@ -33,6 +33,8 @@ class RegionButton extends JButton implements ActionListener, Observer{
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage r = cp.getSelection();
+         if(r==null)
+            return;
          cp.close();
          try{
             Thread.sleep(300);

@@ -798,15 +798,13 @@ public class SikuliIDE extends JFrame {
          Throwable t = thr;
          while (t != null) {
             s = t.getStackTrace();
-            Debug.log(1, "stack trace:");
+            Debug.log(5, "stack trace:");
             for (int i = s.length-1; i >= 0 ; i--){
                StackTraceElement si = s[i];
-               Debug.log(1, si.getLineNumber() + " " + si.getFileName());
-               /*
+               Debug.log(5, si.getLineNumber() + " " + si.getFileName());
                if( si.getLineNumber()>=0 && filename.equals( si.getFileName() ) ){
                   return si.getLineNumber();
                }
-               */
             }
             t = t.getCause();
          }
@@ -907,6 +905,8 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage r = cp.getSelection();
+         if(r==null)
+            return;
          cp.close();
          Rectangle roi = r.getROI();
          complete((int)roi.getX(), (int)roi.getY(),
