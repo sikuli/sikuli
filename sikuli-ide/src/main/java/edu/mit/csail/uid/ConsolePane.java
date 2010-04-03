@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import org.python.util.PythonInterpreter;
+
 public class ConsolePane extends JPanel implements Runnable
 {
    static boolean ENABLE_IO_REDIRECT = true;
@@ -24,13 +26,12 @@ public class ConsolePane extends JPanel implements Runnable
          ENABLE_IO_REDIRECT = false;
    }
 
+   final static int NUM_PIPES = 4;
    private JTextArea textArea;
-   private Thread reader;
-   private Thread reader2;
+   private Thread[] reader = new Thread[NUM_PIPES];
    private boolean quit;
                
-   private final PipedInputStream pin=new PipedInputStream(); 
-   private final PipedInputStream pin2=new PipedInputStream(); 
+   private final PipedInputStream[] pin=new PipedInputStream[NUM_PIPES]; 
 
    Thread errorThrower; // just for testing (Throws an Exception at this Console
    
@@ -45,10 +46,12 @@ public class ConsolePane extends JPanel implements Runnable
       
       
       if(ENABLE_IO_REDIRECT){
+         for(int i=0;i<NUM_PIPES;i++)
+            pin[i] = new PipedInputStream();
          System.out.println("Redirect stdout/stderr to console.");
          try
          {
-            PipedOutputStream pout=new PipedOutputStream(this.pin);
+            PipedOutputStream pout=new PipedOutputStream(this.pin[0]);
             System.setOut(new PrintStream(pout,true)); 
          } 
          catch (java.io.IOException io)
@@ -62,8 +65,8 @@ public class ConsolePane extends JPanel implements Runnable
 
          try 
          {
-            PipedOutputStream pout2=new PipedOutputStream(this.pin2);
-            System.setErr(new PrintStream(pout2,true));
+            PipedOutputStream pout=new PipedOutputStream(this.pin[1]);
+            System.setErr(new PrintStream(pout,true));
          } 
          catch (java.io.IOException io)
          {
@@ -73,17 +76,33 @@ public class ConsolePane extends JPanel implements Runnable
          {
             textArea.append("Couldn't redirect STDERR to this console\n"+se.getMessage());
          }       
+
+         try 
+         {
+            PipedOutputStream pout=new PipedOutputStream(this.pin[2]);
+            PythonInterpreter py = 
+               ScriptRunner.getInstance(null).getPythonInterpreter();
+            py.setOut(new PrintStream(pout,true));
+            PipedOutputStream pout2=new PipedOutputStream(this.pin[3]);
+            py.setErr(new PrintStream(pout2,true));
+         } 
+         catch (java.io.IOException io)
+         {
+            textArea.append("Couldn't redirect Python output to this console\n"+io.getMessage());
+         }
+         catch (SecurityException se)
+         {
+            textArea.append("Couldn't redirect Python output  to this console\n"+se.getMessage());
+         }       
+
          quit=false; // signals the Threads that they should exit
 
          // Starting two seperate threads to read from the PipedInputStreams            
-         //
-         reader=new Thread(this);
-         reader.setDaemon(true);   
-         reader.start();   
-         //
-         reader2=new Thread(this);   
-         reader2.setDaemon(true);   
-         reader2.start();
+         for(int i=0;i<NUM_PIPES;i++){
+            reader[i]=new Thread(this);
+            reader[i].setDaemon(true);   
+            reader[i].start();   
+         }
       }
             
    }
@@ -109,30 +128,22 @@ public class ConsolePane extends JPanel implements Runnable
    {
       try
       {         
-         while (Thread.currentThread()==reader)
-         {
-            try { this.wait(100);}catch(InterruptedException ie) {}
-            if (pin.available()!=0)
+         for(int i=0;i<NUM_PIPES;i++){
+            while (Thread.currentThread()==reader[i])
             {
-               String input=this.readLine(pin);
-               textArea.append(input);
-               textArea.setCaretPosition(textArea.getText().length());
+               try { this.wait(100);}catch(InterruptedException ie) {}
+               if (pin[i].available()!=0)
+               {
+                  String input=this.readLine(pin[i]);
+                  textArea.append(input);
+                  textArea.setCaretPosition(textArea.getText().length());
+               }
+               if (quit) return;
             }
-            if (quit) return;
          }
       
-         while (Thread.currentThread()==reader2)
-         {
-            try { this.wait(100);}catch(InterruptedException ie) {}
-            if (pin2.available()!=0)
-            {
-               String input=this.readLine(pin2);
-               textArea.append(input);
-               textArea.setCaretPosition(textArea.getText().length());
-            }
-            if (quit) return;
-         }         
-      } catch (Exception e)
+      } 
+      catch (Exception e)
       {
          textArea.append("\nConsole reports an Internal error.");
          textArea.append("The error is: "+e);         
