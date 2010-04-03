@@ -931,5 +931,6 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       JButton icon = new RegionButton(codePane, x, y, w, h);
       codePane.insertComponent(icon);
       ide.setVisible(true);
+      codePane.requestFocus();
    }
 }

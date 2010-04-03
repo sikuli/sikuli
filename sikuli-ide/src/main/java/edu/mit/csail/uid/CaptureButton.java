@@ -55,6 +55,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
    protected void insertAtCursor(JTextPane pane, String imgFilename){
       ImageButton icon = new ImageButton(pane, imgFilename);
       pane.insertComponent(icon);
+      pane.requestFocus();
    }
 
    public void captureCompleted(String imgFullPath){
@@ -99,6 +100,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
          ble.printStackTrace();
       }
       _codePane.select(old_sel_start, old_sel_end);
+      _codePane.requestFocus();
    }
 
    public void update(Subject s){

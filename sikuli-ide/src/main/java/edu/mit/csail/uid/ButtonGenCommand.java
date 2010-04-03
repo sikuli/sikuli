@@ -121,6 +121,7 @@ public class ButtonGenCommand extends JButton implements ActionListener{
          pane.setSelectionEnd(endPos+endPosLen);
          System.out.println("sel: " + pane.getSelectedText());
       }
+      pane.requestFocus();
    }
 
 }
