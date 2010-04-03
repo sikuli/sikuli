@@ -26,6 +26,7 @@ public class SikuliIDE extends JFrame {
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
    private StatusBar _status;
+   private JToolBar _cmdToolBar;
 
    private CaptureButton _btnCapture;
    private ButtonRun _btnRun, _btnRunViz;
@@ -136,6 +137,11 @@ public class SikuliIDE extends JFrame {
       _viewMenu.add( createMenuItem(_chkShowUnitTest, 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, scMask),
                new ViewAction(ViewAction.UNIT_TEST)));
+
+      JMenuItem chkShowCmdList = new JCheckBoxMenuItem("Command List",true);
+      _viewMenu.add( createMenuItem(chkShowCmdList, 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
+               new ViewAction(ViewAction.CMD_LIST)));
    }
 
    private void initMenuBars(JFrame frame){
@@ -364,9 +370,10 @@ public class SikuliIDE extends JFrame {
             JSplitPane.HORIZONTAL_SPLIT, true, _mainPane, _sidePane);
       JSplitPane mainAndConsolePane = new JSplitPane(
             JSplitPane.VERTICAL_SPLIT, true, _codeAndUnitPane, _auxPane);
+      _cmdToolBar = initCmdToolbar();
 
       c.add(initToolbar(), BorderLayout.NORTH);
-      c.add(initCmdToolbar(), BorderLayout.WEST);
+      c.add(_cmdToolBar, BorderLayout.WEST);
       c.add(mainAndConsolePane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
@@ -553,6 +560,7 @@ public class SikuliIDE extends JFrame {
    
    class ViewAction extends MenuAction {
       static final String UNIT_TEST = "toggleUnitTest";
+      static final String CMD_LIST = "toggleCmdList";
 
       public ViewAction(){
          super();
@@ -560,6 +568,10 @@ public class SikuliIDE extends JFrame {
 
       public ViewAction(String item) throws NoSuchMethodException{
          super(item);
+      }
+
+      public void toggleCmdList(){
+         _cmdToolBar.setVisible(!_cmdToolBar.isVisible());
       }
 
       public void toggleUnitTest(){
