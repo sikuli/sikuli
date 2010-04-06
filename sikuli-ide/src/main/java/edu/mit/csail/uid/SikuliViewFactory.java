@@ -170,7 +170,7 @@ class HighlightLabelView extends LabelView {
     };
 
     private static String[] keywordsSikuli = {
-       "find", "wait", "findAll", "waitVanish",
+       "find", "wait", "findAll", "waitVanish", "exists",
        "click", "doubleClick", "rightClick", "hover", 
        "type", "paste",
        "dragDrop", "drag", "dropAt",
@@ -180,6 +180,8 @@ class HighlightLabelView extends LabelView {
        "popup", "capture", "input",
        "switchApp", "openApp", "closeApp",
        "assertExist", "assertNotExist",
+       "selectRegion",
+       "getOS", "getMouseLocation"
     };
 
     static {
