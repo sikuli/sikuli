@@ -57,6 +57,7 @@ public class SikuliIDE extends JFrame {
 
    public void onStopRunning(){
       Debug.log(2, "StopRunning");
+      this.setVisible(true);
       _btnRun.stopRunning();
       _btnRunViz.stopRunning();
    }
@@ -870,7 +871,6 @@ public class SikuliIDE extends JFrame {
                   }
                }
                catch(IOException e){ e.printStackTrace(); }
-
             }
          };
          _runningThread.start();

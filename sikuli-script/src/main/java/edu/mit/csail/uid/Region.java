@@ -283,6 +283,7 @@ public class Region {
    public <PSRML> int hover(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
+         _scr.showMove(loc);
          _robot.mouseMove(loc.x, loc.y);
          _robot.waitForIdle();
          return 1;
@@ -528,14 +529,27 @@ public class Region {
       return null;
    }
 
+   private String getClickMsg(Location loc, int buttons, int modifiers, 
+                              boolean dblClick){
+      String msg = "click";
+      if(dblClick)
+         msg = "double click";
+      if(buttons==InputEvent.BUTTON3_MASK)
+         msg = "right click";
+      else if(buttons==InputEvent.BUTTON2_MASK)
+         msg = "mid click";
+      msg += " on " + loc + ", MOD: " + modifiers;
+      return msg;
+   }
+
    private int _click(Location loc, int buttons, int modifiers, 
                       boolean dblClick) {
       if(loc == null)
          return 0;
-      Debug.log("click on " + loc + " BTN: " + buttons + ", MOD: " +modifiers); 
+      Debug.info( getClickMsg(loc, buttons, modifiers, dblClick) );
       pressModifiers(modifiers);
       _robot.mouseMove(loc.x, loc.y);
-      _scr.showTarget(loc);
+      _scr.showClick(loc);
       _robot.mousePress(buttons);
       _robot.mouseRelease(buttons);
       if( dblClick ){

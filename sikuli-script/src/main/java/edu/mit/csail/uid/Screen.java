@@ -151,6 +151,14 @@ public class Screen extends Region implements Observer {
       _overlay.showRegion(region);
    }
 
+   public void showMove(Location loc){
+      showTarget(loc);
+   }
+
+   public void showClick(Location loc){
+      showTarget(loc);
+   }
+
    public void showTarget(Location loc){
       if(Settings.ShowActions){
          _overlay.showTarget(loc);
