@@ -69,6 +69,9 @@ public class Region {
    public void setH(int _h){ h = _h; }
 
    public Rectangle getROI(){ return new Rectangle(x,y,w,h); }
+   public void setROI(int X, int Y, int W, int H){
+      x = X;   y = Y;   w = W;   h = H;
+   }
    public void setROI(Region roi){
       x = roi.x;
       y = roi.y;
@@ -501,7 +504,7 @@ public class Region {
                                              throws  FindFailed{
       int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
       long begin_t = (new Date()).getTime();
-      while( begin_t + timeout*1000 > (new Date()).getTime() ){
+      do{
          long before_find = (new Date()).getTime();
          Iterator<Match> ms = findAllNow(target);
          if(ms != null)
@@ -511,7 +514,7 @@ public class Region {
             _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
          else
             _robot.delay(10);
-      }
+      }while( begin_t + timeout*1000 > (new Date()).getTime() );
       if(_stopIfWaitingFailed)
          throw new FindFailed(target + " can't be found.");
       return null;

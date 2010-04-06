@@ -1,6 +1,7 @@
 from __future__ import with_statement
 from sikuli.Sikuli import *
 
+print wait("test-res/apple.png",0)
 with Region(10, 0, 200,200) as r:
    p = Pattern("test-res/apple.png").targetOffset(30,5)
    r.setAutoWaitTimeout(1)
