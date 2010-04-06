@@ -33,6 +33,10 @@ public class NativeLayerForMac implements NativeLayer {
       app.setEnabledPreferencesMenu(true);
       app.addApplicationListener(
          new ApplicationAdapter() {
+            public void handleOpenApplication(ApplicationEvent event){
+               System.out.println("open application");
+            }
+
             public void handleOpenFile(ApplicationEvent evt) {
                String fname = evt.getFilename();
                Debug.log(1, "opening " + fname);

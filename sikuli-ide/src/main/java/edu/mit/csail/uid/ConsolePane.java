@@ -26,7 +26,7 @@ public class ConsolePane extends JPanel implements Runnable
          ENABLE_IO_REDIRECT = false;
    }
 
-   final static int NUM_PIPES = 4;
+   final static int NUM_PIPES = 2;
    private JTextArea textArea;
    private Thread[] reader = new Thread[NUM_PIPES];
    private boolean quit;
@@ -49,10 +49,16 @@ public class ConsolePane extends JPanel implements Runnable
          for(int i=0;i<NUM_PIPES;i++)
             pin[i] = new PipedInputStream();
          System.out.println("Redirect stdout/stderr to console.");
+
+
+         PythonInterpreter py = 
+            ScriptRunner.getInstance(null).getPythonInterpreter();
          try
          {
             PipedOutputStream pout=new PipedOutputStream(this.pin[0]);
-            System.setOut(new PrintStream(pout,true)); 
+            PrintStream ps = new PrintStream(pout,true);
+            System.setOut(ps);
+            py.setOut(ps);
          } 
          catch (java.io.IOException io)
          {
@@ -66,7 +72,9 @@ public class ConsolePane extends JPanel implements Runnable
          try 
          {
             PipedOutputStream pout=new PipedOutputStream(this.pin[1]);
-            System.setErr(new PrintStream(pout,true));
+            PrintStream ps = new PrintStream(pout,true);
+            System.setErr(ps);
+            py.setErr(ps);
          } 
          catch (java.io.IOException io)
          {
@@ -77,23 +85,6 @@ public class ConsolePane extends JPanel implements Runnable
             textArea.append("Couldn't redirect STDERR to this console\n"+se.getMessage());
          }       
 
-         try 
-         {
-            PipedOutputStream pout=new PipedOutputStream(this.pin[2]);
-            PythonInterpreter py = 
-               ScriptRunner.getInstance(null).getPythonInterpreter();
-            py.setOut(new PrintStream(pout,true));
-            PipedOutputStream pout2=new PipedOutputStream(this.pin[3]);
-            py.setErr(new PrintStream(pout2,true));
-         } 
-         catch (java.io.IOException io)
-         {
-            textArea.append("Couldn't redirect Python output to this console\n"+io.getMessage());
-         }
-         catch (SecurityException se)
-         {
-            textArea.append("Couldn't redirect Python output  to this console\n"+se.getMessage());
-         }       
 
          quit=false; // signals the Threads that they should exit
 
