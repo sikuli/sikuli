@@ -9,6 +9,7 @@ import javax.imageio.*;
 
 class CapturePrompt extends JWindow implements Subject{
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
+   final static float MIN_DARKER_FACTOR = 0.6f;
    static GraphicsDevice _gdev = null;
 
    Observer _obs;
@@ -16,6 +17,7 @@ class CapturePrompt extends JWindow implements Subject{
    Screen _scr;
    BufferedImage _scr_img = null;
    BufferedImage _darker_screen = null;
+   float _darker_factor;
    Rectangle rectSelection;
    BasicStroke bs;
    int srcx, srcy, destx, desty;
@@ -33,9 +35,11 @@ class CapturePrompt extends JWindow implements Subject{
    private void captureScreen(Screen scr) {
       ScreenImage simg = scr.capture();
       _scr_img = simg.getImage();
-      float scaleFactor = .6f;
-      RescaleOp op = new RescaleOp(scaleFactor, 0, null);
+
+      _darker_factor = 0.6f;
+      RescaleOp op = new RescaleOp(_darker_factor, 0, null);
       _darker_screen = op.filter(_scr_img, null);
+
    }
 
    private Color selFrameColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -75,6 +79,27 @@ class CapturePrompt extends JWindow implements Subject{
       if( _scr_img != null ){
          Graphics2D g2d = (Graphics2D)g;
 
+         /*
+         Thread th =  new Thread() {
+            public void run() {
+               try{
+                  Thread.sleep(1000);
+                  while(_darker_factor>=MIN_DARKER_FACTOR){
+                     _darker_factor-=0.1f;
+                     CapturePrompt.this.repaint();
+                     Thread.sleep(40);
+                  }
+               }
+               catch(InterruptedException ie){
+               }
+            }
+         };
+         if(_darker_factor==1.0f)
+            th.start();
+
+         RescaleOp op = new RescaleOp(_darker_factor, 0, null);
+         _darker_screen = op.filter(_scr_img, null);
+         */
          g2d.drawImage(_darker_screen,0,0,this);
          drawSelection(g2d);
          setVisible(true);
@@ -85,8 +110,7 @@ class CapturePrompt extends JWindow implements Subject{
 
    void init(){
       _canceled = false;
-      getContentPane().setCursor(
-            Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+      setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
       rectSelection = new Rectangle ();
       bs = new BasicStroke(1);
       addMouseListener(new MouseAdapter(){
@@ -170,6 +194,7 @@ class CapturePrompt extends JWindow implements Subject{
       this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
       this.setVisible(true);
       this.setAlwaysOnTop(true);
+      _darker_factor = 1f;
 
       if( _scr.useFullscreen() ){
          _gdev = _scr.getGraphicsDevice();

@@ -24,7 +24,11 @@ class Screen(Region):
       return self.getScreen().getBounds()
 
    def selectRegion(self):
-      return Region(self.getScreen().selectRegion())
+      r = self.getScreen().selectRegion()
+      if r:
+         return Region(r)
+      else:
+         return None
 
    def showRegion(self, region):
       self.getScreen().showRegion(region)
@@ -41,7 +45,11 @@ class Screen(Region):
    def capture(self, *args):
       scr = self.getScreen()
       if len(args) == 0:
-         return scr.userCapture().getFilename()
+         simg = scr.userCapture()
+         if simg: 
+            return simg.getFilename()
+         else:
+            return None
       else:
          if isinstance(args[0],JRegion):
             r = args[0]

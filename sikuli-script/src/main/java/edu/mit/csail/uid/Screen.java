@@ -140,6 +140,8 @@ public class Screen extends Region implements Observer {
 
    public Region selectRegion(){
       ScreenImage sim = userCapture();
+      if(sim == null)
+         return null;
       Rectangle r = sim.getROI();
       return new Region((int)r.getX(), (int)r.getY(), 
                         (int)r.getWidth(), (int)r.getHeight());
