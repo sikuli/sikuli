@@ -172,10 +172,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
    static InputStream SikuliToHtmlConverter = SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
    static String pyConverter = Utils.convertStreamToString(SikuliToHtmlConverter);
 
+   static InputStream SikuliBundleCleaner= SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
+   static String pyBundleCleaner = Utils.convertStreamToString(SikuliBundleCleaner);
+
    private void convertSrcToHtml(String bundle){
       PythonInterpreter py = 
          ScriptRunner.getInstance(null).getPythonInterpreter();
-      Debug.log(1, "Convert Sikuli source code " + bundle + " to HTML");
+      Debug.log(2, "Convert Sikuli source code " + bundle + " to HTML");
       py.set("local_convert", true);
       py.set("sikuli_src", bundle);
       py.exec(pyConverter);
@@ -186,11 +189,21 @@ public class SikuliPane extends JTextPane implements KeyListener,
                   new FileOutputStream(filename), "UTF8")));
    }
 
+   private void cleanBundle(String bundle){
+      PythonInterpreter py = 
+         ScriptRunner.getInstance(null).getPythonInterpreter();
+      Debug.log(2, "Clear source bundle " + bundle);
+      py.set("bundle_path", bundle);
+      py.exec(pyBundleCleaner);
+   
+   }
+
    private void writeSrcFile(boolean writeHTML) throws IOException{
       this.write( new BufferedWriter(new OutputStreamWriter(
                   new FileOutputStream(_editingFilename), "UTF8")));
       if(writeHTML)
          convertSrcToHtml(getSrcBundle());
+      cleanBundle(getSrcBundle());
       _dirty = false;
    }
 
