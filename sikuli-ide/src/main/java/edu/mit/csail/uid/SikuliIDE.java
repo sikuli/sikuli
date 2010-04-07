@@ -157,6 +157,7 @@ public class SikuliIDE extends JFrame {
    private void initMenuBars(JFrame frame){
       try{
          initFileMenu();
+         initRunMenu();
          initViewMenu();
       }
       catch(NoSuchMethodException e){
@@ -164,6 +165,7 @@ public class SikuliIDE extends JFrame {
       }
 
       _menuBar.add(_fileMenu);
+      _menuBar.add(_runMenu);
       _menuBar.add(_viewMenu);
       frame.setJMenuBar(_menuBar);
    }
@@ -580,6 +582,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void run(){
+         _btnRun.runCurrentScript();
       
       }
 
