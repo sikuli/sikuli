@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.prefs.*;
 import com.apple.eawt.*;
@@ -28,32 +29,47 @@ public class NativeLayerForMac implements NativeLayer {
    }
 
    public void initIDE(final SikuliIDE ide){
+   }
+
+   public static void initApp(){
       Application app = Application.getApplication();
       app.addPreferencesMenuItem();
       app.setEnabledPreferencesMenu(true);
       app.addApplicationListener(
          new ApplicationAdapter() {
             public void handleOpenApplication(ApplicationEvent event){
-               System.out.println("open application");
+               Debug.info("open application: Sikuli-IDE");
+               System.setProperty("apple.laf.useScreenMenuBar", "true");
+               System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Sikuli IDE");
             }
 
             public void handleOpenFile(ApplicationEvent evt) {
-               String fname = evt.getFilename();
+               final String fname = evt.getFilename();
                Debug.log(1, "opening " + fname);
-               if(fname.endsWith("skl")){
-                  try{
-                     ide.runSkl(fname, null); // FIXME: get args???
-                  }
-                  catch(Exception e){
-                     e.printStackTrace();
-                  }
+               if(fname.endsWith(".skl")){
+                  SikuliIDE._runningSkl = true;
+                  Thread t = new Thread() {
+                     public void run() {
+                        try{
+                           SikuliIDE.runSkl(fname, null); 
+                        }
+                        catch(IOException e){
+                           e.printStackTrace();
+                        }
+                     }
+                  };
+                  t.setDaemon(false);
+                  t.start();
                }
-               else
-                  ide.preloadFile(fname);
+               else if(fname.endsWith(".sikuli")){
+                  SikuliIDE ide = SikuliIDE.getInstance(null);
+                  ide.loadFile(fname);
+               }
             }
 
             public void handlePreferences(ApplicationEvent evt){
                Debug.log(1, "opening preferences setting");
+               SikuliIDE ide = SikuliIDE.getInstance();
                ide.showPreferencesWindow();
             }
 

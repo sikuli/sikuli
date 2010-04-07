@@ -72,16 +72,14 @@ public class SikuliIDE extends JFrame {
       _btnCapture.capture(0);
    }
 
-   public static SikuliIDE getInstance(String args[]){
+   public static synchronized SikuliIDE getInstance(String args[]){
       if( _instance == null )
          _instance = new SikuliIDE(args);
       return _instance;
    }
 
-   public static SikuliIDE getInstance(){
-      if( _instance == null )
-         _instance = new SikuliIDE(null);
-      return _instance;
+   public static synchronized SikuliIDE getInstance(){
+      return getInstance(null);
    }
 
    private JMenuItem createMenuItem(JMenuItem item, KeyStroke shortcut, ActionListener listener){
@@ -362,15 +360,6 @@ public class SikuliIDE extends JFrame {
 
       initNativeLayer();
 
-      if(args!=null && args.length>=1){
-         try{
-            if(args[0].endsWith("skl"))
-               runSkl(args[0], args);
-         }
-         catch(IOException e){
-            System.err.println("Can't open file: " + args[0] + "\n" + e);
-         }
-      }
 
       initMenuBars(this);
       final Container c = getContentPane();
@@ -424,17 +413,6 @@ public class SikuliIDE extends JFrame {
          _preloadFilename = filename;
    }
 
-   public void runSkl(String filename, String[] args) throws IOException{
-      String name = (new File(filename)).getName();
-      name = name.substring(0, name.lastIndexOf('.'));
-      File tmpDir = Utils.createTempDir();
-      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
-      sikuliDir.mkdir();
-      Utils.unzip(filename, sikuliDir.getAbsolutePath());
-      ScriptRunner runner = new ScriptRunner(args);
-      runner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
-      System.exit(0);
-   }
 
    public void installCaptureHotkey(int key, int mod){
       _native.installHotkey(key, mod, this, 
@@ -487,16 +465,53 @@ public class SikuliIDE extends JFrame {
          _codeAndUnitPane.setDividerLocation(pos);
    }
 
-   public static void main(String[] args) {
+
+   static boolean _runningSkl = false;
+   public static void runSkl(String filename, String[] args) throws IOException{
+      _runningSkl = true;
+      String name = (new File(filename)).getName();
+      name = name.substring(0, name.lastIndexOf('.'));
+      File tmpDir = Utils.createTempDir();
+      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
+      sikuliDir.mkdir();
+      Utils.unzip(filename, sikuliDir.getAbsolutePath());
+      ScriptRunner srunner = ScriptRunner.getInstance(args);
       try{
-         System.setProperty("apple.laf.useScreenMenuBar", "true");
-         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "SikuliIDE");
-         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         srunner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
       }
       catch(Exception e){
-         e.printStackTrace();
+         JOptionPane.showMessageDialog(null, 
+               "Runtime Error when running " + filename + "\n" + e);
       }
-      SikuliIDE.getInstance(args);
+      System.exit(0);
+   }
+
+   public static void main(String[] args) {
+      if(args!=null && args.length>=1){
+         try{
+            if(args[0].endsWith(".skl")){
+               runSkl(args[0], args);
+               return;
+            }
+         }
+         catch(IOException e){
+            System.err.println("Can't open file: " + args[0] + "\n" + e);
+         }
+      }
+
+      if(Utils.isMacOSX()){
+         NativeLayerForMac.initApp();
+         try{ Thread.sleep(1000); } catch(InterruptedException ie){}
+      }
+      if(!_runningSkl){
+         try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         }
+         catch(Exception e){
+            e.printStackTrace();
+         }
+         SikuliIDE.getInstance(args);
+      }
    }
 
    public void jumpTo(String funcName) throws BadLocationException{

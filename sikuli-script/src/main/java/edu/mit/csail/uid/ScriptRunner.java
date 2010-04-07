@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.io.*;
 import java.util.*;
+import javax.swing.*;
 
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -58,6 +59,20 @@ public class ScriptRunner {
       py.execfile(pyFile.getAbsolutePath());
       _tmp_headers.clear();
       //py.cleanup();
+   }
+
+   public void runPythonAsync(final String bundlePath) throws IOException {
+      Thread t = new Thread() {
+         public void run() {
+            try{
+               runPython(bundlePath);
+            }
+            catch(IOException e){
+               e.printStackTrace();
+            }
+         }
+      };
+      SwingUtilities.invokeLater(t);
    }
 
    public void runPython(String bundlePath) throws IOException {
