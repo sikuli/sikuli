@@ -59,6 +59,9 @@ class Screen(Region):
          else:
             return None
 
+   def toString(self):
+      return self.getScreen().toString()
+
    def _exposeAllMethods(self):
       exclude_list = [ 'class', 'classDictInit', 'clone', 'equals', 'finalize', 
                        'getClass', 'hashCode', 'notify', 'notifyAll', 

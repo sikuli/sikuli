@@ -14,8 +14,8 @@ public class Region {
 
    public int x, y, w, h;
 
-   private boolean _stopIfWaitingFailed = true;
-   private double _autoWaitTimeout = 3.0;
+   protected boolean _throwException = true;
+   protected double _autoWaitTimeout = 3.0;
 
    protected boolean _observing = false;
    protected EventManager _evtMgr;
@@ -29,6 +29,11 @@ public class Region {
       init(r.x, r.y, r.w, r.h);
    }
 
+   public String toString(){
+      return String.format("Region[%d,%d %dx%d]@Screen(%d) E:%s, T:%.1f", 
+                            x, y, w, h, _scr.getID(),
+                            _throwException?"Y":"N", _autoWaitTimeout);
+   }
 
    protected Region(){}
 
@@ -152,10 +157,10 @@ public class Region {
    }
 
    //////////// Settings
-   public void setThrowException(boolean flag){ _stopIfWaitingFailed = flag; } 
+   public void setThrowException(boolean flag){ _throwException = flag; } 
    public void setAutoWaitTimeout(double sec){ _autoWaitTimeout = sec; }
 
-   public boolean getThrowException(){ return _stopIfWaitingFailed; }
+   public boolean getThrowException(){ return _throwException; }
    public double getAutoWaitTimeout(){ return _autoWaitTimeout; }
 
 
@@ -171,7 +176,7 @@ public class Region {
          return wait(ptn, _autoWaitTimeout);
       else{
          Match match = findNow(ptn);
-         if(match == null && _stopIfWaitingFailed)
+         if(match == null && _throwException)
             throw new FindFailed(ptn + " can't be found.");
          return match;
       }
@@ -188,7 +193,7 @@ public class Region {
          return waitAll(ptn, _autoWaitTimeout);
       else{
          Iterator<Match> ms = findAllNow(ptn);
-         if(ms == null && _stopIfWaitingFailed)
+         if(ms == null && _throwException)
             throw new FindFailed(ptn + " can't be found.");
          return ms;
       }
@@ -515,7 +520,7 @@ public class Region {
          else
             _robot.delay(10);
       }while( begin_t + timeout*1000 > (new Date()).getTime() );
-      if(_stopIfWaitingFailed)
+      if(_throwException)
          throw new FindFailed(target + " can't be found.");
       return null;
    }

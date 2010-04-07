@@ -179,8 +179,9 @@ public class Screen extends Region implements Observer {
 
    public String toString(){
       Rectangle r = getBounds();
-      return String.format("Screen(%d) [%d,%d %dx%d]",
+      return String.format("Screen(%d)[%d,%d %dx%d] E:%s, T:%.1f",
                _curID, (int)r.getX(), (int)r.getY(), 
-               (int)r.getWidth(), (int)r.getHeight() );
+               (int)r.getWidth(), (int)r.getHeight(),
+               _throwException?"Y":"N", _autoWaitTimeout);
    }
 }

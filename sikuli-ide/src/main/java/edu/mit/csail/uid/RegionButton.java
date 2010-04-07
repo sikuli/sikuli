@@ -47,6 +47,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
          _h = (int)roi.getHeight();
          BufferedImage img = getRegionImage(_x, _y, _w, _h);
          setIcon(new ImageIcon(img));
+         setToolTipText( this.toString() );
       }
    }
 
