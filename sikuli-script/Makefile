@@ -105,7 +105,9 @@ clean:
 	rm -rf tmplib
 
 native-loader:
-	cd $(NATIVE_LOADER_PATH); mvn compile
+	if [ ! -e $(NATIVE_LOADER_PATH)/target/classes ]; \
+	  then cd $(NATIVE_LOADER_PATH); mvn compile; \
+	fi
 	#cp -fr $(NATIVE_LOADER_PATH)/target/classes/* $(INCLUDE_LIB_PATH)
 
 native-lib:
@@ -118,11 +120,15 @@ prepare-jar: $(JAR_PATH) native-loader
 	cp -rf $(NATIVE_TARGET_PATH) $(JAR_PATH)/META-INF
 	cp -RLf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) # Linux -rLf
 	@echo Including jython-*.jar ...
-	cd $(JAR_PATH); jar xf $(JYTHON_JAR)
+	if [ ! -e $(JAR_PATH)/org/python ]; \
+	  then cd $(JAR_PATH); jar xf $(JYTHON_JAR); \
+	fi
 	mkdir -p $(JAR_PATH)/Lib
 	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
 	@echo Including jython libs
-	cd $(JAR_PATH)/Lib; unzip -nq $(JYTHON_LIB)
+	if [ ! -e $(JAR_PATH)/Lib/glob.py ]; \
+	  then cd $(JAR_PATH)/Lib; unzip -nq $(JYTHON_LIB); \
+	fi
 	
 jar: all prepare-jar
 	@echo Creating JAR..

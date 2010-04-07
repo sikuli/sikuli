@@ -9,6 +9,7 @@ import org.python.core.*;
 public class ScriptRunner {
    private static ScriptRunner _instance = null;
    private java.util.List<String> _headers;
+   private java.util.List<String> _tmp_headers;
    private PythonInterpreter py; 
 
    public static ScriptRunner getInstance(String[] args){
@@ -31,10 +32,11 @@ public class ScriptRunner {
          "setShowActions(False)"
       };
       _headers = new LinkedList<String>(Arrays.asList(h));
+      _tmp_headers = new LinkedList<String>();
    }
 
-   public void addHeader(String line){
-      _headers.add(line);
+   public void addTempHeader(String line){
+      _tmp_headers.add(line);
    }
 
    public PythonInterpreter getPythonInterpreter(){
@@ -47,8 +49,14 @@ public class ScriptRunner {
          String line = it.next();
          py.exec(line);
       }
+      it = _tmp_headers.iterator();
+      while(it.hasNext()){
+         String line = it.next();
+         py.exec(line);
+      }
       py.exec("setBundlePath('" + bundlePath + "')");
       py.execfile(pyFile.getAbsolutePath());
+      _tmp_headers.clear();
       //py.cleanup();
    }
 

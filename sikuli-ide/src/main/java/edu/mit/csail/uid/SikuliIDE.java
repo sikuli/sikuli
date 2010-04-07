@@ -33,6 +33,7 @@ public class SikuliIDE extends JFrame {
 
    private JMenuBar _menuBar = new JMenuBar();
    private JMenu _fileMenu = new JMenu("File");
+   private JMenu _runMenu = new JMenu("Run");
    private JMenu _viewMenu = new JMenu("View");
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
@@ -95,6 +96,14 @@ public class SikuliIDE extends JFrame {
       return createMenuItem(item, shortcut, listener);
    }
    
+   private void initRunMenu() throws NoSuchMethodException{
+      int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+      _runMenu.setMnemonic(java.awt.event.KeyEvent.VK_R);
+      _runMenu.add( createMenuItem("Run", 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, scMask),
+               new RunAction(RunAction.RUN)));
+   }
+
    private void initFileMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _fileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
@@ -549,7 +558,7 @@ public class SikuliIDE extends JFrame {
       public void actionPerformed(ActionEvent e) {
          if(actMethod != null){
             try{
-               Debug.log("FileAction." + action);
+               Debug.log("MenuAction." + action);
                actMethod.invoke(this, new Object[0]);
             }
             catch(Exception ex){
@@ -559,6 +568,23 @@ public class SikuliIDE extends JFrame {
       }
    }
    
+   class RunAction extends MenuAction {
+      static final String RUN = "run";
+
+      public RunAction(){
+         super();
+      }
+
+      public RunAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+
+      public void run(){
+      
+      }
+
+   }
+
    class ViewAction extends MenuAction {
       static final String UNIT_TEST = "toggleUnitTest";
       static final String CMD_LIST = "toggleCmdList";
@@ -767,35 +793,34 @@ public class SikuliIDE extends JFrame {
          URL imageURL = SikuliIDE.class.getResource("/icons/runviz.png");
          setIcon(new ImageIcon(imageURL));
          setToolTipText("Run and show each action");
-         addHeader("setShowActions(True)");
+      }
+
+      protected void runPython(File f) throws IOException{
+         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         String path = SikuliIDE.getInstance().getCurrentBundlePath();
+         srunner.addTempHeader("setShowActions(True)");
+         srunner.runPython(path, f);
       }
    }
 
    class ButtonRun extends JButton implements ActionListener {
-      private java.util.List<String> _headers;
       private Thread _runningThread = null;
-
-      protected void addHeader(String line){
-         _headers.add(line);
-      }
 
       public ButtonRun(){
          super();
 
-         //FIXME: use ScriptRunner instead
-         String[] h = new String[]{
-            "from __future__ import with_statement",
-            "from sikuli.Sikuli import *",
-            "setThrowException(True)",
-      	    "setShowActions(False)"
-         };
-         _headers = new LinkedList<String>(Arrays.asList(h));
          URL imageURL = SikuliIDE.class.getResource("/icons/run.png");
          setIcon(new ImageIcon(imageURL));
          setMaximumSize(new Dimension(26,26));
          setBorderPainted(false);
          initTooltip();
          addActionListener(this);
+      }
+
+      protected void runPython(File f) throws IOException{
+         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         String path= SikuliIDE.getInstance().getCurrentBundlePath();
+         srunner.runPython(path, f);
       }
 
       private void initTooltip(){
@@ -825,11 +850,6 @@ public class SikuliIDE extends JFrame {
       }
 
 
-      private void runPython(File f) throws IOException{
-         ScriptRunner srunner = ScriptRunner.getInstance(null);
-         String path= SikuliIDE.getInstance().getCurrentBundlePath();
-         srunner.runPython(path, f);
-      }
 
       public void stopRunning(){
          if(_runningThread != null){
@@ -839,6 +859,10 @@ public class SikuliIDE extends JFrame {
       }
 
       public void actionPerformed(ActionEvent ae) {
+         runCurrentScript();
+      }
+
+      public void runCurrentScript() {
          _runningThread = new Thread(){
             public void run(){
                SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
