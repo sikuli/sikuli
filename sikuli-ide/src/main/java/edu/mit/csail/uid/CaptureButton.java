@@ -23,7 +23,10 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       super();
       URL imageURL = SikuliIDE.class.getResource("/icons/capture.png");
       setIcon(new ImageIcon(imageURL));
-      setToolTipText("Take a screenshot");
+      UserPreferences pref = UserPreferences.getInstance();
+      String strHotkey = Utils.convertKeyToText(
+            pref.getCaptureHotkey(), pref.getCaptureHotkeyModifiers() );
+      setToolTipText("Take a screenshot (" + strHotkey + ")");
       setBorderPainted(false);
       setMaximumSize(new Dimension(26,26));
       addActionListener(this);

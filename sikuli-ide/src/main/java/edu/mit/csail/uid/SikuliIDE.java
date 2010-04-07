@@ -102,6 +102,18 @@ public class SikuliIDE extends JFrame {
       _runMenu.add( createMenuItem("Run", 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, scMask),
                new RunAction(RunAction.RUN)));
+      _runMenu.add( createMenuItem("Run and show actions", 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, 
+                  InputEvent.ALT_MASK | scMask),
+               new RunAction(RunAction.RUN_SHOW_ACTIONS)));
+
+      UserPreferences pref = UserPreferences.getInstance();
+      JMenuItem stopItem = createMenuItem("Stop", 
+               KeyStroke.getKeyStroke(
+                  pref.getStopHotkey(), pref.getStopHotkeyModifiers()),
+               new RunAction(RunAction.RUN_SHOW_ACTIONS));
+      stopItem.setEnabled(false);
+      _runMenu.add(stopItem);
    }
 
    private void initFileMenu() throws NoSuchMethodException{
@@ -572,6 +584,7 @@ public class SikuliIDE extends JFrame {
    
    class RunAction extends MenuAction {
       static final String RUN = "run";
+      static final String RUN_SHOW_ACTIONS = "runShowActions";
 
       public RunAction(){
          super();
@@ -583,7 +596,10 @@ public class SikuliIDE extends JFrame {
 
       public void run(){
          _btnRun.runCurrentScript();
-      
+      }
+
+      public void runShowActions(){
+         _btnRunViz.runCurrentScript();
       }
 
    }
