@@ -14,6 +14,8 @@ public class PatternWindow extends JFrame implements Observer {
    private ImageButton _imgBtn;
    private ScreenshotPane _screenshot;
 
+   private JTabbedPane tabPane;
+   private JPanel paneTarget, panePreview;
    private JLabel btnSimilar;
    private JSlider sldSimilar;
    private JSpinner txtNumMatches;
@@ -22,7 +24,7 @@ public class PatternWindow extends JFrame implements Observer {
 
    public PatternWindow(ImageButton imgBtn, boolean exact, 
                         float similarity, int numMatches){
-      super("Preview");
+      super("Pattern Settings");
       _imgBtn = imgBtn;
       //setBackground(new java.awt.Color(255,255,255,128)); 
       Point pos = imgBtn.getLocationOnScreen();
@@ -30,17 +32,33 @@ public class PatternWindow extends JFrame implements Observer {
       setLocation(pos.x, pos.y);
 
       Container c = getContentPane();
-      c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+      tabPane = new JTabbedPane();
+      paneTarget = createTargetPanel();
+      panePreview = createPrewviewPanel();
+      tabPane.addTab("Matching Preview", panePreview);
+      tabPane.addTab("Target Offset", paneTarget);
+      c.add(tabPane);
 
-      createScreenshots(c);
-      createButtons(c);
-      c.add(Box.createVerticalStrut(5));
-      c.doLayout();
       pack();
 
       init(exact, similarity, numMatches);
 
       setVisible(true);
+   }
+
+   private JPanel createTargetPanel(){
+      return new TargetOffsetPanel(_imgBtn.getImageFilename());
+   }
+
+   private JPanel createPrewviewPanel(){
+      JPanel p = new JPanel();
+      p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+
+      createScreenshots(p);
+      createButtons(p);
+      p.add(Box.createVerticalStrut(5));
+      p.doLayout();
+      return p;
    }
 
    private void init(boolean exact, float similarity, int numMatches){
@@ -173,6 +191,40 @@ public class PatternWindow extends JFrame implements Observer {
 
 }
 
+
+class TargetOffsetPanel extends JPanel {
+   final static int MAX_H = 300;
+   BufferedImage _img;
+   int _w, _h;
+
+   public TargetOffsetPanel(String patFilename){
+      try {
+         _img = ImageIO.read(new File(patFilename));
+         _w = _img.getWidth();
+         _h = _img.getHeight();
+         if(_h>MAX_H){
+            _w = (int)(_w * (float)MAX_H/_h);
+            _h = MAX_H;
+         }
+      } catch (IOException e) {
+         Debug.error("Can't load " + patFilename);
+      }
+      setPreferredSize(new Dimension(_w, _h));
+   }
+
+   public void paint(Graphics g){
+      Graphics2D g2d = (Graphics2D)g;
+      if( _img != null ){
+         g2d.drawImage(_img, 0, 0, _w, _h, null);
+      }
+   }
+}
+
+/*
+class TargetOffsetPanel extends ScreenshotPane {
+   double DEFAULT_MARGIN = 0.3;
+}
+*/
 
 class ScreenshotPane extends JPanel implements ChangeListener, Subject{
    final static int MAX_H = 300;

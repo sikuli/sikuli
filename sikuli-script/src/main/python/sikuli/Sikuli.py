@@ -11,6 +11,7 @@ from edu.mit.csail.uid import FindFailed
 import __builtin__
 import __main__
 import types
+import sys
 
 from edu.mit.csail.uid import Region as JRegion
 from edu.mit.csail.uid import Finder
@@ -93,6 +94,9 @@ def sleep(sec):
 # @param msg The given message string.
 def popup(msg):
    _si.popup(msg)
+
+def exit():
+   sys.exit()
 
 ##
 # Runs the given string command.

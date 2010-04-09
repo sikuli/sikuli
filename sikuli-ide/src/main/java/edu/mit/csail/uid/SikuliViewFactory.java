@@ -169,6 +169,11 @@ class HighlightLabelView extends LabelView {
        "def",       "finally",   "in",        "print",     "with"
     };
 
+    private static String[] keywordsSikuliClass = {
+       "Region", "Screen", "Match", "Pattern",
+       "Location", "VDict", "Env", "Key", "Button"
+    };
+
     private static String[] keywordsSikuli = {
        "find", "wait", "findAll", "waitVanish", "exists",
        "click", "doubleClick", "rightClick", "hover", 
@@ -177,11 +182,26 @@ class HighlightLabelView extends LabelView {
        "mouseMove", "mouseDown", "mouseUp",
        "keyDown", "keyUp",
        "onAppear", "onVanish", "onChange", "observe", "stopObserver",
-       "popup", "capture", "input",
+       "popup", "capture", "input", "sleep",
        "switchApp", "openApp", "closeApp",
        "assertExist", "assertNotExist",
        "selectRegion",
-       "getOS", "getMouseLocation"
+       "getOS", "getMouseLocation", "exit",
+       "right", "left", "above", "below", "nearby", "inside",
+       "getScreen", "getCenter", 
+       "setX", "setY", "setW", "setH", "setRect", "setROI",
+       "getX", "getY", "getW", "getH", "getRect", "getROI",
+       "getNumberScreens", "getBounds"
+
+    };
+
+    private static String[] constantsSikuli = {
+       "FOREVER",
+       "KEY_SHIFT", "KEY_CTRL", "KEY_META", "KEY_ALT", "KEY_CMD", "KEY_WIN",
+       "ENTER", "BACKSPACE", "TAB", "ESC", "UP", "RIGHT", "DOWN", "LEFT",
+       "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
+       "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+       "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD"
     };
 
     static {
@@ -190,7 +210,7 @@ class HighlightLabelView extends LabelView {
         // NOTE: the order is important!
         patternColors = new HashMap<Pattern, Color>();
         patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
-        patternColors.put(Pattern.compile("(#.*$)"), new Color(200,0,200));
+        patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
         patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
         patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
         for(int i=0;i<keywords.length;i++)
@@ -200,6 +220,18 @@ class HighlightLabelView extends LabelView {
         for(int i=0;i<keywordsSikuli.length;i++){
            patternColors.put(Pattern.compile("\\b("+keywordsSikuli[i]+")\\b"), 
                              new Color(63,127,127));
+        }
+
+        for(int i=0;i<keywordsSikuliClass.length;i++){
+           patternColors.put(Pattern.compile(
+                            "\\b("+keywordsSikuliClass[i]+")\\b"), 
+                             new Color(215,41,56));
+        }
+
+        for(int i=0;i<constantsSikuli.length;i++){
+           patternColors.put(Pattern.compile(
+                            "\\b("+constantsSikuli[i]+")\\b"), 
+                             new Color(128,64,0));
         }
 
         //patternColors.put(Pattern.compile("(\t)"), Color.white);

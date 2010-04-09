@@ -60,8 +60,8 @@
 			<key>file.encoding</key>
 			<string>UTF-8</string>
 		</dict>
-                <key>VMOptions</key>
-                <string>-Xmx1024M</string>
+		<key>VMOptions</key>
+		<string>-Xmx1024M</string>
 	</dict>
 	<key>NSJavaRoot</key>
 	<string>Contents/Resources/Java</string>

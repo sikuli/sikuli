@@ -870,15 +870,16 @@ public class SikuliIDE extends JFrame {
          Throwable t = thr;
          while (t != null) {
             s = t.getStackTrace();
-            Debug.log(5, "stack trace:");
+            Debug.log(3, "stack trace:");
             for (int i = s.length-1; i >= 0 ; i--){
                StackTraceElement si = s[i];
-               Debug.log(5, si.getLineNumber() + " " + si.getFileName());
+               Debug.log(3, si.getLineNumber() + " " + si.getFileName());
                if( si.getLineNumber()>=0 && filename.equals( si.getFileName() ) ){
                   return si.getLineNumber();
                }
             }
             t = t.getCause();
+            Debug.log(3, "cause: " + t);
          }
          return -1;
       }
@@ -916,12 +917,15 @@ public class SikuliIDE extends JFrame {
                   }
                   catch(Exception e){
                      Debug.info("Stopped");
-                     int srcLine = findErrorSource(e, tmpFile.getAbsolutePath());
-                     if(srcLine != -1){
-                        Debug.info("[Error] source lineNo: " + srcLine);
-                        codePane.setErrorHighlight(srcLine);
+                     if(!e.toString().endsWith("SystemExit\n")){
+                        int srcLine = findErrorSource(e, 
+                                          tmpFile.getAbsolutePath());
+                        if(srcLine != -1){
+                           Debug.info("[Error] source lineNo: " + srcLine);
+                           codePane.setErrorHighlight(srcLine);
+                        }
+                        Debug.info("[Error] " + e.toString());
                      }
-                     Debug.info("[Error] " + e.toString());
                   } 
                   finally{
                      SikuliIDE.getInstance().setVisible(true);
