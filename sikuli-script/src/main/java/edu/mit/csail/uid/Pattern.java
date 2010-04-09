@@ -38,6 +38,8 @@ public class Pattern {
    public String toString(){
      String ret = "Pattern(\"" + imgURL + "\")";
      ret += ".similar(" + similarity +")";
+     if(dx!=0 || dy!=0)
+        ret += ".targetOffset(" + dx + "," + dy +")";
      return ret;
    }
 

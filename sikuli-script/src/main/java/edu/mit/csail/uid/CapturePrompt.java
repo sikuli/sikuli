@@ -152,6 +152,8 @@ class CapturePrompt extends JWindow implements Subject{
 
    private BufferedImage cropSelection(){
       int w = rectSelection.width, h = rectSelection.height;
+      if(w<=0 || h<=0)
+         return null;
       BufferedImage crop  = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
       Graphics2D crop_g2d = crop.createGraphics();
       try {
@@ -171,6 +173,8 @@ class CapturePrompt extends JWindow implements Subject{
       if(_canceled)
          return null;
       BufferedImage cropImg = cropSelection();
+      if(cropImg == null)
+         return null;
       rectSelection.x += _scr.x;
       rectSelection.y += _scr.y;
       ScreenImage ret = new ScreenImage(rectSelection, cropImg);
