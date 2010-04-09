@@ -13,6 +13,8 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 
 public class SikuliIDE extends JFrame {
@@ -916,8 +918,14 @@ public class SikuliIDE extends JFrame {
                      runPython(tmpFile);
                   }
                   catch(Exception e){
-                     Debug.info("Stopped");
-                     if(!e.toString().endsWith("SystemExit\n")){
+                     java.util.regex.Pattern p = 
+                        java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
+                     Matcher matcher = p.matcher(e.toString());
+                     if(matcher.find()){
+                        Debug.info("Exited with code" +  matcher.group(1));
+                     }
+                     else{
+                        Debug.info("Stopped");
                         int srcLine = findErrorSource(e, 
                                           tmpFile.getAbsolutePath());
                         if(srcLine != -1){

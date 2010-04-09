@@ -95,8 +95,8 @@ def sleep(sec):
 def popup(msg):
    _si.popup(msg)
 
-def exit():
-   sys.exit()
+def exit(code=0):
+   sys.exit(code)
 
 ##
 # Runs the given string command.
