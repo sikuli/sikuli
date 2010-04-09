@@ -25,6 +25,10 @@ public class Region {
       init(x_,y_,w_,h_);
    }
 
+   public Region(Rectangle r) {
+      init(r.x, r.y, r.width, r.height);
+   }
+
    public Region(Region r) {
       init(r.x, r.y, r.w, r.h);
    }
@@ -92,6 +96,8 @@ public class Region {
 
    public Rectangle getRect(){ return getROI(); }
    public void setRect(Rectangle roi){ setROI(roi); }
+   public void setRect(int X, int Y, int W, int H){ setROI(X, Y, W, H); }
+   public void setRect(Region roi){ setROI(roi); }
 
    public Location getCenter(){ 
       return new Location(x+w/2, y+h/2);
