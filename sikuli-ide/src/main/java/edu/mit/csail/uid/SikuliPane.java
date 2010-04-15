@@ -12,6 +12,8 @@ import javax.swing.text.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.imageio.*;
 
 import org.python.util.PythonInterpreter; 
@@ -40,6 +42,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setMargin( new Insets( 3, 3, 3, 3 ) );
       setTabSize(4);
       setBackground(Color.WHITE);
+      getDocument().addDocumentListener(new DirtyHandler());
    }
 
 
@@ -80,6 +83,9 @@ public class SikuliPane extends JTextPane implements KeyListener,
       for(int i=0;i<spaceForTab;i++) t += " ";
       _tabString = t;
    }
+
+   public boolean isDirty(){  return _dirty; }
+   public void setDirty(boolean flag){ _dirty = flag; }
 
    public int getLineAtCaret(int caretPosition)
    {
@@ -130,7 +136,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public boolean close() throws IOException{
-      if( _dirty ){
+      if( isDirty() ){
          Object[] options = {"Yes", "No", "Cancel"};
          int ans = JOptionPane.showOptionDialog(this,
                getCurrentShortFilename() + " has been modified. Save changes?",
@@ -204,7 +210,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       if(writeHTML)
          convertSrcToHtml(getSrcBundle());
       cleanBundle(getSrcBundle());
-      _dirty = false;
+      setDirty(false);
    }
 
    public String saveFile() throws IOException{
@@ -276,6 +282,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _editingFilename = getSourceFilename(filename);
       this.read( new BufferedReader(new InputStreamReader(
                   new FileInputStream(_editingFilename), "UTF8")), null);
+      setDirty(false);
    }
 
    public String loadFile() throws IOException{
@@ -299,7 +306,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
       catch(BadLocationException e){
          e.printStackTrace();
       }
-      _dirty = true;
    }
 
 
@@ -385,7 +391,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
    
    public void keyTyped(java.awt.event.KeyEvent ke) { 
-      _dirty = true;
       try{
          //if(ke.getKeyChar() == '\t') expandTab();
          checkCompletion(ke);
@@ -707,6 +712,22 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
    }
 
+
+
+   private class DirtyHandler implements DocumentListener {
+      public void changedUpdate(DocumentEvent ev) {
+         Debug.log(9, "change update");
+         _dirty = true;
+      }
+      public void insertUpdate(DocumentEvent ev) {
+         Debug.log(9, "insert update");
+         _dirty = true;
+      }
+      public void removeUpdate(DocumentEvent ev) {
+         Debug.log(9, "remove update");
+         _dirty = true;
+      }
+   }
 
 }
 
