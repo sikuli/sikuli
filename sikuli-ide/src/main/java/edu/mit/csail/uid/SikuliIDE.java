@@ -834,6 +834,7 @@ public class SikuliIDE extends JFrame {
       protected void runPython(File f) throws IOException{
          ScriptRunner srunner = ScriptRunner.getInstance(null);
          String path = SikuliIDE.getInstance().getCurrentBundlePath();
+         srunner.addTempHeader("initSikuli()");
          srunner.addTempHeader("setShowActions(True)");
          srunner.runPython(path, f);
       }
@@ -856,6 +857,7 @@ public class SikuliIDE extends JFrame {
       protected void runPython(File f) throws IOException{
          ScriptRunner srunner = ScriptRunner.getInstance(null);
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
+         srunner.addTempHeader("initSikuli()");
          srunner.runPython(path, f);
       }
 

@@ -120,10 +120,9 @@ def getSikuliScript():
    return _si
 
 def initSikuli():
-   if not 'screen' in dir(__main__):
-      __main__.screen = Screen()
-      __main__.screen._exposeAllMethods()
-      print "Sikuli is initialized." 
+   __main__.screen = Screen()
+   __main__.screen._exposeAllMethods()
+   #print "Sikuli is initialized." 
 
 
 initSikuli()
