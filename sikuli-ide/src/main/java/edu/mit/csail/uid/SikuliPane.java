@@ -85,7 +85,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public boolean isDirty(){  return _dirty; }
-   public void setDirty(boolean flag){ _dirty = flag; }
+   public void setDirty(boolean flag){ 
+      _dirty = flag; 
+      if(flag)
+         getRootPane().putClientProperty("Window.documentModified", true);
+      else
+         SikuliIDE.getInstance().checkDirtyPanes();
+   }
 
    public int getLineAtCaret(int caretPosition)
    {
@@ -150,6 +156,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
             return false;
          else if( ans == JOptionPane.YES_OPTION )
             saveFile();
+         setDirty(false);
       }
       return true;
    }
@@ -717,15 +724,15 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private class DirtyHandler implements DocumentListener {
       public void changedUpdate(DocumentEvent ev) {
          Debug.log(9, "change update");
-         _dirty = true;
+         setDirty(true);
       }
       public void insertUpdate(DocumentEvent ev) {
          Debug.log(9, "insert update");
-         _dirty = true;
+         setDirty(true);
       }
       public void removeUpdate(DocumentEvent ev) {
          Debug.log(9, "remove update");
-         _dirty = true;
+         setDirty(true);
       }
    }
 

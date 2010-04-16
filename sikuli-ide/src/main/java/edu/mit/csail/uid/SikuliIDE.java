@@ -91,6 +91,19 @@ public class SikuliIDE extends JFrame {
       return item;
    }
 
+   boolean checkDirtyPanes(){
+      for(int i=0;i<_mainPane.getComponentCount();i++){
+         JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
+         SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+         if(codePane.isDirty()){
+            getRootPane().putClientProperty("Window.documentModified", true);
+            return true;
+         }
+      }
+      getRootPane().putClientProperty("Window.documentModified", false);
+      return false;
+   }
+
    private JMenuItem createMenuItem(String name, KeyStroke shortcut, ActionListener listener){
       JMenuItem item = new JMenuItem(name);
       return createMenuItem(item, shortcut, listener);
@@ -261,7 +274,11 @@ public class SikuliIDE extends JFrame {
             try{
                JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
                SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-               return codePane.close();
+               Debug.log("close tab: " + _mainPane.getComponentCount());
+               boolean ret = codePane.close();
+               Debug.log("close tab after: " + _mainPane.getComponentCount());
+               checkDirtyPanes();
+               return ret;
             }
             catch(Exception e){
                Debug.info("Can't close this tab: " + e.getStackTrace());
