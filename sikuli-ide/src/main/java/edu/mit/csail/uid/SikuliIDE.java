@@ -372,6 +372,7 @@ public class SikuliIDE extends JFrame {
    static final int DEFAULT_WINDOW_W = 1024;
    static final int DEFAULT_WINDOW_H = 700;
 
+   // Constructor 
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
@@ -415,12 +416,22 @@ public class SikuliIDE extends JFrame {
       mainAndConsolePane.setDividerLocation(500);
 
       initShortcutKeys();
-      setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+      //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       initHotkeys();
+      initWindowListener();
+
 
       _inited = true;
       setVisible(true);
+   }
+
+   private void initWindowListener(){
+      setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      addWindowListener(new WindowAdapter(){
+         public void windowClosing(WindowEvent e) {
+            SikuliIDE.this.quit();
+         }
+      });
    }
 
    public boolean isInited(){ return _inited; }
