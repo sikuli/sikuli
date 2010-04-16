@@ -535,7 +535,9 @@ public class Region {
                                              throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
          Match m = find(target);
-         return m.getTarget();
+         if(m!=null)
+            return m.getTarget();
+         return null;
       }
       if(target instanceof Match) return ((Match)target).getTarget();
       if(target instanceof Region) return ((Region)target).getCenter();

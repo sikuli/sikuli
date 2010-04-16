@@ -902,10 +902,10 @@ public class SikuliIDE extends JFrame {
          Throwable t = thr;
          while (t != null) {
             s = t.getStackTrace();
-            Debug.log(3, "stack trace:");
+            Debug.log(4, "stack trace:");
             for (int i = s.length-1; i >= 0 ; i--){
                StackTraceElement si = s[i];
-               Debug.log(3, si.getLineNumber() + " " + si.getFileName());
+               Debug.log(4, si.getLineNumber() + " " + si.getFileName());
                if( si.getLineNumber()>=0 && filename.equals( si.getFileName() ) ){
                   return si.getLineNumber();
                }
