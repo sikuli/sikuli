@@ -396,7 +396,6 @@ public class SikuliIDE extends JFrame {
       else
          (new FileAction()).doNew();
 
-      //scrPane.setRowHeaderView(new LineNumberView(_codeEditor));
 
 
       _codeAndUnitPane = new JSplitPane(
@@ -716,6 +715,7 @@ public class SikuliIDE extends JFrame {
       public void doNew(){
          SikuliPane codePane = new SikuliPane();
          JScrollPane scrPane = new JScrollPane(codePane);
+         scrPane.setRowHeaderView(new LineNumberView(codePane));
          _mainPane.addTab("Untitled", scrPane);
          _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
          codePane.addCaretListener(new CaretListener(){

@@ -12,9 +12,9 @@ public class LineNumberView extends JComponent
 {
     // This is for the border to the right of the line numbers.
     // There's probably a UIDefaults value that could be used for this.
-    private static final Color BORDER_COLOR = Color.GRAY;
+    private static final Color BORDER_COLOR = new Color(155,155,155);
  
-    private static final int WIDTH_TEMPLATE = 99999;
+    private static final int WIDTH_TEMPLATE = 999;
     private static final int MARGIN = 5;
  
     private FontMetrics viewFontMetrics;
@@ -54,6 +54,8 @@ public class LineNumberView extends JComponent
         text.addComponentListener( handler );
  
         setBorder( BorderFactory.createMatteBorder( 0, 0, 0, 1, BORDER_COLOR ) );
+        setForeground(Color.GRAY);
+        setBackground(new Color(241,241,241));
     }
  
     /**
@@ -109,8 +111,7 @@ public class LineNumberView extends JComponent
         Element map = text.getDocument().getDefaultRootElement();
         int n = map.getElementCount();
         Element lastLine = map.getElement( n - 1 );
-        if ( ( lastLine.getEndOffset() - lastLine.getStartOffset() ) > 1 )
-        {
+        if ( ( lastLine.getEndOffset() - lastLine.getStartOffset() ) >= 1 ){
             return n;
         }
  
@@ -130,7 +131,8 @@ public class LineNumberView extends JComponent
         try
         {
             Element map = text.getDocument().getDefaultRootElement();
-            int lastChar = map.getElement( index ).getEndOffset() - 1;
+            Element l = map.getElement(index);
+            int lastChar = l.getEndOffset() - 1;
             Rectangle r = text.modelToView( lastChar );
             height = ( r.y - lastPos ) + r.height;
         }
@@ -169,8 +171,8 @@ public class LineNumberView extends JComponent
         }
  
         viewFontMetrics = getFontMetrics( viewFont );
-        maxNumberWidth = 15; //viewFontMetrics.stringWidth( String.valueOf( WIDTH_TEMPLATE ) );
-        componentWidth = 25; //2 * MARGIN + maxNumberWidth;
+        maxNumberWidth = viewFontMetrics.stringWidth( String.valueOf( WIDTH_TEMPLATE ) );
+        componentWidth = 2 * MARGIN + maxNumberWidth;
  
         if ( changed )
         {
@@ -207,22 +209,15 @@ public class LineNumberView extends JComponent
         int first = sizes.getIndex( base );
         int last = sizes.getIndex( base + clip.height );
  
-//        System.out.println( " first = " + first );
-//        System.out.println( " last = " + last );
- 
         String text = "";
  
         for ( int i = first; i < last; i++ )
         {
             text = String.valueOf( i + 1 );
             int x = MARGIN + maxNumberWidth - viewFontMetrics.stringWidth( text );
-            int y = sizes.getPosition( i ) + textFontAscent + textTopInset;
+            int y = (sizes.getPosition(i)+sizes.getPosition(i+1))/2 + textFontAscent/2 + textTopInset/2;
  
             g.drawString( text, x, y );
- 
-//            System.out.println( " x = " + x );
-//            System.out.println( " y = " + sizes.getPosition( i ) + " + " + textFontAscent + " + " + textTopInset );
-//            System.out.println( " y = sizes.getPosition( i ) + textFontAscent + textTopInset");
         }
     }
  
