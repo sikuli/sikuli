@@ -3,6 +3,7 @@ import inspect
 import __main__
 
 from Region import *
+from java.awt import Rectangle
 
 DEBUG=False
 
@@ -54,6 +55,9 @@ class Screen(Region):
          if isinstance(args[0],JRegion):
             r = args[0]
             return scr.capture(r.x, r.y, r.w, r.h).getFilename()
+         elif isinstance(args[0],Rectangle):
+            r = args[0]
+            return scr.capture(r.x, r.y, r.width, r.height).getFilename()
          elif len(args) == 4:
             return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
          else:

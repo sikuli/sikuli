@@ -6,7 +6,7 @@ OS=$(shell uname -rs)
 
 CXX=g++
 DEBUG=-Wall #-g -DDEBUG
-ARCH=-arch i386 
+ARCH=-arch i386 -arch x86_64
 ifeq  "$(OS)" "Darwin 9.8.0"
    ARCH+=-arch ppc
 endif

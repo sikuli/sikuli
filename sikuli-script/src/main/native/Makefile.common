@@ -22,7 +22,7 @@ endif
 
 ifeq "$(OS)" "Darwin"
 	ifneq (,$(findstring 10., $(UNAME_R)))
-		ARCH=-arch i386
+		ARCH=-arch i386 -arch x86_64
 	endif
 	ifneq (,$(findstring 9., $(UNAME_R)))
 		ARCH=-arch i386 -arch ppc

@@ -71,7 +71,7 @@ public class SikuliScript {
          return;
       }
       try{
-         ScriptRunner runner = new ScriptRunner();
+         ScriptRunner runner = new ScriptRunner(args);
          runner.runPython(args[0]);
       }
       catch(IOException e){

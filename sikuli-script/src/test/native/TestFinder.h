@@ -69,7 +69,7 @@ public:
       f.debug(DEBUG);
       string testcase = "top-5";
       for (int target_i=1;target_i<=4;target_i++){
-         f.find(target_image_path(screen_i,target_i).c_str());
+         f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
          //cout << "{ ";
          for (int i=0;i<5;++i){      
             Match m;
@@ -98,7 +98,7 @@ public:
     //cout << "{\n";
     for (int target_i=1;target_i<=4;target_i++){
        Match m;
-       f.find(target_image_path(screen_i,target_i).c_str());
+       f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
        m = f.next();
        TS_ASSERT_EQUALS(m.x, Top_XY[screen_i-1][target_i-1][0]);
        TS_ASSERT_EQUALS(m.y, Top_XY[screen_i-1][target_i-1][1]);
@@ -114,7 +114,7 @@ public:
     //cout << "},\n";
    }
 
-   static const int TestFinder::ROI_Left_Count[][4];
+   static const int ROI_Left_Count[][4];
    void testROI_Left(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
       f.debug(DEBUG);
@@ -138,7 +138,7 @@ public:
       }
    }
 
-   static const int TestFinder::ROI_Right_Count[][4];
+   static const int ROI_Right_Count[][4];
    void testROI_Right(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
       f.debug(DEBUG);
@@ -165,7 +165,7 @@ public:
    }
 
 
-   static const int TestFinder::ROI_LowerRight_Count[][1];
+   static const int ROI_LowerRight_Count[][1];
    void testROI_LowerRight(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
       f.debug(DEBUG);
@@ -173,7 +173,7 @@ public:
       for (int target_i=3;target_i<=3;target_i++){
          Match m;
          f.setROI(f.get_screen_width()/2,f.get_screen_height()/2,f.get_screen_width()/2,f.get_screen_height()/2);
-         f.find(target_image_path(screen_i,target_i).c_str());             
+         f.find(target_image_path(screen_i,target_i).c_str(), 0.7);             
          int count=0;
          for (int i=0; i < 5 && f.hasNext(); i++){
             m = f.next();
