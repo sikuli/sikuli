@@ -121,8 +121,8 @@ def getSikuliScript():
    return _si
 
 def initSikuli():
-   __main__.screen = Screen()
-   __main__.screen._exposeAllMethods()
+   __main__.SCREEN = Screen()
+   __main__.SCREEN._exposeAllMethods()
    #print "Sikuli is initialized." 
 
 
