@@ -51,9 +51,9 @@ class VDict(VDictProxy):
    # Maps the specified key to the specified item in this visual dictionary.
    #
    def __setitem__(self, key, item):
+      bkey = self._getInBundle(key)
+      self.insert(bkey, item)
       self._keys[key] = item
-      key = self._getInBundle(key)
-      self.insert(key, item)
 
    ##
    # Tests if the specified object looks like a key in this visual dictionary
@@ -74,9 +74,9 @@ class VDict(VDictProxy):
    # Deletes the key and its corresponding value from this visual dictionary.
    #
    def __delitem__(self, key):
+      bkey = self._getInBundle(key)
+      self.erase(bkey)
       del self._keys[key]
-      key = self._getInBundle(key)
-      self.erase(key)
 
    ##
    # Returns a list of the keys in this visual dictionary.

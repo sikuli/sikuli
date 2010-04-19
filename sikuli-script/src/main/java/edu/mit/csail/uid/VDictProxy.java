@@ -1,6 +1,8 @@
 package edu.mit.csail.uid;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +32,9 @@ public class VDictProxy<T> {
    private native long getInstance();
 
    // insert an (key,value) entry using an image key
-   public void insert(String imagekey_filename, T value){
+   public void insert(String imagekey_filename, T value) throws FileNotFoundException {
+      if(!(new File(imagekey_filename)).exists())
+         throw new FileNotFoundException("Can't find " + imagekey_filename);
       int hash = value.hashCode();
       while(true){
          if( hash != -1 && !_i2obj.containsKey(hash) ){
@@ -47,7 +51,9 @@ public class VDictProxy<T> {
    public native void _insert(long instance, String imagekey_filename, int value);
 
    // lookup the entry using an image key (exact match)
-   public T lookup(String imagekey_filename){
+   public T lookup(String imagekey_filename) throws FileNotFoundException{
+      if(!(new File(imagekey_filename)).exists())
+         throw new FileNotFoundException("Can't find " + imagekey_filename);
       int hash = _lookup(_instance, imagekey_filename);
       if(hash==-1) return null;
       return _i2obj.get(hash);
@@ -56,7 +62,9 @@ public class VDictProxy<T> {
    private native int _lookup(long instance, String imagekey_filename);
 
    // lookup the first entry with a similar image key
-   public T lookup_similar(String imagekey_filename, double similarity_threshold){
+   public T lookup_similar(String imagekey_filename, double similarity_threshold) throws FileNotFoundException{
+      if(!(new File(imagekey_filename)).exists())
+         throw new FileNotFoundException("Can't find " + imagekey_filename);
       int hash = _lookup_similar(_instance, imagekey_filename, similarity_threshold);
       if(hash==-1) return null;
       return _i2obj.get(hash);
@@ -65,7 +73,9 @@ public class VDictProxy<T> {
    private native int _lookup_similar(long instance, String imagekey_filename, double similarity_threshold);
 
    // lookup at most n entries with keys similar to the given image (n = 0 : all)
-   public List<T> lookup_similar_n(String imagekey_filename, double similarity_threshold, int n){
+   public List<T> lookup_similar_n(String imagekey_filename, double similarity_threshold, int n) throws FileNotFoundException{
+      if(!(new File(imagekey_filename)).exists())
+         throw new FileNotFoundException("Can't find " + imagekey_filename);
       int h[] = _lookup_similar_n(_instance, imagekey_filename, similarity_threshold, n);
       List<T> ret = new Vector<T>(h.length);
       for(int i=0;i<h.length;i++){
@@ -80,7 +90,9 @@ public class VDictProxy<T> {
    private native int[] _lookup_similar_n(long instance, String imagekey_filename, double similarity_threshold, int n);
 
    // erase the entry associated with the image
-   public void erase(String imagekey_filename){
+   public void erase(String imagekey_filename) throws FileNotFoundException{
+      if(!(new File(imagekey_filename)).exists())
+         throw new FileNotFoundException("Can't find " + imagekey_filename);
       int h = _lookup(_instance, imagekey_filename);
       if(h!=-1)   _i2obj.remove(h);
       _erase(_instance, imagekey_filename);
