@@ -22,12 +22,12 @@ class VDict(VDictProxy):
 
    _DEFAULT_GET_ITEM_N = 0
    _bundlePath = "."
-   _keys = {}
 
    ##
    # Constructs a new visual dictionary with the same mapping as the given dict.
    #
    def __init__(self, dict=None):
+      self._keys = {}
       if dict:
          for k in dict.keys():
             self[k] = dict[k]
