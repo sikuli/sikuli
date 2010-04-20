@@ -74,9 +74,12 @@ public class SikuliIDE extends JFrame {
       _btnCapture.capture(0);
    }
 
+   //FIXME: singleton lock
    public static synchronized SikuliIDE getInstance(String args[]){
-      if( _instance == null )
+      if( _instance == null ){
          _instance = new SikuliIDE(args);
+         Debug.log(1, "create SikuliIDE" + _instance);
+      }
       return _instance;
    }
 

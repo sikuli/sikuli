@@ -4,12 +4,14 @@ import java.io.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.util.Date;
 import javax.swing.*;
 import javax.imageio.*;
 
 class CapturePrompt extends JWindow implements Subject{
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    final static float MIN_DARKER_FACTOR = 0.6f;
+   final static long MSG_DISPLAY_TIME = 2000;
    static GraphicsDevice _gdev = null;
 
    Observer _obs;
@@ -22,6 +24,8 @@ class CapturePrompt extends JWindow implements Subject{
    BasicStroke bs;
    int srcx, srcy, destx, desty;
    boolean _canceled = false;
+   long _msg_start;
+   String _msg;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -74,6 +78,23 @@ class CapturePrompt extends JWindow implements Subject{
       }
    }
 
+   static Font fontMsg = new Font("Arial", Font.PLAIN, 40);
+   void drawMessage(Graphics2D g2d){
+      if(_msg == null)
+         return;
+      if(_msg_start == -1) _msg_start = (new Date()).getTime();
+      long now = (new Date()).getTime();
+      if(now - _msg_start <= MSG_DISPLAY_TIME){
+         float alpha = 1f - (float)(now-_msg_start)/MSG_DISPLAY_TIME;
+         g2d.setFont(fontMsg);
+         g2d.setColor(new Color(1f,1f,1f,alpha));
+         g2d.drawString(_msg, 0, 45);
+         repaint();
+      }
+
+
+   }
+
    public void paint(Graphics g)
    {
       if( _scr_img != null ){
@@ -101,6 +122,7 @@ class CapturePrompt extends JWindow implements Subject{
          _darker_screen = op.filter(_scr_img, null);
          */
          g2d.drawImage(_darker_screen,0,0,this);
+         drawMessage(g2d);
          drawSelection(g2d);
          setVisible(true);
       }
@@ -191,6 +213,10 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public void prompt(){
+      prompt(null);
+   }
+
+   public void prompt(String msg){
       Debug.log(3, "starting CapturePrompt @" + _scr);
       captureScreen(_scr);
       setLocation(_scr.x, _scr.y);
@@ -199,6 +225,8 @@ class CapturePrompt extends JWindow implements Subject{
       this.setVisible(true);
       this.setAlwaysOnTop(true);
       _darker_factor = 1f;
+      _msg = msg;
+      _msg_start = -1;
 
       if( _scr.useFullscreen() ){
          _gdev = _scr.getGraphicsDevice();

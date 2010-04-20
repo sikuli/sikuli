@@ -115,7 +115,7 @@ public class Screen extends Region implements Observer {
       Thread th = new Thread(){
          public void run(){
             _prompt = new CapturePrompt(Screen.this, Screen.this);
-            _prompt.prompt();
+            _prompt.prompt("Select a region on the screen");
          }
       };
       th.start();
