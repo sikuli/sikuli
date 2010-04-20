@@ -203,13 +203,18 @@ class CapturePrompt extends JWindow implements Subject{
       return ret;
    }
 
-   public void prompt(int delayMS){
+   public void prompt(String msg, int delayMS){
       try{
          Thread.sleep(delayMS);
       }
       catch(InterruptedException ie){
       }
-      prompt();
+      prompt(msg);
+
+   }
+
+   public void prompt(int delayMS){
+      prompt(null, delayMS);
    }
 
    public void prompt(){
