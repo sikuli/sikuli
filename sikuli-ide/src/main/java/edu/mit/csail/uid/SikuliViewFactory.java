@@ -191,8 +191,8 @@ class HighlightLabelView extends LabelView {
        "getScreen", "getCenter", 
        "setX", "setY", "setW", "setH", "setRect", "setROI",
        "getX", "getY", "getW", "getH", "getRect", "getROI",
-       "getNumberScreens", "getBounds"
-
+       "getNumberScreens", "getBounds",
+       "similar", "targetOffset", "lastMatch", "lastMatches"
     };
 
     private static String[] constantsSikuli = {
@@ -201,7 +201,8 @@ class HighlightLabelView extends LabelView {
        "ENTER", "BACKSPACE", "TAB", "ESC", "UP", "RIGHT", "DOWN", "LEFT",
        "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
        "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-       "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD"
+       "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD",
+       "SCREEN"
     };
 
     static {

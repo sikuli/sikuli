@@ -207,8 +207,10 @@ public class SikuliIDE extends JFrame {
       {"rightClick"}, {"PATTERN","[modifiers]"},
       {"hover"}, {"PATTERN"},
       {"dragDrop"}, {"PATTERN", "PATTERN", "[modifiers]"},
+/*
       {"drag"}, {"PATTERN"},
       {"dropAt"}, {"PATTERN", "[delay]"},
+*/
       {"type"}, {"_text", "[modifiers]"},
       {"type"}, {"PATTERN", "_text", "[modifiers]"},
       {"paste"}, {"_text", "[modifiers]"},
