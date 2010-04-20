@@ -329,62 +329,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
    // see: getMagicCaretPosition, getNextVisualPositionFrom
    // FIXME: dirty hack for fixing cursor movement
    public void keyPressed(java.awt.event.KeyEvent ke) {
-      /*
-      boolean up = false;
-      int pos;
-      if(ke.getModifiers()!=0)
-         return;
-      switch(ke.getKeyCode()){
-         case KeyEvent.VK_LEFT:
-         case KeyEvent.VK_RIGHT:
-            _caret_last_x = -1;
-            break;
-         case KeyEvent.VK_UP:
-            up = true;
-         case KeyEvent.VK_DOWN:
-            int line = getLineAtCaret();
-            int tarLine = up? line-1 : line+1;
-            try{
-               if(tarLine<=0){
-                  jumpTo(1,1);
-                  return;
-               }
-               if(tarLine>getNumLines()){
-                  pos = getDocument().getLength()-1;
-                  setCaretPosition(pos>=0?pos:0);
-                  return;
-               }
-
-               Rectangle curRect = modelToView(getCaretPosition());
-               Rectangle tarEndRect;
-               if(tarLine < getNumLines())
-                  tarEndRect = modelToView(getLineStartOffset(tarLine)-1);
-               else
-                  tarEndRect = modelToView(getDocument().getLength()-1);
-               Debug.log(7, "curRect: " + curRect + ", tarEnd: " + tarEndRect);
-               if(_caret_last_x == -1)
-                  _caret_last_x  = curRect.x;
-               if( _caret_last_x > tarEndRect.x ){
-                  pos = viewToModel(new Point(tarEndRect.x, tarEndRect.y));
-                  _can_update_caret_last_x = false;
-               }
-               else{
-                  pos = viewToModel(new Point(_caret_last_x, tarEndRect.y));
-                  if(up && getLineAtCaret(pos)==getLineAtCaret(pos+1) 
-                        //&& _caret_last_x == curRect.x
-                        )
-                     pos++;
-               }
-               setCaretPosition(pos);
-            }
-            catch(BadLocationException e){
-               e.printStackTrace();
-            }
-            ke.consume();
-            break;
-      }
-   */
-   
    }
 
    public void keyReleased(java.awt.event.KeyEvent ke) {
@@ -495,7 +439,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    // line starting from 0
-   private int getLineStartOffset(int line) throws BadLocationException { 
+   int getLineStartOffset(int line) throws BadLocationException { 
       Element map = getDocument().getDefaultRootElement(); 
       if (line < 0) { 
          throw new BadLocationException("Negative line", -1); 

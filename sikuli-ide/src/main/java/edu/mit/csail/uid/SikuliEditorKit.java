@@ -22,7 +22,6 @@ public class SikuliEditorKit extends StyledEditorKit {
       new InsertTabAction(),
       new DeindentAction(),
       new InsertBreakAction(),
-      /*
       new NextVisualPositionAction(forwardAction, false, SwingConstants.EAST),
       new NextVisualPositionAction(backwardAction, false, SwingConstants.WEST),
       new NextVisualPositionAction(selectionForwardAction, true, SwingConstants.EAST),
@@ -31,7 +30,6 @@ public class SikuliEditorKit extends StyledEditorKit {
       new NextVisualPositionAction(downAction, false, SwingConstants.SOUTH),
       new NextVisualPositionAction(selectionUpAction, true, SwingConstants.NORTH),   
       new NextVisualPositionAction(selectionDownAction, true, SwingConstants.SOUTH),
-      */
 
    };
 
@@ -147,9 +145,13 @@ public class SikuliEditorKit extends StyledEditorKit {
                      Position.Bias.Forward, direction, bias);
             }
             else {
-               dot = textArea.getUI().getNextVisualPositionFrom(
-                     textArea, dot,
-                     Position.Bias.Forward, direction, bias);
+               if(direction == SwingConstants.NORTH || 
+                  direction == SwingConstants.SOUTH )
+                  dot = getNSVisualPosition((SikuliPane)textArea, dot, direction);
+               else
+                  dot = textArea.getUI().getNextVisualPositionFrom(
+                        textArea, dot,
+                        Position.Bias.Forward, direction, bias);
             }
             if (select)
                caret.moveDot(dot);
@@ -160,13 +162,46 @@ public class SikuliEditorKit extends StyledEditorKit {
                   (direction == SwingConstants.NORTH ||
                    direction == SwingConstants.SOUTH)) {
                caret.setMagicCaretPosition(magicPosition);
-                   }
+            }
 
          } catch (BadLocationException ble) {
             ble.printStackTrace();
          }
 
       }
+
+   }
+
+   static int getNSVisualPosition(SikuliPane txt, int pos, int direction){
+      int line = txt.getLineAtCaret(pos);
+      int tarLine = direction==SwingConstants.NORTH? line-1 : line+1;
+      try{
+         if(tarLine<=0){
+            return 0;
+         }
+         if(tarLine>txt.getNumLines()){
+            pos = txt.getDocument().getLength()-1;
+            return pos>=0?pos:0;
+         }
+
+         Rectangle curRect = txt.modelToView(pos);
+         Rectangle tarEndRect;
+         if(tarLine < txt.getNumLines())
+            tarEndRect = txt.modelToView(txt.getLineStartOffset(tarLine)-1);
+         else
+            tarEndRect = txt.modelToView(txt.getDocument().getLength()-1);
+         Debug.log(7, "curRect: " + curRect + ", tarEnd: " + tarEndRect);
+
+         if( curRect.x > tarEndRect.x )
+            pos = txt.viewToModel(new Point(tarEndRect.x, tarEndRect.y));
+         else
+            pos = txt.viewToModel(new Point(curRect.x, tarEndRect.y));
+      }
+      catch(BadLocationException e){
+         e.printStackTrace();
+      }
+
+      return pos;
 
    }
 
