@@ -56,7 +56,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
-      prompt.prompt(500);
+      prompt.prompt("Select a region on the screen", 500);
       ide.setVisible(true);
    }
 
