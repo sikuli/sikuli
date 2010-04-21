@@ -95,7 +95,8 @@ public class LineNumberView extends JComponent
         }
         else
         {
-            sizes.setSize( startLine, getLineHeight( startLine ) );
+           if(sizes != null)
+              sizes.setSize( startLine, getLineHeight( startLine ) );
         }
  
         startLine = -1;
@@ -206,6 +207,8 @@ public class LineNumberView extends JComponent
  
         g.setColor( getForeground() );
         int base = clip.y - textTopInset;
+        if(sizes == null)
+           return;
         int first = sizes.getIndex( base );
         int last = sizes.getIndex( base + clip.height );
  
