@@ -113,52 +113,48 @@ public class Region {
    }
 
    public Region nearby(int range){
-      Region r = new Region(this);
-      r.x = x<range? 0 : x-range;
-      r.y = y<range? 0 : y-range;
-      r.w += range*2; 
-      r.h += range*2;
-      return r;
+      Rectangle bounds = getScreen().getBounds();
+      Rectangle rect = new Rectangle(x-range,y-range,w+range*2,h+range*2);
+      rect = rect.intersection(bounds);
+      return new Region(rect);
    }
 
    public Region right(){  return right(9999999); }
    public Region right(int range){
-      Region r = new Region(this);
-      r.x = x+w;
-      r.y = y;
-      r.w = range;
-      r.h = h;
-      return r;
+      Rectangle bounds = getScreen().getBounds();
+      Rectangle rect = new Rectangle(x+w,y,range,h);
+      rect = rect.intersection(bounds);
+      return new Region(rect);
    }
 
    public Region left(){   return left(9999999);   }
    public Region left(int range){
+      Rectangle bounds = getScreen().getBounds();
       Region r = new Region(this);
-      r.x = x-range < 0? 0: x-range;
+      r.x = x-range < bounds.x? bounds.x: x-range;
       r.y = y;
-      r.w = x;
+      r.w = x - r.x;
       r.h = h;
       return r;
    }
 
    public Region above(){    return above(9999999);    }
    public Region above(int range){
+      Rectangle bounds = getScreen().getBounds();
       Region r = new Region(this);
       r.x = x;
-      r.y = y-range < 0? 0:y-range;
+      r.y = y-range < bounds.y? bounds.y : y-range;
       r.w = w;
-      r.h = y;
+      r.h = y-r.y;
       return r;
    }
 
    public Region below(){     return below(999999);   }
    public Region below(int range){
-      Region r = new Region(this);
-      r.x = x;
-      r.y = y+h;
-      r.w = w;
-      r.h = range;
-      return r;
+      Rectangle bounds = getScreen().getBounds();
+      Rectangle rect = new Rectangle(x,y+h,w,range);
+      rect = rect.intersection(bounds);
+      return new Region(rect);
    }
 
    public Region inside(){ 
