@@ -9,6 +9,35 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.imageio.*;
 
+class SimilaritySlider extends JSlider {
+
+   public SimilaritySlider(int min, int max, int val){
+      super(min,max,val);
+   }
+
+   protected void paintComponent(Graphics g){
+      int w = getWidth();
+      final int margin = 13;
+      final int y1 = 20, y2 = 30;
+      for(int i=margin;i<w-margin;i++){
+         float score = (float)i/(w-margin*2);
+         g.setColor(getScoreColor(score));
+         g.drawLine(i, y1, i, y2);
+      }
+      super.paintComponent(g);
+   }
+
+   Color getScoreColor(float score){
+      // map hue to 0.5~1.0
+      Color c = new Color(
+            Color.HSBtoRGB( 0.5f+score/2, 1.0f, 1.0f));
+      // map alpha to 20~150
+      Color cMask = new Color(
+            c.getRed(), c.getGreen(), c.getBlue(), 20+(int)(score*130));
+      return cMask;
+   }
+}
+
 public class PatternWindow extends JFrame implements Observer {
 
    private ImageButton _imgBtn;
@@ -87,7 +116,8 @@ public class PatternWindow extends JFrame implements Observer {
    }
 
    private JSlider createSlider(){
-      sldSimilar = new JSlider(0, 100, 70);
+      //sldSimilar = new JSlider(0, 100, 70);
+      sldSimilar = new SimilaritySlider(0, 100, 70);
 
       sldSimilar.setMajorTickSpacing(10);
       sldSimilar.setPaintTicks(true);
