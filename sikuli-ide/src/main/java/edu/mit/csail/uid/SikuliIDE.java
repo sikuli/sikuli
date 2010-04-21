@@ -48,7 +48,7 @@ public class SikuliIDE extends JFrame {
    private boolean _inited = false;
 
 
-   public static Icon getIconResource(String name) {
+   public static ImageIcon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
       if (url == null) {
          System.err.println("Warning: could not load \""+name+"\" icon");
@@ -934,6 +934,22 @@ public class SikuliIDE extends JFrame {
          runCurrentScript();
       }
 
+      public void addErrorMark(int line){
+         JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+         LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
+         lnview.addErrorMark(line);
+         SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
+         codePane.setErrorHighlight(line);
+      }
+
+      public void resetErrorMark(){
+         JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+         LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
+         lnview.resetErrorMark();
+         SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
+         codePane.setErrorHighlight(-1);
+      }
+
       public void runCurrentScript() {
          _runningThread = new Thread(){
             public void run(){
@@ -949,7 +965,8 @@ public class SikuliIDE extends JFrame {
                      codePane.write(bw);
                      SikuliIDE.getInstance().setVisible(false);
                      _console.clear();
-                     codePane.setErrorHighlight(-1);
+                     resetErrorMark();
+                     //codePane.setErrorHighlight(-1);
                      runPython(tmpFile);
                   }
                   catch(Exception e){
@@ -965,7 +982,8 @@ public class SikuliIDE extends JFrame {
                                           tmpFile.getAbsolutePath());
                         if(srcLine != -1){
                            Debug.info("[Error] source lineNo: " + srcLine);
-                           codePane.setErrorHighlight(srcLine);
+                           addErrorMark(srcLine);
+                           //codePane.setErrorHighlight(srcLine);
                         }
                         Debug.info("[Error] " + e.toString());
                      }
@@ -1036,7 +1054,7 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
-      prompt.prompt("Select a region on the screen", 500);
+      prompt.prompt(500);
       ide.setVisible(true);
    }
 
