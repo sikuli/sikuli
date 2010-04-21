@@ -226,15 +226,15 @@ class TargetOffsetPanel extends ScreenshotPane {
 }
 */
 
-class ScreenshotPane extends JPanel implements ChangeListener, Subject{
-   final static int MAX_H = 300;
+class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener, Subject{
+   final static int DEFAULT_H = 300;
    static int MAX_NUM_MATCHING = 100;
 
    Region _match_region;
    ScreenImage _simg;
    BufferedImage _screen = null;
    int _width, _height;
-   double _scale;
+   double _scale, _ratio;
 
    boolean _runFind = false; 
 
@@ -247,11 +247,24 @@ class ScreenshotPane extends JPanel implements ChangeListener, Subject{
    public ScreenshotPane(){
       _match_region = new UnionScreen();
       int w = _match_region.w, h = _match_region.h;
-      _scale = (double)MAX_H/h;
+      _ratio = (double)w/h;
+      _height = DEFAULT_H;
+      _scale = (double)_height/h;
       _width = (int)(w * _scale);
-      _height = MAX_H;
       setPreferredSize(new Dimension(_width, _height));
+      addComponentListener(this);
       takeScreenshot();
+   }
+
+   public void componentHidden(ComponentEvent e) { } 
+   public void componentMoved(ComponentEvent e) { }
+   public void componentShown(ComponentEvent e) { }
+
+   public void componentResized(ComponentEvent e) {
+      _width = getWidth();
+      _height = (int)((double)_width/_ratio);
+      _scale = (double)_height/_match_region.h;
+      setPreferredSize(new Dimension(_width, _height));
    }
 
    public void setParameters(boolean exact, float similarity, int numMatches){

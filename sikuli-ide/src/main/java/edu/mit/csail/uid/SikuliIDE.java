@@ -394,15 +394,6 @@ public class SikuliIDE extends JFrame {
       initSidePane();
       initUnitPane();
 
-      if(args!=null && args.length>=1)
-         loadFile(args[0]);
-      else if(_preloadFilename != null)
-         loadFile(_preloadFilename);
-      else
-         (new FileAction()).doNew();
-
-
-
       _codeAndUnitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT, true, _mainPane, _sidePane);
       JSplitPane mainAndConsolePane = new JSplitPane(
@@ -423,6 +414,13 @@ public class SikuliIDE extends JFrame {
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       initHotkeys();
       initWindowListener();
+
+      if(args!=null && args.length>=1)
+         loadFile(args[0]);
+      else if(_preloadFilename != null)
+         loadFile(_preloadFilename);
+      else
+         (new FileAction()).doNew();
 
 
       _inited = true;
@@ -733,6 +731,7 @@ public class SikuliIDE extends JFrame {
             }
          
          });
+         codePane.requestFocus();
       }
       
       public void doLoad(){
