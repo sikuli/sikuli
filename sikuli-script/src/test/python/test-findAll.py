@@ -5,7 +5,8 @@ m = findAll("test-res/apple.png")
 for x in m:
    print "match: " + str(x)
 m.destroy()
-print "last match: " + str(SCREEN.lastMatch)
-print "last match: " + str(SCREEN.lastMatches)
+assert getLastMatch() == None
+assert SCREEN.getLastMatch() == None
+assert SCREEN.getLastMatches() != None
 with findAll("test-res/apple.png") as m:
    print list(m)

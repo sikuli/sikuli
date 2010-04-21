@@ -20,8 +20,6 @@ class Region(JRegion):
          JRegion.__init__(self, args[0])
       else:
          raise Exception("Wrong number of parameters of Region's contructor")
-      self.lastMatch = None
-      self.lastMatches = None
 
    # override all global sikuli functions by Region's methods.
    def __enter__(self):
@@ -59,8 +57,6 @@ class Region(JRegion):
    #
    def find(self, target):
       ret = JRegion.find(self, target)
-      if ret != None:
-         self.lastMatch = ret
       return ret
 
    ##
@@ -78,8 +74,6 @@ class Region(JRegion):
    #
    def findAll(self, target):
       ret = JRegion.findAll(self, target)
-      if ret != None:
-         self.lastMatches = ret
       return ret
 
    ##
@@ -98,8 +92,6 @@ class Region(JRegion):
          ret = JRegion.wait(self, target)
       else:
          ret = JRegion.wait(self, target, timeout)
-      if ret != None:
-         self.lastMatch = ret
       return ret
 
    def waitVanish(self, target, timeout=None):
@@ -114,8 +106,6 @@ class Region(JRegion):
          ret = JRegion.exists(self, target)
       else:
          ret = JRegion.exists(self, target, timeout)
-      if ret != None:
-         self.lastMatch = ret
       return ret
    
    ##

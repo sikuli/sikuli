@@ -19,7 +19,7 @@ if v["test-res/apple.png"][0] == "apple":
 
 setThrowException(True)
 if exists(Pattern("test-res/apple.png").similar(0.9)): 
-   print "apple exists " + str(SCREEN.lastMatch)
+   print "apple exists " + str(SCREEN.getLastMatch())
 else: # should not throw exception
    print "apple doesn not exist"
 

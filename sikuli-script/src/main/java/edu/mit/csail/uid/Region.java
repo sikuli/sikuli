@@ -20,6 +20,9 @@ public class Region {
    protected boolean _observing = false;
    protected EventManager _evtMgr;
 
+   protected Match _lastMatch;
+   protected Iterator<Match> _lastMatches;
+
 
    public Region(int x_, int y_, int w_, int h_) {
       init(x_,y_,w_,h_);
@@ -181,10 +184,10 @@ public class Region {
       if(_autoWaitTimeout > 0)
          return wait(ptn, _autoWaitTimeout);
       else{
-         Match match = findNow(ptn);
-         if(match == null && _throwException)
+         _lastMatch = findNow(ptn);
+         if(_lastMatch == null && _throwException)
             throw new FindFailed(ptn + " can't be found.");
-         return match;
+         return _lastMatch;
       }
    }
 
@@ -195,14 +198,15 @@ public class Region {
     */
    public <PSC> Iterator<Match> findAll(PSC ptn) 
                                              throws  FindFailed{
-      if(_autoWaitTimeout > 0)
-         return waitAll(ptn, _autoWaitTimeout);
-      else{
-         Iterator<Match> ms = findAllNow(ptn);
-         if(ms == null && _throwException)
-            throw new FindFailed(ptn + " can't be found.");
-         return ms;
+      if(_autoWaitTimeout > 0){
+         _lastMatches = waitAll(ptn, _autoWaitTimeout);
       }
+      else{
+         _lastMatches = findAllNow(ptn);
+         if(_lastMatches == null && _throwException)
+            throw new FindFailed(ptn + " can't be found.");
+      }
+      return _lastMatches;
    }
 
 
@@ -217,12 +221,12 @@ public class Region {
     */
    public <PSC> Match wait(PSC target, double timeout) throws FindFailed{
       Iterator<Match> ms = waitAll(target, timeout);
-      Match ret = null;
+      _lastMatch = null;
       if(ms != null)
-         ret = ms.next();
+         _lastMatch = ms.next();
       if(ms instanceof Finder)
          ((Finder)ms).destroy();
-      return ret;
+      return _lastMatch;
    }
 
    public <PSC> Match exists(PSC target) {
@@ -467,6 +471,14 @@ public class Region {
       }
    }
 
+   public Match getLastMatch(){
+      return _lastMatch;
+   }
+
+   public Iterator<Match> getLastMatches(){
+      return _lastMatches;
+   }
+
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS
    ////////////////////////////////////////////////////////////////
@@ -502,8 +514,9 @@ public class Region {
       ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
       f.find(ptn);
-      if(f.hasNext()) 
+      if(f.hasNext()){
          return f;
+      }
       return null;
    }
 
