@@ -70,14 +70,15 @@ public class SikuliScript {
          System.out.println("Usage: sikuli-script [file.sikuli]");
          return;
       }
-      try{
-         ScriptRunner runner = new ScriptRunner(args);
-         runner.runPython(args[0]);
+      for (int i = 0; i < args.length; i++) {
+         try {
+            ScriptRunner runner = new ScriptRunner(args);
+            runner.runPython(args[i]);
+         }
+         catch(IOException e) {
+            e.printStackTrace();
+         }
       }
-      catch(IOException e){
-         e.printStackTrace();
-      }
-   }
 
 }
 
