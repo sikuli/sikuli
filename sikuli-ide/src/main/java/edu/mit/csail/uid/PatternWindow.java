@@ -158,11 +158,6 @@ public class PatternWindow extends JFrame implements Observer {
       }
 
       public void actionPerformed(ActionEvent e) {
-         /*
-         float similarity = (float)sldSimilar.getValue()/100;
-         boolean exact = (similarity == 1.0f);
-         int numMatches = (Integer)txtNumMatches.getValue();
-         */
          _imgBtn.setParameters(
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
@@ -181,7 +176,3 @@ public class PatternWindow extends JFrame implements Observer {
    }
 
 }
-
-
-
-

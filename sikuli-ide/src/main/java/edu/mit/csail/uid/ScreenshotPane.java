@@ -97,7 +97,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       c.fill = 0;
       c.gridy = 1;
       pane.add( lblNumMatches, c );
-      c.insets = new Insets(0, 0, 0, 100);
+      c.insets = new Insets(0, 0, 10, 100);
       pane.add( txtNumMatches, c );
 
       txtNumMatches.addChangeListener(this);

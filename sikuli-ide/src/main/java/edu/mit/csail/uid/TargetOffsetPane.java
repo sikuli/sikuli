@@ -29,8 +29,6 @@ class TargetOffsetPane extends JPanel implements MouseListener{
       if(f.hasNext()){
          _match = f.next();
          setTarget(0,0);
-      }
-      else{
          try {
             _img = ImageIO.read(new File(patFilename));
          } catch (IOException e) {
