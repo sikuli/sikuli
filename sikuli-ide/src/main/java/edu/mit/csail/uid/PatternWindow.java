@@ -97,6 +97,7 @@ public class PatternWindow extends JFrame implements Observer {
    private JSpinner txtNumMatches;
 
    private JPanel glass;
+   private ScreenImage _simg;
 
    public PatternWindow(ImageButton imgBtn, boolean exact, 
                         float similarity, int numMatches){
@@ -107,6 +108,7 @@ public class PatternWindow extends JFrame implements Observer {
       Debug.log( "pattern window: " + pos );
       setLocation(pos.x, pos.y);
 
+      takeScreenshot();
       Container c = getContentPane();
       tabPane = new JTabbedPane();
       paneTarget = createTargetPanel();
@@ -122,8 +124,31 @@ public class PatternWindow extends JFrame implements Observer {
       setVisible(true);
    }
 
+   void takeScreenshot(){
+      SikuliIDE ide = SikuliIDE.getInstance();
+      ide.setVisible(false);
+      try{
+         Thread.sleep(500);
+      }
+      catch(Exception e){}
+      Region match_region = new UnionScreen();
+      _simg = match_region.getScreen().capture();
+      ide.setVisible(true);
+   }
+
    private JPanel createTargetPanel(){
-      return new TargetOffsetPanel(_imgBtn.getImageFilename());
+      JPanel p = new JPanel();
+      p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+
+      TargetOffsetPanel tarP = 
+         new TargetOffsetPanel(_simg, _imgBtn.getImageFilename());
+      //p.addObserver(this);
+      createMarginBox(p, tarP);
+      //createButtons(p);
+      p.add(Box.createVerticalStrut(5));
+      //p.add(tarP.createControls());
+      p.doLayout();
+      return p;
    }
 
    private JPanel createPrewviewPanel(){
@@ -133,6 +158,7 @@ public class PatternWindow extends JFrame implements Observer {
       createScreenshots(p);
       createButtons(p);
       p.add(Box.createVerticalStrut(5));
+      //p.add(tarP.createControls());
       p.doLayout();
       return p;
    }
@@ -151,12 +177,17 @@ public class PatternWindow extends JFrame implements Observer {
    }
 
    private void createScreenshots(Container c){
-      _screenshot = new ScreenshotPane();
+      _screenshot = new ScreenshotPane(_simg);
       _screenshot.addObserver(this);
+      createMarginBox(c, _screenshot);
+   }
+
+
+   private void createMarginBox(Container c, Component comp){
       c.add(Box.createVerticalStrut(10));
       Box lrMargins = Box.createHorizontalBox();
       lrMargins.add(Box.createHorizontalStrut(10));
-      lrMargins.add(_screenshot);
+      lrMargins.add(comp);
       lrMargins.add(Box.createHorizontalStrut(10));
       c.add(lrMargins);
       c.add(Box.createVerticalStrut(10));
@@ -181,6 +212,7 @@ public class PatternWindow extends JFrame implements Observer {
       return sldSimilar;
 
    }
+
    private void createButtons(Container parent){
       JPanel pane = new JPanel(new GridBagLayout());
       btnSimilar = new JLabel("Similarity:");
@@ -269,48 +301,128 @@ public class PatternWindow extends JFrame implements Observer {
 }
 
 
-class TargetOffsetPanel extends JPanel {
-   final static int MAX_H = 300;
+class TargetOffsetPanel extends JPanel implements MouseListener{
+   final static int DEFAULT_H = 300;
+   final static float DEFAULT_PATTERN_RATIO=0.4f;
+   ScreenImage _simg;
    BufferedImage _img;
    int _w, _h;
+   Match _match;
 
-   public TargetOffsetPanel(String patFilename){
-      try {
-         _img = ImageIO.read(new File(patFilename));
-         _w = _img.getWidth();
-         _h = _img.getHeight();
-         if(_h>MAX_H){
-            _w = (int)(_w * (float)MAX_H/_h);
-            _h = MAX_H;
-         }
-      } catch (IOException e) {
-         Debug.error("Can't load " + patFilename);
+   int _viewX, _viewY, _viewW, _viewH;
+   float _zoomRatio, _ratio;
+   Location _tar = new Location(0,0);
+
+   public TargetOffsetPanel(ScreenImage simg, String patFilename){
+      _simg = simg;
+      Finder f = new Finder(_simg, new Region(simg.getROI()));
+      f.find(patFilename);
+      if(f.hasNext()){
+         _match = f.next();
+         setTarget(0,0);
       }
-      setPreferredSize(new Dimension(_w, _h));
+      else{
+         try {
+            _img = ImageIO.read(new File(patFilename));
+         } catch (IOException e) {
+            Debug.error("Can't load " + patFilename);
+         }
+      }
+      _ratio = DEFAULT_PATTERN_RATIO;
+      Rectangle r = _simg.getROI();
+      int w = DEFAULT_H/r.height*r.width;
+      setPreferredSize(new Dimension(w, DEFAULT_H));
+      addMouseListener(this);
    }
+
+   private void zoomToMatch(){
+      Rectangle scr = _simg.getROI();
+      _viewW = (int)(_match.w/_ratio);
+      _zoomRatio = getWidth()/(float)_viewW;
+      _viewH = (int)(getHeight()/_zoomRatio);
+      _viewX = _match.x + _match.w/2 - _viewW/2;
+      _viewY = _match.y + _match.h/2 - _viewH/2;
+   }
+
+   public void setTarget(int dx, int dy){
+      Debug.log("new target: " + dx + "," + dy);
+      Location center = _match.getCenter();
+      _tar.x = center.x + dx;
+      _tar.y = center.y + dy;
+      repaint();
+   }
+
+   public void mousePressed ( MouseEvent me ) {
+      Location tar = convertViewToScreen(me.getPoint());
+      Debug.log(4, "click: " + me.getPoint() + " -> " + tar);
+      Location center = _match.getCenter();
+      setTarget(tar.x-center.x, tar.y-center.y);
+   }
+
+   public void mouseClicked ( MouseEvent me ) { }
+
+   public void mouseReleased ( MouseEvent me ) {
+   }
+
+   public void mouseEntered ( MouseEvent me ) { }
+
+   public void mouseExited ( MouseEvent me ) { }
+
 
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
-      if( _img != null ){
-         g2d.drawImage(_img, 0, 0, _w, _h, null);
+      if( getWidth() > 0 && getHeight() > 0){
+         zoomToMatch();
+         BufferedImage clip = 
+            _simg.getImage().getSubimage(_viewX, _viewY, _viewW, _viewH);
+         g2d.drawImage(clip, 0, 0, getWidth(), getHeight(), null);
+         paintMatch(g2d);
+         paintTarget(g2d);
       }
+   }
+
+   Location convertViewToScreen(Point p){
+      Location ret = new Location(0,0);
+      ret.x = (int)(p.x/_zoomRatio+_viewX);
+      ret.y = (int)(p.y/_zoomRatio+_viewY);
+      return ret;
+   }
+
+   Point convertScreenToView(Location loc){
+      Point ret = new Point();
+      ret.x = (int)((loc.x - _viewX) * _zoomRatio);
+      ret.y = (int)((loc.y - _viewY) * _zoomRatio);
+      return ret;
+   }
+
+   void paintTarget(Graphics2D g2d){
+      final int CROSS_LEN=20/2;
+      Point l = convertScreenToView(_tar);
+      g2d.setColor(Color.BLACK);
+      g2d.drawLine(l.x-CROSS_LEN, l.y+1, l.x+CROSS_LEN, l.y+1);
+      g2d.drawLine(l.x+1, l.y-CROSS_LEN, l.x+1, l.y+CROSS_LEN);
+      g2d.setColor(Color.WHITE);
+      g2d.drawLine(l.x-CROSS_LEN, l.y, l.x+CROSS_LEN, l.y);
+      g2d.drawLine(l.x, l.y-CROSS_LEN, l.x, l.y+CROSS_LEN);
+   }
+
+   void paintMatch(Graphics2D g2d){
+      int w = (int)(getWidth() * _ratio), 
+          h = (int)((float)w/_img.getWidth()*_img.getHeight());
+      int x = getWidth()/2- w/2, y = getHeight()/2-h/2;
+      Color c = SimilaritySlider.getScoreColor(_match.score);
+      g2d.setColor(c);
+      g2d.fillRect(x, y, w, h);
+      g2d.drawRect(x, y, w-1, h-1);
    }
 }
 
-
-/*
-class TargetOffsetPanel extends ScreenshotPane {
-   double DEFAULT_MARGIN = 0.3;
-}
-*/
 
 class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener, Subject{
    final static int DEFAULT_H = 300;
    static int MAX_NUM_MATCHING = 100;
 
    Region _match_region;
-   ScreenImage _simg;
-   BufferedImage _screen = null;
    int _width, _height;
    double _scale, _ratio;
 
@@ -322,7 +434,10 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    Vector<Match> _showMatches = null;
    Observer _observer = null;
 
-   public ScreenshotPane(){
+   protected ScreenImage _simg;
+   protected BufferedImage _screen = null;
+
+   public ScreenshotPane(ScreenImage simg){
       _match_region = new UnionScreen();
       int w = _match_region.w, h = _match_region.h;
       _ratio = (double)w/h;
@@ -331,7 +446,8 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _width = (int)(w * _scale);
       setPreferredSize(new Dimension(_width, _height));
       addComponentListener(this);
-      takeScreenshot();
+      _simg = simg;
+      _screen = simg.getImage();
    }
 
    public void componentHidden(ComponentEvent e) { } 
@@ -442,17 +558,6 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       return;
    }
 
-   void takeScreenshot(){
-      SikuliIDE ide = SikuliIDE.getInstance();
-      ide.setVisible(false);
-      try{
-         Thread.sleep(500);
-      }
-      catch(Exception e){}
-      _simg = _match_region.getScreen().capture();
-      _screen = _simg.getImage();
-      ide.setVisible(true);
-   }
 
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
