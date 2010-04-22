@@ -10,7 +10,7 @@ import javax.swing.event.*;
 import javax.imageio.*;
 
 
-class TargetOffsetPane extends JPanel implements MouseListener{
+class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
    final static int DEFAULT_H = 300;
    final static float DEFAULT_PATTERN_RATIO=0.4f;
    ScreenImage _simg;
@@ -21,14 +21,19 @@ class TargetOffsetPane extends JPanel implements MouseListener{
    int _viewX, _viewY, _viewW, _viewH;
    float _zoomRatio, _ratio;
    Location _tar = new Location(0,0);
+   Location _offset = new Location(0,0);
+   JSpinner txtX, txtY;
 
-   public TargetOffsetPane(ScreenImage simg, String patFilename){
+   public TargetOffsetPane(ScreenImage simg, String patFilename, Location initOffset){
       _simg = simg;
       Finder f = new Finder(_simg, new Region(simg.getROI()));
       f.find(patFilename);
       if(f.hasNext()){
          _match = f.next();
-         setTarget(0,0);
+         if(initOffset!=null)
+            setTarget(initOffset.x, initOffset.y);
+         else
+            setTarget(0,0);
          try {
             _img = ImageIO.read(new File(patFilename));
          } catch (IOException e) {
@@ -52,10 +57,15 @@ class TargetOffsetPane extends JPanel implements MouseListener{
    }
 
    public void setTarget(int dx, int dy){
-      Debug.log("new target: " + dx + "," + dy);
+      Debug.log(3, "new target: " + dx + "," + dy);
       Location center = _match.getCenter();
       _tar.x = center.x + dx;
       _tar.y = center.y + dy;
+      _offset = new Location(dx, dy);
+      if(txtX != null){
+         txtX.setValue(new Integer(dx));
+         txtY.setValue(new Integer(dy));
+      }
       repaint();
    }
 
@@ -121,5 +131,40 @@ class TargetOffsetPane extends JPanel implements MouseListener{
       g2d.setColor(c);
       g2d.fillRect(x, y, w, h);
       g2d.drawRect(x, y, w-1, h-1);
+   }
+
+   public JComponent createControls(){
+      JPanel pane = new JPanel(new GridBagLayout());
+      JLabel lblTargetX = new JLabel("Target offset  X:");
+      JLabel lblY = new JLabel(", Y:");
+
+      int x = _offset!=null? _offset.x : 0;
+      int y = _offset!=null? _offset.y : 0;
+      txtX = new JSpinner(new SpinnerNumberModel(x, -999, 999, 1)); 
+      txtY = new JSpinner(new SpinnerNumberModel(y, -999, 999, 1)); 
+      txtX.addChangeListener(this);
+      txtY.addChangeListener(this);
+
+      GridBagConstraints c = new GridBagConstraints();
+
+      c.fill = 1;
+      c.gridy = 0;
+      pane.add( lblTargetX, c );
+      pane.add( txtX, c );
+      pane.add( lblY, c );
+      pane.add( txtY, c );
+
+      return pane;
+      
+   }
+
+   public void stateChanged(javax.swing.event.ChangeEvent e) {
+      int x = (Integer)txtX.getValue();
+      int y = (Integer)txtY.getValue();
+      setTarget(x, y);
+   }
+
+   public Location getTargetOffset(){
+      return new Location(_offset);
    }
 }

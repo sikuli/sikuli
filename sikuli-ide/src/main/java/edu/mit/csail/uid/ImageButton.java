@@ -19,6 +19,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    private float _similarity;
    private boolean _exact;
    private int _numMatches;
+   private Location _offset;
    private boolean _showText;
 
    private PatternWindow pwin = null;
@@ -35,6 +36,11 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    public void mouseExited(java.awt.event.MouseEvent e) {
    }
    */
+
+   public void setTargetOffset(Location offset){
+      Debug.log("setTargetOffset: " + offset);
+      _offset = offset;
+   }
 
    public void setParameters(boolean exact, float similarity, int numMatches){
       Debug.log("setParameters: " + exact + "," + similarity + "," + numMatches);
@@ -98,9 +104,15 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
          _showText = true;
          str += _similarity + " ";
       }
+      /*
       if(_numMatches != DEFAULT_NUM_MATCHES){
          _showText = true;
          str += "(" + _numMatches + ")";
+      }
+      */
+      if(_offset != null && (_offset.x!=0 || _offset.y !=0)){
+         _showText = true;
+         str += "t: " + _offset.toString();
       }
       if( !_showText )
          return;
@@ -123,6 +135,10 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
    public String getImageFilename(){
       return _imgFilename;
+   }
+
+   public Location getTargetOffset(){
+      return _offset;
    }
 
    public String toString(){

@@ -14,6 +14,7 @@ public class PatternWindow extends JFrame implements Observer {
 
    private ImageButton _imgBtn;
    private ScreenshotPane _screenshot;
+   private TargetOffsetPane _tarOffsetPane;
 
    private JTabbedPane tabPane;
    private JPanel paneTarget, panePreview;
@@ -67,12 +68,12 @@ public class PatternWindow extends JFrame implements Observer {
       JPanel p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-      TargetOffsetPane tarP = 
-         new TargetOffsetPane(_simg, _imgBtn.getImageFilename());
+      _tarOffsetPane = new TargetOffsetPane(
+            _simg, _imgBtn.getImageFilename(), _imgBtn.getTargetOffset());
       //p.addObserver(this);
-      createMarginBox(p, tarP);
+      createMarginBox(p, _tarOffsetPane);
       p.add(Box.createVerticalStrut(5));
-      //p.add(tarP.createControls());
+      p.add(_tarOffsetPane.createControls());
       p.doLayout();
       return p;
    }
@@ -161,6 +162,7 @@ public class PatternWindow extends JFrame implements Observer {
          _imgBtn.setParameters(
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
+         _imgBtn.setTargetOffset( _tarOffsetPane.getTargetOffset() );
          _parent.dispose();
       }
    }
