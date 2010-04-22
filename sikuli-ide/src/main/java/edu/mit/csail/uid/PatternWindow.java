@@ -92,9 +92,6 @@ public class PatternWindow extends JFrame implements Observer {
 
    private JTabbedPane tabPane;
    private JPanel paneTarget, panePreview;
-   private JLabel btnSimilar;
-   private JSlider sldSimilar;
-   private JSpinner txtNumMatches;
 
    private JPanel glass;
    private ScreenImage _simg;
@@ -110,13 +107,18 @@ public class PatternWindow extends JFrame implements Observer {
 
       takeScreenshot();
       Container c = getContentPane();
+      c.setLayout(new BorderLayout());
+
       tabPane = new JTabbedPane();
+      //tabPane.setPreferredSize(new Dimension(500,300));
       paneTarget = createTargetPanel();
       panePreview = createPrewviewPanel();
       tabPane.addTab("Matching Preview", panePreview);
       tabPane.addTab("Target Offset", paneTarget);
-      c.add(tabPane);
+      c.add(tabPane, BorderLayout.CENTER);
+      c.add(createButtons(), BorderLayout.SOUTH);
 
+      c.doLayout();
       pack();
 
       init(exact, similarity, numMatches);
@@ -144,7 +146,6 @@ public class PatternWindow extends JFrame implements Observer {
          new TargetOffsetPanel(_simg, _imgBtn.getImageFilename());
       //p.addObserver(this);
       createMarginBox(p, tarP);
-      //createButtons(p);
       p.add(Box.createVerticalStrut(5));
       //p.add(tarP.createControls());
       p.doLayout();
@@ -156,17 +157,13 @@ public class PatternWindow extends JFrame implements Observer {
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
       createScreenshots(p);
-      createButtons(p);
       p.add(Box.createVerticalStrut(5));
-      //p.add(tarP.createControls());
+      p.add(_screenshot.createControls());
       p.doLayout();
       return p;
    }
 
    private void init(boolean exact, float similarity, int numMatches){
-      sldSimilar.setValue((int)(similarity * 100));
-      txtNumMatches.setValue(numMatches);
-      txtNumMatches.addChangeListener(_screenshot);
       try{
          _screenshot.setParameters( _imgBtn.getImageFilename(),
                                    exact, similarity, numMatches);
@@ -193,35 +190,10 @@ public class PatternWindow extends JFrame implements Observer {
       c.add(Box.createVerticalStrut(10));
    }
 
-   private JSlider createSlider(){
-      //sldSimilar = new JSlider(0, 100, 70);
-      sldSimilar = new SimilaritySlider(0, 100, 70);
 
-      sldSimilar.setMajorTickSpacing(10);
-      sldSimilar.setPaintTicks(true);
-
-      Hashtable labelTable = new Hashtable();
-      labelTable.put( new Integer( 0 ), new JLabel("0.0") );
-      labelTable.put( new Integer( 50 ), new JLabel("0.5") );
-      labelTable.put( new Integer( 100 ), new JLabel("1.0") );
-      sldSimilar.setLabelTable( labelTable );
-      sldSimilar.setPaintLabels(true);
-
-      sldSimilar.addChangeListener(_screenshot);
-
-      return sldSimilar;
-
-   }
-
-   private void createButtons(Container parent){
+   private JComponent createButtons(){
       JPanel pane = new JPanel(new GridBagLayout());
-      btnSimilar = new JLabel("Similarity:");
 
-      sldSimilar = createSlider();
-      JLabel lblNumMatches = new JLabel("Number of matches:");
-      SpinnerNumberModel model = new SpinnerNumberModel(50, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
-      txtNumMatches = new JSpinner(model);
-      lblNumMatches.setLabelFor(txtNumMatches);
       JButton btnOK = new JButton("OK");
       btnOK.addActionListener(new ActionOK(this));
       JButton btnCancel = new JButton("Cancel");
@@ -236,38 +208,19 @@ public class PatternWindow extends JFrame implements Observer {
       glass.add(lblLoading, BorderLayout.CENTER);
       glass.setVisible(true);
 
-
       GridBagConstraints c = new GridBagConstraints();
-
-      c.fill = 1;
-      c.gridy = 0;
-      pane.add( btnSimilar, c );
-      pane.add( sldSimilar, c );
-
-      c.fill = 0;
-      c.gridy = 1;
-      pane.add( lblNumMatches, c );
-      c.insets = new Insets(0, 0, 0, 100);
-      pane.add( txtNumMatches, c );
 
       c.gridy = 3;
       c.gridx = 1;
-      c.insets = new Insets(0,0,0,0);
+      c.insets = new Insets(5,0,10,0);
       c.anchor = GridBagConstraints.LAST_LINE_END;
       pane.add(btnOK, c);
       c.gridx = 2;
       pane.add(btnCancel, c);
 
-      parent.add(pane);
-
+      return pane;
    }
 
-   private JButton createButton(String label, ActionListener listener){
-      JButton btn = new JButton(label);
-      btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-      btn.addActionListener(listener);
-      return btn;
-   }
 
    public void update(Subject s){
       glass.setVisible(false);
@@ -280,10 +233,14 @@ public class PatternWindow extends JFrame implements Observer {
       }
 
       public void actionPerformed(ActionEvent e) {
+         /*
          float similarity = (float)sldSimilar.getValue()/100;
          boolean exact = (similarity == 1.0f);
          int numMatches = (Integer)txtNumMatches.getValue();
-         _imgBtn.setParameters(exact, similarity, numMatches);
+         */
+         _imgBtn.setParameters(
+               _screenshot.isExact(), _screenshot.getSimilarity(),
+               _screenshot.getNumMatches());
          _parent.dispose();
       }
    }
@@ -437,6 +394,10 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    protected ScreenImage _simg;
    protected BufferedImage _screen = null;
 
+   private JLabel btnSimilar;
+   private JSlider sldSimilar;
+   private JSpinner txtNumMatches;
+
    public ScreenshotPane(ScreenImage simg){
       _match_region = new UnionScreen();
       int w = _match_region.w, h = _match_region.h;
@@ -460,6 +421,58 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _scale = (double)_height/_match_region.h;
       setPreferredSize(new Dimension(_width, _height));
    }
+
+   private JSlider createSlider(){
+      //sldSimilar = new JSlider(0, 100, 70);
+      sldSimilar = new SimilaritySlider(0, 100, 70);
+
+      sldSimilar.setMajorTickSpacing(10);
+      sldSimilar.setPaintTicks(true);
+
+      Hashtable labelTable = new Hashtable();
+      labelTable.put( new Integer( 0 ), new JLabel("0.0") );
+      labelTable.put( new Integer( 50 ), new JLabel("0.5") );
+      labelTable.put( new Integer( 100 ), new JLabel("1.0") );
+      sldSimilar.setLabelTable( labelTable );
+      sldSimilar.setPaintLabels(true);
+
+      sldSimilar.addChangeListener(this);
+
+      return sldSimilar;
+
+   }
+
+   public JComponent createControls(){
+      JPanel pane = new JPanel(new GridBagLayout());
+      btnSimilar = new JLabel("Similarity:");
+
+      sldSimilar = createSlider();
+      JLabel lblNumMatches = new JLabel("Number of matches:");
+      SpinnerNumberModel model = new SpinnerNumberModel(50, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
+      txtNumMatches = new JSpinner(model);
+      lblNumMatches.setLabelFor(txtNumMatches);
+
+      GridBagConstraints c = new GridBagConstraints();
+
+      c.fill = 1;
+      c.gridy = 0;
+      pane.add( btnSimilar, c );
+      pane.add( sldSimilar, c );
+
+      c.fill = 0;
+      c.gridy = 1;
+      pane.add( lblNumMatches, c );
+      c.insets = new Insets(0, 0, 0, 100);
+      pane.add( txtNumMatches, c );
+
+      txtNumMatches.addChangeListener(this);
+
+      return pane;
+   }
+
+   public boolean isExact(){  return _similarity==1.0f; }
+   public float getSimilarity(){ return _similarity;  }
+   public int getNumMatches(){ return _numMatches; }
 
    public void setParameters(boolean exact, float similarity, int numMatches){
       if(!exact)
