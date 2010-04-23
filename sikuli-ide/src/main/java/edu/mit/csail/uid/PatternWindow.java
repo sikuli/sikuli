@@ -153,7 +153,8 @@ public class PatternWindow extends JFrame implements Observer {
    }
 
    public void setTargetOffset(Location offset){
-      _tarOffsetPane.setTarget(offset.x, offset.y);
+      if(offset != null)
+         _tarOffsetPane.setTarget(offset.x, offset.y);
    }
 
    class ActionOK implements ActionListener {

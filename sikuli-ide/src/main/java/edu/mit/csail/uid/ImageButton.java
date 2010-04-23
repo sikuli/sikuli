@@ -17,7 +17,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    private String _imgFilename, _thumbFname;
    private JTextPane _pane;
    private float _similarity;
-   private int _numMatches;
+   private int _numMatches = DEFAULT_NUM_MATCHES;
    private boolean _exact;
    private Location _offset;
    private boolean _showText;
@@ -70,6 +70,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       _showText = true;
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
+      _numMatches = DEFAULT_NUM_MATCHES;
 
       _thumbFname = createThumbnail(imgFilename);
       setIcon(new ImageIcon(_thumbFname));

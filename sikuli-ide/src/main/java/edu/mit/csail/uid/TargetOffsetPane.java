@@ -131,9 +131,15 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
       if( getWidth() > 0 && getHeight() > 0){
          if(_match!=null){
             zoomToMatch();
+            if(_viewX<0 || _viewY<0) paintBackground(g2d);
+            int subX = _viewX<0?0:_viewX, subY = _viewY<0?0:_viewY;
             BufferedImage clip = 
-               _simg.getImage().getSubimage(_viewX, _viewY, _viewW, _viewH);
-            g2d.drawImage(clip, 0, 0, getWidth(), getHeight(), null);
+               _simg.getImage().getSubimage(subX, subY, 
+                                  _viewW-(subX-_viewX), _viewH-(subY-_viewY));
+            int destX = (int)((subX-_viewX)*_zoomRatio), 
+                destY = (int)((subY-_viewY)*_zoomRatio);
+            g2d.drawImage(clip, destX, destY, 
+                                getWidth()-destX, getHeight()-destY, null);
             paintMatch(g2d);
          }
          else

@@ -83,7 +83,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
 
       sldSimilar = createSlider();
       JLabel lblPreNumMatches = new JLabel("Number of matches:");
-      SpinnerNumberModel model = new SpinnerNumberModel(50, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
+      SpinnerNumberModel model = new SpinnerNumberModel(10, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
       txtNumMatches = new JSpinner(model);
       lblPreNumMatches.setLabelFor(txtNumMatches);
 
