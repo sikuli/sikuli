@@ -17,8 +17,8 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    private String _imgFilename, _thumbFname;
    private JTextPane _pane;
    private float _similarity;
-   private boolean _exact;
    private int _numMatches;
+   private boolean _exact;
    private Location _offset;
    private boolean _showText;
 
@@ -46,7 +46,6 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       Debug.log("setParameters: " + exact + "," + similarity + "," + numMatches);
       _exact = exact;
       if(similarity>=0) _similarity = similarity;
-      if(numMatches>=0) _numMatches = numMatches;
       setToolTipText( this.toString() );
    }
 
@@ -71,7 +70,6 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       _showText = true;
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
-      _numMatches = DEFAULT_NUM_MATCHES;
 
       _thumbFname = createThumbnail(imgFilename);
       setIcon(new ImageIcon(_thumbFname));
@@ -104,12 +102,6 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
          _showText = true;
          str += _similarity + " ";
       }
-      /*
-      if(_numMatches != DEFAULT_NUM_MATCHES){
-         _showText = true;
-         str += "(" + _numMatches + ")";
-      }
-      */
       if(_offset != null && (_offset.x!=0 || _offset.y !=0)){
          _showText = true;
          str += "t: " + _offset.toString();
@@ -131,6 +123,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    public void actionPerformed(ActionEvent e) {
       Debug.log("click on image");
       pwin = new PatternWindow(this, _exact, _similarity, _numMatches);
+      pwin.setTargetOffset(_offset);
    }
 
    public String getImageFilename(){
@@ -143,20 +136,19 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
    public String toString(){
       String img = new File(_imgFilename).getName();
-      if( _exact || _similarity != DEFAULT_SIMILARITY 
-                 || _numMatches != DEFAULT_NUM_MATCHES ){
-                 
-         String ret = "Pattern(\"" + img + "\")";
-         if(_exact)
-            ret += ".exact()";
-         else
-            ret += String.format(Locale.ENGLISH, ".similar(%.2f)", _similarity);
-         if(_numMatches != DEFAULT_NUM_MATCHES)
-            ret += String.format(".firstN(%d)", _numMatches);
-         return ret;
-      }
+      String pat = "Pattern(\"" + img + "\")"; 
+      String ret = "";
+      if(_exact)
+         ret += ".exact()";
+      if(_similarity != DEFAULT_SIMILARITY)
+         ret += String.format(Locale.ENGLISH, ".similar(%.2f)", _similarity);
+      if(_offset != null && (_offset.x!=0 || _offset.y!=0))
+         ret += ".targetOffset(" + _offset.x + "," + _offset.y +")";
+      if(!ret.equals(""))
+         ret = pat + ret;
       else
-         return "\"" + img + "\"";
+         ret = "\"" + img + "\"";
+      return ret;
    }
 }
 

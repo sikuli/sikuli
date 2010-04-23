@@ -82,10 +82,10 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       btnSimilar = new JLabel("Similarity:");
 
       sldSimilar = createSlider();
-      JLabel lblNumMatches = new JLabel("Number of matches:");
+      JLabel lblPreNumMatches = new JLabel("Number of matches:");
       SpinnerNumberModel model = new SpinnerNumberModel(50, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
       txtNumMatches = new JSpinner(model);
-      lblNumMatches.setLabelFor(txtNumMatches);
+      lblPreNumMatches.setLabelFor(txtNumMatches);
 
       GridBagConstraints c = new GridBagConstraints();
 
@@ -96,7 +96,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
 
       c.fill = 0;
       c.gridy = 1;
-      pane.add( lblNumMatches, c );
+      pane.add( lblPreNumMatches, c );
       c.insets = new Insets(0, 0, 10, 100);
       pane.add( txtNumMatches, c );
 
@@ -116,6 +116,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
          _similarity = 1.0f;
       _numMatches = numMatches;
       filterMatches(_similarity, _numMatches);
+      sldSimilar.setValue((int)(similarity*100));
       repaint();
    }
 

@@ -152,6 +152,10 @@ public class PatternWindow extends JFrame implements Observer {
       glass.setVisible(false);
    }
 
+   public void setTargetOffset(Location offset){
+      _tarOffsetPane.setTarget(offset.x, offset.y);
+   }
+
    class ActionOK implements ActionListener {
       private Window _parent;
       public ActionOK(Window parent){
@@ -163,6 +167,7 @@ public class PatternWindow extends JFrame implements Observer {
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
          _imgBtn.setTargetOffset( _tarOffsetPane.getTargetOffset() );
+         Debug.info("update :" + _imgBtn.toString());
          _parent.dispose();
       }
    }

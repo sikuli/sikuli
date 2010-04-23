@@ -26,6 +26,11 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
 
    public TargetOffsetPane(ScreenImage simg, String patFilename, Location initOffset){
       _simg = simg;
+      _ratio = DEFAULT_PATTERN_RATIO;
+      Rectangle r = _simg.getROI();
+      int w = DEFAULT_H/r.height*r.width;
+      setPreferredSize(new Dimension(w, DEFAULT_H));
+
       Finder f = new Finder(_simg, new Region(simg.getROI()));
       f.find(patFilename);
       if(f.hasNext()){
@@ -34,16 +39,12 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
             setTarget(initOffset.x, initOffset.y);
          else
             setTarget(0,0);
-         try {
-            _img = ImageIO.read(new File(patFilename));
-         } catch (IOException e) {
-            Debug.error("Can't load " + patFilename);
-         }
       }
-      _ratio = DEFAULT_PATTERN_RATIO;
-      Rectangle r = _simg.getROI();
-      int w = DEFAULT_H/r.height*r.width;
-      setPreferredSize(new Dimension(w, DEFAULT_H));
+      try {
+         _img = ImageIO.read(new File(patFilename));
+      } catch (IOException e) {
+         Debug.error("Can't load " + patFilename);
+      }
       addMouseListener(this);
    }
 
@@ -58,9 +59,16 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
 
    public void setTarget(int dx, int dy){
       Debug.log(3, "new target: " + dx + "," + dy);
-      Location center = _match.getCenter();
-      _tar.x = center.x + dx;
-      _tar.y = center.y + dy;
+      if(_match != null){
+         Location center = _match.getCenter();
+         _tar.x = center.x + dx;
+         _tar.y = center.y + dy;
+      }
+      else{
+         _tar.x = dx;
+         _tar.y = dy;
+      }
+
       _offset = new Location(dx, dy);
       if(txtX != null){
          txtX.setValue(new Integer(dx));
@@ -72,8 +80,13 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
    public void mousePressed ( MouseEvent me ) {
       Location tar = convertViewToScreen(me.getPoint());
       Debug.log(4, "click: " + me.getPoint() + " -> " + tar);
-      Location center = _match.getCenter();
-      setTarget(tar.x-center.x, tar.y-center.y);
+      if(_match != null){
+         Location center = _match.getCenter();
+         setTarget(tar.x-center.x, tar.y-center.y);
+      }
+      else{
+         setTarget(tar.x, tar.y);
+      }
    }
 
    public void mouseClicked ( MouseEvent me ) { }
@@ -85,30 +98,73 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
 
    public void mouseExited ( MouseEvent me ) { }
 
+   private static Color COLOR_BG_LINE = new Color(200,200,200);
+   void paintBackground(Graphics g2d){
+      g2d.setColor(Color.WHITE);
+      g2d.fillRect(0, 0, getWidth(), getHeight());
+      int step = (int)(10/_zoomRatio);
+      int h = getHeight(), w = getWidth();
+      if(h%2==1)  h--;
+      if(w%2==1)  w--;
+      g2d.setColor(COLOR_BG_LINE);
+      for(int x=w/2;x>=0;x-=step){
+         g2d.drawLine(x, 0, x, h);
+         g2d.drawLine(w-x, 0, w-x, h);
+      }
+      for(int y=h/2;y>=0;y-=step){
+         g2d.drawLine(0, y, w, y);
+         g2d.drawLine(0, h-y, w, h-y);
+      }
+   }
+
+   void paintPatternOnly(Graphics g2d){
+      int patW = (int)(getWidth()*_ratio);
+      _zoomRatio = _img.getWidth()/(float)patW;
+      int patH = (int)(_img.getHeight()/_zoomRatio);;
+      int patX = getWidth()/2-patW/2, patY = getHeight()/2-patH/2;
+      paintBackground(g2d);
+      g2d.drawImage(_img, patX, patY, patW, patH, null);
+   }
 
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       if( getWidth() > 0 && getHeight() > 0){
-         zoomToMatch();
-         BufferedImage clip = 
-            _simg.getImage().getSubimage(_viewX, _viewY, _viewW, _viewH);
-         g2d.drawImage(clip, 0, 0, getWidth(), getHeight(), null);
-         paintMatch(g2d);
+         if(_match!=null){
+            zoomToMatch();
+            BufferedImage clip = 
+               _simg.getImage().getSubimage(_viewX, _viewY, _viewW, _viewH);
+            g2d.drawImage(clip, 0, 0, getWidth(), getHeight(), null);
+            paintMatch(g2d);
+         }
+         else
+            paintPatternOnly(g2d);
          paintTarget(g2d);
       }
    }
 
    Location convertViewToScreen(Point p){
       Location ret = new Location(0,0);
-      ret.x = (int)(p.x/_zoomRatio+_viewX);
-      ret.y = (int)(p.y/_zoomRatio+_viewY);
+      if(_match!=null){
+         ret.x = (int)(p.x/_zoomRatio+_viewX);
+         ret.y = (int)(p.y/_zoomRatio+_viewY);
+      }
+      else{
+         ret.x = (int)((p.x-getWidth()/2)*_zoomRatio);
+         ret.y = (int)((p.y-getHeight()/2)*_zoomRatio);
+      }
       return ret;
    }
 
    Point convertScreenToView(Location loc){
       Point ret = new Point();
-      ret.x = (int)((loc.x - _viewX) * _zoomRatio);
-      ret.y = (int)((loc.y - _viewY) * _zoomRatio);
+      if(_match!=null){
+         ret.x = (int)((loc.x - _viewX) * _zoomRatio);
+         ret.y = (int)((loc.y - _viewY) * _zoomRatio);
+      }
+      else{
+         ret.x = (int)(getWidth()/2 + loc.x / _zoomRatio);
+         ret.y = (int)(getHeight()/2 + loc.y / _zoomRatio);
+      }
       return ret;
    }
 
