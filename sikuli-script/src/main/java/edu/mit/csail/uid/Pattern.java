@@ -43,8 +43,12 @@ public class Pattern {
      return ret;
    }
 
-   Location getTargetOffset(){
+   public Location getTargetOffset(){
       return new Location(dx, dy);
+   }
+
+   public String getFilename(){
+      return imgURL;
    }
 
 }
