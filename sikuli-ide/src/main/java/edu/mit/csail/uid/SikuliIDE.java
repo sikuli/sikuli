@@ -44,7 +44,6 @@ public class SikuliIDE extends JFrame {
 
    private static Icon PY_SRC_ICON = getIconResource("/icons/py-src-16x16.png");
 
-   private String _preloadFilename = null;
    private boolean _inited = false;
 
 
@@ -76,14 +75,15 @@ public class SikuliIDE extends JFrame {
 
    //FIXME: singleton lock
    public static synchronized SikuliIDE getInstance(String args[]){
+      Debug.log(3, "create SikuliIDE " + args);
       if( _instance == null ){
          _instance = new SikuliIDE(args);
-         Debug.log(1, "create SikuliIDE" + _instance);
       }
       return _instance;
    }
 
    public static synchronized SikuliIDE getInstance(){
+      Debug.log(3, "create SikuliIDE()");
       return getInstance(null);
    }
 
@@ -237,6 +237,7 @@ public class SikuliIDE extends JFrame {
             pref.setAutoCaptureForCmdButtons(flag);
          }
       });
+      toolbar.add(new JLabel("Command List"));
       toolbar.add(chkAutoCapture);
       for(int i=0;i<CommandsOnToolbar.length;i++){
          String cmd = CommandsOnToolbar[i++][0];
@@ -417,8 +418,6 @@ public class SikuliIDE extends JFrame {
 
       if(args!=null && args.length>=1)
          loadFile(args[0]);
-      else if(_preloadFilename != null)
-         loadFile(_preloadFilename);
       else
          (new FileAction()).doNew();
 
@@ -437,13 +436,6 @@ public class SikuliIDE extends JFrame {
    }
 
    public boolean isInited(){ return _inited; }
-
-   public void preloadFile(String filename){
-      if(_inited)
-         loadFile(filename);
-      else
-         _preloadFilename = filename;
-   }
 
 
    public void installCaptureHotkey(int key, int mod){
@@ -530,18 +522,18 @@ public class SikuliIDE extends JFrame {
             System.err.println("Can't open file: " + args[0] + "\n" + e);
          }
       }
+      try{
+         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
+      catch(Exception e){
+         e.printStackTrace();
+      }
 
       if(Utils.isMacOSX()){
          NativeLayerForMac.initApp();
          try{ Thread.sleep(1000); } catch(InterruptedException ie){}
       }
       if(!_runningSkl){
-         try{
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-         }
-         catch(Exception e){
-            e.printStackTrace();
-         }
          SikuliIDE.getInstance(args);
       }
    }

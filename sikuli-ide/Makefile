@@ -107,7 +107,7 @@ test:all
 	$(JAVA) $(JAVA_ARGS) -cp $(CLASSES_OUT_PATH):$(CLASSPATH) $(MAIN_CLASS) $(ARGS) 
 
 
-all: $(CLASSES_OUT_PATH) $(CLASSES) $(TARGET_RESOURCES) native-lib
+all: $(CLASSES_OUT_PATH) $(CLASSES) $(TARGET_RESOURCES) native-lib tags
 
 clean:
 	rm $(CLASSES)
@@ -140,5 +140,8 @@ inc-minor1:
 
 inc-minor2:
 	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/"$$1.$$2.".($$3+1)/xe' latest-ver
+
+tags:
+	ctags -R --language-force=java  -f .tags src/main/java ../sikuli-script/src/main/java
 
 include Makefile.$(UNAME)

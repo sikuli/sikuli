@@ -122,7 +122,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    }
 
    public void actionPerformed(ActionEvent e) {
-      Debug.log("click on image");
+      Debug.log("open Pattern Settings");
       pwin = new PatternWindow(this, _exact, _similarity, _numMatches);
       pwin.setTargetOffset(_offset);
    }

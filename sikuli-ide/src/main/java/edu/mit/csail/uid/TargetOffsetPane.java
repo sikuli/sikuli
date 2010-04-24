@@ -98,11 +98,9 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
 
    public void mouseExited ( MouseEvent me ) { }
 
-   private static Color COLOR_BG_LINE = new Color(200,200,200);
-   void paintBackground(Graphics g2d){
-      g2d.setColor(Color.WHITE);
-      g2d.fillRect(0, 0, getWidth(), getHeight());
-      int step = (int)(10/_zoomRatio);
+   private static Color COLOR_BG_LINE = new Color(210,210,210,130);
+   void paintRulers(Graphics g2d){
+      int step = (int)(10*_zoomRatio);
       int h = getHeight(), w = getWidth();
       if(h%2==1)  h--;
       if(w%2==1)  w--;
@@ -117,13 +115,34 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
       }
    }
 
+   void paintBackground(Graphics g2d){
+      g2d.setColor(Color.WHITE);
+      g2d.fillRect(0, 0, getWidth(), getHeight());
+   }
+
    void paintPatternOnly(Graphics g2d){
       int patW = (int)(getWidth()*_ratio);
-      _zoomRatio = _img.getWidth()/(float)patW;
-      int patH = (int)(_img.getHeight()/_zoomRatio);;
+      _zoomRatio = patW/(float)_img.getWidth();
+      int patH = (int)(_img.getHeight()*_zoomRatio);;
       int patX = getWidth()/2-patW/2, patY = getHeight()/2-patH/2;
       paintBackground(g2d);
       g2d.drawImage(_img, patX, patY, patW, patH, null);
+   }
+
+   void paintSubScreen(Graphics g2d){
+      if(_viewX<0 || _viewY<0) paintBackground(g2d);
+      int subX = _viewX<0?0:_viewX, subY = _viewY<0?0:_viewY;
+      int subW = _viewW-(subX-_viewX), subH = _viewH-(subY-_viewY);
+      BufferedImage img = _simg.getImage();
+      if(subX+subW >= img.getWidth()) subW = img.getWidth()-subX;
+      if(subY+subH >= img.getHeight()) subH = img.getHeight()-subY;
+
+      BufferedImage clip = img.getSubimage(subX, subY, subW, subH);
+      int destX = (int)((subX-_viewX)*_zoomRatio), 
+          destY = (int)((subY-_viewY)*_zoomRatio);
+      int destW = (int)(subW * _zoomRatio), 
+          destH = (int)(subH * _zoomRatio);
+      g2d.drawImage(clip, destX, destY, destW, destH, null);
    }
 
    public void paint(Graphics g){
@@ -131,19 +150,12 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
       if( getWidth() > 0 && getHeight() > 0){
          if(_match!=null){
             zoomToMatch();
-            if(_viewX<0 || _viewY<0) paintBackground(g2d);
-            int subX = _viewX<0?0:_viewX, subY = _viewY<0?0:_viewY;
-            BufferedImage clip = 
-               _simg.getImage().getSubimage(subX, subY, 
-                                  _viewW-(subX-_viewX), _viewH-(subY-_viewY));
-            int destX = (int)((subX-_viewX)*_zoomRatio), 
-                destY = (int)((subY-_viewY)*_zoomRatio);
-            g2d.drawImage(clip, destX, destY, 
-                                getWidth()-destX, getHeight()-destY, null);
+            paintSubScreen(g2d);
             paintMatch(g2d);
          }
          else
             paintPatternOnly(g2d);
+         paintRulers(g2d);
          paintTarget(g2d);
       }
    }
@@ -155,8 +167,8 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
          ret.y = (int)(p.y/_zoomRatio+_viewY);
       }
       else{
-         ret.x = (int)((p.x-getWidth()/2)*_zoomRatio);
-         ret.y = (int)((p.y-getHeight()/2)*_zoomRatio);
+         ret.x = (int)((p.x-getWidth()/2)/_zoomRatio);
+         ret.y = (int)((p.y-getHeight()/2)/_zoomRatio);
       }
       return ret;
    }
@@ -168,8 +180,8 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
          ret.y = (int)((loc.y - _viewY) * _zoomRatio);
       }
       else{
-         ret.x = (int)(getWidth()/2 + loc.x / _zoomRatio);
-         ret.y = (int)(getHeight()/2 + loc.y / _zoomRatio);
+         ret.x = (int)(getWidth()/2 + loc.x * _zoomRatio);
+         ret.y = (int)(getHeight()/2 + loc.y * _zoomRatio);
       }
       return ret;
    }

@@ -86,6 +86,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    public boolean isDirty(){  return _dirty; }
    public void setDirty(boolean flag){ 
+      if(_dirty == flag)
+         return;
       _dirty = flag; 
       if(flag)
          getRootPane().putClientProperty("Window.documentModified", true);

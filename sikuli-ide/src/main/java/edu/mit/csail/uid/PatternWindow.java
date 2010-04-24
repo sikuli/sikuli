@@ -28,7 +28,7 @@ public class PatternWindow extends JFrame implements Observer {
       _imgBtn = imgBtn;
       //setBackground(new java.awt.Color(255,255,255,128)); 
       Point pos = imgBtn.getLocationOnScreen();
-      Debug.log( "pattern window: " + pos );
+      Debug.log(4, "pattern window: " + pos );
       setLocation(pos.x, pos.y);
 
       takeScreenshot();
