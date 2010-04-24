@@ -25,6 +25,7 @@ from Button import *
 from Region import *
 from Screen import *
 from VDict import *
+from Helper import *
 
 _si = SikuliScript()
 

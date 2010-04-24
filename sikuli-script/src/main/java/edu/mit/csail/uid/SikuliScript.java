@@ -79,6 +79,7 @@ public class SikuliScript {
             e.printStackTrace();
          }
       }
+   }
 
 }
 

@@ -75,7 +75,7 @@ public class SikuliIDE extends JFrame {
 
    //FIXME: singleton lock
    public static synchronized SikuliIDE getInstance(String args[]){
-      Debug.log(3, "create SikuliIDE " + args);
+      Debug.log(5, "create SikuliIDE " + args);
       if( _instance == null ){
          _instance = new SikuliIDE(args);
       }
@@ -83,7 +83,7 @@ public class SikuliIDE extends JFrame {
    }
 
    public static synchronized SikuliIDE getInstance(){
-      Debug.log(3, "create SikuliIDE()");
+      Debug.log(5, "create SikuliIDE()");
       return getInstance(null);
    }
 
