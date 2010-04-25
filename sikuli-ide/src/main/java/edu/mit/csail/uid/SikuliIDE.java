@@ -1032,7 +1032,7 @@ class ButtonInsertImage extends JButton implements ActionListener{
       setIcon(new ImageIcon(imageURL));
       setMaximumSize(new Dimension(26,26));
       setBorderPainted(false);
-      setToolTipText("Insert an image from disks");
+      setToolTipText(SikuliIDE._I("btnInsertImageHint"));
       addActionListener(this);
    }
 

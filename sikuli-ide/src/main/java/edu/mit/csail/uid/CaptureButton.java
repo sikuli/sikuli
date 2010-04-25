@@ -26,7 +26,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       UserPreferences pref = UserPreferences.getInstance();
       String strHotkey = Utils.convertKeyToText(
             pref.getCaptureHotkey(), pref.getCaptureHotkeyModifiers() );
-      setToolTipText("Take a screenshot (" + strHotkey + ")");
+      setToolTipText(SikuliIDE._I("btnCaptureHint", strHotkey));
       setBorderPainted(false);
       setMaximumSize(new Dimension(26,26));
       addActionListener(this);

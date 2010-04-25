@@ -20,10 +20,11 @@ public class PreferencesWin extends JFrame {
    int _cap_hkey, _cap_mod;
    int _old_cap_hkey, _old_cap_mod;
 
-	public PreferencesWin() {
-		initComponents();
+   public PreferencesWin() {
+      super( SikuliIDE._I("winPreferences") );
+      initComponents();
       loadPrefs();
-	}
+   }
 
    private void loadPrefs(){
       SikuliIDE ide = SikuliIDE.getInstance();
@@ -123,16 +124,16 @@ public class PreferencesWin extends JFrame {
             });
 
             //---- lblHotkey ----
-            lblHotkey.setText("Quick Capture hotkey:");
+            lblHotkey.setText(SikuliIDE._I("prefCaptureHotkey"));
 
             //---- lblDelay ----
-            lblDelay.setText("Capture delay:");
+            lblDelay.setText(SikuliIDE._I("prefCaptureDelay"));
 
             //---- _spnDelay ----
             _spnDelay.setModel(new SpinnerNumberModel(1.0, 0.0, null, 0.1));
 
             //---- lblDelaySecs ----
-            lblDelaySecs.setText("seconds");
+            lblDelaySecs.setText(SikuliIDE._I("prefSeconds"));
 
             org.jdesktop.layout.GroupLayout paneCaptureLayout = 
                new org.jdesktop.layout.GroupLayout(paneCapture);
@@ -168,7 +169,7 @@ public class PreferencesWin extends JFrame {
                      .add(150, 150, 150))
             );
          }
-         _tabPane.addTab("Screen Capturing", paneCapture);
+         _tabPane.addTab( SikuliIDE._I("prefTabScreenCapturing"), paneCapture);
 
       }
       contentPane.add(_tabPane, BorderLayout.CENTER);
@@ -179,7 +180,7 @@ public class PreferencesWin extends JFrame {
          paneOkCancel.add(hSpacer1);
 
          //---- _btnOk ----
-         _btnOk.setText("OK");
+         _btnOk.setText(SikuliIDE._I("ok"));
          _btnOk.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                btnOkActionPerformed(e);
@@ -188,7 +189,7 @@ public class PreferencesWin extends JFrame {
          paneOkCancel.add(_btnOk);
 
          //---- _btnCancel ----
-         _btnCancel.setText("Cancel");
+         _btnCancel.setText(SikuliIDE._I("cancel"));
          _btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                btnCancelActionPerformed(e);
