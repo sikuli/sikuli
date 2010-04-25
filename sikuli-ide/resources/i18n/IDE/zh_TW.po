@@ -1,0 +1,183 @@
+#. extracted from IDE_en_US.properties, IDE_zh_TW.properties
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-25 18:28-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.6.1-pre\n"
+
+#: menuFile
+msgid "File"
+msgstr "æªæ¡"
+
+#: menuRun
+msgctxt "menuRun"
+msgid "Run"
+msgstr "å·è¡"
+
+#: menuView
+msgid "View"
+msgstr "æª¢è¦"
+
+#: menuFileNew
+msgid "New"
+msgstr "æ°å¢"
+
+#: menuFileOpen
+msgid "Open..."
+msgstr "æé..."
+
+#: menuFileSave
+msgid "Save"
+msgstr "å²å­"
+
+#: menuFileSaveAs
+msgid "Save as..."
+msgstr "å²å­çº..."
+
+#: menuFileExport
+msgid "Export excutable..."
+msgstr "å¯åº.SKLå·è¡æª..."
+
+#: menuFilePreferences
+msgid "Preferences..."
+msgstr "åå¥½è¨­å®..."
+
+#: menuFileCloseTab
+msgid "Close Tab"
+msgstr "ééåé "
+
+#: menuFileQuit
+msgid "Quit"
+msgstr "éåº"
+
+#: menuRunRun
+msgctxt "menuRunRun"
+msgid "Run"
+msgstr "å·è¡"
+
+#: menuRunRunAndShowActions
+msgid "Run and show actions"
+msgstr "å·è¡ä¸¦é¡¯ç¤ºåä½"
+
+#: menuRunStop
+msgid "Stop"
+msgstr "åæ­¢"
+
+#: menuViewUnitTest
+msgctxt "menuViewUnitTest"
+msgid "Unit Test"
+msgstr "å®åæ¸¬è©¦"
+
+#: menuViewCommandList
+msgctxt "menuViewCommandList"
+msgid "Command List"
+msgstr "å½ä»¤åè¡¨"
+
+#: cmdListAutoCapture
+msgid "Auto Capture"
+msgstr "èªåæªå"
+
+#: cmdListCommandList
+msgctxt "cmdListCommandList"
+msgid "Command List"
+msgstr "å½ä»¤åè¡¨"
+
+#: paneMessage
+msgid "Message"
+msgstr "è¨æ¯"
+
+#: paneTestTrace
+msgid "Test Trace"
+msgstr "å®åæ¸¬è©¦è¨æ¯"
+
+#: tabUntitled
+msgid "Untitled"
+msgstr "æªå½å"
+
+#: tabUnitTest
+msgctxt "tabUnitTest"
+msgid "Unit Test"
+msgstr "å®åæ¸¬è©¦"
+
+#: btnRun
+msgid "Run ({0})"
+msgstr "å·è¡({0})"
+
+#: btnRunStopHint
+msgid "Press {0} to stop"
+msgstr "æä¸ {0} ä¸­æ­¢"
+
+#: btnRegionHint
+msgid "Create a region to restrict screen matching"
+msgstr "å»ºç«ä¸åãååãéå¶è¢å¹æ¯å°ç¯å"
+
+#: btnCaptureHint
+msgid "Take a screenshot ({0})"
+msgstr "æåè¢å¹æªå ({0})"
+
+#: btnInsertImageHint
+msgid "Insert an image from disks"
+msgstr "æå¥ç£ç¢ä¸­çåç"
+
+#: msgRunningSklError
+msgid ""
+"Runtime Error when running {0}\n"
+"{1}"
+msgstr ""
+"å·è¡ {0} æç¼çé¯èª¤\n"
+"{1}"
+
+#: msgExit
+msgid "Exited with code {0}"
+msgstr "ç¨å¼ä¸­æ­¢, çµæä»£ç¢¼: {0}"
+
+#: msgStopped
+msgid "Stopped"
+msgstr "ç¨å¼å·²ä¸­æ­¢"
+
+#: msgErrorLine
+msgid "An error occurs at line {0}"
+msgstr "å¨ç¬¬{0}è¡ç¼çé¯èª¤"
+
+#: msgErrorMsg
+msgid ""
+"Error message:\n"
+"{0}"
+msgstr ""
+"é¯èª¤è¨æ¯:\n"
+"{0}"
+
+#: winPreferences
+msgid "Preferences"
+msgstr "åå¥½è¨­å®"
+
+#: prefTabScreenCapturing
+msgid "Screen Capturing"
+msgstr "è¢å¹æªå"
+
+#: prefCaptureHotkey
+msgid "Quick capture hotkey:"
+msgstr "è¢å¹æªåå¿«ééµ:"
+
+#: prefCaptureDelay
+msgid "Delay before capture:"
+msgstr "æªååå»¶é²:"
+
+#: prefSeconds
+msgid "seconds"
+msgstr "ç§"
+
+#: ok
+msgid "OK"
+msgstr "ç¢ºå®"
+
+#: cancel
+msgid "Cancel"
+msgstr "åæ¶"
