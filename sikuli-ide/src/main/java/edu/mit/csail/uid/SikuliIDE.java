@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.util.*;
+import java.text.MessageFormat;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -18,6 +19,36 @@ import java.util.regex.Matcher;
 
 
 public class SikuliIDE extends JFrame {
+   static ResourceBundle i18nRB, i18nRB_en;
+   static Locale curLocale;
+   static {
+      Locale locale_en = new Locale("en","US");
+      Locale locale = Locale.getDefault();
+      curLocale = locale;
+      Debug.info("locale: " + locale);
+      i18nRB = ResourceBundle.getBundle("i18n/IDE",locale);
+      i18nRB_en = ResourceBundle.getBundle("i18n/IDE",locale_en);
+   }
+
+   static String _I(String key, Object... args){ 
+      String ret;
+      try {
+         ret = new String (i18nRB.getString(key).getBytes("ISO-8859-1"),"UTF-8");
+      } catch (MissingResourceException e) {
+         ret = i18nRB_en.getString(key); 
+      } catch (UnsupportedEncodingException e) {
+         e.printStackTrace();
+         return null;
+      } 
+      if(args.length>0){
+         MessageFormat formatter = new MessageFormat("");
+         formatter.setLocale(curLocale);
+         formatter.applyPattern(ret);
+         ret = formatter.format(args);
+      }
+      return ret;
+   }
+
    boolean ENABLE_RECORDING = false;
 
    private NativeLayer _native;
@@ -34,9 +65,9 @@ public class SikuliIDE extends JFrame {
    private ButtonRun _btnRun, _btnRunViz;
 
    private JMenuBar _menuBar = new JMenuBar();
-   private JMenu _fileMenu = new JMenu("File");
-   private JMenu _runMenu = new JMenu("Run");
-   private JMenu _viewMenu = new JMenu("View");
+   private JMenu _fileMenu = new JMenu(_I("menuFile"));
+   private JMenu _runMenu = new JMenu(_I("menuRun"));
+   private JMenu _viewMenu = new JMenu(_I("menuView"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
 
@@ -115,16 +146,16 @@ public class SikuliIDE extends JFrame {
    private void initRunMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _runMenu.setMnemonic(java.awt.event.KeyEvent.VK_R);
-      _runMenu.add( createMenuItem("Run", 
+      _runMenu.add( createMenuItem(_I("menuRunRun"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, scMask),
                new RunAction(RunAction.RUN)));
-      _runMenu.add( createMenuItem("Run and show actions", 
+      _runMenu.add( createMenuItem(_I("menuRunRunAndShowActions"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, 
                   InputEvent.ALT_MASK | scMask),
                new RunAction(RunAction.RUN_SHOW_ACTIONS)));
 
       UserPreferences pref = UserPreferences.getInstance();
-      JMenuItem stopItem = createMenuItem("Stop", 
+      JMenuItem stopItem = createMenuItem(_I("menuRunStop"), 
                KeyStroke.getKeyStroke(
                   pref.getStopHotkey(), pref.getStopHotkeyModifiers()),
                new RunAction(RunAction.RUN_SHOW_ACTIONS));
@@ -135,48 +166,49 @@ public class SikuliIDE extends JFrame {
    private void initFileMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _fileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
-      _fileMenu.add( createMenuItem("New", 
+      _fileMenu.add( createMenuItem(_I("menuFileNew"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, scMask),
                new FileAction(FileAction.NEW)));
-      _fileMenu.add( createMenuItem("Open...", 
+      _fileMenu.add( createMenuItem(_I("menuFileOpen"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, scMask),
                new FileAction(FileAction.OPEN)));
-      _fileMenu.add( createMenuItem("Save", 
+      _fileMenu.add( createMenuItem(_I("menuFileSave"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, scMask),
                new FileAction(FileAction.SAVE)));
-      _fileMenu.add( createMenuItem("Save as...", 
+      _fileMenu.add( createMenuItem(_I("menuFileSaveAs"),
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.SAVE_AS)));
-      _fileMenu.add( createMenuItem("Export executable...", 
+      _fileMenu.add( createMenuItem(_I("menuFileExport"),
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, 
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.EXPORT)));
       _fileMenu.addSeparator();
       if(!Utils.isMacOSX()){
-         _fileMenu.add( createMenuItem("Preferences",
+         _fileMenu.add( createMenuItem(_I("menuFilePreferences"),
                   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, scMask),
                   new FileAction(FileAction.PREFERENCES)));
       }
-      _fileMenu.add( createMenuItem("Close Tab", 
+      _fileMenu.add( createMenuItem(_I("menuFileCloseTab"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, scMask),
                new FileAction(FileAction.CLOSE_TAB)));
       if(!Utils.isMacOSX()){
          _fileMenu.addSeparator();
-         _fileMenu.add( createMenuItem("Quit", null, 
-                  new FileAction(FileAction.QUIT)));
+         _fileMenu.add( createMenuItem(_I("menuFileQuit"), 
+                  null, new FileAction(FileAction.QUIT)));
       }
    }
 
    private void initViewMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
-      _chkShowUnitTest = new JCheckBoxMenuItem("Unit Test");
+      _chkShowUnitTest = new JCheckBoxMenuItem(_I("menuViewUnitTest"));
       _viewMenu.add( createMenuItem(_chkShowUnitTest, 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, scMask),
                new ViewAction(ViewAction.UNIT_TEST)));
 
-      JMenuItem chkShowCmdList = new JCheckBoxMenuItem("Command List",true);
+      JMenuItem chkShowCmdList = 
+         new JCheckBoxMenuItem(_I("menuViewCommandList"), true);
       _viewMenu.add( createMenuItem(chkShowCmdList, 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
                new ViewAction(ViewAction.CMD_LIST)));
@@ -229,7 +261,8 @@ public class SikuliIDE extends JFrame {
       JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
       UserPreferences pref = UserPreferences.getInstance();
       JCheckBox chkAutoCapture = 
-         new JCheckBox("Auto capture", pref.getAutoCaptureForCmdButtons());
+         new JCheckBox(_I("cmdListAutoCapture"), 
+                       pref.getAutoCaptureForCmdButtons());
       chkAutoCapture.addChangeListener(new ChangeListener(){
          public void stateChanged(javax.swing.event.ChangeEvent e){
             boolean flag = ((JCheckBox)e.getSource()).isSelected();
@@ -237,7 +270,7 @@ public class SikuliIDE extends JFrame {
             pref.setAutoCaptureForCmdButtons(flag);
          }
       });
-      toolbar.add(new JLabel("Command List"));
+      toolbar.add(new JLabel(_I("cmdListCommandList")));
       toolbar.add(chkAutoCapture);
       for(int i=0;i<CommandsOnToolbar.length;i++){
          String cmd = CommandsOnToolbar[i++][0];
@@ -309,7 +342,7 @@ public class SikuliIDE extends JFrame {
    private void initAuxPane(){
       _auxPane = new JTabbedPane();
       _console = new ConsolePane();
-      _auxPane.addTab("Message", _console);
+      _auxPane.addTab(_I("paneMessage"), _console);
    }
 
    private void initUnitPane(){
@@ -317,7 +350,7 @@ public class SikuliIDE extends JFrame {
       _unitPane = _testRunner.getPanel();
       _chkShowUnitTest.setState(false);
       (new ViewAction()).toggleUnitTest();
-      addAuxTab("Test Trace", _testRunner.getTracePane());
+      addAuxTab(_I("paneTestTrace"), _testRunner.getTracePane());
    }
 
    private void initSidePane(){
@@ -505,7 +538,7 @@ public class SikuliIDE extends JFrame {
       }
       catch(Exception e){
          JOptionPane.showMessageDialog(null, 
-               "Runtime Error when running " + filename + "\n" + e);
+               _I("msgRunningSklError", filename, e));
       }
       System.exit(0);
    }
@@ -661,7 +694,7 @@ public class SikuliIDE extends JFrame {
 
       public void toggleUnitTest(){
          if( _chkShowUnitTest.getState() ){
-            _sidePane.addTab("Unit Test", _unitPane);
+            _sidePane.addTab(_I("tabUnitTest"), _unitPane);
             adjustCodePaneWidth();
          }
          else
@@ -711,7 +744,7 @@ public class SikuliIDE extends JFrame {
          SikuliPane codePane = new SikuliPane();
          JScrollPane scrPane = new JScrollPane(codePane);
          scrPane.setRowHeaderView(new LineNumberView(codePane));
-         _mainPane.addTab("Untitled", scrPane);
+         _mainPane.addTab(_I("tabUntitled"), scrPane);
          _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
          codePane.addCaretListener(new CaretListener(){
             public void caretUpdate(CaretEvent evt){
@@ -852,7 +885,7 @@ public class SikuliIDE extends JFrame {
          super();
          URL imageURL = SikuliIDE.class.getResource("/icons/runviz.png");
          setIcon(new ImageIcon(imageURL));
-         setToolTipText("Run and show each action");
+         setToolTipText(_I("menuRunRunAndShowActions"));
       }
 
       protected void runPython(File f) throws IOException{
@@ -889,8 +922,8 @@ public class SikuliIDE extends JFrame {
          UserPreferences pref = UserPreferences.getInstance();
          String strHotkey = Utils.convertKeyToText(
                pref.getStopHotkey(), pref.getStopHotkeyModifiers() );
-         String stopHint = "Press " + strHotkey + " to stop";
-         setToolTipText("Run (" + stopHint + ")");
+         String stopHint = _I("btnRunStopHint", strHotkey);
+         setToolTipText(_I("btnRun", stopHint));
       }
 
       private int findErrorSource(Throwable thr, String filename) {
@@ -965,18 +998,18 @@ public class SikuliIDE extends JFrame {
                         java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
                      Matcher matcher = p.matcher(e.toString());
                      if(matcher.find()){
-                        Debug.info("Exited with code" +  matcher.group(1));
+                        Debug.info(_I("msgExit", matcher.group(1)));
                      }
                      else{
-                        Debug.info("Stopped");
+                        Debug.info(_I("msgStopped"));
                         int srcLine = findErrorSource(e, 
                                           tmpFile.getAbsolutePath());
                         if(srcLine != -1){
-                           Debug.info("[Error] source lineNo: " + srcLine);
+                           Debug.info( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
                            //codePane.setErrorHighlight(srcLine);
                         }
-                        Debug.info("[Error] " + e.toString());
+                        Debug.info( _I("msgErrorMsg", e.toString()) );
                      }
                   } 
                   finally{
@@ -1023,7 +1056,7 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       setIcon(new ImageIcon(imageURL));
       setMaximumSize(new Dimension(26,26));
       setBorderPainted(false);
-      setToolTipText("Create a region to restrict screen matching");
+      setToolTipText( SikuliIDE._I("btnRegionHint") );
       addActionListener(this);
    }
 

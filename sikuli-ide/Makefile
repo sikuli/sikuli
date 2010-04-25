@@ -21,7 +21,7 @@ LIB_PATH=../lib
 CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/swing-layout-1.0.1.jar
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
-JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms256m -Xmx1024m
+JAVA_ARGS=-Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms256m -Xmx1024m -Duser.language=zh -Duser.region=TW
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAR=sikuli-ide.jar
@@ -55,7 +55,7 @@ ifeq "$(UNAME)" "Linux"
 endif
 
 
-RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts
+RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts $(RESOURCE_PATH)/i18n
 TARGET_RESOURCES=$(RESOURCES:$(RESOURCE_PATH)/%=$(CLASSES_OUT_PATH)/%)
 ifeq "$(UNAME)" "Linux"
    MANIFEST=META-INF/MANIFEST-linux.MF
