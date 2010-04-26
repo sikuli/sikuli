@@ -291,6 +291,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _editingFilename = getSourceFilename(filename);
       this.read( new BufferedReader(new InputStreamReader(
                   new FileInputStream(_editingFilename), "UTF8")), null);
+      getDocument().addDocumentListener(new DirtyHandler());
       setDirty(false);
    }
 
@@ -668,7 +669,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private class DirtyHandler implements DocumentListener {
       public void changedUpdate(DocumentEvent ev) {
          Debug.log(9, "change update");
-         setDirty(true);
+         //setDirty(true);
       }
       public void insertUpdate(DocumentEvent ev) {
          Debug.log(9, "insert update");

@@ -51,7 +51,7 @@ public class SikuliEditorKit extends StyledEditorKit {
    @Override
    public void read(Reader in, Document doc, int pos) 
                            throws IOException, BadLocationException{
-      Debug.log("SikuliEditorKit.read");
+      Debug.log(3, "SikuliEditorKit.read");
       super.read(in,doc,pos);
 
    }

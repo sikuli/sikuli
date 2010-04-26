@@ -286,9 +286,9 @@ public class SikuliIDE extends JFrame {
             try{
                JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
                SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-               Debug.log("close tab: " + _mainPane.getComponentCount());
+               Debug.log(3, "close tab: " + _mainPane.getComponentCount());
                boolean ret = codePane.close();
-               Debug.log("close tab after: " + _mainPane.getComponentCount());
+               Debug.log(3, "close tab after: " + _mainPane.getComponentCount());
                checkDirtyPanes();
                return ret;
             }
@@ -617,7 +617,7 @@ public class SikuliIDE extends JFrame {
       public void actionPerformed(ActionEvent e) {
          if(actMethod != null){
             try{
-               Debug.log("MenuAction." + action);
+               Debug.log(2, "MenuAction." + action);
                actMethod.invoke(this, new Object[0]);
             }
             catch(Exception ex){

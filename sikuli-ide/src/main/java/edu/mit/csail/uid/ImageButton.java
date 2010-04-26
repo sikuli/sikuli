@@ -43,7 +43,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    }
 
    public void setParameters(boolean exact, float similarity, int numMatches){
-      Debug.log("setParameters: " + exact + "," + similarity + "," + numMatches);
+      Debug.log(3, "setParameters: " + exact + "," + similarity + "," + numMatches);
       _exact = exact;
       if(similarity>=0) _similarity = similarity;
       setToolTipText( this.toString() );
