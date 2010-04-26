@@ -41,6 +41,8 @@ def setBundlePath(path):
    Settings.BundlePath = path
    VDict._setBundlePath(path)
 
+def getBundlePath():
+   return Settings.BundlePath
 
 ##
 # Sikuli shows actions (click, dragDrop, ... etc.) if this flag is set to <i>True</i>.
