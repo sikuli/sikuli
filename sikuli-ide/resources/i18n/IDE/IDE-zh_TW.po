@@ -1,11 +1,10 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Sikuli-IDE 0.10\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-25 18:27-0400\n"
-"PO-Revision-Date: 2010-04-25 18:44-0400\n"
-"Last-Translator: Tsung-Hsiang Chang<vgod@mit.edu>\n"
+"PO-Revision-Date: 2010-04-25 23:27+0000\n"
+"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,166 +14,170 @@ msgstr ""
 
 #: menuFile
 msgid "File"
-msgstr ""
+msgstr "檔案"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr ""
+msgstr "執行"
 
 #: menuView
 msgid "View"
-msgstr ""
+msgstr "檢視"
 
 #: menuFileNew
 msgid "New"
-msgstr ""
+msgstr "新增"
 
 #: menuFileOpen
 msgid "Open..."
-msgstr ""
+msgstr "開啟..."
 
 #: menuFileSave
 msgid "Save"
-msgstr ""
+msgstr "儲存"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr ""
+msgstr "另存為..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr ""
+msgstr "å¯åº.SKLå·è¡æª..."
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "偏好設定..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
-msgstr ""
+msgstr "關閉分頁"
 
 #: menuFileQuit
 msgid "Quit"
-msgstr ""
+msgstr "結束"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr ""
+msgstr "執行"
 
 #: menuRunRunAndShowActions
 msgid "Run and show actions"
-msgstr ""
+msgstr "執行並顯示動作"
 
 #: menuRunStop
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "單元測試"
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr ""
+msgstr "命令列表"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr ""
+msgstr "自動截圖"
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
 msgid "Command List"
-msgstr ""
+msgstr "命令列表"
 
 #: paneMessage
 msgid "Message"
-msgstr ""
+msgstr "訊息"
 
 #: paneTestTrace
 msgid "Test Trace"
-msgstr ""
+msgstr "單元測試訊息"
 
 #: tabUntitled
 msgid "Untitled"
-msgstr ""
+msgstr "未命名"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "單元測試"
 
 #: btnRun
 msgid "Run ({0})"
-msgstr ""
+msgstr "執行 ({0})"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr ""
+msgstr "按下 {0} 中止"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr ""
+msgstr "建立一個「區域」限制螢幕比對範圍"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr ""
+msgstr "抓取螢幕截圖 ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr ""
+msgstr "插入磁碟中的圖片"
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
+"執行 {0} 時發生錯誤\n"
+"{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr ""
+msgstr "程式中止, 結束代碼: {0}"
 
 #: msgStopped
 msgid "Stopped"
-msgstr ""
+msgstr "程式已中止"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr ""
+msgstr "在第{0}行發生錯誤"
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
+"錯誤訊息:\n"
+"{0}"
 
 #: winPreferences
 msgid "Preferences"
-msgstr ""
+msgstr "偏好設定"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr ""
+msgstr "螢幕截圖"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr ""
+msgstr "螢幕截圖快速鍵:"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr ""
+msgstr "截圖前延遲:"
 
 #: prefSeconds
 msgid "seconds"
-msgstr ""
+msgstr "秒"
 
 #: ok
 msgid "OK"
-msgstr ""
+msgstr "確定"
 
 #: cancel
 msgid "Cancel"
-msgstr ""
+msgstr "取消"

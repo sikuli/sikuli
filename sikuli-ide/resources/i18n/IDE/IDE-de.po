@@ -1,183 +1,188 @@
-#. extracted from IDE_en_US.properties, IDE_zh_TW.properties
+# German translation for sikuli
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the sikuli package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-25 18:28-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: sikuli\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-25 18:27-0400\n"
+"PO-Revision-Date: 2010-04-26 00:30+0000\n"
+"Last-Translator: RaiMan <rmhshopping@mac.com>\n"
+"Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.6.1-pre\n"
+"X-Launchpad-Export-Date: 2010-04-26 01:16+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: menuFile
 msgid "File"
-msgstr "æªæ¡"
+msgstr "Datei"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr "å·è¡"
+msgstr "Ausführen"
 
 #: menuView
 msgid "View"
-msgstr "æª¢è¦"
+msgstr "Ansicht"
 
 #: menuFileNew
 msgid "New"
-msgstr "æ°å¢"
+msgstr "Neu"
 
 #: menuFileOpen
 msgid "Open..."
-msgstr "æé..."
+msgstr "Öffnen..."
 
 #: menuFileSave
 msgid "Save"
-msgstr "å²å­"
+msgstr "Sichern"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr "å²å­çº..."
+msgstr "Sichern unter..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr "å¯åº.SKLå·è¡æª..."
+msgstr "Speichern als ausführbar"
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr "åå¥½è¨­å®..."
+msgstr "Einstellungen..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
-msgstr "ééåé "
+msgstr "Tab schließen"
 
 #: menuFileQuit
 msgid "Quit"
-msgstr "éåº"
+msgstr "Beenden"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr "å·è¡"
+msgstr "Ausführen"
 
 #: menuRunRunAndShowActions
 msgid "Run and show actions"
-msgstr "å·è¡ä¸¦é¡¯ç¤ºåä½"
+msgstr "Ausführen und Aktionen zeigen"
 
 #: menuRunStop
 msgid "Stop"
-msgstr "åæ­¢"
+msgstr "Abbrechen"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr "å®åæ¸¬è©¦"
+msgstr "Unit Test"
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "å½ä»¤åè¡¨"
+msgstr "Kommandoliste"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr "èªåæªå"
+msgstr "Bildschirmfoto sofort"
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
 msgid "Command List"
-msgstr "å½ä»¤åè¡¨"
+msgstr "Kommandoliste"
 
 #: paneMessage
 msgid "Message"
-msgstr "è¨æ¯"
+msgstr "Meldungen"
 
 #: paneTestTrace
 msgid "Test Trace"
-msgstr "å®åæ¸¬è©¦è¨æ¯"
+msgstr "Test Verlauf"
 
 #: tabUntitled
 msgid "Untitled"
-msgstr "æªå½å"
+msgstr "Unbenannt"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr "å®åæ¸¬è©¦"
+msgstr "Unit Test"
 
 #: btnRun
 msgid "Run ({0})"
-msgstr "å·è¡({0})"
+msgstr "Ausführen ({0})"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr "æä¸ {0} ä¸­æ­¢"
+msgstr "Drücke {0} zum Abbrechen"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr "å»ºç«ä¸åãååãéå¶è¢å¹æ¯å°ç¯å"
+msgstr "Erzeuge eine Region um die Suche einzuschränken"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "æåè¢å¹æªå ({0})"
+msgstr "Ein Bidschirmfoto machen ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr "æå¥ç£ç¢ä¸­çåç"
+msgstr "Ein Bild aus einer Datei einfügen"
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
-"å·è¡ {0} æç¼çé¯èª¤\n"
+"Laufzeitfehler beim Ausführen von {0}\n"
 "{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr "ç¨å¼ä¸­æ­¢, çµæä»£ç¢¼: {0}"
+msgstr "Beendet mit {0}"
 
 #: msgStopped
 msgid "Stopped"
-msgstr "ç¨å¼å·²ä¸­æ­¢"
+msgstr "Abgebrochen"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr "å¨ç¬¬{0}è¡ç¼çé¯èª¤"
+msgstr "Ein Fehler in Zeile {0}"
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
-"é¯èª¤è¨æ¯:\n"
+"Fehlermeldung:\n"
 "{0}"
 
 #: winPreferences
 msgid "Preferences"
-msgstr "åå¥½è¨­å®"
+msgstr "Einstelliungen"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "è¢å¹æªå"
+msgstr "Bildschirmfoto"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr "è¢å¹æªåå¿«ééµ:"
+msgstr "Sofort Bildschirmfoto Tastenkombination:"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr "æªååå»¶é²:"
+msgstr "Verzögerung vor Bildschirmfoto:"
 
 #: prefSeconds
 msgid "seconds"
-msgstr "ç§"
+msgstr "Sekunden"
 
 #: ok
 msgid "OK"
-msgstr "ç¢ºå®"
+msgstr "OK"
 
 #: cancel
 msgid "Cancel"
-msgstr "åæ¶"
+msgstr "Abbrechen"
