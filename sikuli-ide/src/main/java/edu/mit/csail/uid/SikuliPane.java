@@ -145,10 +145,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    public boolean close() throws IOException{
       if( isDirty() ){
-         Object[] options = {"Yes", "No", "Cancel"};
+         Object[] options = {I18N._I("yes"), I18N._I("no"), I18N._I("cancel")};
          int ans = JOptionPane.showOptionDialog(this,
-               getCurrentShortFilename() + " has been modified. Save changes?",
-               "Do you want to close this tab?",
+               I18N._I("msgAskSaveChanges", getCurrentShortFilename()),
+               I18N._I("dlgAskCloseTab"),
                JOptionPane.YES_NO_CANCEL_OPTION,
                JOptionPane.WARNING_MESSAGE,
                null,
@@ -328,8 +328,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
          _can_update_caret_last_x = true;
    }
 
-   // see: getMagicCaretPosition, getNextVisualPositionFrom
-   // FIXME: dirty hack for fixing cursor movement
    public void keyPressed(java.awt.event.KeyEvent ke) {
    }
 

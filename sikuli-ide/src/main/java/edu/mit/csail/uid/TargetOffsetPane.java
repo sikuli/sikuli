@@ -48,6 +48,11 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
       addMouseListener(this);
    }
 
+   static String _I(String key, Object... args){ 
+      return I18N._I(key, args);
+   }
+
+
    private void zoomToMatch(){
       Rectangle scr = _simg.getROI();
       _viewW = (int)(_match.w/_ratio);
@@ -209,8 +214,8 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
 
    public JComponent createControls(){
       JPanel pane = new JPanel(new GridBagLayout());
-      JLabel lblTargetX = new JLabel("Target offset  X:");
-      JLabel lblY = new JLabel(", Y:");
+      JLabel lblTargetX = new JLabel(_I("lblTargetOffsetX"));
+      JLabel lblY = new JLabel(_I("lblTargetOffsetY"));
 
       int x = _offset!=null? _offset.x : 0;
       int y = _offset!=null? _offset.y : 0;

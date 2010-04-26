@@ -46,6 +46,10 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _screen = simg.getImage();
    }
 
+   static String _I(String key, Object... args){ 
+      return I18N._I(key, args);
+   }
+
    public void componentHidden(ComponentEvent e) { } 
    public void componentMoved(ComponentEvent e) { }
    public void componentShown(ComponentEvent e) { }
@@ -79,10 +83,10 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
 
    public JComponent createControls(){
       JPanel pane = new JPanel(new GridBagLayout());
-      btnSimilar = new JLabel("Similarity:");
+      btnSimilar = new JLabel(_I("lblSimilarity"));
 
       sldSimilar = createSlider();
-      JLabel lblPreNumMatches = new JLabel("Number of matches:");
+      JLabel lblPreNumMatches = new JLabel(_I("lblNumberOfMatches"));
       SpinnerNumberModel model = new SpinnerNumberModel(10, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
       txtNumMatches = new JSpinner(model);
       lblPreNumMatches.setLabelFor(txtNumMatches);

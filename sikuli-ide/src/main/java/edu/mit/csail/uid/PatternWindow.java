@@ -22,9 +22,13 @@ public class PatternWindow extends JFrame implements Observer {
    private JPanel glass;
    private ScreenImage _simg;
 
+   static String _I(String key, Object... args){ 
+      return I18N._I(key, args);
+   }
+
    public PatternWindow(ImageButton imgBtn, boolean exact, 
                         float similarity, int numMatches){
-      super("Pattern Settings");
+      super(_I("winPatternSettings"));
       _imgBtn = imgBtn;
       //setBackground(new java.awt.Color(255,255,255,128)); 
       Point pos = imgBtn.getLocationOnScreen();
@@ -39,8 +43,8 @@ public class PatternWindow extends JFrame implements Observer {
       //tabPane.setPreferredSize(new Dimension(500,300));
       paneTarget = createTargetPanel();
       panePreview = createPrewviewPanel();
-      tabPane.addTab("Matching Preview", panePreview);
-      tabPane.addTab("Target Offset", paneTarget);
+      tabPane.addTab(_I("tabMatchingPreview"), panePreview);
+      tabPane.addTab(_I("tabTargetOffset"), paneTarget);
       c.add(tabPane, BorderLayout.CENTER);
       c.add(createButtons(), BorderLayout.SOUTH);
 
@@ -120,9 +124,9 @@ public class PatternWindow extends JFrame implements Observer {
    private JComponent createButtons(){
       JPanel pane = new JPanel(new GridBagLayout());
 
-      JButton btnOK = new JButton("OK");
+      JButton btnOK = new JButton(_I("ok"));
       btnOK.addActionListener(new ActionOK(this));
-      JButton btnCancel = new JButton("Cancel");
+      JButton btnCancel = new JButton(_I("cancel"));
       btnCancel.addActionListener(new ActionCancel(this));
 
       ImageIcon loadingIcon = new ImageIcon(

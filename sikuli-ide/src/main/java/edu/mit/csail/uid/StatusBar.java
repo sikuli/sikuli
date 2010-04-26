@@ -26,7 +26,8 @@ class StatusBar extends JPanel {
    }
 
    public void setCaretPosition(int row, int col){
-      _lblCaretPos.setText("Line: " + row + ", Column: " + col);
+      _lblCaretPos.setText(
+            I18N._I("statusLineColumn", row, col) );
    }
 
    protected void paintComponent(Graphics g) {
