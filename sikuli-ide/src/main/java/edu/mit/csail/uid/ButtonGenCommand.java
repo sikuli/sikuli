@@ -10,11 +10,11 @@ public class ButtonGenCommand extends JButton implements ActionListener{
    String _cmd;
    String[] _params;
 
-   public ButtonGenCommand(String cmd, String... params){
-      super(getRichRepresentation(cmd, params, false));
+   public ButtonGenCommand(String cmd, String desc, String... params){
+      super(getRichRepresentation(cmd, desc, params, false));
       _cmd = cmd;
       _params = params;
-      setToolTipText(getRichRepresentation(cmd, params, true));
+      setToolTipText(getRichRepresentation(cmd, desc, params, true));
       setHorizontalAlignment(SwingConstants.LEFT);
       addActionListener(this);
    }
@@ -41,7 +41,7 @@ public class ButtonGenCommand extends JButton implements ActionListener{
       return !item.equals(", ")? item : "";
    }
 
-   static String getRichRepresentation(String cmd, String[] params, boolean showOptParam){
+   static String getRichRepresentation(String cmd, String desc, String[] params, boolean showOptParam){
       String ret = "<html><table><tr><td valign=\"middle\"><b>" + cmd + "</b>(";
       int count = 0;
       for(String p : params){
@@ -50,7 +50,10 @@ public class ButtonGenCommand extends JButton implements ActionListener{
             ret += "<td valign=\"middle\">" + item;
          count++;
       }
-      ret += "<td>)";
+      ret += "<td>)</table>";
+      if(showOptParam){
+         ret += "<p> " + desc;
+      }
       return ret;
    }
 

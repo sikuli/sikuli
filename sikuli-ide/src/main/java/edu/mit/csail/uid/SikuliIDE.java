@@ -205,29 +205,47 @@ public class SikuliIDE extends JFrame {
 
    private String[][] CommandsOnToolbar = {
       {"find"}, {"PATTERN"},
+      {"Looks for the best matched GUI component on the screen or in the Region."},
       {"findAll"}, {"PATTERN"},
+      {"Looks for all matched GUI component on the screen or in the Region."},
       {"wait"}, {"PATTERN", "[timeout]"},
+      {"Waits the given GUI component to appear on the screen or in the Region for up to <i>timeout</i> seconds."},
       {"waitVanish"}, {"PATTERN", "[timeout]"},
-      {"exists"}, {"PATTERN"},
-      {"----"},{},
+      {"Waits the given GUI component to disappear on the screen or in the Region for up to <i>timeout</i> seconds."},
+      {"exists"}, {"PATTERN", "[timeout]"},
+      {"Checks if the given GUI component exists on the screen or in the Region.<br>If it can not be found, None is returned without throwing an exception."},
+      {"----"},{},{},
       {"click"}, {"PATTERN","[modifiers]"},
+      {"Clicks on the best matched GUI component on the screen or in the Region."},
       {"doubleClick"}, {"PATTERN","[modifiers]"},
+      {"Double clicks on the best matched GUI component on the screen or in the Region."},
       {"rightClick"}, {"PATTERN","[modifiers]"},
+      {"Right clicks on the best matched GUI component on the screen or in the Region."},
       {"hover"}, {"PATTERN"},
+      {"Moves the mouse cursor on the best matched GUI component."},
       {"dragDrop"}, {"PATTERN", "PATTERN", "[modifiers]"},
+      {"Drags the first component, and drops at the second component."},
 /*
       {"drag"}, {"PATTERN"},
       {"dropAt"}, {"PATTERN", "[delay]"},
 */
       {"type"}, {"_text", "[modifiers]"},
+      {"Types the given <i>text</i> to the current focused window."},
       {"type"}, {"PATTERN", "_text", "[modifiers]"},
+      {"Clicks on the given component to gain the focus and then types the given <i>text</i>."},
       {"paste"}, {"_text", "[modifiers]"},
+      {"Pastes the given <i>text</i> to the current focused window."},
       {"paste"}, {"PATTERN", "_text", "[modifiers]"},
-      {"----"},{},
+      {"Clicks on the given component to gain the focus and then pastes the given <i>text</i>."},
+      {"----"},{},{},
       {"onAppear"}, {"PATTERN", "_handler"},
+      {"Calls <i>handler</i> when the given image pattern appears on the screen or in the Region."},
       {"onVanish"}, {"PATTERN", "_handler"},
+      {"Calls <i>handler</i> when the given image pattern disappears on the screen or in the Region."},
       {"onChange"}, {"_handler"},
-      {"observe"}, {},
+      {"Calls <i>handler</i> when anything is changed on the screen or in the Region."},
+      {"observe"}, {"[time]","[background]"},
+      {"Starts the observer to watch the screen or the Region for up to <i>time</i> seconds.<br>The observer will be run in the background if <i>background</i> is set to True."},
    };
 
    private JToolBar initCmdToolbar(){
@@ -247,11 +265,12 @@ public class SikuliIDE extends JFrame {
       toolbar.add(chkAutoCapture);
       for(int i=0;i<CommandsOnToolbar.length;i++){
          String cmd = CommandsOnToolbar[i++][0];
-         String[] params = CommandsOnToolbar[i];
+         String[] params = CommandsOnToolbar[i++];
+         String[] desc = CommandsOnToolbar[i];
          if( cmd.equals("----") )
             toolbar.addSeparator();
          else
-            toolbar.add(new ButtonGenCommand(cmd, params));
+            toolbar.add(new ButtonGenCommand(cmd, desc[0], params));
       }
       return toolbar;
    }
