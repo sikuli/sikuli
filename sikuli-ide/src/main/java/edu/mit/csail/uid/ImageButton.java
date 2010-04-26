@@ -20,7 +20,8 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    private int _numMatches = DEFAULT_NUM_MATCHES;
    private boolean _exact;
    private Location _offset;
-   private boolean _showText;
+   private int _imgW, _imgH;
+   private float _scale = 1f;
 
    private PatternWindow pwin = null;
 
@@ -40,6 +41,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    public void setTargetOffset(Location offset){
       Debug.log("setTargetOffset: " + offset);
       _offset = offset;
+      setToolTipText( this.toString() );
    }
 
    public void setParameters(boolean exact, float similarity, int numMatches){
@@ -53,10 +55,12 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       final int max_h = UserPreferences.getInstance().getDefaultThumbHeight();
       Image img = new ImageIcon(imgFname).getImage();
       int w = img.getWidth(null), h = img.getHeight(null);
+      _imgW = w;
+      _imgH = h;
       if(max_h >= h)  return imgFname;
-      float scale = (float)max_h/h;
-      w *= scale;
-      h *= scale;
+      _scale = (float)max_h/h;
+      w *= _scale;
+      h *= _scale;
       BufferedImage thumb = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
       Graphics2D g2d = thumb.createGraphics();
       g2d.drawImage(img, 0, 0,  w, h, null);
@@ -67,7 +71,6 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    public ImageButton(JTextPane pane, String imgFilename){
       _pane = pane;
       _imgFilename = imgFilename;
-      _showText = true;
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
       _numMatches = DEFAULT_NUM_MATCHES;
@@ -97,28 +100,58 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
    private static Font textFont = new Font("arial", Font.BOLD, 12);
    private void drawText(Graphics2D g2d){
-      String str = "";
-      _showText = false;
-      if( !_exact && _similarity != DEFAULT_SIMILARITY){
-         _showText = true;
-         str += _similarity + " ";
+      String strSim=null, strOffset=null;
+      if( _similarity != DEFAULT_SIMILARITY){
+         if(_similarity==1)
+            strSim = "1.0";
+         else{
+            strSim = String.format("%.2f", _similarity);
+            if(strSim.charAt(0) == '0')
+               strSim = strSim.substring(1);
+         }
       }
       if(_offset != null && (_offset.x!=0 || _offset.y !=0)){
-         _showText = true;
-         str += "t: " + _offset.toString();
+         strOffset = _offset.toString();
       }
-      if( !_showText )
+      if(strOffset == null && strSim == null)
          return;
 
+      final int fontH = g2d.getFontMetrics().getMaxAscent();
+      final int x = getWidth(), y = 0;
+      drawText(g2d, strSim, x, y);
+      if(_offset!=null)
+         drawCross(g2d);
+   }
+
+   private void drawCross(Graphics2D g2d){
+      int x,y;
+      final String cross = "+";
+      final int w = g2d.getFontMetrics().stringWidth(cross);
+      final int h = g2d.getFontMetrics().getMaxAscent();
+      if(_offset.x>_imgW/2) x = getWidth()-w;
+      else if(_offset.x<-_imgW/2) x = 0;
+      else x= (int)(getWidth()/2 + _offset.x * _scale - w/2 );
+      if(_offset.y>_imgH/2) y = getHeight()+h/2-3;
+      else if(_offset.y<-_imgH/2) y = h/2+2;
+      else y= (int)(getHeight()/2 + _offset.y * _scale + h/2);
+      g2d.setFont( textFont );
+      g2d.setColor( new Color(0, 0, 0, 180) );
+      g2d.drawString(cross, x+1, y+1);
+      g2d.setColor( new Color(255, 0, 0, 180) );
+      g2d.drawString(cross, x, y);
+   }
+
+   private void drawText(Graphics2D g2d, String str, int x, int y){
+      if(str==null)
+         return;
       final int w = g2d.getFontMetrics().stringWidth(str);
       final int fontH = g2d.getFontMetrics().getMaxAscent();
-      final int x = getWidth() - w - 3, y = 0;
       final int borderW = 2;
       g2d.setFont( textFont );
       g2d.setColor( new Color(0, 128, 0, 128) );
-      g2d.fillRoundRect(x-borderW, y, w+borderW*2, fontH+borderW*2, 3, 3);
+      g2d.fillRoundRect(x-borderW*2-w, y, w+borderW*2, fontH+borderW*2, 3, 3);
       g2d.setColor( Color.white );
-      g2d.drawString(str, x, y+fontH+1);
+      g2d.drawString(str, x-w-3, y+fontH+1);
    }
 
    public void actionPerformed(ActionEvent e) {

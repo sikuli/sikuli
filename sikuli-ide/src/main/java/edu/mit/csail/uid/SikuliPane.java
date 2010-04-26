@@ -531,6 +531,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       boolean exact = false;
       int numMatches = -1;
       float similarity = -1f;
+      Location offset = null;
 
       //Debug.log("imgStr: " + imgStr);
       //Debug.log("filename " + filename);
@@ -550,6 +551,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
             if( str.startsWith("firstN") ){
                String strArg = str.substring(str.lastIndexOf("(")+1);
                numMatches = Integer.valueOf(strArg);
+            }
+            if( str.startsWith("targetOffset") ){
+               String strArg = str.substring(str.lastIndexOf("(")+1);
+               String[] args = strArg.split(",");
+               offset = new Location(0,0);
+               offset.x = Integer.valueOf(args[0]);
+               offset.y = Integer.valueOf(args[1]);
             }
          }
       }
@@ -610,8 +618,11 @@ public class SikuliPane extends JTextPane implements KeyListener,
       if( f != null && f.exists() ){
          this.select(startOff, endOff);
          ImageButton icon = new ImageButton(this, f.getAbsolutePath());
-         if(useParameters)
+         if(useParameters){
             icon.setParameters(exact, similarity, numMatches);
+            if(offset != null)
+               icon.setTargetOffset(offset);
+         }
          this.insertComponent(icon);
          return true;
       }
