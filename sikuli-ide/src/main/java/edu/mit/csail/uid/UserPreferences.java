@@ -1,6 +1,7 @@
 package edu.mit.csail.uid;
 
 import java.util.prefs.*;
+import java.util.Date;
 import java.awt.Event;
 
 public class UserPreferences {
@@ -80,6 +81,23 @@ public class UserPreferences {
 
    public void setAutoCaptureForCmdButtons(boolean flag){
       pref.putInt("AUTO_CAPTURE_FOR_CMD_BUTTONS", flag?1:0);
+   }
+
+   public void setCheckUpdateTime(){
+      pref.putLong("LAST_CHECK_UPDATE", (new Date()).getTime());
+   }
+
+   public long getCheckUpdateTime(){
+      return pref.getLong("LAST_CHECK_UPDATE", (new Date()).getTime());
+   }
+
+
+   public void setLastSeenUpdate(String ver){
+      pref.put("LAST_SEEN_UPDATE", ver);
+   }
+
+   public String getLastSeenUpdate(){
+      return pref.get("LAST_SEEN_UPDATE", "0.0");
    }
 
    public void put(String key, String val){

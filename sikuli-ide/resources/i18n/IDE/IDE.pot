@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 15:29-0400\n"
+"POT-Creation-Date: 2010-04-26 19:01-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,6 +78,22 @@ msgstr ""
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
+msgstr ""
+
+#: menuHelp
+msgid "Help"
+msgstr ""
+
+#: menuHelpCheckUpdate
+msgid "Check Update..."
+msgstr ""
+
+#: dlgUpdateAvailable
+msgid "Sikuli {0} is available!"
+msgstr ""
+
+#: msgNoUpdate
+msgid "No update is available."
 msgstr ""
 
 #: cmdListAutoCapture

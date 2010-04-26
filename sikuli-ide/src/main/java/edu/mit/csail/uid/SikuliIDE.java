@@ -38,6 +38,7 @@ public class SikuliIDE extends JFrame {
    private JMenu _fileMenu = new JMenu(_I("menuFile"));
    private JMenu _runMenu = new JMenu(_I("menuRun"));
    private JMenu _viewMenu = new JMenu(_I("menuView"));
+   private JMenu _helpMenu = new JMenu(_I("menuHelp"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
 
@@ -172,6 +173,13 @@ public class SikuliIDE extends JFrame {
       }
    }
 
+   private void initHelpMenu() throws NoSuchMethodException{
+      int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+      _helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
+      _helpMenu.add( createMenuItem(_I("menuHelpCheckUpdate"), 
+               null, new HelpAction(HelpAction.CHECK_UPDATE)));
+   }
+
    private void initViewMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
@@ -192,6 +200,7 @@ public class SikuliIDE extends JFrame {
          initFileMenu();
          initRunMenu();
          initViewMenu();
+         initHelpMenu();
       }
       catch(NoSuchMethodException e){
          e.printStackTrace();
@@ -200,6 +209,7 @@ public class SikuliIDE extends JFrame {
       _menuBar.add(_fileMenu);
       _menuBar.add(_runMenu);
       _menuBar.add(_viewMenu);
+      _menuBar.add(_helpMenu);
       frame.setJMenuBar(_menuBar);
    }
 
@@ -446,9 +456,20 @@ public class SikuliIDE extends JFrame {
       else
          (new FileAction()).doNew();
 
-
       _inited = true;
       setVisible(true);
+      checkUpdate();
+   }
+
+   private void checkUpdate(){
+      UserPreferences pref = UserPreferences.getInstance();
+      long last_check = pref.getCheckUpdateTime();
+      long now = (new Date()).getTime();
+      if(now - last_check > 1000*86400){
+         Debug.log(3, "check update");
+         (new HelpAction()).checkUpdate(true);
+      }
+      pref.setCheckUpdateTime();
    }
 
    private void initWindowListener(){
@@ -696,6 +717,38 @@ public class SikuliIDE extends JFrame {
 
    public void quit(){
       (new FileAction()).doQuit();
+   }
+
+   class HelpAction extends MenuAction {
+      static final String CHECK_UPDATE = "doCheckUpdate";
+      public HelpAction(){
+         super();
+      }
+      public HelpAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+      
+      public boolean checkUpdate(boolean isAutoCheck){
+         AutoUpdater au = new AutoUpdater();
+         UserPreferences pref = UserPreferences.getInstance();
+         if( au.checkUpdate() ){
+            String ver = au.getVersion();
+            String details = au.getDetails();
+            if(isAutoCheck && pref.getLastSeenUpdate().equals(ver))
+               return false;
+            UpdateFrame f = new UpdateFrame(
+                  _I("dlgUpdateAvailable", ver), details );
+            UserPreferences.getInstance().setLastSeenUpdate(ver);
+            return true;
+         }
+         return false;
+      }
+
+      public void doCheckUpdate(){
+         if(!checkUpdate(false)){
+            JOptionPane.showMessageDialog(null, _I("msgNoUpdate"));
+         }
+      }
    }
 
    class FileAction extends MenuAction {
