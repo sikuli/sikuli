@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-25 18:27-0400\n"
-"PO-Revision-Date: 2010-04-25 23:27+0000\n"
+"PO-Revision-Date: 2010-04-26 01:53+0000\n"
 "Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-26 01:16+0000\n"
+"X-Launchpad-Export-Date: 2010-04-26 01:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: menuFile
@@ -43,7 +43,7 @@ msgstr "另存為..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr "å¯åº.SKLå·è¡æª..."
+msgstr "匯出.SKL可執行檔"
 
 #: menuFilePreferences
 msgid "Preferences..."

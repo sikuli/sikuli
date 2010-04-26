@@ -33,13 +33,14 @@ public class SikuliIDE extends JFrame {
    static String _I(String key, Object... args){ 
       String ret;
       try {
-         ret = new String (i18nRB.getString(key).getBytes("ISO-8859-1"),"UTF-8");
+         //ret = new String (i18nRB.getString(key).getBytes("ISO-8859-1"),"UTF-8");
+         ret = i18nRB.getString(key);
       } catch (MissingResourceException e) {
-         ret = i18nRB_en.getString(key); 
-      } catch (UnsupportedEncodingException e) {
+            ret = i18nRB_en.getString(key); 
+      } /*catch (UnsupportedEncodingException e) {
          e.printStackTrace();
          return null;
-      } 
+      } */
       if(args.length>0){
          MessageFormat formatter = new MessageFormat("");
          formatter.setLocale(curLocale);

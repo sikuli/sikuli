@@ -144,4 +144,10 @@ inc-minor2:
 tags:
 	ctags -R --language-force=java  -f .tags src/main/java ../sikuli-script/src/main/java
 
+po2prop:
+	for f in resources/i18n/IDE/*.po; do \
+	   echo convert $$f; \
+	   po2prop -t resources/i18n/IDE_en_US.properties $$f `echo $$f | sed -e 's/IDE-\(.*\).po/..\/IDE_\1.properties/'` ; \
+	done
+
 include Makefile.$(UNAME)
