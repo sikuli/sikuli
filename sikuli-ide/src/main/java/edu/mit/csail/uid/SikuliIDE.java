@@ -972,6 +972,29 @@ public class SikuliIDE extends JFrame {
       }
 
       private int findErrorSource(Throwable thr, String filename) {
+         String err = thr.toString();
+         if(err.startsWith("Traceback")){
+            java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                  ", line (\\d+),");
+            java.util.regex.Matcher m = p.matcher(err);
+            if(m.find()){
+               Debug.log(4, "error line: " + m.group(1));
+               return Integer.parseInt(m.group(1));
+            }
+         }
+         else if(err.startsWith("SyntaxError")){
+            java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                  ", (\\d+), (\\d+),");
+            java.util.regex.Matcher m = p.matcher(err);
+            if(m.find()){
+               Debug.log(4, "SyntaxError error line: " + m.group(1));
+               return Integer.parseInt(m.group(1));
+            }
+         }
+         return _findErrorSource(thr, filename);
+      }
+
+      private int _findErrorSource(Throwable thr, String filename) {
          StackTraceElement[] s;
          Throwable t = thr;
          while (t != null) {
@@ -1052,7 +1075,6 @@ public class SikuliIDE extends JFrame {
                         if(srcLine != -1){
                            Debug.info( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
-                           //codePane.setErrorHighlight(srcLine);
                         }
                         Debug.info( _I("msgErrorMsg", e.toString()) );
                      }
