@@ -10,12 +10,11 @@ import javax.swing.event.*;
 import javax.imageio.*;
 
 
-class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
+class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListener, ChangeListener{
    final static int DEFAULT_H = 300;
    final static float DEFAULT_PATTERN_RATIO=0.4f;
    ScreenImage _simg;
    BufferedImage _img;
-   int _w, _h;
    Match _match;
 
    int _viewX, _viewY, _viewW, _viewH;
@@ -46,6 +45,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
          Debug.error("Can't load " + patFilename);
       }
       addMouseListener(this);
+      addMouseWheelListener(this);
    }
 
    static String _I(String key, Object... args){ 
@@ -94,6 +94,18 @@ class TargetOffsetPane extends JPanel implements MouseListener, ChangeListener{
       }
    }
 
+   public void mouseWheelMoved(MouseWheelEvent e) {
+      int rot = e.getWheelRotation();
+      if(rot<0){
+         if(_ratio*1 < 5)
+            _ratio *= 1.1;
+      }
+      else{
+         if(_ratio*_img.getWidth() > 20)
+            _ratio *= 0.9;
+      }
+      repaint();
+   }
    public void mouseClicked ( MouseEvent me ) { }
 
    public void mouseReleased ( MouseEvent me ) {

@@ -192,7 +192,9 @@ class HighlightLabelView extends LabelView {
        "setX", "setY", "setW", "setH", "setRect", "setROI",
        "getX", "getY", "getW", "getH", "getRect", "getROI",
        "getNumberScreens", "getBounds",
-       "similar", "targetOffset", "lastMatch", "lastMatches"
+       "similar", "targetOffset", "getLastMatch", "getLastMatches",
+       "getTargetOffset", "getFilename"
+
     };
 
     private static String[] constantsSikuli = {
