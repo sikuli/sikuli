@@ -44,7 +44,7 @@ public class Clipboard {
       getSystemClipboard().setContents(transferable, transferable);
    }
 
-   private static java.awt.datatransfer.Clipboard getSystemClipboard() {
+   public static java.awt.datatransfer.Clipboard getSystemClipboard() {
       return Toolkit.getDefaultToolkit().getSystemClipboard();
    }
 

@@ -1,6 +1,8 @@
 package edu.mit.csail.uid;
 
+import java.io.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.MouseInfo;
 
@@ -14,6 +16,7 @@ public class Env {
    public static String getOSVersion(){
       return System.getProperty("os.version");
    }
+
    public static OS getOS(){
       String os = System.getProperty("os.name").toLowerCase();
       if( os.startsWith("mac os x") )
@@ -23,6 +26,19 @@ public class Env {
       else if( os.startsWith("linux"))
          return OS.LINUX;
       return OS.NOT_SUPPORTED;
+   }
+
+   public static String getClipboard(){
+      Transferable content = Clipboard.getSystemClipboard().getContents(null);
+      try{
+         if(content.isDataFlavorSupported(DataFlavor.stringFlavor))
+            return content.getTransferData(DataFlavor.stringFlavor).toString();
+      }
+      catch(UnsupportedFlavorException e){
+      }
+      catch(IOException e){
+      }
+      return "";
    }
 
    static OSUtil createOSUtil(){
