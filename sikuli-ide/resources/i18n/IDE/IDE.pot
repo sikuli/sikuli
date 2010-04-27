@@ -1,4 +1,4 @@
-#. extracted from resources/i18n/IDE_en_US.properties
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -10,7 +10,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.6.1-pre\n"
+"X-Launchpad-Export-Date: 2010-04-26 23:56+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: menuFile
 msgid "File"
@@ -329,8 +330,7 @@ msgstr ""
 
 #: cmdOnChange
 msgid ""
-"Calls <i>handler</i> when anything is changed on the screen or in the "
-"Region."
+"Calls <i>handler</i> when anything is changed on the screen or in the Region."
 msgstr ""
 
 #: cmdObserve
