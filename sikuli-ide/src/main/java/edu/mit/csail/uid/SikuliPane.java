@@ -343,6 +343,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
    
    public void keyTyped(java.awt.event.KeyEvent ke) { 
+      /*
       try{
          //if(ke.getKeyChar() == '\t') expandTab();
          checkCompletion(ke);
@@ -350,6 +351,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       catch(BadLocationException e){
          e.printStackTrace();
       }
+      */
    }
 
    @Override public void read(Reader in, Object desc) throws IOException{

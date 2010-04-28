@@ -180,8 +180,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             return 0;
          }
          if(tarLine>txt.getNumLines()){
-            pos = txt.getDocument().getLength()-1;
-            return pos>=0?pos:0;
+            return txt.getDocument().getLength();
          }
 
          Rectangle curRect = txt.modelToView(pos);
