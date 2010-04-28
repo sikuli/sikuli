@@ -58,12 +58,12 @@ public class Clipboard {
       }
 
       public DataFlavor[] getTransferDataFlavors() {
-         return new DataFlavor[]{flavor};
+         return new DataFlavor[]{flavor, DataFlavor.stringFlavor};
       }
 
       public boolean isDataFlavorSupported(DataFlavor flavor) {
          boolean b = this.flavor.getPrimaryType().equals(flavor.getPrimaryType());
-         return b;
+         return b || flavor.equals(DataFlavor.stringFlavor);
       }
 
       public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
@@ -78,6 +78,9 @@ public class Clipboard {
          }
          else if (flavor.isRepresentationClassByteBuffer()) {
             return ByteBuffer.wrap(data.getBytes());
+         }
+         else if (flavor.equals(DataFlavor.stringFlavor)){
+            return data;
          }
          throw new UnsupportedFlavorException(flavor);
       }

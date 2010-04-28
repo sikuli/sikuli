@@ -27,6 +27,7 @@ public class ScriptRunner {
       PythonInterpreter.initialize(System.getProperties(),null, args);
       py = new PythonInterpreter();
       String[] h = new String[]{
+         "# coding=utf-8",
          "from __future__ import with_statement",
          "from sikuli.Sikuli import *",
          "setThrowException(True)",

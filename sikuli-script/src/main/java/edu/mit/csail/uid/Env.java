@@ -35,8 +35,10 @@ public class Env {
             return content.getTransferData(DataFlavor.stringFlavor).toString();
       }
       catch(UnsupportedFlavorException e){
+         System.out.println("UnsupportedFlavorException: " + content);
       }
       catch(IOException e){
+         e.printStackTrace();
       }
       return "";
    }
