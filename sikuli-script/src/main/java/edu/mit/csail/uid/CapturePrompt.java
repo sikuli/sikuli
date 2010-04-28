@@ -188,6 +188,12 @@ class CapturePrompt extends JWindow implements Subject{
          e.printStackTrace();
       }
       crop_g2d.dispose();
+      /*
+      try{
+         ImageIO.write(crop, "png", new File("debug_crop.png"));
+      }
+      catch(IOException e){}
+      */
       return crop;
    }
 

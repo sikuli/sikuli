@@ -44,6 +44,7 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Finder_createFinder___3BII
    }
    env->GetByteArrayRegion(screenImg, 0, len,(jbyte *)result);
    cvSetData(img,result,bpr);    //set the buffer
+   cvCvtColor(img, img, CV_RGB2BGR);
 
    Finder *finder = new Finder(img);
 

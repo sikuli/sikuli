@@ -8,7 +8,7 @@ public class OpenCV {
    public static BufferedImage createBufferedImage(int w, int h)
    {
       ComponentColorModel cm = new ComponentColorModel(
-            ColorSpace.getInstance(ColorSpace.CS_sRGB),
+            ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
             false,  //no alpha channel
             false,  //not premultiplied
             ColorModel.OPAQUE,

@@ -252,6 +252,7 @@ Finder::find_helper(){
   
   // [DEBUG] reset the debug image to the content of the input image
   debug_init_image();
+  //debug_save_image("debug.png");
 
   //current_match = next();
 }
