@@ -178,6 +178,17 @@ public class SikuliIDE extends JFrame {
       _helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
       _helpMenu.add( createMenuItem(_I("menuHelpCheckUpdate"), 
                null, new HelpAction(HelpAction.CHECK_UPDATE)));
+      _helpMenu.addSeparator();
+      _helpMenu.add( createMenuItem(_I("menuHelpGuide"), 
+               null, new HelpAction(HelpAction.OPEN_GUIDE)));
+      _helpMenu.add( createMenuItem(_I("menuHelpDocumentations"), 
+               null, new HelpAction(HelpAction.OPEN_DOC)));
+      _helpMenu.add( createMenuItem(_I("menuHelpAsk"), 
+               null, new HelpAction(HelpAction.OPEN_ASK)));
+      _helpMenu.add( createMenuItem(_I("menuHelpBugReport"), 
+               null, new HelpAction(HelpAction.OPEN_BUG_REPORT)));
+      _helpMenu.add( createMenuItem(_I("menuHelpHomepage"), 
+               null, new HelpAction(HelpAction.OPEN_HOMEPAGE)));
    }
 
    private void initViewMenu() throws NoSuchMethodException{
@@ -721,13 +732,49 @@ public class SikuliIDE extends JFrame {
 
    class HelpAction extends MenuAction {
       static final String CHECK_UPDATE = "doCheckUpdate";
+      static final String OPEN_DOC = "openDoc";
+      static final String OPEN_GUIDE = "openGuide";
+      static final String OPEN_ASK = "openAsk";
+      static final String OPEN_BUG_REPORT = "openBugReport";
+      static final String OPEN_HOMEPAGE = "openHomepage";
+
       public HelpAction(){
          super();
       }
       public HelpAction(String item) throws NoSuchMethodException{
          super(item);
       }
+
+      private void openURL(String url){
+         try{
+            URL u = new URL(url);
+            java.awt.Desktop.getDesktop().browse(u.toURI());
+         }
+         catch(Exception ex){
+            ex.printStackTrace();
+         }
+      }
       
+      public void openDoc(){
+         openURL("http://sikuli.org/documentation.shtml");
+      }
+
+      public void openGuide(){
+         openURL("http://sikuli.org/trac/wiki/reference-0.10");
+      }
+
+      public void openAsk(){
+         openURL("https://answers.launchpad.net/sikuli");
+      }
+
+      public void openBugReport(){
+         openURL("https://bugs.launchpad.net/sikuli/+filebug");
+      }
+
+      public void openHomepage(){
+         openURL("http://sikuli.org");
+      }
+
       public boolean checkUpdate(boolean isAutoCheck){
          AutoUpdater au = new AutoUpdater();
          UserPreferences pref = UserPreferences.getInstance();
@@ -746,7 +793,9 @@ public class SikuliIDE extends JFrame {
 
       public void doCheckUpdate(){
          if(!checkUpdate(false)){
-            JOptionPane.showMessageDialog(null, _I("msgNoUpdate"));
+            JOptionPane.showMessageDialog(null, 
+                  _I("msgNoUpdate"), "Sikuli " + IDESettings.SikuliVersion,
+                  JOptionPane.INFORMATION_MESSAGE);
          }
       }
    }
