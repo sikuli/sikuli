@@ -461,6 +461,7 @@ public class SikuliIDE extends JFrame {
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       initHotkeys();
       initWindowListener();
+      initTooltip();
 
       if(args!=null && args.length>=1)
          loadFile(args[0]);
@@ -470,6 +471,11 @@ public class SikuliIDE extends JFrame {
       _inited = true;
       setVisible(true);
       checkUpdate();
+   }
+
+   private void initTooltip(){
+      ToolTipManager tm = ToolTipManager.sharedInstance();
+      tm.setDismissDelay(30000);
    }
 
    private void checkUpdate(){
