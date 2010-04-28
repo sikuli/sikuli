@@ -171,7 +171,7 @@ class HighlightLabelView extends LabelView {
 
     private static String[] keywordsSikuliClass = {
        "Region", "Screen", "Match", "Pattern",
-       "Location", "VDict", "Env", "Key", "Button"
+       "Location", "VDict", "Env", "Key", "Button", "Finder"
     };
 
     private static String[] keywordsSikuli = {
@@ -193,8 +193,12 @@ class HighlightLabelView extends LabelView {
        "getX", "getY", "getW", "getH", "getRect", "getROI",
        "getNumberScreens", "getBounds",
        "similar", "targetOffset", "getLastMatch", "getLastMatches",
-       "getTargetOffset", "getFilename"
-
+       "getTargetOffset", "getFilename",
+       "setAutoWaitTimeout", "setBundlePath", "setShowActions",
+       "setThrowException",
+       "hasNext", "next", "destroy", "exact", "offset",
+       "getOSVersion", "getScore", "getTarget",
+       "getBundlePath", "getAutoWaitTimeout", "getThrowException"
     };
 
     private static String[] constantsSikuli = {
@@ -204,7 +208,7 @@ class HighlightLabelView extends LabelView {
        "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
        "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
        "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD",
-       "SCREEN"
+       "SCREEN", "MIDDLE"
     };
 
     static {

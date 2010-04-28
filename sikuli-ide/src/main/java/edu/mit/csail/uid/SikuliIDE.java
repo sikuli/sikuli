@@ -187,6 +187,7 @@ public class SikuliIDE extends JFrame {
                null, new HelpAction(HelpAction.OPEN_ASK)));
       _helpMenu.add( createMenuItem(_I("menuHelpBugReport"), 
                null, new HelpAction(HelpAction.OPEN_BUG_REPORT)));
+      _helpMenu.addSeparator();
       _helpMenu.add( createMenuItem(_I("menuHelpHomepage"), 
                null, new HelpAction(HelpAction.OPEN_HOMEPAGE)));
    }
