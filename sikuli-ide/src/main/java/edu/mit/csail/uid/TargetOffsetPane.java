@@ -96,12 +96,15 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 
    public void mouseWheelMoved(MouseWheelEvent e) {
       int rot = e.getWheelRotation();
+      int patW = (int)(getWidth()*_ratio);
+      float zoomRatio = patW/(float)_img.getWidth();
+      int patH = (int)(_img.getHeight()*_zoomRatio);;
       if(rot<0){
-         if(_ratio*1 < 5)
+         if(patW < 2*getWidth() && patH < 2*getHeight())
             _ratio *= 1.1;
       }
       else{
-         if(_ratio*_img.getWidth() > 20)
+         if(patW > 20 && patH > 20)
             _ratio *= 0.9;
       }
       repaint();
@@ -118,6 +121,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
    private static Color COLOR_BG_LINE = new Color(210,210,210,130);
    void paintRulers(Graphics g2d){
       int step = (int)(10*_zoomRatio);
+      if(step<2) step = 2;
       int h = getHeight(), w = getWidth();
       if(h%2==1)  h--;
       if(w%2==1)  w--;
