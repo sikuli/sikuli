@@ -1087,7 +1087,7 @@ public class SikuliIDE extends JFrame {
          LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
          lnview.addErrorMark(line);
          SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
-         codePane.setErrorHighlight(line);
+         //codePane.setErrorHighlight(line);
       }
 
       public void resetErrorMark(){
@@ -1095,7 +1095,7 @@ public class SikuliIDE extends JFrame {
          LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
          lnview.resetErrorMark();
          SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
-         codePane.setErrorHighlight(-1);
+         //codePane.setErrorHighlight(-1);
       }
 
       public void runCurrentScript() {
@@ -1114,7 +1114,6 @@ public class SikuliIDE extends JFrame {
                      SikuliIDE.getInstance().setVisible(false);
                      _console.clear();
                      resetErrorMark();
-                     //codePane.setErrorHighlight(-1);
                      runPython(tmpFile);
                   }
                   catch(Exception e){
@@ -1131,6 +1130,9 @@ public class SikuliIDE extends JFrame {
                         if(srcLine != -1){
                            Debug.info( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
+                           try{ codePane.jumpTo(srcLine); }
+                           catch(BadLocationException be){}
+                           codePane.requestFocus();
                         }
                         Debug.info( _I("msgErrorMsg", e.toString()) );
                      }
