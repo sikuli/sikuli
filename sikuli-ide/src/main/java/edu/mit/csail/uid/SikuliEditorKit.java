@@ -189,7 +189,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             tarEndRect = txt.modelToView(txt.getLineStartOffset(tarLine)-1);
          else
             tarEndRect = txt.modelToView(txt.getDocument().getLength()-1);
-         Debug.log(7, "curRect: " + curRect + ", tarEnd: " + tarEndRect);
+         Debug.log(9, "curRect: " + curRect + ", tarEnd: " + tarEndRect);
 
          if( curRect.x > tarEndRect.x )
             pos = txt.viewToModel(new Point(tarEndRect.x, tarEndRect.y));

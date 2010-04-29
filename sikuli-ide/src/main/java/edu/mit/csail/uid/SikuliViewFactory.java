@@ -327,7 +327,7 @@ class HighlightLabelView extends LabelView {
          Debug.log(9, "viewToModel: try " + pos);
          Shape s1 = modelToView(pos, a, bias[0]);
          Shape s2 = modelToView(pos+1, a, bias[0]);
-         if( Math.abs(s1.getBounds().x-fx) < Math.abs(s2.getBounds().x-fx) )
+         if( Math.abs(s1.getBounds().x-fx) <= Math.abs(s2.getBounds().x-fx) )
             return pos;
          else
             return pos+1;
