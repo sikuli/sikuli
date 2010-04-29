@@ -31,7 +31,7 @@ public class NativeLayerForMac implements NativeLayer {
    public void initIDE(final SikuliIDE ide){
    }
 
-   public static void initApp(){
+   public void initApp(){
       Application app = Application.getApplication();
       app.addPreferencesMenuItem();
       app.setEnabledPreferencesMenu(true);

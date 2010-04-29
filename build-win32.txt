@@ -1,0 +1,27 @@
+ = Build Sikuli Script =
+
+1. install Visual Studio 2008, OpenCV 2.1, JDK 6, cygwin(zip, unzip, perl)
+2. build tesseract-ocr using Visual Studio
+3. make sure VC\bin and JDK\bin are in your PATH
+
+Open Cygwin Shell
+
+4. build Sikuli Script's native libs 
+      cd sikuli-script/src/main/native
+      ./make-win32.bat
+
+5. build sikuli-script.jar
+      cd sikuli-script
+      make -f Makefile.win32
+
+---
+ = Build Sikuli IDE =
+
+1. install izpack
+
+Open Cygwin Shell
+
+2. cd sikuli-ide/
+   make -f Makefile.win32 release
+
+Sikuli-IDE-win-*.zip and Sikuli-IDE-win-*.exe will be generated and put in release/.
