@@ -95,35 +95,22 @@ class CapturePrompt extends JWindow implements Subject{
 
    }
 
+   BufferedImage bi = null;
    public void paint(Graphics g)
    {
       if( _scr_img != null ){
-         Graphics2D g2d = (Graphics2D)g;
+         Graphics2D g2dWin = (Graphics2D)g;
 
-         /*
-         Thread th =  new Thread() {
-            public void run() {
-               try{
-                  Thread.sleep(1000);
-                  while(_darker_factor>=MIN_DARKER_FACTOR){
-                     _darker_factor-=0.1f;
-                     CapturePrompt.this.repaint();
-                     Thread.sleep(40);
-                  }
-               }
-               catch(InterruptedException ie){
-               }
-            }
-         };
-         if(_darker_factor==1.0f)
-            th.start();
-
-         RescaleOp op = new RescaleOp(_darker_factor, 0, null);
-         _darker_screen = op.filter(_scr_img, null);
-         */
-         g2d.drawImage(_darker_screen,0,0,this);
-         drawMessage(g2d);
-         drawSelection(g2d);
+         if ( bi==null || bi.getWidth(this) != getWidth() ||
+              bi.getHeight(this) != getHeight() ) {
+            bi = new BufferedImage( 
+                  getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB );
+         }
+         Graphics2D bfG2 = bi.createGraphics();
+         bfG2.drawImage(_darker_screen,0,0,this);
+         drawMessage(bfG2);
+         drawSelection(bfG2);
+         g2dWin.drawImage(bi, 0, 0, this);
          setVisible(true);
       }
       else
