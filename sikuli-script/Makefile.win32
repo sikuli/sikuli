@@ -14,7 +14,7 @@ JAR_DLL_PATH=$(JAR_PATH)/META-INF/lib
 DLLS=$(NATIVE_TARGET_PATH)/*.dll
 INCLUDE_LIB_PATH=../lib/mx-native-loader-1.2/target/classes
 LIB_PATH=../../../lib
-JYTHON_SRC_PATH=src/main/python
+JYTHON_SRC_PATH=src/main/python/sikuli
 
 default: java dll jar
 
@@ -35,7 +35,7 @@ $(JAR_PATH):
 	mkdir $(JAR_PATH)
 
 $(JAR_DLL_PATH):
-	mkdir $(JAR_DLL_PATH)
+	mkdir -p $(JAR_DLL_PATH)
 
 prepare-jar: $(JAR_PATH) $(JAR_DLL_PATH) 
 	cp $(DLLS) $(JAR_DLL_PATH)
@@ -43,10 +43,10 @@ prepare-jar: $(JAR_PATH) $(JAR_DLL_PATH)
 	mkdir -p $(JAR_PATH)/META-INF
 	cp -rf $(NATIVE_TARGET_PATH) $(JAR_PATH)/META-INF
 	cp -rf $(INCLUDE_LIB_PATH)/* $(JAR_PATH) 
-	cd $(JAR_PATH); jar xf $(LIB_PATH)/jython-*.jar 
+	cd $(JAR_PATH); jar xf $(LIB_PATH)/jython-2.5.1.jar 
 	mkdir -p $(JAR_PATH)/Lib
 	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
-	cd $(JAR_PATH)/Lib; unzip -qn ../$(LIB_PATH)/jython-lib.zip
+	cd $(JAR_PATH)/Lib; unzip -qn ../$(LIB_PATH)/jython-lib-2.5.1.zip
 
 jar: prepare-jar
 	cp $(DLLS) ../lib/win32
