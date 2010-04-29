@@ -82,6 +82,7 @@ $(RELEASE_TMP_PATH):
 	mkdir -p $(RELEASE_TMP_PATH)
 
 release: jar $(RELEASE_TMP_PATH) 
+	mkdir -p ../release
 	perl -pi -e 's/<appversion>.*<\/appversion>/$$v=`cat latest-ver`;chomp($$v);"<appversion>$$v<\/appversion>"/xe' install.xml
 	cp $(subst ;, , $(CLASSPATH)) $(JAR_PATH)/../$(JAR) $(RELEASE_TMP_PATH)
 	cd $(RELEASE_TMP_PATH); rm -f sikuli-ide-full.jar; ../../../utils/merge-jar.sh *.jar; mv out.jar sikuli-ide-full.jar
