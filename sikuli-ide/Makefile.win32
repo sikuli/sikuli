@@ -1,4 +1,4 @@
-JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8
+JAVA_ARGS=-Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Dpython.path=$(LIB_PATH)/sikuli-script.jar/Lib
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAVAC=javac
@@ -26,7 +26,7 @@ APP_FRAMEWORKS_PATH=$(TARGET_PATH)/$(APP)/Contents/Frameworks
 
 SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*/NativeLayerFor.*.java')
 CLASSES=$(shell cd $(SOURCE_PATH); find . -name \*.java -and -not -regex '.*/NativeLayerFor.*.java'| perl -ple 's!^./(.*)\.java!$(CLASSES_OUT_PATH)/$$1.class!' )
-RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts
+RESOURCES=$(RESOURCE_PATH)/icons $(RESOURCE_PATH)/META-INF $(RESOURCE_PATH)/scripts $(RESOURCE_PATH)/i18n
 TARGET_RESOURCES=$(RESOURCES:$(RESOURCE_PATH)/%=$(CLASSES_OUT_PATH)/%)
 
 JFLAGS=-sourcepath $(SOURCE_PATH) -d $(CLASSES_OUT_PATH) -cp "$(CLASSPATH)"
@@ -58,6 +58,8 @@ debug:
 
 test:all
 	#open target/Sikuli-IDE.app --args ../evaluation/TestJEdit.sikuli
+	mkdir -p tmplib/
+	cp $(LIB_PATH)/jintellitype-1.3.2/*.dll tmplib/
 	PATH=$$PATH:tmplib/ $(JAVA) $(JAVA_ARGS) -cp "$(CLASSPATH);$(CLASSES_OUT_PATH)" $(MAIN_CLASS) $(ARGS) #evaluation/TestCapivara.sikuli #testing/PythonTestCase.sikuli #evaluation/TestDrJava.py #testing/PythonTestCase.py
 
 

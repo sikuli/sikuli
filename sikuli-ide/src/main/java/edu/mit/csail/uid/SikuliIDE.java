@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
 
-   private NativeLayer _native;
+   private static NativeLayer _native;
 
    private ConsolePane _console;
    private CloseableTabbedPane _mainPane, _sidePane;
@@ -431,7 +431,7 @@ public class SikuliIDE extends JFrame {
 
       ScriptRunner srunner = ScriptRunner.getInstance(args);
 
-      initNativeLayer();
+      _native.initIDE(this);
 
 
       initMenuBars(this);
@@ -518,7 +518,7 @@ public class SikuliIDE extends JFrame {
                           "onStopRunning", "()V");
    }
 
-   private void initNativeLayer(){
+   static private void initNativeLayer(){
       String os = "unknown";
       if(Utils.isWindows()) os = "Windows";
       else if(Utils.isMacOSX()) os = "Mac";
@@ -529,7 +529,6 @@ public class SikuliIDE extends JFrame {
          Class c = Class.forName(className);
          Constructor constr = c.getConstructor();
          _native = (NativeLayer)constr.newInstance();
-         _native.initIDE(this);
       }
       catch( Exception e){
          e.printStackTrace();
@@ -575,6 +574,7 @@ public class SikuliIDE extends JFrame {
    }
 
    public static void main(String[] args) {
+      initNativeLayer();
       if(args!=null && args.length>=1){
          try{
             if(args[0].endsWith(".skl")){
@@ -594,7 +594,7 @@ public class SikuliIDE extends JFrame {
       }
 
       if(Utils.isMacOSX()){
-         NativeLayerForMac.initApp();
+         _native.initApp();
          try{ Thread.sleep(1000); } catch(InterruptedException ie){}
       }
       if(!_runningSkl){
