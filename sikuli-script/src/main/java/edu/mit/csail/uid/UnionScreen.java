@@ -30,11 +30,11 @@ public class UnionScreen extends Screen {
          Rectangle scrBound = Screen.getBounds(i);
          Rectangle inter = scrBound.intersection(rect);
          System.out.println("scrBound: " + scrBound + ", inter: " +inter);
-         int x = inter.x, y = inter.y;
-         inter.x=0;
-         inter.y=0;
+         int ix = inter.x, iy = inter.y;
+         inter.x-=scrBound.x;
+         inter.y-=scrBound.y;
          BufferedImage img = _robots[i].createScreenCapture(inter);
-         g2d.drawImage(img, x, y, null);
+         g2d.drawImage(img, ix-_bounds.x, iy-_bounds.y, null);
       }
       g2d.dispose();
       return new ScreenImage(rect, ret);
