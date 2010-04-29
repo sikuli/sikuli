@@ -4,7 +4,7 @@ app: jar $(TARGET_PATH)/$(APP)
 	for jar in `echo $(CLASSPATH):$(TARGET_PATH)/$(JAR) | sed -e "s/:/ /g"`; do cp $$jar $(TARGET_PATH)/$(APP) ; done
 
 
-do_release:  app
+do_release:  $(RELEASE_PATH) app
 	for OS in linux; do \
 		APP=Sikuli-IDE; \
 		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-`date "+%Y%m%d"`.zip; \
