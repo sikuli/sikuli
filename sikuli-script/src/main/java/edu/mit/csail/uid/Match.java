@@ -37,7 +37,8 @@ public class Match extends Region implements Comparable {
 
    public String toString(){
       String target = "center";
-      if(_target != null) target = _target.toString();
+      Location c = getCenter();
+      if(_target != null && !c.equals(_target)) target = _target.toString();
       return String.format("Match[%d,%d %dx%d] score=%.2f, target=%s", x, y, w, h, score, target);
    }
 
