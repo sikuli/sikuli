@@ -1,6 +1,7 @@
 package edu.mit.csail.uid;
 
 import java.awt.*;
+import java.awt.image.*;
 
 public class UnionScreen extends Screen {
    Rectangle _bounds;
@@ -17,6 +18,26 @@ public class UnionScreen extends Screen {
          }
       }
       return _bounds;
+   }
+
+   public ScreenImage capture(Rectangle rect) {
+      Debug.log(5, "capture: " + rect);
+
+      BufferedImage ret = new BufferedImage( rect.width, rect.height, 
+                                             BufferedImage.TYPE_INT_RGB );
+      Graphics2D g2d = ret.createGraphics();
+      for (int i=0; i < Screen.getNumberScreens(); i++) {
+         Rectangle scrBound = Screen.getBounds(i);
+         Rectangle inter = scrBound.intersection(rect);
+         System.out.println("scrBound: " + scrBound + ", inter: " +inter);
+         int x = inter.x, y = inter.y;
+         inter.x=0;
+         inter.y=0;
+         BufferedImage img = _robots[i].createScreenCapture(inter);
+         g2d.drawImage(img, x, y, null);
+      }
+      g2d.dispose();
+      return new ScreenImage(rect, ret);
    }
 
    boolean useFullscreen(){
