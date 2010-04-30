@@ -7,7 +7,9 @@ app: jar $(TARGET_PATH)/$(APP)
 do_release:  $(RELEASE_PATH) app
 	for OS in linux; do \
 		APP=Sikuli-IDE; \
-		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-`date "+%Y%m%d"`.zip; \
+		ARCH=`uname -m`; \
+		VER=`cat latest-ver`; \
+		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-$$ARCH-$$VER.zip; \
 		cd $(TARGET_PATH)/$$OS; zip -r $$RELEASE_APP_ZIP $$APP -x '*/.svn/*'; \
 		cd -; mv $(TARGET_PATH)/$$OS/$$RELEASE_APP_ZIP $(RELEASE_PATH); \
 		echo generated $(RELEASE_PATH)/$$RELEASE_APP_ZIP; \
