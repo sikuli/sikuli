@@ -198,7 +198,8 @@ class HighlightLabelView extends LabelView {
        "setThrowException",
        "hasNext", "next", "destroy", "exact", "offset",
        "getOSVersion", "getScore", "getTarget",
-       "getBundlePath", "getAutoWaitTimeout", "getThrowException"
+       "getBundlePath", "getAutoWaitTimeout", "getThrowException",
+       "getClipboard"
     };
 
     private static String[] constantsSikuli = {

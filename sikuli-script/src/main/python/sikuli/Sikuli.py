@@ -61,6 +61,9 @@ def setShowActions(flag):
 def input(msg=""):
    return _si.input(msg)
 
+#def capture():
+
+#def selectRegion():
 
 
 ##
