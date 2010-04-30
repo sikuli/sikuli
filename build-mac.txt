@@ -1,0 +1,15 @@
+ = Build Sikuli Script =
+
+1. install xcode, darwin ports
+
+2. port install opencv
+
+3. cd sikuli/sikuli-script
+   make install-jar
+
+
+ = Build Sikuli IDE =
+
+1. cd sikuli/sikuli-ide
+   make do_release
+
