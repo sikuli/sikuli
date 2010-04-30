@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="7.6" version="7.6" Modules="java" RootPath="." Language="en">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="AI_MINJREVERSION" MultiBuildValue="DefaultBuild:1.6" ValueLocId="-"/>
+    <ROW Property="AI_PRODUCTNAME_ARP" Value="Sikuli"/>
+    <ROW Property="AI_SHORTCUTSREG" Value="0|0|0|0|"/>
+    <ROW Property="AI_UNINSTALLER" Value="msiexec.exe"/>
+    <ROW Property="ALLUSERS" Value="2"/>
+    <ROW Property="ARPHELPLINK" Value="https://launchpad.net/sikuli"/>
+    <ROW Property="ARPNOMODIFY" MultiBuildValue="DefaultBuild:1"/>
+    <ROW Property="ARPNOREPAIR" Value="1"/>
+    <ROW Property="ARPPRODUCTICON" Value="ide_icon.exe" Type="8"/>
+    <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
+    <ROW Property="ARPURLINFOABOUT" Value="http://sikuli.org"/>
+    <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:style5blue_banner.jpg" Type="1"/>
+    <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:style5blue_dialog.jpg" Type="1"/>
+    <ROW Property="Manufacturer" Value="Sikuli Development Team" ValueLocId="*"/>
+    <ROW Property="ProductCode" Value="1033:{BFDE365E-4157-41E1-8071-A125BBD02437} 1028:{23ED3629-73D1-4E40-A15C-353F2D0746E8} 2052:{57814AB2-F130-43C9-814F-BB029602D84B} 1031:{209E267A-C370-4AFD-9CEC-C51F61C821B0} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="Sikuli" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="0.10.0"/>
+    <ROW Property="REBOOT" MultiBuildValue="DefaultBuild:ReallySuppress"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="UpgradeCode" Value="{A5108546-EF11-4CCE-80C8-C37E18DE2906}"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 98" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="AppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="AppDat~1|AppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="Deskto~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="Internet_Explorer_DIR" Directory_Parent="Microsoft_DIR" DefaultDir="Intern~1|Internet Explorer"/>
+    <ROW Directory="Microsoft.VC90.CRT_DIR" Directory_Parent="tmplib_DIR" DefaultDir="Micros~1.CRT|Microsoft.VC90.CRT"/>
+    <ROW Directory="Microsoft.VC90.OPENMP_DIR" Directory_Parent="tmplib_DIR" DefaultDir="Micros~1.OPE|Microsoft.VC90.OPENMP"/>
+    <ROW Directory="Microsoft_DIR" Directory_Parent="AppDataFolder" DefaultDir="Micros~1|Microsoft"/>
+    <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramMenuFolder" IsPseudoRoot="1"/>
+    <ROW Directory="Quick_Launch_DIR" Directory_Parent="Internet_Explorer_DIR" DefaultDir="QuickL~1|Quick Launch"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="Sikuli_DIR" Directory_Parent="ProgramMenuFolder" DefaultDir="Sikuli"/>
+    <ROW Directory="StartMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="StartM~1|StartMenuFolder" IsPseudoRoot="1"/>
+    <ROW Directory="SystemFolder" Directory_Parent="TARGETDIR" DefaultDir="System~1|SystemFolder" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="tmplib_DIR" Directory_Parent="APPDIR" DefaultDir="tmplib"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AIShRegAnswer" ComponentId="{65CC45EB-E4EC-4DD4-97A6-082897C234D9}" Directory_="APPDIR" Attributes="4" KeyPath="AIShRegAnswer"/>
+    <ROW Component="AI_CustomARPName" ComponentId="{7ACD7F8A-4256-43E0-8750-1A249F04AB70}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
+    <ROW Component="AI_DisableModify" ComponentId="{D8B212CC-5788-4075-A518-E40050D456B6}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify" Options="1"/>
+    <ROW Component="AI_ExePath" ComponentId="{B6453658-71BC-4AE0-A514-6C827483435D}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="JIntellitype.dll" ComponentId="{5E531CF4-1427-417D-A478-9ED20B99C9F4}" Directory_="tmplib_DIR" Attributes="0" KeyPath="JIntellitype.dll"/>
+    <ROW Component="Microsoft.VC90.CRT.manifest" ComponentId="{5C74E887-3170-4EF1-94F5-44660E60CCA2}" Directory_="Microsoft.VC90.CRT_DIR" Attributes="0" KeyPath="Microsoft.VC90.CRT.manifest" Type="0"/>
+    <ROW Component="Microsoft.VC90.OpenMP.manifest" ComponentId="{5F4AB3F5-A7A7-4BBF-AE38-A1A8E7811B7A}" Directory_="Microsoft.VC90.OPENMP_DIR" Attributes="0" KeyPath="Microsoft.VC90.OpenMP.manifest" Type="0"/>
+    <ROW Component="Quick_Launch" ComponentId="{206AE3B6-A0C7-4C46-A6B9-711CAD7AB614}" Directory_="Quick_Launch_DIR" Attributes="0"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{D63A31E0-CCF1-4405-A928-9B0532727831}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="ScreenMatchProxy.dll" ComponentId="{4CF0F152-7FE8-4320-ACD4-F5CFE094EFF2}" Directory_="tmplib_DIR" Attributes="0" KeyPath="ScreenMatchProxy.dll"/>
+    <ROW Component="Sikuli" ComponentId="{F322EF58-C716-4364-A206-12CF9183AEF1}" Directory_="Sikuli_DIR" Attributes="0"/>
+    <ROW Component="Sikuli_IDE.exe" ComponentId="{DC5E53EB-D35D-4A64-9C44-9864C41C25A3}" Directory_="APPDIR" Attributes="0" KeyPath="Sikuli_IDE.exe"/>
+    <ROW Component="VDictProxy.dll" ComponentId="{C6CE7888-2B07-4429-AB04-2E2D3B95290A}" Directory_="tmplib_DIR" Attributes="0" KeyPath="VDictProxy.dll"/>
+    <ROW Component="Win32Util.dll" ComponentId="{18BD6D8A-9F12-49D2-9378-BA1ED1B01A70}" Directory_="tmplib_DIR" Attributes="0" KeyPath="Win32Util.dll"/>
+    <ROW Component="cv210.dll" ComponentId="{86744175-9BB5-4B3A-9947-05F76E8550AE}" Directory_="tmplib_DIR" Attributes="0" KeyPath="cv210.dll"/>
+    <ROW Component="cvaux210.dll" ComponentId="{398B767E-402E-4D98-9788-06B1F1B3E844}" Directory_="tmplib_DIR" Attributes="0" KeyPath="cvaux210.dll"/>
+    <ROW Component="cxcore210.dll" ComponentId="{89E9FF65-C956-4A95-BC7D-3FF0D7248660}" Directory_="tmplib_DIR" Attributes="0" KeyPath="cxcore210.dll"/>
+    <ROW Component="highgui210.dll" ComponentId="{581B67F6-DBDE-4CD1-A09B-0C7E2AA26AA6}" Directory_="tmplib_DIR" Attributes="0" KeyPath="highgui210.dll"/>
+    <ROW Component="ml210.dll" ComponentId="{FE247611-DB29-4F0C-A081-D114C5F9D41C}" Directory_="tmplib_DIR" Attributes="0" KeyPath="ml210.dll"/>
+    <ROW Component="msvcm90.dll" ComponentId="{CA92C3CE-7DD6-4A15-915B-F875D929937F}" Directory_="Microsoft.VC90.CRT_DIR" Attributes="0" KeyPath="msvcm90.dll"/>
+    <ROW Component="msvcp90.dll" ComponentId="{E39A450E-A6DB-43FD-9B5C-6C1A32E17026}" Directory_="Microsoft.VC90.CRT_DIR" Attributes="0" KeyPath="msvcp90.dll"/>
+    <ROW Component="msvcr90.dll" ComponentId="{24F35E2E-52D0-425B-8574-1C5632F98382}" Directory_="Microsoft.VC90.CRT_DIR" Attributes="0" KeyPath="msvcr90.dll"/>
+    <ROW Component="swing_layout_1.0.1.jar" ComponentId="{E2EED6FB-354F-4DAC-9CD3-B12AE0A5DBD8}" Directory_="APPDIR" Attributes="0" KeyPath="swing_layout_1.0.1.jar" Type="0"/>
+    <ROW Component="vcomp90.dll" ComponentId="{DA98C665-121B-4547-AC77-03714FF20321}" Directory_="Microsoft.VC90.OPENMP_DIR" Attributes="0" KeyPath="vcomp90.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Sikuli_IDE.exe swing_layout_1.0.1.jar cv210.dll cvaux210.dll cxcore210.dll highgui210.dll JIntellitype.dll Microsoft.VC90.CRT.manifest msvcm90.dll msvcp90.dll msvcr90.dll Microsoft.VC90.OpenMP.manifest vcomp90.dll ml210.dll ScreenMatchProxy.dll VDictProxy.dll Win32Util.dll AIShRegAnswer AI_CustomARPName AI_ExePath AI_DisableModify SHORTCUTDIR Quick_Launch Sikuli"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="JIntellitype.dll" Component_="JIntellitype.dll" FileName="JIntel~1.dll|JIntellitype.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\JIntellitype.dll" SelfReg="false" Sequence="12"/>
+    <ROW File="Microsoft.VC90.CRT.manifest" Component_="Microsoft.VC90.CRT.manifest" FileName="Micros~1.man|Microsoft.VC90.CRT.manifest" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" SelfReg="false" Sequence="13"/>
+    <ROW File="Microsoft.VC90.OpenMP.manifest" Component_="Microsoft.VC90.OpenMP.manifest" FileName="Micros~1.man|Microsoft.VC90.OpenMP.manifest" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.OPENMP\Microsoft.VC90.OpenMP.manifest" SelfReg="false" Sequence="17"/>
+    <ROW File="ScreenMatchProxy.dll" Component_="ScreenMatchProxy.dll" FileName="Screen~1.dll|ScreenMatchProxy.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\ScreenMatchProxy.dll" SelfReg="false" Sequence="20"/>
+    <ROW File="Sikuli_IDE.bat" Component_="swing_layout_1.0.1.jar" FileName="Sikuli~1.bat|Sikuli-IDE.bat" Attributes="0" SourcePath="Sikuli-IDE.bat" SelfReg="false" Sequence="23"/>
+    <ROW File="Sikuli_IDE.exe" Component_="Sikuli_IDE.exe" FileName="Sikuli~1.exe|Sikuli-IDE.exe" Attributes="0" SourcePath="&lt;AI_STUBS&gt;aijclw.exe" SelfReg="false" Sequence="1" DigSign="true"/>
+    <ROW File="VDictProxy.dll" Component_="VDictProxy.dll" FileName="VDictP~1.dll|VDictProxy.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\VDictProxy.dll" SelfReg="false" Sequence="21"/>
+    <ROW File="Win32Util.dll" Component_="Win32Util.dll" FileName="Win32U~1.dll|Win32Util.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Win32Util.dll" SelfReg="false" Sequence="22"/>
+    <ROW File="cv210.dll" Component_="cv210.dll" FileName="cv210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cv210.dll" SelfReg="false" Sequence="8"/>
+    <ROW File="cvaux210.dll" Component_="cvaux210.dll" FileName="cvaux210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cvaux210.dll" SelfReg="false" Sequence="9"/>
+    <ROW File="cxcore210.dll" Component_="cxcore210.dll" FileName="cxcore~1.dll|cxcore210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cxcore210.dll" SelfReg="false" Sequence="10"/>
+    <ROW File="highgui210.dll" Component_="highgui210.dll" FileName="highgu~1.dll|highgui210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\highgui210.dll" SelfReg="false" Sequence="11"/>
+    <ROW File="ide_icon.ico" Component_="swing_layout_1.0.1.jar" FileName="ide-icon.ico" Attributes="0" SourcePath="..\Sikuli-IDE\ide-icon.ico" SelfReg="false" Sequence="5"/>
+    <ROW File="jintellitype_1.3.2.jar" Component_="swing_layout_1.0.1.jar" FileName="jintel~1.jar|jintellitype-1.3.2.jar" Attributes="0" SourcePath="..\Sikuli-IDE\jintellitype-1.3.2.jar" SelfReg="false" Sequence="6"/>
+    <ROW File="junit_3.8.1.jar" Component_="swing_layout_1.0.1.jar" FileName="junit-~1.jar|junit-3.8.1.jar" Attributes="0" SourcePath="..\Sikuli-IDE\junit-3.8.1.jar" SelfReg="false" Sequence="7"/>
+    <ROW File="ml210.dll" Component_="ml210.dll" FileName="ml210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\ml210.dll" SelfReg="false" Sequence="19"/>
+    <ROW File="msvcm90.dll" Component_="msvcm90.dll" FileName="msvcm90.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.CRT\msvcm90.dll" SelfReg="false" Sequence="14"/>
+    <ROW File="msvcp90.dll" Component_="msvcp90.dll" FileName="msvcp90.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.CRT\msvcp90.dll" SelfReg="false" Sequence="15"/>
+    <ROW File="msvcr90.dll" Component_="msvcr90.dll" FileName="msvcr90.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.CRT\msvcr90.dll" SelfReg="false" Sequence="16"/>
+    <ROW File="sikuli_ide.jar" Component_="swing_layout_1.0.1.jar" FileName="sikuli~2.jar|sikuli-ide.jar" Attributes="0" SourcePath="..\Sikuli-IDE\sikuli-ide.jar" SelfReg="false" Sequence="4"/>
+    <ROW File="sikuli_script.jar" Component_="swing_layout_1.0.1.jar" FileName="sikuli~1.jar|sikuli-script.jar" Attributes="0" SourcePath="..\Sikuli-IDE\sikuli-script.jar" SelfReg="false" Sequence="3"/>
+    <ROW File="swing_layout_1.0.1.jar" Component_="swing_layout_1.0.1.jar" FileName="swing-~1.jar|swing-layout-1.0.1.jar" Attributes="0" SourcePath="..\Sikuli-IDE\swing-layout-1.0.1.jar" SelfReg="false" Sequence="2"/>
+    <ROW File="vcomp90.dll" Component_="vcomp90.dll" FileName="vcomp90.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.OPENMP\vcomp90.dll" SelfReg="false" Sequence="18"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\release" PackageFileName="Sikuli-IDE-win-[|ProductVersion]" Languages="en;zh_TW;zh;de" LangOpt="1" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\install" ExtUI="true"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_zh_TW.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_zh.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_de.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="ShortcutsDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\ShortcutsDlg.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
+    <ROW Property="AI_SHORTCUTSREG" Signature_="AI_ShRegOptionMachine"/>
+    <ROW Property="AI_SHORTCUTSREG" Signature_="AI_ShRegOptionUser"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="style5blue_banner.jpg" SourcePath="&lt;AI_THEMES&gt;classic\resources\style5blue-banner.jpg"/>
+    <ROW Name="style5blue_dialog.jpg" SourcePath="&lt;AI_THEMES&gt;classic\resources\style5blue-dialog.jpg"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ATTRIBUTE name="FixedSizeBitmaps" value="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlConditionComponent">
+    <ROW Dialog_="ShortcutsDlg" Control_="StartmenuShortcutsCheckBox" Action="Show" Condition="(Not Installed)"/>
+    <ROW Dialog_="ShortcutsDlg" Control_="StartupShorcutsCheckBox" Action="Hide" Condition="(Not Installed)"/>
+    <ATTRIBUTE name="DeletedRows" value="ShortcutsDlg#StartupShorcutsCheckBox#Show#(Not Installed)@ShortcutsDlg#StartmenuShortcutsCheckBox#Show#(Not Installed)"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="ShortcutsDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ShortcutsDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="ShortcutsDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ShortcutsDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="2"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="3"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR"/>
+    <ROW Directory_="Quick_Launch_DIR" Component_="Quick_Launch"/>
+    <ROW Directory_="Sikuli_DIR" Component_="Sikuli"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="AI_DEL_EMPTY_SHORTCUTDIR" Target="[SHORTCUTDIR]"/>
+    <ROW Action="AI_DELETE_SHORTCUTS" Type="1" Source="aicustact.dll" Target="DeleteShortcuts"/>
+    <ROW Action="AI_DEL_EMPTY_SHORTCUTDIR" Type="3073" Source="aicustact.dll" Target="DeleteEmptyDirectory"/>
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DetectJRE" Type="1" Source="aicustact.dll" Target="RequiredJreExists"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
+    <ROW Environment="Path" Name="=-Path" Value="[APPDIR]\tmplib" Component_="Sikuli_IDE.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiExtComponent">
+    <ROW Extension="skl" Component_="Sikuli_IDE.exe" ProgId_="[|Manufacturer].[|ProductName].skl" Feature_="MainFeature"/>
+    <ROW Extension="sikuli" Component_="Sikuli_IDE.exe" ProgId_="[|Manufacturer].[|ProductName].sikuli" Feature_="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="SystemFolder_msiexec.exe" SourcePath="..\..\..\..\Program Files\Caphyon\Advanced Installer 7.6\resources\uninstall.ico" Index="0"/>
+    <ROW Name="ext.exe" SourcePath="..\..\..\art-work\SikuliSrc.ico" Index="0"/>
+    <ROW Name="ide_icon.exe" SourcePath="..\Sikuli-IDE\ide-icon.ico" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="Application_Type" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Application Type" Value="gui" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Class_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#jintellitype_1.3.2.jar];[#junit_3.8.1.jar];[#sikuli_ide.jar];[#sikuli_script.jar];[#swing_layout_1.0.1.jar];" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Failure_Check" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Failure Check" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Main_Class" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="edu.mit.csail.uid.SikuliIDE" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Maximum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Maximum Version" Value="any" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Minimum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Minimum Version" Value="1.6" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Override_WorkingDir" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Override WorkingDir" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="URL" FileName="Sikuli~1.url|Sikuli&apos;s Homepage.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/documentation.shtml" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="Virtual_Machine_Parameters" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Virtual Machine Parameters" Value="-Xms256M -Xmx100:2:1200P -Dpython.path=sikuli-script.jar/ -Dfile.encoding=utf-8" Action="0" Component_="Sikuli_IDE.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+    <ROW Action="AI_DELETE_SHORTCUTS" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="1401"/>
+    <ROW Action="AI_DEL_EMPTY_SHORTCUTDIR" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="6402" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="AI_DATA_SETTER" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="6401"/>
+    <ROW Action="AI_GetArpIconPath" Sequence="51"/>
+    <ROW Action="AI_DetectJRE" Condition="1" Sequence="399" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
+    <ROW Action="AI_DetectJRE" Condition="1" Sequence="399" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiJavaComponent">
+    <ROW Name="Sikuli-IDE.exe" Launcher="Sikuli_IDE.exe" MainClass="Main_Class" ClassPath="Class_Path" VMParams="Virtual_Machine_Parameters" JREMin="Minimum_Version" JREMax="Maximum_Version" IconPath="..\Sikuli-IDE\ide-icon.ico" AppType="Application_Type" PlusList="APPDIR;" MinusList="#Sikuli_IDE.exe;" MacDescription="[|CurrentJavaProductName] [|ProductVersion] " MacBundleId="com.[|Manufacturer].[|ProductName].[|CurrentJavaProductName]" FailureCheck="Failure_Check" OverrideWkDir="Override_WorkingDir" UACExecutionLevel="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="AI_JREVERFOUND = 1" Description="[ProductName] cannot be installed on systems with JRE version lower than [AI_MINJREVERSION]" DescriptionLocId="AI.LaunchCondition.Jre" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="VersionNT OR ((Version9X &gt;= 410) AND (WindowsBuild &gt;= 1998))" Description="[ProductName] cannot be installed on systems earlier than [WindowsType9X]" DescriptionLocId="AI.LaunchCondition.NoSpecific9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiProgIdComponent">
+    <ROW ProgId="[|Manufacturer].[|ProductName].sikuli" Description="Sikuli Source" Icon_="ext.exe"/>
+    <ROW ProgId="[|Manufacturer].[|ProductName].skl" Description="Sikuli Executable" Icon_="ext.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_ShRegOptionMachine" Root="2" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Type="2"/>
+    <ROW Signature_="AI_ShRegOptionUser" Root="1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AIShRegAnswer" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Value="[AI_SHORTCUTSREG]" Component_="AIShRegAnswer"/>
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+    <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="Comments" Component_="AI_CustomARPName"/>
+    <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="Contact" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayName" Value="Sikuli" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayVersion" Value="0.10.0" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpLink" Value="https://launchpad.net/sikuli" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpTelephone" Component_="AI_CustomARPName"/>
+    <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
+    <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="ModifyPath" Value="[AI_UNINSTALLER] /I [ProductCode]" Component_="AI_CustomARPName"/>
+    <ROW Registry="NoModify" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="NoModify" Value="#1" Component_="AI_DisableModify"/>
+    <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="Publisher" Value="Sikuli Development Team" Component_="AI_CustomARPName"/>
+    <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="URLInfoAbout" Value="http://sikuli.org" Component_="AI_CustomARPName"/>
+    <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="URLUpdateInfo" Component_="AI_CustomARPName"/>
+    <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode]" Component_="AI_CustomARPName"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="Sikuli_IDE" Directory_="SHORTCUTDIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_1" Directory_="DesktopFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_2" Directory_="Quick_Launch_DIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_3" Directory_="StartMenuFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_4" Directory_="Sikuli_DIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="SHORTCUTDIR" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1" WkDir="SystemFolder"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiVerbComponent">
+    <ROW Extension_="skl" Component_="Sikuli_IDE.exe" Verb="run" Sequence="0" Command="&amp;Run" Argument="&quot;%1&quot;"/>
+    <ROW Extension_="sikuli" Component_="Sikuli_IDE.exe" Verb="&amp;Open" Sequence="0" Command="&amp;Open" Argument="&quot;%1&quot;"/>
+  </COMPONENT>
+</DOCUMENT>
