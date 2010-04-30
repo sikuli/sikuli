@@ -465,7 +465,7 @@ public class SikuliIDE extends JFrame {
       initTooltip();
 
       if(args!=null && args.length>=1)
-         loadFile(args[0]);
+         loadFile(Utils.slashify(args[0], false));
       else
          (new FileAction()).doNew();
 

@@ -12,8 +12,8 @@ MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
 JAR=sikuli-ide.jar
 APP=$(TARGET_OS)/Sikuli-IDE.app
 RECORDER=../sikuli-redo/target/MacRecorder.app
-RELEASE_APP_ZIP=Sikuli-IDE-win-`date "+%Y%m%d"`.zip
-RELEASE_APP_INSTALLER=Sikuli-IDE-win-`date "+%Y%m%d"`.exe
+RELEASE_APP_ZIP=Sikuli-IDE-win32-`cat latest-ver`.zip
+RELEASE_APP_INSTALLER=Sikuli-IDE-win32-`cat latest-ver`.exe
 
 TARGET_PATH=target
 SOURCE_PATH=src/main/java
