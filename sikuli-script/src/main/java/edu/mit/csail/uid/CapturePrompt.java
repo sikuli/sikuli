@@ -22,6 +22,7 @@ class CapturePrompt extends JWindow implements Subject{
    float _darker_factor;
    Rectangle rectSelection;
    BasicStroke bs;
+   int srcScreenId=0;
    int srcx, srcy, destx, desty;
    boolean _canceled = false;
    long _msg_start;
@@ -48,6 +49,18 @@ class CapturePrompt extends JWindow implements Subject{
 
    private Color selFrameColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
    private Color selCrossColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
+   private Color screenFrameColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
+   BasicStroke strokeScreenFrame = new BasicStroke(5);
+
+   private void drawScreenFrame(Graphics2D g2d, int scrId){
+      Rectangle rect = Screen.getBounds(scrId);
+      g2d.setColor(screenFrameColor);
+      g2d.setStroke(strokeScreenFrame);
+      rect.width -= strokeScreenFrame.getLineWidth()-1; 
+      rect.height -= strokeScreenFrame.getLineWidth()-1; 
+      g2d.draw(rect);
+   }
+
    private void drawSelection(Graphics2D g2d){
       if (srcx != destx || srcy != desty)
       {
@@ -55,6 +68,15 @@ class CapturePrompt extends JWindow implements Subject{
          int y1 = (srcy < desty) ? srcy : desty;
          int x2 = (srcx > destx) ? srcx : destx;
          int y2 = (srcy > desty) ? srcy : desty;
+
+         if(Screen.getNumberScreens()>1){
+            Rectangle selRect = new Rectangle(x1,y1,x2-x1,y2-y1);
+            Rectangle inBound = selRect.intersection(Screen.getBounds(srcScreenId));
+            x1 = inBound.x;
+            y1 = inBound.y;
+            x2 = x1 + inBound.width-1;
+            y2 = y1 + inBound.height-1;
+         }
 
          rectSelection.x = x1;
          rectSelection.y = y1;
@@ -75,6 +97,8 @@ class CapturePrompt extends JWindow implements Subject{
          g2d.setStroke(_StrokeCross);
          g2d.drawLine(cx, y1, cx, y2);
          g2d.drawLine(x1, cy, x2, cy);
+
+         drawScreenFrame(g2d, srcScreenId);
       }
    }
 
@@ -127,6 +151,11 @@ class CapturePrompt extends JWindow implements Subject{
             if (_scr_img == null) return;
             destx = srcx = e.getX();
             desty = srcy = e.getY();
+            for(int i=0;i<Screen.getNumberScreens();i++)
+               if(Screen.getBounds(i).contains(srcx, srcy)){
+                  srcScreenId = i;
+                  break;
+               }
             repaint();
          }
 
