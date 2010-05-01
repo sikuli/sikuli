@@ -9,3 +9,4 @@ assert(capture(Region(0,0,100,100)) != None)
 popup("please select a region")
 assert(capture() != None)
 
+

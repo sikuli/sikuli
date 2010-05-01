@@ -98,7 +98,8 @@ class CapturePrompt extends JWindow implements Subject{
          g2d.drawLine(cx, y1, cx, y2);
          g2d.drawLine(x1, cy, x2, cy);
 
-         drawScreenFrame(g2d, srcScreenId);
+         if(Screen.getNumberScreens()>1)
+            drawScreenFrame(g2d, srcScreenId);
       }
    }
 
