@@ -614,17 +614,21 @@ public class Region {
    static final int RELEASE_ONLY = 1;
    static final int PRESS_RELEASE = 2;
    private void doType(int mode, int... keyCodes) {
-      for(int i=0;i<keyCodes.length;i++){
-         if(mode==PRESS_ONLY){
+      if(mode==PRESS_ONLY){
+         for(int i=0;i<keyCodes.length;i++){
             _robot.keyPress(keyCodes[i]);
          }
-         else if(mode==RELEASE_ONLY){
+      }
+      else if(mode==RELEASE_ONLY){
+         for(int i=0;i<keyCodes.length;i++){
             _robot.keyRelease(keyCodes[i]);
          }
-         else{
+      }
+      else{
+         for(int i=0;i<keyCodes.length;i++)
             _robot.keyPress(keyCodes[i]);
+         for(int i=0;i<keyCodes.length;i++)
             _robot.keyRelease(keyCodes[i]);
-         }
       }
    }
 
