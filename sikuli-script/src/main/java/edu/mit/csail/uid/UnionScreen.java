@@ -4,10 +4,23 @@ import java.awt.*;
 import java.awt.image.*;
 
 public class UnionScreen extends Screen {
-   Rectangle _bounds;
+   static Rectangle _bounds;
 
    public UnionScreen(){
       super(0);
+   }
+
+   public int getIdFromPoint(int x, int y){
+      Debug.log(5, "union bound: " + getBounds() );
+      Debug.log(5, "x, y: " + x + "," + y);
+      x += getBounds().x;
+      y += getBounds().y;
+      Debug.log(5, "new x, y: " + x + "," + y);
+      for(int i=0;i<getNumberScreens();i++)
+         if(Screen.getBounds(i).contains(x, y)){
+            return i;
+         }
+      return 0;
    }
 
    public Rectangle getBounds(){
@@ -31,7 +44,7 @@ public class UnionScreen extends Screen {
          Rectangle scrBound = Screen.getBounds(i);
          if(scrBound.intersects(rect)){
             Rectangle inter = scrBound.intersection(rect);
-            Debug.log(3, "scrBound: " + scrBound + ", inter: " +inter);
+            Debug.log(5, "scrBound: " + scrBound + ", inter: " +inter);
             int ix = inter.x, iy = inter.y;
             inter.x-=scrBound.x;
             inter.y-=scrBound.y;

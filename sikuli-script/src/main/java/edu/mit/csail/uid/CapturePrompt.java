@@ -54,10 +54,16 @@ class CapturePrompt extends JWindow implements Subject{
 
    private void drawScreenFrame(Graphics2D g2d, int scrId){
       Rectangle rect = Screen.getBounds(scrId);
+      Rectangle ubound = (new UnionScreen()).getBounds();
       g2d.setColor(screenFrameColor);
       g2d.setStroke(strokeScreenFrame);
-      rect.width -= strokeScreenFrame.getLineWidth()-1; 
-      rect.height -= strokeScreenFrame.getLineWidth()-1; 
+      rect.x -= ubound.x;
+      rect.y -= ubound.y;
+      int sw = (int)(strokeScreenFrame.getLineWidth()/2);
+      rect.x += sw;
+      rect.y += sw;
+      rect.width -= sw*2; 
+      rect.height -= sw*2;
       g2d.draw(rect);
    }
 
@@ -71,9 +77,12 @@ class CapturePrompt extends JWindow implements Subject{
 
          if(Screen.getNumberScreens()>1){
             Rectangle selRect = new Rectangle(x1,y1,x2-x1,y2-y1);
+            Rectangle ubound = (new UnionScreen()).getBounds();
+            selRect.x += ubound.x;
+            selRect.y += ubound.y;
             Rectangle inBound = selRect.intersection(Screen.getBounds(srcScreenId));
-            x1 = inBound.x;
-            y1 = inBound.y;
+            x1 = inBound.x - ubound.x;
+            y1 = inBound.y - ubound.y;
             x2 = x1 + inBound.width-1;
             y2 = y1 + inBound.height-1;
          }
@@ -152,11 +161,9 @@ class CapturePrompt extends JWindow implements Subject{
             if (_scr_img == null) return;
             destx = srcx = e.getX();
             desty = srcy = e.getY();
-            for(int i=0;i<Screen.getNumberScreens();i++)
-               if(Screen.getBounds(i).contains(srcx, srcy)){
-                  srcScreenId = i;
-                  break;
-               }
+            srcScreenId = (new UnionScreen()).getIdFromPoint(srcx, srcy);
+            Debug.log(3, "pressed " + srcx + "," + srcy + " at screen " + srcScreenId);
+
             repaint();
          }
 

@@ -183,6 +183,7 @@ public class Screen extends Region implements Observer {
       return false;
    }
 
+
    public String toString(){
       Rectangle r = getBounds();
       return String.format("Screen(%d)[%d,%d %dx%d] E:%s, T:%.1f",
