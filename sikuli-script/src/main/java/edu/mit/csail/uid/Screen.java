@@ -110,6 +110,10 @@ public class Screen extends Region implements Observer {
       return new ScreenImage(rect, img);
    }
 
+   public ScreenImage capture(Region reg) {
+      return capture(reg.getROI());
+   }
+
    public ScreenImage userCapture() {
       _waitPrompt = true;
       Thread th = new Thread(){
@@ -172,10 +176,13 @@ public class Screen extends Region implements Observer {
    }
 
    boolean useFullscreen(){
+      if( Env.getOS() == OS.LINUX )
+         return false;
       if( _curID == 0 )
          return true;
       return false;
    }
+
 
    public String toString(){
       Rectangle r = getBounds();

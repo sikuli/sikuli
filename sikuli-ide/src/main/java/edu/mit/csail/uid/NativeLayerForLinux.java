@@ -15,6 +15,8 @@ public class NativeLayerForLinux implements NativeLayer {
    private Map<String, Integer> _callbackIdMap = new HashMap<String,Integer>();
    private Map<Integer, String> _idCallbackMap = new HashMap<Integer,String>();
 
+   public void initApp(){}
+
    public void initIDE(SikuliIDE ide){
       try{
          NativeLoader.loadLibrary("JXGrabKey");      

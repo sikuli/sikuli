@@ -23,7 +23,8 @@ release-all:
 do_release:  app
 	for OS in $(TARGET_OS); do \
 		APP=Sikuli-IDE.app; \
-		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-`date "+%Y%m%d"`.zip; \
+		VER=`cat latest-ver`; \
+		RELEASE_APP_ZIP=Sikuli-IDE-$$OS-$$VER.zip; \
 		cd $(TARGET_PATH)/$$OS; zip -r $$RELEASE_APP_ZIP $$APP -x '*/.svn/*'; \
 		cd -; mv $(TARGET_PATH)/$$OS/$$RELEASE_APP_ZIP $(RELEASE_PATH); \
 		echo generated $(RELEASE_PATH)/$$RELEASE_APP_ZIP; \

@@ -22,6 +22,7 @@ class CapturePrompt extends JWindow implements Subject{
    float _darker_factor;
    Rectangle rectSelection;
    BasicStroke bs;
+   int srcScreenId=0;
    int srcx, srcy, destx, desty;
    boolean _canceled = false;
    long _msg_start;
@@ -48,6 +49,24 @@ class CapturePrompt extends JWindow implements Subject{
 
    private Color selFrameColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
    private Color selCrossColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
+   private Color screenFrameColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
+   BasicStroke strokeScreenFrame = new BasicStroke(5);
+
+   private void drawScreenFrame(Graphics2D g2d, int scrId){
+      Rectangle rect = Screen.getBounds(scrId);
+      Rectangle ubound = (new UnionScreen()).getBounds();
+      g2d.setColor(screenFrameColor);
+      g2d.setStroke(strokeScreenFrame);
+      rect.x -= ubound.x;
+      rect.y -= ubound.y;
+      int sw = (int)(strokeScreenFrame.getLineWidth()/2);
+      rect.x += sw;
+      rect.y += sw;
+      rect.width -= sw*2; 
+      rect.height -= sw*2;
+      g2d.draw(rect);
+   }
+
    private void drawSelection(Graphics2D g2d){
       if (srcx != destx || srcy != desty)
       {
@@ -55,6 +74,18 @@ class CapturePrompt extends JWindow implements Subject{
          int y1 = (srcy < desty) ? srcy : desty;
          int x2 = (srcx > destx) ? srcx : destx;
          int y2 = (srcy > desty) ? srcy : desty;
+
+         if(Screen.getNumberScreens()>1){
+            Rectangle selRect = new Rectangle(x1,y1,x2-x1,y2-y1);
+            Rectangle ubound = (new UnionScreen()).getBounds();
+            selRect.x += ubound.x;
+            selRect.y += ubound.y;
+            Rectangle inBound = selRect.intersection(Screen.getBounds(srcScreenId));
+            x1 = inBound.x - ubound.x;
+            y1 = inBound.y - ubound.y;
+            x2 = x1 + inBound.width-1;
+            y2 = y1 + inBound.height-1;
+         }
 
          rectSelection.x = x1;
          rectSelection.y = y1;
@@ -75,6 +106,9 @@ class CapturePrompt extends JWindow implements Subject{
          g2d.setStroke(_StrokeCross);
          g2d.drawLine(cx, y1, cx, y2);
          g2d.drawLine(x1, cy, x2, cy);
+
+         if(Screen.getNumberScreens()>1)
+            drawScreenFrame(g2d, srcScreenId);
       }
    }
 
@@ -95,35 +129,22 @@ class CapturePrompt extends JWindow implements Subject{
 
    }
 
+   BufferedImage bi = null;
    public void paint(Graphics g)
    {
       if( _scr_img != null ){
-         Graphics2D g2d = (Graphics2D)g;
+         Graphics2D g2dWin = (Graphics2D)g;
 
-         /*
-         Thread th =  new Thread() {
-            public void run() {
-               try{
-                  Thread.sleep(1000);
-                  while(_darker_factor>=MIN_DARKER_FACTOR){
-                     _darker_factor-=0.1f;
-                     CapturePrompt.this.repaint();
-                     Thread.sleep(40);
-                  }
-               }
-               catch(InterruptedException ie){
-               }
-            }
-         };
-         if(_darker_factor==1.0f)
-            th.start();
-
-         RescaleOp op = new RescaleOp(_darker_factor, 0, null);
-         _darker_screen = op.filter(_scr_img, null);
-         */
-         g2d.drawImage(_darker_screen,0,0,this);
-         drawMessage(g2d);
-         drawSelection(g2d);
+         if ( bi==null || bi.getWidth(this) != getWidth() ||
+              bi.getHeight(this) != getHeight() ) {
+            bi = new BufferedImage( 
+                  getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB );
+         }
+         Graphics2D bfG2 = bi.createGraphics();
+         bfG2.drawImage(_darker_screen,0,0,this);
+         drawMessage(bfG2);
+         drawSelection(bfG2);
+         g2dWin.drawImage(bi, 0, 0, this);
          setVisible(true);
       }
       else
@@ -140,6 +161,9 @@ class CapturePrompt extends JWindow implements Subject{
             if (_scr_img == null) return;
             destx = srcx = e.getX();
             desty = srcy = e.getY();
+            srcScreenId = (new UnionScreen()).getIdFromPoint(srcx, srcy);
+            Debug.log(3, "pressed " + srcx + "," + srcy + " at screen " + srcScreenId);
+
             repaint();
          }
 
@@ -164,8 +188,9 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public void close(){
-      if(_gdev != null) 
-         _gdev.setFullScreenWindow(null);
+      if(_gdev != null ){
+	 _gdev.setFullScreenWindow(null);
+      }
       this.setVisible(false);
       this.dispose();
    }

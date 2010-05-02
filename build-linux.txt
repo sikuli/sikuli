@@ -1,0 +1,12 @@
+ = Build Sikuli Script =
+
+1. apt-get install libcv-dev libcvaux-dev libhighgui-dev default-jdk g++
+
+2. cd sikuli/sikuli-script
+   make install-jar
+
+
+ = Build Sikuli IDE =
+
+ 1. cd sikuli/sikuli-ide
+    make do_release

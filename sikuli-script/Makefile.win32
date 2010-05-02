@@ -3,7 +3,7 @@
 unexport MAKGFLAGS
 
 CLASSES_TARGET_PATH=target/classes
-CLASSPATH=../lib/mx-native-loader-1.2/target/classes\;../lib/jython-2.2.1.jar
+CLASSPATH=../lib/mx-native-loader-1.2/target/classes\;../lib/jython-2.5.1.jar
 
 NATIVE_SRC_PATH=src/main/native
 NATIVE_TARGET_PATH=target/lib

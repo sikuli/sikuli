@@ -21,7 +21,7 @@ LIB_PATH=../lib
 CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/swing-layout-1.0.1.jar
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
-JAVA_ARGS=-Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms256m -Xmx1024m #-Duser.language=zh -Duser.region=TW
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms256m -Xmx1024m #-Duser.language=zh -Duser.region=TW
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAR=sikuli-ide.jar
@@ -80,6 +80,9 @@ $(CLASSES): $(SRC)
 $(CLASSES_OUT_PATH):
 	mkdir -p $(CLASSES_OUT_PATH)
 
+$(RELEASE_PATH):
+	mkdir -p $(RELEASE_PATH)
+
 $(NATIVE_TARGET_PATH):
 	mkdir -p $(NATIVE_TARGET_PATH)
 
@@ -91,9 +94,13 @@ native-lib: native-lib-linux
 	make -C $(NATIVE_SRC_PATH)
 
 
-native-lib-linux:
+native-lib-linux: $(NATIVE_TARGET_PATH)
 ifeq "$(UNAME)" "Linux"
-	cp -f $(LIB_PATH)/jxgrabkey/lib/*.so $(NATIVE_TARGET_PATH)/
+  ifeq "$(shell uname -m)" "x86_64"
+	cp -f $(LIB_PATH)/jxgrabkey/lib/libJXGrabKey-64.so $(NATIVE_TARGET_PATH)/libJXGrabKey.so
+  else
+	cp -f $(LIB_PATH)/jxgrabkey/lib/libJXGrabKey-32.so $(NATIVE_TARGET_PATH)/libJXGrabKey.so
+  endif
 endif
 
 debug:
@@ -142,7 +149,7 @@ inc-minor2:
 	perl -pi -e 's/(\d+)\.(\d+)\.(\d+)/"$$1.$$2.".($$3+1)/xe' latest-ver
 
 tags:
-	ctags -R --language-force=java  -f .tags src/main/java ../sikuli-script/src/main/java
+	-ctags -R --language-force=java  -f .tags src/main/java ../sikuli-script/src/main/java
 
 update-prop:
 	for f in resources/i18n/IDE/*.po; do \

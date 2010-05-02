@@ -346,6 +346,9 @@ public class Region {
                                                 throws  FindFailed{
       click(target, 0);
       if(text != null){
+         Debug.log("type \"" + text + "\", mod: " + 
+                   KeyEvent.getKeyModifiersText(modifiers) + 
+                   "(" + modifiers +")");
          for(int i=0; i < text.length(); i++){
             pressModifiers(modifiers);
             type_ch(text.charAt(i), PRESS_RELEASE); 
@@ -590,14 +593,24 @@ public class Region {
       if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
       if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
       if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+      if((modifiers & K_META) != 0){
+         if( Env.getOS() == OS.WINDOWS )
+            _robot.keyPress(KeyEvent.VK_WINDOWS);
+         else
+            _robot.keyPress(KeyEvent.VK_META);
+      }
    }
 
    private void releaseModifiers(int modifiers){
       if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
       if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
       if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+      if((modifiers & K_META) != 0){ 
+         if( Env.getOS() == OS.WINDOWS )
+            _robot.keyRelease(KeyEvent.VK_WINDOWS);
+         else
+            _robot.keyRelease(KeyEvent.VK_META);
+      }
    }
 
    Location toRobotCoord(Location l){
@@ -614,17 +627,21 @@ public class Region {
    static final int RELEASE_ONLY = 1;
    static final int PRESS_RELEASE = 2;
    private void doType(int mode, int... keyCodes) {
-      for(int i=0;i<keyCodes.length;i++){
-         if(mode==PRESS_ONLY){
+      if(mode==PRESS_ONLY){
+         for(int i=0;i<keyCodes.length;i++){
             _robot.keyPress(keyCodes[i]);
          }
-         else if(mode==RELEASE_ONLY){
+      }
+      else if(mode==RELEASE_ONLY){
+         for(int i=0;i<keyCodes.length;i++){
             _robot.keyRelease(keyCodes[i]);
          }
-         else{
+      }
+      else{
+         for(int i=0;i<keyCodes.length;i++)
             _robot.keyPress(keyCodes[i]);
+         for(int i=0;i<keyCodes.length;i++)
             _robot.keyRelease(keyCodes[i]);
-         }
       }
    }
 
