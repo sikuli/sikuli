@@ -10,9 +10,8 @@ OBJS:=$(OBJS:%screenmatch.o=)
 
 include $(SRC_PATH)/Makefile.common
 
-CXXFLAGS+=-I/opt/cxxtest -I$(SRC_PATH) 
-LDFLAGS+=-ltesseract_full -ltiff 
-LDFLAGS:=$(LDFLAGS:-dynamiclib=)
+CXXFLAGS+=-I/opt/cxxtest -I$(SRC_PATH) -lcv -lcxcore -lcvaux -lhighgui
+LDFLAGS:=$(LDFLAGS:-dynamiclib=) -L/usr/local/libx
 
 default: run-test
 

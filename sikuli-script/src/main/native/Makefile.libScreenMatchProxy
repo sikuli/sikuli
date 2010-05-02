@@ -2,9 +2,9 @@ DEV_ROOT=../../..
 include $(DEV_ROOT)/Makefile.common
 include Makefile.common
 
-LDFLAGS+=-ltesseract_full -ltiff 
+LDFLAGS+=
 
-OBJS = EventManagerProxy.o FinderProxy.o finder.o event-manager.o ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o TimingBlock.o
+OBJS = EventManagerProxy.o FinderProxy.o finder.o event-manager.o ScreenMatchProxy.o template-matcher.o screendiff.o TimingBlock.o
 DYN_LIB = $(JNI_TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
 
 default $(DYN_LIB): $(OBJS)

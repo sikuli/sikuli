@@ -1,0 +1,255 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8DD76F6A0486A84900D96B5E /* vision.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* vision.1 */; };
+		A03B9D94118CAD7900BB69CE /* libcv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03B9D8F118CAD7900BB69CE /* libcv.dylib */; };
+		A03B9D95118CAD7900BB69CE /* libcvaux.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03B9D90118CAD7900BB69CE /* libcvaux.dylib */; };
+		A03B9D96118CAD7900BB69CE /* libcxcore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03B9D91118CAD7900BB69CE /* libcxcore.dylib */; };
+		A03B9D97118CAD7900BB69CE /* libhighgui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03B9D92118CAD7900BB69CE /* libhighgui.dylib */; };
+		A03B9D98118CAD7900BB69CE /* libml.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03B9D93118CAD7900BB69CE /* libml.dylib */; };
+		A03B9DB0118CAEFA00BB69CE /* vision-main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A03B9DAF118CAEFA00BB69CE /* vision-main.cpp */; };
+		A0F28801118DB28F008D7CB7 /* event-manager.cc in Sources */ = {isa = PBXBuildFile; fileRef = A0F287FD118DB28F008D7CB7 /* event-manager.cc */; };
+		A0F28802118DB28F008D7CB7 /* finder.cc in Sources */ = {isa = PBXBuildFile; fileRef = A0F287FF118DB28F008D7CB7 /* finder.cc */; };
+		A0F28803118DB28F008D7CB7 /* pyramid-template-matcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0F28800118DB28F008D7CB7 /* pyramid-template-matcher.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* vision.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8DD76F6C0486A84900D96B5E /* vision */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vision; sourceTree = BUILT_PRODUCTS_DIR; };
+		A03B9D8F118CAD7900BB69CE /* libcv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcv.dylib; path = /usr/local/lib/libcv.dylib; sourceTree = "<absolute>"; };
+		A03B9D90118CAD7900BB69CE /* libcvaux.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcvaux.dylib; path = /usr/local/lib/libcvaux.dylib; sourceTree = "<absolute>"; };
+		A03B9D91118CAD7900BB69CE /* libcxcore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcxcore.dylib; path = /usr/local/lib/libcxcore.dylib; sourceTree = "<absolute>"; };
+		A03B9D92118CAD7900BB69CE /* libhighgui.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libhighgui.dylib; path = /usr/local/lib/libhighgui.dylib; sourceTree = "<absolute>"; };
+		A03B9D93118CAD7900BB69CE /* libml.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libml.dylib; path = /usr/local/lib/libml.dylib; sourceTree = "<absolute>"; };
+		A03B9DAF118CAEFA00BB69CE /* vision-main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "vision-main.cpp"; sourceTree = "<group>"; };
+		A0F287FD118DB28F008D7CB7 /* event-manager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "event-manager.cc"; path = "../../main/native/event-manager.cc"; sourceTree = SOURCE_ROOT; };
+		A0F287FF118DB28F008D7CB7 /* finder.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = finder.cc; path = ../../main/native/finder.cc; sourceTree = SOURCE_ROOT; };
+		A0F28800118DB28F008D7CB7 /* pyramid-template-matcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "pyramid-template-matcher.cpp"; path = "../../main/native/pyramid-template-matcher.cpp"; sourceTree = SOURCE_ROOT; };
+		C6859E8B029090EE04C91782 /* vision.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = vision.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A03B9D94118CAD7900BB69CE /* libcv.dylib in Frameworks */,
+				A03B9D95118CAD7900BB69CE /* libcvaux.dylib in Frameworks */,
+				A03B9D96118CAD7900BB69CE /* libcxcore.dylib in Frameworks */,
+				A03B9D97118CAD7900BB69CE /* libhighgui.dylib in Frameworks */,
+				A03B9D98118CAD7900BB69CE /* libml.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* vision */ = {
+			isa = PBXGroup;
+			children = (
+				A03B9D8C118CAD5400BB69CE /* OpenCV */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = vision;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				A0F287FD118DB28F008D7CB7 /* event-manager.cc */,
+				A0F287FF118DB28F008D7CB7 /* finder.cc */,
+				A0F28800118DB28F008D7CB7 /* pyramid-template-matcher.cpp */,
+				A03B9DAF118CAEFA00BB69CE /* vision-main.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* vision */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A03B9D8C118CAD5400BB69CE /* OpenCV */ = {
+			isa = PBXGroup;
+			children = (
+				A03B9D8F118CAD7900BB69CE /* libcv.dylib */,
+				A03B9D90118CAD7900BB69CE /* libcvaux.dylib */,
+				A03B9D91118CAD7900BB69CE /* libcxcore.dylib */,
+				A03B9D92118CAD7900BB69CE /* libhighgui.dylib */,
+				A03B9D93118CAD7900BB69CE /* libml.dylib */,
+			);
+			name = OpenCV;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* vision.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* vision */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "vision" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vision;
+			productInstallPath = "$(HOME)/bin";
+			productName = vision;
+			productReference = 8DD76F6C0486A84900D96B5E /* vision */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "vision" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* vision */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* vision */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A03B9DB0118CAEFA00BB69CE /* vision-main.cpp in Sources */,
+				A0F28801118DB28F008D7CB7 /* event-manager.cc in Sources */,
+				A0F28802118DB28F008D7CB7 /* finder.cc in Sources */,
+				A0F28803118DB28F008D7CB7 /* pyramid-template-matcher.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_GLIBCXX_DEBUG=1",
+					"_GLIBCXX_DEBUG_PEDANTIC=1",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = vision;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = vision;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/opencv,
+					../../main/native,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/opencv,
+					../../main/native,
+				);
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "vision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "vision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

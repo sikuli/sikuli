@@ -1,12 +1,12 @@
 CLASSPATH = ../java:../../../lib:../../../../lib/jython-2.2.1.jar
 PACKAGE   = edu.mit.csail.uid
 DEBUG	  = -O2 # -DENABLE_TIMING # -g -DDEBUG
-CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv`
-LDFLAGS	  = `pkg-config --libs opencv` 
+CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  -I/usr/local/include/opencv
+LDFLAGS	  = -L/usr/local/lib/
 
 ifeq  "$(OS)" "Darwin"
-   CXXFLAGS+=-I/opt/local/include/tesseract/ -I/usr/local/include/tesseract/ 
-   LDFLAGS+=-dynamiclib -framework JavaVM 
+   #LDFLAGS+=-dynamiclib -framework JavaVM -L/usr/local/lib/
+   LDFLAGS+=-lcv -lcvaux -lcxcore -lhighgui
    DYN_LIB_POSTFIX=jnilib 
 endif
 
@@ -22,7 +22,7 @@ endif
 
 ifeq "$(OS)" "Darwin"
 	ifneq (,$(findstring 10., $(UNAME_R)))
-		ARCH=-arch i386 -arch x86_64
+		ARCH=-arch x86_64
 	endif
 	ifneq (,$(findstring 9., $(UNAME_R)))
 		ARCH=-arch i386 -arch ppc
