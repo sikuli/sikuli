@@ -71,7 +71,11 @@ def capture(*args):
          return None
    elif len(args) == 1:
       if __builtin__.type(args[0]) is types.StringType:
-         return scr.userCapture(args[0]).getFilename()
+         simg = scr.userCapture(args[0])
+         if simg:
+            return simg.getFilename()
+         else:
+            return None
       else:
          return scr.capture(args[0]).getFilename()
    elif len(args) == 4:
