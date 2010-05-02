@@ -28,6 +28,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
 
    protected ScreenImage _simg;
    protected BufferedImage _screen = null;
+   protected Rectangle _uBound;
 
    private JLabel btnSimilar;
    private JSlider sldSimilar;
@@ -231,8 +232,8 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    void paintMatches(Graphics2D g2d){
       synchronized(_showMatches){
          for(Match m : _showMatches){
-            int x = (int)(m.x*_scale);
-            int y = (int)(m.y*_scale);
+            int x = (int)((m.x-_match_region.x)*_scale);
+            int y = (int)((m.y-_match_region.y)*_scale);
             int w = (int)(m.w*_scale);
             int h = (int)(m.h*_scale);
             Color c = SimilaritySlider.getScoreColor(m.score);
