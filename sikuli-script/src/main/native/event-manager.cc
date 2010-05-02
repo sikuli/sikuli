@@ -20,6 +20,12 @@ SikuliEventManager::addObserver(int event_type, const char* param_image_filename
 
 SikuliEventManager::SikuliEventManager(){
   prev_screen_image = 0;
+  debug_mode = false;
+}
+
+void
+SikuliEventManager::setDebugMode(bool debug_mode){
+  this->debug_mode = debug_mode ;
 }
 
 SikuliEventManager::~SikuliEventManager(){
@@ -45,8 +51,10 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
   const double MIN_SIMILARITY = 0.8;
   Match top_match;
   Finder f(screen_image);
+  f.debug(debug_mode);
 
   ChangeFinder cf(screen_image);
+  cf.debug(debug_mode);
   
   vector<Event> events;
   for (vector<Observer*>::iterator it = observers.begin(); it != observers.end(); it++){
@@ -69,6 +77,9 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
 
           if (!ob.active){
             
+            if (debug_mode)
+              f.debug_show_image();
+
             Event e;
             e.type = ob.event_type;
             e.handler_id = ob.handler_id;
@@ -98,6 +109,9 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
 
           if (!ob.active){
             
+            if (debug_mode)
+              f.debug_show_image();
+
             Event e;
             e.type = ob.event_type;
             e.handler_id = ob.handler_id;
@@ -123,9 +137,12 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
           if (cf.hasNext()){
 
 
+            if (debug_mode){
               while(cf.hasNext())
                 cf.next();
-      
+              cf.debug_show_image();
+            }
+
               Event e;
               e.type = ob.event_type;
               e.handler_id = ob.handler_id;

@@ -5,7 +5,6 @@
 #include <cxcore.h>
 
 #include "generic-matcher.h"
-//#include "myocr.h"
 
 using namespace std;
 

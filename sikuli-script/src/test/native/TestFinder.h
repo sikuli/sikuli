@@ -41,7 +41,7 @@ public:
    static const int Above08_Count[][1];
    void testAbove08(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(DEBUG);
+      //f.debug(DEBUG);
       string testcase = "above-0.8";
       for (int target_i=1;target_i<=1;target_i++){
          f.find(target_image_path(screen_i,target_i).c_str(),0.8);
@@ -56,9 +56,11 @@ public:
          if(DEBUG){
             cout << "saving test result to " 
                  << result_image_path(screen_i,target_i,testcase) << endl;
+            /*
             f.debug_save_image(
                result_image_path(screen_i,target_i,testcase).c_str());
             if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+            */
          }
       }
    }
@@ -66,7 +68,7 @@ public:
    static const int Top5_XY[][4][5][2];
    void testTop5(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(DEBUG);
+      //f.debug(DEBUG);
       string testcase = "top-5";
       for (int target_i=1;target_i<=4;target_i++){
          f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
@@ -82,9 +84,11 @@ public:
          if(DEBUG){
             cout << "saving test result to " 
                  << result_image_path(screen_i,target_i,testcase) << endl;
+            /*
             f.debug_save_image(
                result_image_path(screen_i,target_i,testcase).c_str());
             if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+            */
          }
       }
    }
@@ -92,7 +96,7 @@ public:
    static const int Top_XY[][4][2];
    void testTop(int screen_i){
     Finder f(screen_image_path(screen_i).c_str());
-    f.debug(true);
+    //f.debug(true);
 
     string testcase = "top";
     //cout << "{\n";
@@ -106,9 +110,11 @@ public:
        if(DEBUG){
           cout << "saving test result to " 
                << result_image_path(screen_i,target_i,testcase) << endl;
+          /*
           f.debug_save_image(
              result_image_path(screen_i,target_i,testcase).c_str());
           if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+          */
        }
     }
     //cout << "},\n";
@@ -117,7 +123,7 @@ public:
    static const int ROI_Left_Count[][4];
    void testROI_Left(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(DEBUG);
+      //f.debug(DEBUG);
       string testcase = "roi-left-above-0.8";
       for (int target_i=1;target_i<=4;target_i++){
          Match m;
@@ -132,8 +138,10 @@ public:
          if(DEBUG){
             cout << "saving test result to " 
                  << result_image_path(screen_i,target_i,testcase) << endl;
+            /*
             f.debug_save_image(result_image_path(screen_i,target_i,testcase).c_str());
             if (SHOW_DEBUG_IMAGE) f.debug_show_image();
+            */
          }
       }
    }
@@ -141,7 +149,7 @@ public:
    static const int ROI_Right_Count[][4];
    void testROI_Right(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(DEBUG);
+      //f.debug(DEBUG);
       string testcase = "roi-right-above-0.9";
       for (int target_i=1;target_i<=4;target_i++){
          Match m;
@@ -157,9 +165,11 @@ public:
          if(DEBUG){
             cout << "saving test result to " 
                  << result_image_path(screen_i,target_i,testcase) << endl;
+            /*
             f.debug_save_image(
                result_image_path(screen_i,target_i,testcase).c_str());
             if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+            */
          }
       }
    }
@@ -168,7 +178,7 @@ public:
    static const int ROI_LowerRight_Count[][1];
    void testROI_LowerRight(int screen_i){
       Finder f(screen_image_path(screen_i).c_str());
-      f.debug(DEBUG);
+      //f.debug(DEBUG);
       string testcase = "roi-lower-right";
       for (int target_i=3;target_i<=3;target_i++){
          Match m;
@@ -185,9 +195,11 @@ public:
          if(DEBUG){
             cout << "saving test result to " 
                  << result_image_path(screen_i,target_i,testcase) << endl;
+            /*
             f.debug_save_image(
                result_image_path(screen_i,target_i,testcase).c_str());
             if(SHOW_DEBUG_IMAGE) f.debug_show_image();
+            */
          }
       }
    }

@@ -5,14 +5,14 @@ CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config 
 LDFLAGS	  = `pkg-config --libs opencv` 
 
 ifeq  "$(OS)" "Darwin"
-   CXXFLAGS+=-I/opt/local/include/tesseract/ -I/usr/local/include/tesseract/ 
+   #CXXFLAGS+=
    LDFLAGS+=-dynamiclib -framework JavaVM 
    DYN_LIB_POSTFIX=jnilib 
 endif
 
 
 ifeq  "$(OS)" "Linux"
-   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux -I/usr/local/include/tesseract/ -I/usr/include/tesseract/ 
+   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux 
    LDFLAGS+=-shared -L/usr/local/lib -I/usr/lib/jvm/java-6-sun/lib
    DYN_LIB_POSTFIX=so
 endif

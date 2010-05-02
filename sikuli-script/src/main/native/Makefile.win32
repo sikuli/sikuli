@@ -1,9 +1,28 @@
 TARGET_DIR=..\..\..\target\lib
 
-include Makefile.common.win32
+OPENCV_DIR=C:\OpenCV2.0
+TESSERACT_DIR= C:\tesseract-2.04
+JDK_DIR=C:\Program Files\Java\jdk1.6.0_16
 
+CXX=g++
+#DEBUG=-g -DDEBUG
+ARCH=-arch i386 -arch ppc
+CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv` -I/usr/local/include/tesseract/ -I/opt/local/include/tesseract/ $(ARCH) $(DEBUG)
+LDFLAGS= $(DEBUG) $(ARCH) -dynamiclib -framework JavaVM   `pkg-config --libs opencv` -ltesseract_full -ltiff 
+OBJS = ScreenMatchProxy.o ocr-matcher.o template-matcher.o myocr.o screendiff.o 
 
-SRCS=EventManagerProxy.cc FinderProxy.cc finder.cc event-manager.cc ScreenMatchProxy.cc template-matcher.cc screendiff.cpp TimingBlock.cc
+# Mac only
+DYN_LIB = $(TARGET_DIR)/libScreenMatchProxy.jnilib 
+
+BIN_OBJS = $(OBJS) screenmatch.o
+BIN_LDFLAGS=-framework JavaVM `pkg-config --libs opencv` -ltesseract_full -ltiff 
+BIN=$(TARGET_DIR)/screenmatch
+
+JAVA_SRC=ScreenMatchProxy.java
+
+TEST_PROXY_SRC=TestScreenMatchProxy.java
+TEST_SRC=TestSikuliScript.java
+
 CLASSES_TARGET_PATH=..\..\..\target\classes
 CLASSPATH=..\java;..\..\..\lib
 PACKAGE=edu.mit.csail.uid
@@ -42,8 +61,8 @@ clean:
 	del /q $(BIN_OBJS) $(OBJS) $(DYN_LIB) $(BIN)
 
 dll: vdict
-	set LIB=$(LIBPATH)
-	cl /O2 /oScreenMatchProxy.dll $(CFLAGS) ws2_32.lib user32.lib $(SRCS)
+	set LIB="$(OPENCV_DIR)\tmp\lib\Release";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib";"$(TESSERACT_DIR)"
+	cl /O2 /oScreenMatchProxy.dll /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" -I"$(TESSERACT_DIR)\ccmain" cv200.lib highgui200.lib cxcore200.lib tesseract.lib ws2_32.lib user32.lib -LD ScreenMatchProxy.cc ocr-matcher.cc template-matcher.cc myocr.cc screendiff.cpp
 	copy ScreenMatchProxy.dll $(TARGET_DIR)
 
 init:

@@ -3,7 +3,7 @@
 #include <time.h>
 #include "edu_mit_csail_uid_ScreenMatchProxy.h"
 #include "template-matcher.h"
-//#include "ocr-matcher.h"
+#include "ocr-matcher.h"
 #include "screendiff.h"
 
 #define CLASS_MATCH "edu/mit/csail/uid/Match"
@@ -30,11 +30,9 @@ jobjectArray genericMatch
       cout << "[JNI] Run screenMatch: " << fname_target << " " << fname_screen << endl;
    }
    Matches matches;
-   /*
    if(by_ocr)
       matches = match_by_ocr(fname_screen, fname_target, numMatches, threshold);
    else
-   */
       matches = match_by_template(fname_screen, fname_target, numMatches, threshold);
 
    jobjectArray ret;

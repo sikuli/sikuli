@@ -57,11 +57,15 @@ public:
   vector<Event> update(const char* screen_image_filename);
   vector<Event> update(const IplImage* screen_image);
 
+  void setDebugMode(bool debug_mode);
+  
 private:
   
   vector<Observer*> observers;
   IplImage* prev_screen_image;
 
+
+  bool debug_mode;
 };
 
 #endif // _EVENT_MANAGER_

@@ -106,8 +106,3 @@ JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_VDictProxy__1empty
   VizDict* dict = (VizDict *)inst;
   return dict->empty();
 }
-
-
-int main(){
-	return -1;
-}
