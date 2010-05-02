@@ -115,11 +115,15 @@ public class Screen extends Region implements Observer {
    }
 
    public ScreenImage userCapture() {
+      return userCapture("Select a region on the screen");
+   }
+
+   public ScreenImage userCapture(final String msg) {
       _waitPrompt = true;
       Thread th = new Thread(){
          public void run(){
             _prompt = new CapturePrompt(Screen.this, Screen.this);
-            _prompt.prompt("Select a region on the screen");
+            _prompt.prompt(msg);
          }
       };
       th.start();
@@ -143,7 +147,12 @@ public class Screen extends Region implements Observer {
    }
 
    public Region selectRegion(){
-      ScreenImage sim = userCapture();
+      return selectRegion("Select a region on the screen");
+   }
+
+
+   public Region selectRegion(final String msg){
+      ScreenImage sim = userCapture(msg);
       if(sim == null)
          return null;
       Rectangle r = sim.getROI();

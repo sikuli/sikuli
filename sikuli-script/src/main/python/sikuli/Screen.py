@@ -24,8 +24,11 @@ class Screen(Region):
    def getBounds(self):
       return self.getScreen().getBounds()
 
-   def selectRegion(self):
-      r = self.getScreen().selectRegion()
+   def selectRegion(self, msg=None):
+      if msg:
+         r = self.getScreen().selectRegion(msg)
+      else:
+         r = self.getScreen().selectRegion()
       if r:
          return Region(r)
       else:
@@ -51,17 +54,16 @@ class Screen(Region):
             return simg.getFilename()
          else:
             return None
-      else:
-         if isinstance(args[0],JRegion):
-            r = args[0]
-            return scr.capture(r.x, r.y, r.w, r.h).getFilename()
-         elif isinstance(args[0],Rectangle):
-            r = args[0]
-            return scr.capture(r.x, r.y, r.width, r.height).getFilename()
-         elif len(args) == 4:
-            return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
+      elif len(args) == 1:
+         if __builtin__.type(args[0]) is types.StringType:
+            return scr.userCapture(args[0]).getFilename()
          else:
-            return None
+            return scr.capture(args[0]).getFilename()
+      elif len(args) == 4:
+         return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
+      else:
+         return None
+
 
    def toString(self):
       return self.getScreen().toString()

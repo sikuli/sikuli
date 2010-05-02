@@ -70,15 +70,21 @@ def capture(*args):
       else:
          return None
    elif len(args) == 1:
-      return scr.capture(args[0]).getFilename()
+      if __builtin__.type(args[0]) is types.StringType:
+         return scr.userCapture(args[0]).getFilename()
+      else:
+         return scr.capture(args[0]).getFilename()
    elif len(args) == 4:
       return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
    else:
       return None
 
 
-def selectRegion():
-   r = UnionScreen().selectRegion()
+def selectRegion(msg=None):
+   if msg:
+      r = UnionScreen().selectRegion(msg)
+   else:
+      r = UnionScreen().selectRegion()
    if r:
       return Region(r)
    else:
