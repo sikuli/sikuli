@@ -61,6 +61,28 @@ def setShowActions(flag):
 def input(msg=""):
    return _si.input(msg)
 
+def capture(*args):
+   scr = UnionScreen()
+   if len(args) == 0:
+      simg = scr.userCapture()
+      if simg: 
+         return simg.getFilename()
+      else:
+         return None
+   elif len(args) == 1:
+      return scr.capture(args[0]).getFilename()
+   elif len(args) == 4:
+      return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
+   else:
+      return None
+
+
+def selectRegion():
+   r = UnionScreen().selectRegion()
+   if r:
+      return Region(r)
+   else:
+      return None
 
 
 ##

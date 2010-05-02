@@ -69,7 +69,8 @@ class Screen(Region):
    def _exposeAllMethods(self):
       exclude_list = [ 'class', 'classDictInit', 'clone', 'equals', 'finalize', 
                        'getClass', 'hashCode', 'notify', 'notifyAll', 
-                       'toGlobalCoord', 'toString' ]
+                       'toGlobalCoord', 'toString',
+                       'capture', 'selectRegion']
       for name in dir(self):
          if inspect.ismethod(getattr(self,name)) \
           and name[0] != '_' and name[:7] != 'super__' and \

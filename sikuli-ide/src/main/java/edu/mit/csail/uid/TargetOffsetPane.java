@@ -30,7 +30,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
       int w = DEFAULT_H/r.height*r.width;
       setPreferredSize(new Dimension(w, DEFAULT_H));
 
-      Finder f = new Finder(_simg, new Region(simg.getROI()));
+      Finder f = new Finder(_simg, new Region(0,0,0,0));
       f.find(patFilename);
       if(f.hasNext()){
          _match = f.next();
@@ -54,7 +54,6 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 
 
    private void zoomToMatch(){
-      Rectangle scr = _simg.getROI();
       _viewW = (int)(_match.w/_ratio);
       _zoomRatio = getWidth()/(float)_viewW;
       _viewH = (int)(getHeight()/_zoomRatio);
