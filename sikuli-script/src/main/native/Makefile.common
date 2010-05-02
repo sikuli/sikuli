@@ -1,19 +1,19 @@
 CLASSPATH = ../java:../../../lib:../../../../lib/jython-2.2.1.jar
 PACKAGE   = edu.mit.csail.uid
 DEBUG	  = -O2 # -DENABLE_TIMING # -g -DDEBUG
-CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  -I/usr/local/include/opencv
-LDFLAGS	  = -L/usr/local/lib/
+CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv`
+LDFLAGS	  = `pkg-config --libs opencv` 
 
 ifeq  "$(OS)" "Darwin"
-   #LDFLAGS+=-dynamiclib -framework JavaVM -L/usr/local/lib/
-   LDFLAGS+=-lcv -lcvaux -lcxcore -lhighgui
+   CXXFLAGS+=-I/opt/local/include/tesseract/ -I/usr/local/include/tesseract/ 
+   LDFLAGS+=-dynamiclib -framework JavaVM 
    DYN_LIB_POSTFIX=jnilib 
 endif
 
 
 ifeq  "$(OS)" "Linux"
-   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux -I/usr/lib/jvm/java-6-openjdk/include/ -I/usr/lib/jvm/java-6-openjdk/include/linux
-   LDFLAGS+=-shared -L/usr/local/lib -L/usr/lib/jvm/java-6-sun/lib  -L/usr/lib/jvm/java-6-openjdk/lib
+   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux -I/usr/local/include/tesseract/ -I/usr/include/tesseract/ 
+   LDFLAGS+=-shared -L/usr/local/lib -I/usr/lib/jvm/java-6-sun/lib
    DYN_LIB_POSTFIX=so
 endif
 
@@ -22,7 +22,7 @@ endif
 
 ifeq "$(OS)" "Darwin"
 	ifneq (,$(findstring 10., $(UNAME_R)))
-		ARCH=-arch x86_64
+		ARCH=-arch i386 -arch x86_64
 	endif
 	ifneq (,$(findstring 9., $(UNAME_R)))
 		ARCH=-arch i386 -arch ppc
