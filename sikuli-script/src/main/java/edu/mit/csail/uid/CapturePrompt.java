@@ -112,7 +112,7 @@ class CapturePrompt extends JWindow implements Subject{
       }
    }
 
-   static Font fontMsg = new Font("Arial", Font.PLAIN, 40);
+   static Font fontMsg = new Font("Arial", Font.PLAIN, 60);
    void drawMessage(Graphics2D g2d){
       if(_msg == null)
          return;
@@ -122,7 +122,15 @@ class CapturePrompt extends JWindow implements Subject{
          float alpha = 1f - (float)(now-_msg_start)/MSG_DISPLAY_TIME;
          g2d.setFont(fontMsg);
          g2d.setColor(new Color(1f,1f,1f,alpha));
-         g2d.drawString(_msg, 0, 45);
+         int sw = g2d.getFontMetrics().stringWidth(_msg);
+         int sh = g2d.getFontMetrics().getMaxAscent();
+         Rectangle ubound = (new UnionScreen()).getBounds();
+         for(int i=0;i<Screen.getNumberScreens();i++){
+            Rectangle bound = Screen.getBounds(i);
+            int cx = bound.x+ (bound.width-sw)/2 - ubound.x;
+            int cy = bound.y+ (bound.height-sh)/2 - ubound.y;
+            g2d.drawString(_msg, cx, cy);
+         }
          repaint();
       }
 
