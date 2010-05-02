@@ -346,6 +346,9 @@ public class Region {
                                                 throws  FindFailed{
       click(target, 0);
       if(text != null){
+         Debug.log("type \"" + text + "\", mod: " + 
+                   KeyEvent.getKeyModifiersText(modifiers) + 
+                   "(" + modifiers +")");
          for(int i=0; i < text.length(); i++){
             pressModifiers(modifiers);
             type_ch(text.charAt(i), PRESS_RELEASE); 
@@ -590,14 +593,24 @@ public class Region {
       if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
       if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
       if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0) _robot.keyPress(KeyEvent.VK_META);
+      if((modifiers & K_META) != 0){
+         if( Env.getOS() == OS.WINDOWS )
+            _robot.keyPress(KeyEvent.VK_WINDOWS);
+         else
+            _robot.keyPress(KeyEvent.VK_META);
+      }
    }
 
    private void releaseModifiers(int modifiers){
       if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
       if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
       if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0) _robot.keyRelease(KeyEvent.VK_META);
+      if((modifiers & K_META) != 0){ 
+         if( Env.getOS() == OS.WINDOWS )
+            _robot.keyRelease(KeyEvent.VK_WINDOWS);
+         else
+            _robot.keyRelease(KeyEvent.VK_META);
+      }
    }
 
    Location toRobotCoord(Location l){
