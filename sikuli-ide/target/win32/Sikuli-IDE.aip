@@ -98,7 +98,7 @@
     <ROW File="vcomp90.dll" Component_="vcomp90.dll" FileName="vcomp90.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Microsoft.VC90.OPENMP\vcomp90.dll" SelfReg="false" Sequence="18"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\release" PackageFileName="Sikuli-IDE-win-[|ProductVersion]" Languages="en;zh_TW;zh;de" LangOpt="1" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\install" ExtUI="true"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\release" PackageFileName="Sikuli-IDE-win32-[|ProductVersion]" Languages="en;zh_TW;zh;de" LangOpt="1" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\install" ExtUI="true"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">

@@ -42,4 +42,6 @@ _default: default
 
 $(JNI_HEADERS): $(JNI_CLASS_FILES)
 	javah -classpath $(JAVA_TARGET_DIR) $(patsubst %.java,$(PACKAGE).%,$(JNI_SOURCE))
-	
+
+$(JNI_TARGET_DIR):
+	mkdir -p $(JNI_TARGET_DIR)	

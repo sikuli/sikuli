@@ -151,8 +151,9 @@ class CapturePrompt extends JWindow implements Subject{
    }
 
    public void close(){
-      if(_gdev != null) 
-         _gdev.setFullScreenWindow(null);
+      if(_gdev != null ){
+	 _gdev.setFullScreenWindow(null);
+      }
       this.setVisible(false);
       this.dispose();
    }
