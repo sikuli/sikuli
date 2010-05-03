@@ -183,7 +183,7 @@
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
-    <ROW Environment="Path" Name="=-Path" Value="[APPDIR]\tmplib" Component_="Sikuli_IDE.exe"/>
+    <ROW Environment="Path" Name="=-Path" Value="[~];[APPDIR]tmplib" Component_="Sikuli_IDE.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiExtComponent">
     <ROW Extension="skl" Component_="Sikuli_IDE.exe" ProgId_="[|Manufacturer].[|ProductName].skl" Feature_="MainFeature"/>
@@ -198,6 +198,7 @@
     <ROW IniFile="Application_Type" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Application Type" Value="gui" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Class_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#jintellitype_1.3.2.jar];[#junit_3.8.1.jar];[#sikuli_ide.jar];[#sikuli_script.jar];[#swing_layout_1.0.1.jar];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Failure_Check" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Failure Check" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Library_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Library Path" Value="[tmplib_DIR];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Main_Class" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="edu.mit.csail.uid.SikuliIDE" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Maximum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Maximum Version" Value="any" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Minimum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Minimum Version" Value="1.6" Action="0" Component_="Sikuli_IDE.exe"/>
@@ -231,7 +232,7 @@
     <ROW Action="AI_DetectJRE" Condition="1" Sequence="399" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiJavaComponent">
-    <ROW Name="Sikuli-IDE.exe" Launcher="Sikuli_IDE.exe" MainClass="Main_Class" ClassPath="Class_Path" VMParams="Virtual_Machine_Parameters" JREMin="Minimum_Version" JREMax="Maximum_Version" IconPath="..\Sikuli-IDE\ide-icon.ico" AppType="Application_Type" PlusList="APPDIR;" MinusList="#Sikuli_IDE.exe;" MacDescription="[|CurrentJavaProductName] [|ProductVersion] " MacBundleId="com.[|Manufacturer].[|ProductName].[|CurrentJavaProductName]" FailureCheck="Failure_Check" OverrideWkDir="Override_WorkingDir" UACExecutionLevel="0"/>
+    <ROW Name="Sikuli-IDE.exe" Launcher="Sikuli_IDE.exe" MainClass="Main_Class" ClassPath="Class_Path" VMParams="Virtual_Machine_Parameters" JREMin="Minimum_Version" JREMax="Maximum_Version" IconPath="..\Sikuli-IDE\ide-icon.ico" AppType="Application_Type" LibPath="Library_Path" PlusList="APPDIR;" MinusList="#Sikuli_IDE.exe;" MacDescription="[|CurrentJavaProductName] [|ProductVersion] " MacBundleId="com.[|Manufacturer].[|ProductName].[|CurrentJavaProductName]" FailureCheck="Failure_Check" OverrideWkDir="Override_WorkingDir" UACExecutionLevel="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="AI_JREVERFOUND = 1" Description="[ProductName] cannot be installed on systems with JRE version lower than [AI_MINJREVERSION]" DescriptionLocId="AI.LaunchCondition.Jre" IsPredefined="true" Builds="DefaultBuild"/>
