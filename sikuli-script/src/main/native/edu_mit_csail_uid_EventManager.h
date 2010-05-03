@@ -24,15 +24,15 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_EventManager_createEventManager
 /*
  * Class:     edu_mit_csail_uid_EventManager
  * Method:    addObserver
- * Signature: (JILjava/lang/String;IIIII)V
+ * Signature: (JILjava/lang/String;FIIIII)V
  */
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_addObserver
-  (JNIEnv *, jobject, jlong, jint, jstring, jint, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jlong, jint, jstring, jfloat, jint, jint, jint, jint, jint);
 
 /*
  * Class:     edu_mit_csail_uid_EventManager
  * Method:    _update
- * Signature: (J[BII)[Ljava/util/EventObject;
+ * Signature: (J[BII)[Ledu/mit/csail/uid/SikuliEvent;
  */
 JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
   (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);

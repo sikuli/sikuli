@@ -50,19 +50,21 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_EventManager_createEventManager
 /*
  * Class:     edu_mit_csail_uid_EventManager
  * Method:    addObserver
- * Signature: (JILjava/lang/String;IIIII)V
+ * Signature: (JILjava/lang/String;FIIIII)V
  */
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_addObserver
+
   (JNIEnv *env, jobject jobj, jlong jSemInstance, 
-   jint evt_type, jstring jTargetImgFilename, 
+   jint evt_type, jstring jTargetImgFilename, jfloat jSimilarity,
    jint handler_id, jint x, jint y, jint w, jint h){
    SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 
    const char *fname = env->GetStringUTFChars(jTargetImgFilename, NULL);
 #ifdef DEBUG
-   cerr << "[JNI] addObserver " << evt_type << " " << fname  << " "
+   cerr << "[JNI] addObserver " << evt_type << " " 
+        << fname  << " " << jSimilarity 
         << handler_id << " " << x << " " << y << " " << w << " " << h << endl;
 #endif
-   sem->addObserver(evt_type, fname, handler_id, x, y, w, h);
+   sem->addObserver(evt_type, fname, jSimilarity, handler_id, x, y, w, h);
    env->ReleaseStringUTFChars(jTargetImgFilename, fname);
 }
 

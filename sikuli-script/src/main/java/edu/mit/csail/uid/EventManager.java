@@ -39,6 +39,13 @@ public class EventManager {
       _region = region;
    }
 
+   private <PSC> float getSimiliarity(PSC ptn){
+      if( ptn instanceof Pattern ){
+         return ((Pattern)ptn).similarity;
+      }
+      return -1f;
+   }
+
    private <PSC> String getFilename(PSC ptn){
       String fname = null;
       if( ptn instanceof Pattern ){
@@ -67,21 +74,22 @@ public class EventManager {
 
    public <PSC> void addAppearObserver(PSC ptn, SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
-      addObserver(_c_instance, APPEAR, getFilename(ptn), handler_id,
-                  0, 0, _region.w, _region.h);
+      addObserver(_c_instance, APPEAR, getFilename(ptn), getSimiliarity(ptn),
+               handler_id, 0, 0, _region.w, _region.h);
    }
 
    public <PSC> void addVanishObserver(PSC ptn, SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
-      addObserver(_c_instance, VANISH, getFilename(ptn), handler_id,
-                  0, 0, _region.w, _region.h);
+      addObserver(_c_instance, VANISH, getFilename(ptn), getSimiliarity(ptn),
+            handler_id, 0, 0, _region.w, _region.h);
    
    }
 
    public void addChangeObserver(SikuliEventObserver ob){
       int handler_id = getObserverId(ob);
-      addObserver(_c_instance, CHANGE, "", handler_id,
-                  0, 0, _region.w, _region.h);
+      float change_threshold = -1f;
+      addObserver(_c_instance, CHANGE, "", change_threshold, 
+            handler_id, 0, 0, _region.w, _region.h);
    }
 
    public void update(ScreenImage img){
@@ -110,6 +118,7 @@ public class EventManager {
    private native long createEventManager(); 
    private native void addObserver(long sem_instance, 
                                    int evt_type, String target_image_filename,
+                                   float similiarity,
                                    int handler_id, int x, int y, int w, int h); 
 
    private native SikuliEvent[] _update(long sem_instance, 

@@ -12,9 +12,10 @@
 using namespace std;
 
 void
-SikuliEventManager::addObserver(int event_type, const char* param_image_filename, int handler_id, int x, int y, int w, int h){
+SikuliEventManager::addObserver(int event_type, const char* param_image_filename, float similarity, int handler_id, int x, int y, int w, int h){
 
-  Observer* observer = new Observer(event_type,param_image_filename,handler_id,x,y,w,h);
+  Observer* observer = new Observer(event_type,param_image_filename,similarity,
+                                    handler_id,x,y,w,h);
   observers.push_back(observer);
 };
 
@@ -60,70 +61,66 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
   for (vector<Observer*>::iterator it = observers.begin(); it != observers.end(); it++){
 
     Observer& ob = *(*it);    
+    float similarity = ob.similarity<0?MIN_SIMILARITY : ob.similarity;
     
     switch (ob.event_type){
 
       case SIKULI_EVENT_APPEAR:
+         f.setROI(ob.x,ob.y,ob.w,ob.h);
+         f.find(ob.param_img, similarity);   
 
-  
-   
-    f.setROI(ob.x,ob.y,ob.w,ob.h);
-    f.find(ob.param_img, MIN_SIMILARITY);   
+         top_match = f.next();
 
-    top_match = f.next();
+         if (top_match.score > similarity){
+
+            if (!ob.active){
+
+               if (debug_mode)
+                  f.debug_show_image();
+
+               Event e;
+               e.type = ob.event_type;
+               e.handler_id = ob.handler_id;
+               e.x = top_match.x;
+               e.y = top_match.y;
+               e.h = top_match.h;
+               e.w = top_match.w;
+               events.push_back(e);
+               ob.active = true;
+            }
 
 
-        if (top_match.score > MIN_SIMILARITY){
-
-          if (!ob.active){
-            
-            if (debug_mode)
-              f.debug_show_image();
-
-            Event e;
-            e.type = ob.event_type;
-            e.handler_id = ob.handler_id;
-            e.x = top_match.x;
-            e.y = top_match.y;
-            e.h = top_match.h;
-            e.w = top_match.w;
-            events.push_back(e);
-            ob.active = true;
-          }
-
-          
-        }else{
+         }else{
           ob.active = false;
         } 
         break;
 
       case SIKULI_EVENT_VANISH:
-
   
-      f.setROI(ob.x,ob.y,ob.w,ob.h);
-      f.find(ob.param_img, MIN_SIMILARITY);   
-    
-      top_match = f.next();
+        f.setROI(ob.x,ob.y,ob.w,ob.h);
+        f.find(ob.param_img, similarity);   
 
-        if (top_match.score < MIN_SIMILARITY){
+        top_match = f.next();
 
-          if (!ob.active){
-            
-            if (debug_mode)
-              f.debug_show_image();
+        if (top_match.score < similarity){
 
-            Event e;
-            e.type = ob.event_type;
-            e.handler_id = ob.handler_id;
-            e.x = ob.x;
-            e.y = ob.y;
-            e.w = ob.w;
-            e.h = ob.h;
-            events.push_back(e);
-            ob.active = true;
-          }
+           if (!ob.active){
+
+              if (debug_mode)
+                 f.debug_show_image();
+
+              Event e;
+              e.type = ob.event_type;
+              e.handler_id = ob.handler_id;
+              e.x = ob.x;
+              e.y = ob.y;
+              e.w = ob.w;
+              e.h = ob.h;
+              events.push_back(e);
+              ob.active = true;
+           }
         }else{
-          ob.active = false;
+           ob.active = false;
         } 
         break;
 
@@ -172,7 +169,8 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
 
 
 
-Observer::Observer(int event_type_, const char* param_image_filename, int handler_id_, int x_, int y_, int w_, int h_){
+Observer::Observer(int event_type_, const char* param_image_filename, 
+         float similarity_, int handler_id_, int x_, int y_, int w_, int h_){
 
   event_type = event_type_;
 
@@ -191,6 +189,7 @@ Observer::Observer(int event_type_, const char* param_image_filename, int handle
   y = y_;
   w = w_;
   h = h_;
+  similarity = similarity_;
   handler_id = handler_id_;
   active = false;
 }

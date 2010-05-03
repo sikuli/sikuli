@@ -28,7 +28,8 @@ class Observer{
 
 public:
 
-  Observer(int event_type, const char* param_image_filename, int handler_id, int x, int y, int w, int h);
+  Observer(int event_type, const char* param_image_filename, float similarity, 
+           int handler_id, int x, int y, int w, int h);
   ~Observer();
 
   int event_type;
@@ -38,6 +39,7 @@ public:
   int h;
   int w;
   int handler_id;
+  float similarity;
 
   // if an event is still active, don't send another redundant event
   bool active;
@@ -51,7 +53,8 @@ public:
   SikuliEventManager();
   ~SikuliEventManager();
 
-  void addObserver(int event_type, const char* param_image_filename, int handler_id, int x, int y, int w, int h);
+  void addObserver(int event_type, const char* param_image_filename, 
+      float similarity, int handler_id, int x, int y, int w, int h);
   //void addObserver(int event_type, const IplImage* param_image, int handler_id, int x, int y, int w, int h);
 
   vector<Event> update(const char* screen_image_filename);
