@@ -80,7 +80,6 @@ public class Finder implements Iterator<Match>{
       find(_instance, fname, minSimilarity);
    }
 
-   @Override
    public boolean hasNext(){
       if(_instance!=0)
          return hasNext(_instance);
@@ -88,7 +87,6 @@ public class Finder implements Iterator<Match>{
    }
 
 
-   @Override
    public Match next(){
       if(_instance!=0 ){
          Match ret = next(_instance);
@@ -103,7 +101,6 @@ public class Finder implements Iterator<Match>{
       return null;
    }
 
-   @Override
    public void remove(){
    }
 
