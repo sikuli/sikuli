@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-26 19:01-0400\n"
-"PO-Revision-Date: 2010-04-26 23:25+0000\n"
+"POT-Creation-Date: 2010-04-27 20:52-0400\n"
+"PO-Revision-Date: 2010-04-28 10:11+0000\n"
 "Last-Translator: RaiMan <rmhshopping@mac.com>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-26 23:56+0000\n"
+"X-Launchpad-Export-Date: 2010-05-03 03:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: menuRunRunAndShowActions
@@ -60,14 +60,6 @@ msgstr "Ausführen ({0})"
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Drücke {0} zum Abbrechen"
-
-#: btnRegionHint
-msgid "Create a region to restrict screen matching"
-msgstr "Einen Ausschnitt erzeugen um die Suche einzuschränken"
-
-#: btnCaptureHint
-msgid "Take a screenshot ({0})"
-msgstr "Ein Bildschirmfoto machen ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -156,16 +148,16 @@ msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
 msgstr ""
-"Wartet maximal <i>Dauer</i> Sekunden auf das Erscheinen des Abbildes auf dem "
-"Bildschirm oder im Abschnitt."
+"Wartet maximal <i> timeout </i> Sekunden auf das Erscheinen des Abbildes auf "
+"dem Bildschirm oder im Abschnitt."
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
 msgstr ""
-"Wartet maximal <i>Dauer</i> Sekunden auf das Verschwinden des Abbildes auf "
-"dem Bildschirm oder im Abschnitt."
+"Wartet maximal <i> timeout </i> Sekunden auf das Verschwinden des Abbildes "
+"auf dem Bildschirm oder im Abschnitt."
 
 #: cmdExists
 msgid ""
@@ -212,7 +204,7 @@ msgstr ""
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."
 msgstr ""
-"Schreibt den angegebenen <i>Text</i> in das fokussierte Fenster (im "
+"Schreibt den angegebenen Text <i>text</i> in das fokussierte Fenster (im "
 "Vordergrund, eingabebereit)"
 
 #: cmdType2
@@ -221,12 +213,12 @@ msgid ""
 "<i>text</i>."
 msgstr ""
 "Klickt auf das angegebene Abbild, um den Fokus zu erhalten  (eingabebereit) "
-"und schreibt den angegebenen <i>Text</i>."
+"und schreibt den angegebenen Text <i>text</i>."
 
 #: cmdPaste
 msgid "Pastes the given <i>text</i> to the current focused window."
 msgstr ""
-"Fügt den angegebenen <i>Text</i> in das fokussierte Fenster ein (im "
+"Fügt den angegebenen Text <i>text</i> in das fokussierte Fenster ein (im "
 "Vordergrund, eingabebereit)."
 
 #: cmdPaste2
@@ -235,7 +227,7 @@ msgid ""
 "<i>text</i>."
 msgstr ""
 "Klickt auf das angegebene Abbild, um den Fokus zu erhalten  (eingabebereit) "
-"und fügt den angegebenen <i>Text</i> ein."
+"und fügt den angegebenen Text <i>text</i> ein."
 
 #: cmdOnAppear
 msgid ""
@@ -332,6 +324,26 @@ msgstr "Hilfe"
 msgid "Check Update..."
 msgstr "Prüfe auf neue Version..."
 
+#: menuHelpGuide
+msgid "The Complete Guide to Sikuli Script"
+msgstr "Der umfassende Leitfaden zu Sikuli Script"
+
+#: menuHelpDocumentations
+msgid "Tutorials, Examples, How-To's"
+msgstr "Tutorials, Beispiele, How-To's"
+
+#: menuHelpAsk
+msgid "Ask Questions & Find Answers"
+msgstr "Fragen stellen & Antworten finden"
+
+#: menuHelpBugReport
+msgid "Report a Bug"
+msgstr "Einen Fehler (Bug) melden"
+
+#: menuHelpHomepage
+msgid "Sikuli's Homepage"
+msgstr "Sikuli's Homepage"
+
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
 msgstr "Sikuli {0} ist verfügbar!"
@@ -344,9 +356,21 @@ msgstr "Es gibt keine neuere Version."
 msgid "Untitled"
 msgstr "Unbenannt"
 
+#: btnRegionHint
+msgid "Create a region to restrict screen matching"
+msgstr "Einen Ausschnitt erzeugen um die Suche einzuschränken"
+
+#: btnCaptureHint
+msgid "Take a screenshot ({0})"
+msgstr "Ein Bildschirmfoto machen ({0})"
+
 #: msgStopped
 msgid "Stopped"
 msgstr "Abgebrochen"
+
+#: msgCapturePrompt
+msgid "Select a region on the screen"
+msgstr "Wähle einen Ausschnitt auf dem Bildschirm"
 
 #: winPreferences
 msgid "Preferences"
