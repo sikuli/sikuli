@@ -256,7 +256,7 @@ public class Region {
    public <PSC> boolean waitVanish(PSC target, double timeout) {
       int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
       long begin_t = (new Date()).getTime();
-      while( begin_t + timeout*1000 > (new Date()).getTime() ){
+      do{
          long before_find = (new Date()).getTime();
          try{
             Match ms = findNow(target);
@@ -271,7 +271,7 @@ public class Region {
             _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
          else
             _robot.delay(10);
-      }
+      } while( begin_t + timeout*1000 > (new Date()).getTime() );
       return false;
    }
 
