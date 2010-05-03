@@ -1,4 +1,4 @@
-CLASSPATH = ../java:../../../lib:../../../../lib/jython-2.2.1.jar
+CLASSPATH = ../java:../../../lib:../../../../lib/jython-2.5.1.jar
 PACKAGE   = edu.mit.csail.uid
 DEBUG	  = -O2 # -DENABLE_TIMING # -g -DDEBUG
 CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv`
@@ -12,8 +12,8 @@ endif
 
 
 ifeq  "$(OS)" "Linux"
-   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux 
-   LDFLAGS+=-shared -L/usr/local/lib -I/usr/lib/jvm/java-6-sun/lib
+   CXXFLAGS+=-fPIC -I/usr/lib/jvm/java-6-sun/include/ -I/usr/lib/jvm/java-6-sun/include/linux -I/usr/lib/jvm/default-java/include/
+   LDFLAGS+=-shared -L/usr/local/lib -L/usr/lib/jvm/java-6-sun/lib -L/usr/lib/jvm/default-java/lib/
    DYN_LIB_POSTFIX=so
 endif
 

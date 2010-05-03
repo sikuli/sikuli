@@ -7,6 +7,7 @@
 #include <list>
 #include <time.h>
 #include <algorithm>
+#include <cstdio>
 
 #include "template-matcher.h"
 #include "TimingBlock.h"
