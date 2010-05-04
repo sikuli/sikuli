@@ -20,7 +20,7 @@ release-all:
 	done
 
 
-do_release:  app
+do_release:  app $(RELEASE_PATH)
 	for OS in $(TARGET_OS); do \
 		APP=Sikuli-IDE.app; \
 		VER=`cat latest-ver`; \

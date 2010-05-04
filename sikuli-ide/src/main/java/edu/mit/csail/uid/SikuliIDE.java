@@ -707,6 +707,31 @@ public class SikuliIDE extends JFrame {
 
    }
 
+// Uncomment this for Mac OS X 10.5 (Java5)
+/*  
+    static void openURL(String url){
+      try{
+	 String cmd[] = {"open", url};
+	 Process p = Runtime.getRuntime().exec(cmd);
+	 p.waitFor();
+	 return;
+      }
+      catch(Exception e){
+	 Debug.info("Can't open " + url);
+      }
+   }
+*/
+
+   static void openURL(String url){
+	   try{
+		   URL u = new URL(url);
+		   java.awt.Desktop.getDesktop().browse(u.toURI());
+	   }
+	   catch(Exception ex){
+		   ex.printStackTrace();
+	   }
+   }
+
    class ViewAction extends MenuAction {
       static final String UNIT_TEST = "toggleUnitTest";
       static final String CMD_LIST = "toggleCmdList";
@@ -752,15 +777,8 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      private void openURL(String url){
-         try{
-            URL u = new URL(url);
-            java.awt.Desktop.getDesktop().browse(u.toURI());
-         }
-         catch(Exception ex){
-            ex.printStackTrace();
-         }
-      }
+
+
       
       public void openDoc(){
          openURL("http://sikuli.org/documentation.shtml");

@@ -6,10 +6,14 @@ OS=$(shell uname -rs)
 
 CXX=g++
 DEBUG=-Wall #-g -DDEBUG
-ARCH=-arch i386 -arch x86_64
-ifeq  "$(OS)" "Darwin 9.8.0"
-   ARCH+=-arch ppc
+
+ifneq (,$(findstring 10., $(UNAME_R)))
+	ARCH=-arch i386 -arch x86_64
 endif
+ifneq (,$(findstring 9., $(UNAME_R)))
+	ARCH=-arch i386
+endif
+
 CXXFLAGS= -I/System/Library/Frameworks/JavaVM.framework/Headers/ $(ARCH) $(DEBUG) -framework CoreFoundation.framework -framework Carbon.framework
 LDFLAGS= $(DEBUG) $(ARCH) -dynamiclib -L/System/Library/Frameworks/ -framework CoreFoundation -framework Carbon -framework JavaVM 
 OBJS = NativeLayerForMac.o
