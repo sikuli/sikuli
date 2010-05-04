@@ -7,5 +7,5 @@ LDFLAGS+=-ltiff
 OBJS = EventManagerProxy.o FinderProxy.o finder.o event-manager.o ScreenMatchProxy.o template-matcher.o screendiff.o TimingBlock.o
 DYN_LIB = $(JNI_TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
 
-default $(DYN_LIB): $(OBJS)
+default $(DYN_LIB): $(OBJS) $(JNI_TARGET_DIR)
 	$(CXX) $(OBJS) -o $(DYN_LIB) $(LDFLAGS) 

@@ -70,7 +70,7 @@ class UpdateFrame extends JFrame {
          public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
                try{
-                  java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                  SikuliIDE.openURL(e.getURL().toString());
                }
                catch(Exception ex){
                   ex.printStackTrace();
