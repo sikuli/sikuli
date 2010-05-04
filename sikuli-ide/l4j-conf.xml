@@ -1,28 +1,34 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>sikuli-ide-full.jar</jar>
-  <outfile>C:\Users\vgod\Documents\sikuli\public-svn\sikuli-ide\target\Sikuli-IDE\Sikuli-IDE.exe</outfile>
+  <jar>sikuli-ide.jar</jar>
+  <outfile>c:\sikuli\sikuli-ide\target\Sikuli-IDE\Sikuli-IDE.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
-  <chdir></chdir>
+  <chdir>.</chdir>
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
   <supportUrl></supportUrl>
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>C:\Users\vgod\Documents\sikuli\public-svn\sikuli-ide\target\Sikuli-IDE\ide-icon2.ico</icon>
+  <icon>c:\sikuli\sikuli-ide\target\Sikuli-IDE\ide-icon.ico</icon>
   <var>PATH=tmplib</var>
   <classPath>
     <mainClass>edu.mit.csail.uid.SikuliIDE</mainClass>
-    <cp>sikuli-ide-full.jar</cp>
+    <cp>sikuli-ide.jar</cp>
+    <cp>sikuli-script.jar</cp>
+    <cp>jintellitype-1.3.2.jar</cp>
+    <cp>junit-3.8.1.jar</cp>
   </classPath>
   <jre>
     <path></path>
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
+    <initialHeapSize>256</initialHeapSize>
+    <maxHeapSize>1024</maxHeapSize>
     <opt>-Dpython.path=sikuli-script.jar/</opt>
+    <opt>-Dfile.encoding-UTF8</opt>
   </jre>
 </launch4jConfig>
