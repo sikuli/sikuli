@@ -473,15 +473,14 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       String testCode = 
          "import junit\n"+
          "from junit.framework.Assert import *\n"+
-         "from python.edu.mit.csail.uid.Sikuli import *\n"+
-         "from python.edu.mit.csail.uid.SikuliTest import *\n"+
+         "from sikuli.Sikuli import *\n"+
          "class "+className+" (junit.framework.TestCase):\n"+
-         "  def __init__(self, name):\n"+
-         "    junit.framework.TestCase.__init__(self,name)\n"+
-         "    self.theTestFunction = getattr(self,name)\n"+
-         "    setBundlePath('"+bundlePath+"')\n"+
-         "  def runTest(self):\n"+
-         "    self.theTestFunction()\n";
+         "\tdef __init__(self, name):\n"+
+         "\t\tjunit.framework.TestCase.__init__(self,name)\n"+
+         "\t\tself.theTestFunction = getattr(self,name)\n"+
+         "\t\tsetBundlePath('"+bundlePath+"')\n"+
+         "\tdef runTest(self):\n"+
+         "\t\tself.theTestFunction()\n";
 
       BufferedReader in = new BufferedReader(new FileReader(filename));
       String line;
@@ -489,7 +488,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       //Pattern patDef = Pattern.compile("def\\s+(\\w+)\\s*\\(");
       while( (line = in.readLine()) != null ){
         // lineNo++;
-         testCode += "  " + line + "\n";
+         testCode += "\t" + line + "\n";
          /*
          Matcher matcher = patDef.matcher(line);
          if(matcher.find()){

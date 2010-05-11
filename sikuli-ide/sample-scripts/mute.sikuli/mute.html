@@ -42,23 +42,51 @@
          .cmt {
             color: rgb(200, 0, 200);
          }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
       </style>
    </head>
 <body>
+<div class="info">
+<h2>mute.sikuli</h2> <a href="mute.zip">(Download this script)</a>
+</div>
 <pre class="sikuli-code">
 <span class="kw">def</span> dragLeft(t):
-  <span class="skw">dragDrop</span>(t,  [t.x - <span class="dig">200</span>,   t.y])
+  <span class="skw">dragDrop</span>(t,  t.getCenter().left(<span class="dig">200</span>))
 
 <span class="kw">def</span> dragRight(t):
-  <span class="skw">dragDrop</span>(t,  [t.x + <span class="dig">200</span>,   t.y])
+  <span class="skw">dragDrop</span>(t, t.getCenter().right(<span class="dig">200</span>))
 
+<span class="kw">def</span> dragToMute(t):
+  <span class="skw">dragDrop</span>(t, t.nearby().left().<span class="skw">find</span>(<img src="1273527108356.png" />))
 
-<span class="cmt">#click(Pattern("1254427505267.png").similar(0.82).firstN(1))
-</span>switchApp(<span class="str">"System Preferences.app"</span>)
-<span class="skw">click</span>(Pattern(<img src="1254427520117.png" />).similar(<span class="dig">0.70</span>).firstN(<span class="dig">1</span>))
-<span class="kw">for</span> t <span class="kw">in</span> <span class="skw">find</span>(Pattern(<img src="1254425961872.png" />).similar(<span class="dig">0.48</span>).firstN(<span class="dig">2</span>)):
+switchApp(<span class="str">"System Preferences.app"</span>)
+<span class="skw">click</span>(<img src="1273526123226.png" />)
+<span class="skw">click</span>(<img src="1273526171905.png" />)
+thumbs = findAll(<img src="1273527194228.png" />)
+<span class="kw">for</span> t <span class="kw">in</span> list(thumbs)[:<span class="dig">2</span>]: <span class="cmt"># only take the first two </span>
   dragLeft(t) <span class="cmt"># off</span>
-  <span class="cmt">#dragRight(t)  # on</span>
+  <span class="cmt">#dragRight(t)  # on
+</span>  <span class="cmt">#dragToMute(t)</span>
 </pre>
 </body>
 </html>

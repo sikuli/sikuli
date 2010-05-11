@@ -42,15 +42,39 @@
          .cmt {
             color: rgb(200, 0, 200);
          }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
       </style>
    </head>
 <body>
+<div class="info">
+<h2>rob.sikuli</h2> <a href="rob.zip">(Download this script)</a>
+</div>
 <pre class="sikuli-code">
 <span class="kw">while</span> <span class="kw">not</span> <span class="skw">find</span>(Pattern(<img src="1254347537847.png" />).similar(<span class="dig">0.93</span>)):
-    <span class="skw">sleep</span>(<span class="dig">1</span>)
-    <span class="skw">click</span>(Pattern(<img src="1254503762385.png" />).similar(<span class="dig">0.69</span>).firstN(<span class="dig">1</span>))
+        <span class="skw">sleep</span>(<span class="dig">1</span>)
+        <span class="skw">click</span>(<img src="1273528585844.png" />)
 
-<span class="skw">click</span>(<img src="1254504009523.png" />)
+<span class="skw">click</span>(<img src="1273528622709.png" />)
 <span class="skw">popup</span>(<span class="str">"Rob just said something!"</span>)
 </pre>
 </body>
