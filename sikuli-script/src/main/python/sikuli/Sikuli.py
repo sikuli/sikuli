@@ -70,7 +70,7 @@ def capture(*args):
       else:
          return None
    elif len(args) == 1:
-      if __builtin__.type(args[0]) is types.StringType:
+      if __builtin__.type(args[0]) is types.StringType or __builtin__.type(args[0]) is types.UnicodeType:
          simg = scr.userCapture(args[0])
          if simg:
             return simg.getFilename()

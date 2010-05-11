@@ -3,7 +3,11 @@
 
 #include<string>
 #include<iostream>
-#include<sys/time.h>
+#if !defined(_WIN32) && !defined(_WIN64) 
+	#include<sys/time.h>
+#else
+	#include<time.h>
+#endif
 
 #ifdef ENABLE_TIMING
 
