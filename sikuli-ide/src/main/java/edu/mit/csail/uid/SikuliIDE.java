@@ -567,8 +567,16 @@ public class SikuliIDE extends JFrame {
          srunner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
       }
       catch(Exception e){
-         JOptionPane.showMessageDialog(null, 
-               _I("msgRunningSklError", filename, e));
+         java.util.regex.Pattern p = 
+            java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
+         Matcher matcher = p.matcher(e.toString());
+         if(matcher.find()){
+            Debug.info(_I("msgExit", matcher.group(1)));
+         }
+         else{
+            JOptionPane.showMessageDialog(null, 
+                  _I("msgRunningSklError", filename, e));
+         }
       }
       System.exit(0);
    }
