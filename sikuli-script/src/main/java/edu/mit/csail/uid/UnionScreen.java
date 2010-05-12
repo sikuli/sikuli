@@ -49,7 +49,7 @@ public class UnionScreen extends Screen {
             inter.x-=scrBound.x;
             inter.y-=scrBound.y;
             BufferedImage img = _robots[i].createScreenCapture(inter);
-            g2d.drawImage(img, ix-_bounds.x, iy-_bounds.y, null);
+            g2d.drawImage(img, ix-rect.x, iy-rect.y, null);
          }
       }
       g2d.dispose();
