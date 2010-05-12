@@ -104,7 +104,7 @@ ifeq "$(UNAME)" "Linux"
 endif
 
 debug:
-	jdb -Dsikuli.Debug=3  -classpath $(CLASSPATH):$(CLASSES_OUT_PATH) $(MAIN_CLASS) /Users/vgod/test.sikuli
+	jdb -Dsikuli.Debug=5  -classpath $(CLASSPATH):$(CLASSES_OUT_PATH) $(MAIN_CLASS) /Users/vgod/test.sikuli
 
 test:all
 	rm -rf tmplib
