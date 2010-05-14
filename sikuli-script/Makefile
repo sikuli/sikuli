@@ -77,7 +77,7 @@ install-doc:
 update-python:
 	cp -rf $(JYTHON_SRC_PATH) $(JAR_PATH)/Lib/
 
-test: test-python test-vdict test-sikuli-script
+test: test-python test-vdict test-java
 
 test-native:
 	make -C src/test/native
@@ -96,7 +96,7 @@ test-vdict: $(TEST_CLASSES)
 	rm -rf tmplib
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.VDictTest
 
-test-sikuli-script: $(TEST_TARGET_PATH) $(TEST_CLASSES) 
+test-java: $(TEST_TARGET_PATH) $(TEST_CLASSES) 
 	rm -rf tmplib
 	java -cp $(TEST_CLASSPATH) junit.textui.TestRunner edu.mit.csail.uid.SikuliScriptTest
 
