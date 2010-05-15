@@ -70,9 +70,9 @@
 <h2>set-ip.sikuli</h2> <a href="set-ip.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
+ip = <span class="skw">input</span>(<span class="str">"please enter the new IP address:"</span>)
 switchApp(<span class="str">"System Preferences.app"</span>)
 title = <img src="1273537071282.png" />
-ip = <span class="skw">input</span>(<span class="str">"please enter the new IP address:"</span>)
 <span class="kw">with</span> Region(<span class="skw">find</span>(title).below()):
         <span class="skw">click</span>(<img src="1273537235732.png" />)
         <span class="skw">click</span>(<img src="1254367484704.png" />)

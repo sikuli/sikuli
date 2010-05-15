@@ -1,6 +1,6 @@
+ip = input("please enter the new IP address:")
 switchApp("System Preferences.app")
 title = "1273537071282.png"
-ip = input("please enter the new IP address:")
 with Region(find(title).below()):
 	click("1273537235732.png")
 	click("1254367484704.png")
