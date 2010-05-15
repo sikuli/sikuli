@@ -1,6 +1,7 @@
 from edu.mit.csail.uid import Screen as JScreen
 import inspect
 import __main__
+import sys
 
 from Region import *
 from java.awt import Rectangle
@@ -72,16 +73,17 @@ class Screen(Region):
    def toString(self):
       return self.getScreen().toString()
 
-   def _exposeAllMethods(self):
+   def _exposeAllMethods(self, mod):
       exclude_list = [ 'class', 'classDictInit', 'clone', 'equals', 'finalize', 
                        'getClass', 'hashCode', 'notify', 'notifyAll', 
                        'toGlobalCoord', 'toString',
                        'capture', 'selectRegion']
+      dict = sys.modules[mod].__dict__
       for name in dir(self):
          if inspect.ismethod(getattr(self,name)) \
           and name[0] != '_' and name[:7] != 'super__' and \
           not name in exclude_list:
             if DEBUG: print "expose " + name
-            #exec("__main__.%s = self.%s" %(name, name))
-            __main__.__dict__[name] = eval("self."+name)
+            dict[name] = eval("self."+name)
+            #__main__.__dict__[name] = eval("self."+name)
 
