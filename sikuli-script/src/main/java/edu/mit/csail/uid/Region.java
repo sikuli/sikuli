@@ -216,13 +216,24 @@ public class Region {
     *  waits until target appears or timeout (in second) is passed
     */
    public <PSC> Match wait(PSC target, double timeout) throws FindFailed{
-      Iterator<Match> ms = waitAll(target, timeout);
-      _lastMatch = null;
-      if(ms != null)
-         _lastMatch = ms.next();
-      if(ms instanceof Finder)
-         ((Finder)ms).destroy();
-      return _lastMatch;
+      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+      long begin_t = (new Date()).getTime();
+      do{
+         long before_find = (new Date()).getTime();
+         Match m = findNow(target);
+         if(m != null){
+            _lastMatch = m;
+            return m;
+         }
+         long after_find = (new Date()).getTime();
+         if(after_find-before_find<MaxTimePerScan)
+            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+         else
+            _robot.delay(10);
+      }while( begin_t + timeout*1000 > (new Date()).getTime() );
+      if(_throwException)
+         throw new FindFailed(target + " can't be found.");
+      return null;
    }
 
    public <PSC> Match exists(PSC target) {
