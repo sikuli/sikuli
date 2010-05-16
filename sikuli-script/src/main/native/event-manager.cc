@@ -51,81 +51,41 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
   vector<Event> events;
   for (vector<Observer*>::iterator it = observers.begin(); it != observers.end(); it++){
 
-    Observer& ob = *(*it);    
-    
-    switch (ob.event_type){
+     Observer& ob = *(*it);    
 
-      case SIKULI_EVENT_APPEAR:
+     switch (ob.event_type){
 
-  
-   
-    f.setROI(ob.x,ob.y,ob.w,ob.h);
-    f.find(ob.param_img, ob.similarity);   
+     case SIKULI_EVENT_APPEAR:
 
-    top_match = f.next();
+        f.setROI(ob.x,ob.y,ob.w,ob.h);
+        f.find(ob.param_img, ob.similarity);   
 
-
-        if (top_match.score > ob.similarity ){
-
-          if (!ob.active){
-            
-            Event e;
-            e.type = ob.event_type;
-            e.handler_id = ob.handler_id;
-            e.x = top_match.x;
-            e.y = top_match.y;
-            e.h = top_match.h;
-            e.w = top_match.w;
-            events.push_back(e);
-            ob.active = true;
-          }
-
-          
-        }else{
-          ob.active = false;
-        } 
+        if(f.hasNext()){
+           top_match = f.next();
+           if (top_match.score > ob.similarity ){
+              if (!ob.active){
+                 Event e;
+                 e.type = ob.event_type;
+                 e.handler_id = ob.handler_id;
+                 e.x = top_match.x;
+                 e.y = top_match.y;
+                 e.h = top_match.h;
+                 e.w = top_match.w;
+                 events.push_back(e);
+                 ob.active = true;
+                 break;
+              }
+           }
+        }
+        ob.active = false;
         break;
 
-      case SIKULI_EVENT_VANISH:
+     case SIKULI_EVENT_VANISH:
+        f.setROI(ob.x,ob.y,ob.w,ob.h);
+        f.find(ob.param_img, ob.similarity );   
 
-  
-      f.setROI(ob.x,ob.y,ob.w,ob.h);
-      f.find(ob.param_img, ob.similarity );   
-    
-      top_match = f.next();
-
-        if (top_match.score < ob.similarity ){
-
-          if (!ob.active){
-            
-            Event e;
-            e.type = ob.event_type;
-            e.handler_id = ob.handler_id;
-            e.x = ob.x;
-            e.y = ob.y;
-            e.w = ob.w;
-            e.h = ob.h;
-            events.push_back(e);
-            ob.active = true;
-          }
-        }else{
-          ob.active = false;
-        } 
-        break;
-
-      case SIKULI_EVENT_CHANGE:
-
-  
-        cf.setROI(ob.x,ob.y,ob.w,ob.h);
-        if (prev_screen_image){
-          cf.find(prev_screen_image);
-
-          if (cf.hasNext()){
-
-
-              while(cf.hasNext())
-                cf.next();
-      
+        if(!f.hasNext() || f.next().score < ob.similarity ){
+           if (!ob.active){
               Event e;
               e.type = ob.event_type;
               e.handler_id = ob.handler_id;
@@ -135,12 +95,41 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
               e.h = ob.h;
               events.push_back(e);
               ob.active = true;
-          }
+              break;
+           }
+        }
+
+        ob.active = false;
+        break;
+
+     case SIKULI_EVENT_CHANGE:
+
+
+        cf.setROI(ob.x,ob.y,ob.w,ob.h);
+        if (prev_screen_image){
+           cf.find(prev_screen_image);
+
+           if (cf.hasNext()){
+
+
+              while(cf.hasNext())
+                 cf.next();
+
+              Event e;
+              e.type = ob.event_type;
+              e.handler_id = ob.handler_id;
+              e.x = ob.x;
+              e.y = ob.y;
+              e.w = ob.w;
+              e.h = ob.h;
+              events.push_back(e);
+              ob.active = true;
+           }
 
         }
         break;
 
-    };    
+     };    
   }
 
     if (prev_screen_image){
