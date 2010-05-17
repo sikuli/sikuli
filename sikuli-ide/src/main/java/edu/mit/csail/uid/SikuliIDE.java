@@ -879,29 +879,26 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      private SikuliPane getCurrentPane(){
+      private void performEditorAction(String action, ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
-         return ide.getCurrentCodePane();
+         SikuliPane pane = ide.getCurrentCodePane();
+         pane.getActionMap().get(action).actionPerformed(ae);
       }
 
       public void doCut(ActionEvent ae){
-         SikuliPane pane = getCurrentPane();
-         pane.getActionMap().get(DefaultEditorKit.cutAction).actionPerformed(ae);
+         performEditorAction(DefaultEditorKit.cutAction, ae);
       }
 
       public void doCopy(ActionEvent ae){
-         SikuliPane pane = getCurrentPane();
-         pane.getActionMap().get(DefaultEditorKit.copyAction).actionPerformed(ae);
+         performEditorAction(DefaultEditorKit.copyAction, ae);
       }
 
       public void doPaste(ActionEvent ae){
-         SikuliPane pane = getCurrentPane();
-         pane.getActionMap().get(DefaultEditorKit.pasteAction).actionPerformed(ae);
+         performEditorAction(DefaultEditorKit.pasteAction, ae);
       }
 
       public void doSelectAll(ActionEvent ae){
-         SikuliPane pane = getCurrentPane();
-         pane.getActionMap().get(DefaultEditorKit.selectAllAction).actionPerformed(ae);
+         performEditorAction(DefaultEditorKit.selectAllAction, ae);
       }
    }
 
