@@ -36,6 +36,7 @@ public class SikuliIDE extends JFrame {
 
    private JMenuBar _menuBar = new JMenuBar();
    private JMenu _fileMenu = new JMenu(_I("menuFile"));
+   private JMenu _editMenu = new JMenu(_I("menuEdit"));
    private JMenu _runMenu = new JMenu(_I("menuRun"));
    private JMenu _viewMenu = new JMenu(_I("menuView"));
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
@@ -173,6 +174,14 @@ public class SikuliIDE extends JFrame {
       }
    }
 
+   private void initEditMenu() throws NoSuchMethodException{
+      int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+      _editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
+      _editMenu.add( createMenuItem(_I("menuEditCut"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, scMask),
+               new EditAction(EditAction.CUT)));
+   }
+
    private void initHelpMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
@@ -210,6 +219,7 @@ public class SikuliIDE extends JFrame {
    private void initMenuBars(JFrame frame){
       try{
          initFileMenu();
+         initEditMenu();
          initRunMenu();
          initViewMenu();
          initHelpMenu();
@@ -219,6 +229,7 @@ public class SikuliIDE extends JFrame {
       }
 
       _menuBar.add(_fileMenu);
+      _menuBar.add(_editMenu);
       _menuBar.add(_runMenu);
       _menuBar.add(_viewMenu);
       _menuBar.add(_helpMenu);
@@ -363,7 +374,7 @@ public class SikuliIDE extends JFrame {
       _testRunner = new UnitTestRunner();
       _unitPane = _testRunner.getPanel();
       _chkShowUnitTest.setState(false);
-      (new ViewAction()).toggleUnitTest();
+      (new ViewAction()).toggleUnitTest(null);
       addAuxTab(_I("paneTestTrace"), _testRunner.getTracePane());
    }
 
@@ -467,7 +478,7 @@ public class SikuliIDE extends JFrame {
       if(args!=null && args.length>=1)
          loadFile(Utils.slashify(args[0], false));
       else
-         (new FileAction()).doNew();
+         (new FileAction()).doNew(null);
 
       _inited = true;
       setVisible(true);
@@ -538,7 +549,7 @@ public class SikuliIDE extends JFrame {
    }
 
    public void loadFile(String file){
-      (new FileAction()).doNew();
+      (new FileAction()).doNew(null);
       try{
          getCurrentCodePane().loadFile(file);
          setCurrentFilename(file);
@@ -658,7 +669,7 @@ public class SikuliIDE extends JFrame {
 
    public boolean closeCurrentTab(){
       SikuliPane pane = getCurrentCodePane();
-      (new FileAction()).doCloseTab();
+      (new FileAction()).doCloseTab(null);
       if( pane == getCurrentCodePane() )
          return false;
       return true;
@@ -678,15 +689,24 @@ public class SikuliIDE extends JFrame {
 
       public MenuAction(String item) throws NoSuchMethodException{
          Class[] params = new Class[0];
-         actMethod = this.getClass().getMethod(item, params);
-         action = item;
+         Class[] paramsWithEvent = new Class[1];
+         try{
+            paramsWithEvent[0] = Class.forName("java.awt.event.ActionEvent");
+            actMethod = this.getClass().getMethod(item, paramsWithEvent);
+            action = item;
+         }
+         catch(ClassNotFoundException cnfe){
+            Debug.error("Can't find menu action: " + cnfe);
+         }
       }
       
       public void actionPerformed(ActionEvent e) {
          if(actMethod != null){
             try{
                Debug.log(2, "MenuAction." + action);
-               actMethod.invoke(this, new Object[0]);
+               Object[] params = new Object[1];
+               params[0] = e;
+               actMethod.invoke(this, params);
             }
             catch(Exception ex){
                ex.printStackTrace();
@@ -707,11 +727,11 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      public void run(){
+      public void run(ActionEvent ae){
          _btnRun.runCurrentScript();
       }
 
-      public void runShowActions(){
+      public void runShowActions(ActionEvent ae){
          _btnRunViz.runCurrentScript();
       }
 
@@ -754,11 +774,11 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      public void toggleCmdList(){
+      public void toggleCmdList(ActionEvent ae){
          _cmdToolBar.setVisible(!_cmdToolBar.isVisible());
       }
 
-      public void toggleUnitTest(){
+      public void toggleUnitTest(ActionEvent ae){
          if( _chkShowUnitTest.getState() ){
             _sidePane.addTab(_I("tabUnitTest"), _unitPane);
             adjustCodePaneWidth();
@@ -769,7 +789,7 @@ public class SikuliIDE extends JFrame {
    }
 
    public void quit(){
-      (new FileAction()).doQuit();
+      (new FileAction()).doQuit(null);
    }
 
    class HelpAction extends MenuAction {
@@ -790,23 +810,23 @@ public class SikuliIDE extends JFrame {
 
 
       
-      public void openDoc(){
+      public void openDoc(ActionEvent ae){
          openURL("http://sikuli.org/documentation.shtml");
       }
 
-      public void openGuide(){
+      public void openGuide(ActionEvent ae){
          openURL("http://sikuli.org/trac/wiki/reference-0.10");
       }
 
-      public void openAsk(){
+      public void openAsk(ActionEvent ae){
          openURL("https://answers.launchpad.net/sikuli");
       }
 
-      public void openBugReport(){
+      public void openBugReport(ActionEvent ae){
          openURL("https://bugs.launchpad.net/sikuli/+filebug");
       }
 
-      public void openHomepage(){
+      public void openHomepage(ActionEvent ae){
          openURL("http://sikuli.org");
       }
 
@@ -827,12 +847,31 @@ public class SikuliIDE extends JFrame {
          return false;
       }
 
-      public void doCheckUpdate(){
+      public void doCheckUpdate(ActionEvent ae){
          if(!checkUpdate(false)){
             JOptionPane.showMessageDialog(null, 
                   _I("msgNoUpdate"), "Sikuli " + IDESettings.SikuliVersion,
                   JOptionPane.INFORMATION_MESSAGE);
          }
+      }
+   }
+
+   class EditAction extends MenuAction {
+      static final String CUT = "doCut";
+
+      public EditAction(){
+         super();
+      }
+
+      public EditAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+
+      public void doCut(ActionEvent ae){
+         SikuliIDE ide = SikuliIDE.getInstance();
+         SikuliPane codePane = ide.getCurrentCodePane();
+         codePane.getActionMap().get(DefaultEditorKit.cutAction).actionPerformed(null);
+
       }
    }
 
@@ -854,7 +893,7 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
       
-      public void doQuit(){
+      public void doQuit(ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
          while(true){
             SikuliPane codePane = ide.getCurrentCodePane();
@@ -866,11 +905,11 @@ public class SikuliIDE extends JFrame {
          System.exit(0);
       }
 
-      public void doPreferences(){
+      public void doPreferences(ActionEvent ae){
          SikuliIDE.getInstance().showPreferencesWindow();
       }
 
-      public void doNew(){
+      public void doNew(ActionEvent ae){
          SikuliPane codePane = new SikuliPane();
          JScrollPane scrPane = new JScrollPane(codePane);
          scrPane.setRowHeaderView(new LineNumberView(codePane));
@@ -889,22 +928,22 @@ public class SikuliIDE extends JFrame {
          codePane.requestFocus();
       }
       
-      public void doLoad(){
+      public void doLoad(ActionEvent ae){
          try{
-            doNew();
+            doNew(ae);
             SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.loadFile();
             if(fname!=null)
                SikuliIDE.getInstance().setCurrentFilename(fname);
             else
-               doCloseTab();
+               doCloseTab(ae);
          }
          catch(IOException eio){
             eio.printStackTrace();
          }
       }
       
-      public void doSave(){
+      public void doSave(ActionEvent ae){
          try{
             SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.saveFile();
@@ -916,7 +955,7 @@ public class SikuliIDE extends JFrame {
          }
       }
 
-      public void doSaveAs(){
+      public void doSaveAs(ActionEvent ae){
          try{
             SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.saveAsFile();
@@ -928,7 +967,7 @@ public class SikuliIDE extends JFrame {
          }
       }
 
-      public void doExport(){
+      public void doExport(ActionEvent ae){
          try{
             SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.exportAsZip();
@@ -939,7 +978,7 @@ public class SikuliIDE extends JFrame {
       }
 
 
-      public void doCloseTab(){
+      public void doCloseTab(ActionEvent ae){
          SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
          try{
             if(codePane.close())
