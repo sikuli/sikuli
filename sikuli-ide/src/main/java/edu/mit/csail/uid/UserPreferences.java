@@ -100,6 +100,15 @@ public class UserPreferences {
       return pref.get("LAST_SEEN_UPDATE", "0.0");
    }
 
+   public boolean getCheckUpdate(){
+      return pref.getBoolean("CHECK_UPDATE", true);
+   }
+
+   public void setCheckUpdate(boolean flag){
+      pref.putBoolean("CHECK_UPDATE", flag);
+   }
+
+
    public void put(String key, String val){
       pref.put(key, val);
    }

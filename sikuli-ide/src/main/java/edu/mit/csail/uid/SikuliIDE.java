@@ -471,7 +471,7 @@ public class SikuliIDE extends JFrame {
 
       _inited = true;
       setVisible(true);
-      checkUpdate();
+      autoCheckUpdate();
    }
 
    private void initTooltip(){
@@ -479,8 +479,10 @@ public class SikuliIDE extends JFrame {
       tm.setDismissDelay(30000);
    }
 
-   private void checkUpdate(){
+   private void autoCheckUpdate(){
       UserPreferences pref = UserPreferences.getInstance();
+      if( !pref.getCheckUpdate() )
+         return;
       long last_check = pref.getCheckUpdateTime();
       long now = (new Date()).getTime();
       if(now - last_check > 1000*86400){
@@ -811,6 +813,7 @@ public class SikuliIDE extends JFrame {
       public boolean checkUpdate(boolean isAutoCheck){
          AutoUpdater au = new AutoUpdater();
          UserPreferences pref = UserPreferences.getInstance();
+         Debug.log("Check update");
          if( au.checkUpdate() ){
             String ver = au.getVersion();
             String details = au.getDetails();

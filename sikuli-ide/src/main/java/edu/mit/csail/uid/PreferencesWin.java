@@ -33,6 +33,7 @@ public class PreferencesWin extends JFrame {
       _old_cap_hkey = _cap_hkey = pref.getCaptureHotkey();
       _old_cap_mod = _cap_mod = pref.getCaptureHotkeyModifiers();
       setTxtHotkey(_cap_hkey, _cap_mod);
+      _chkAutoUpdate.setSelected(pref.getCheckUpdate());
    }
 
    private void savePrefs(){
@@ -44,6 +45,7 @@ public class PreferencesWin extends JFrame {
          //FIXME: remove the old hotkey
          ide.installCaptureHotkey(_cap_hkey, _cap_mod);
       }
+      pref.setCheckUpdate(_chkAutoUpdate.isSelected());
    }
 
    private void setTxtHotkey(int code, int mod){
@@ -83,6 +85,8 @@ public class PreferencesWin extends JFrame {
       JLabel lblDelay = new JLabel();
       _spnDelay = new JSpinner();
       JLabel lblDelaySecs = new JLabel();
+      JPanel paneGeneral = new JPanel();
+      _chkAutoUpdate = new JCheckBox();
       JPanel paneOkCancel = new JPanel();
       JPanel hSpacer1 = new JPanel(null);
       _btnOk = new JButton();
@@ -97,16 +101,6 @@ public class PreferencesWin extends JFrame {
 
          //======== paneCapture ========
          {
-
-            // JFormDesigner evaluation mark
-            /*
-            paneCapture.setBorder(new javax.swing.border.CompoundBorder(
-               new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                  "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                  javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                  java.awt.Color.red), paneCapture.getBorder())); paneCapture.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-                  */
-
 
             //---- _txtHotkey ----
             _txtHotkey.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -171,6 +165,30 @@ public class PreferencesWin extends JFrame {
          }
          _tabPane.addTab( SikuliIDE._I("prefTabScreenCapturing"), paneCapture);
 
+         //======== paneGeneral ========
+         {
+            //---- _chkAutoUpdate ----
+            _chkAutoUpdate.setText(SikuliIDE._I("prefGeneralAutoCheck"));
+
+            org.jdesktop.layout.GroupLayout paneGeneralLayout = new org.jdesktop.layout.GroupLayout(paneGeneral);
+            paneGeneral.setLayout(paneGeneralLayout);
+            paneGeneralLayout.setHorizontalGroup(
+               paneGeneralLayout.createParallelGroup()
+                  .add(org.jdesktop.layout.GroupLayout.TRAILING, paneGeneralLayout.createSequentialGroup()
+                     .add(85, 85, 85)
+                     .add(_chkAutoUpdate, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                     .add(82, 82, 82))
+            );
+            paneGeneralLayout.setVerticalGroup(
+               paneGeneralLayout.createParallelGroup()
+                  .add(paneGeneralLayout.createSequentialGroup()
+                     .add(32, 32, 32)
+                     .add(_chkAutoUpdate)
+                     .addContainerGap(191, Short.MAX_VALUE))
+            );
+         }
+         _tabPane.addTab( SikuliIDE._I("prefTabGeneralSettings"), paneGeneral);
+
       }
       contentPane.add(_tabPane, BorderLayout.CENTER);
 
@@ -208,6 +226,7 @@ public class PreferencesWin extends JFrame {
    private JTabbedPane _tabPane;
    private JTextField _txtHotkey;
    private JSpinner _spnDelay;
+   private JCheckBox _chkAutoUpdate;
    private JButton _btnOk;
    private JButton _btnCancel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
