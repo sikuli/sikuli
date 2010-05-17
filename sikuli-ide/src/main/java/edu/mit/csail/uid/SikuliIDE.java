@@ -180,6 +180,15 @@ public class SikuliIDE extends JFrame {
       _editMenu.add( createMenuItem(_I("menuEditCut"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, scMask),
                new EditAction(EditAction.CUT)));
+      _editMenu.add( createMenuItem(_I("menuEditCopy"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, scMask),
+               new EditAction(EditAction.COPY)));
+      _editMenu.add( createMenuItem(_I("menuEditPaste"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, scMask),
+               new EditAction(EditAction.PASTE)));
+      _editMenu.add( createMenuItem(_I("menuEditSelectAll"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
+               new EditAction(EditAction.SELECT_ALL)));
    }
 
    private void initHelpMenu() throws NoSuchMethodException{
@@ -858,6 +867,9 @@ public class SikuliIDE extends JFrame {
 
    class EditAction extends MenuAction {
       static final String CUT = "doCut";
+      static final String COPY = "doCopy";
+      static final String PASTE = "doPaste";
+      static final String SELECT_ALL = "doSelectAll";
 
       public EditAction(){
          super();
@@ -867,11 +879,29 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      public void doCut(ActionEvent ae){
+      private SikuliPane getCurrentPane(){
          SikuliIDE ide = SikuliIDE.getInstance();
-         SikuliPane codePane = ide.getCurrentCodePane();
-         codePane.getActionMap().get(DefaultEditorKit.cutAction).actionPerformed(null);
+         return ide.getCurrentCodePane();
+      }
 
+      public void doCut(ActionEvent ae){
+         SikuliPane pane = getCurrentPane();
+         pane.getActionMap().get(DefaultEditorKit.cutAction).actionPerformed(ae);
+      }
+
+      public void doCopy(ActionEvent ae){
+         SikuliPane pane = getCurrentPane();
+         pane.getActionMap().get(DefaultEditorKit.copyAction).actionPerformed(ae);
+      }
+
+      public void doPaste(ActionEvent ae){
+         SikuliPane pane = getCurrentPane();
+         pane.getActionMap().get(DefaultEditorKit.pasteAction).actionPerformed(ae);
+      }
+
+      public void doSelectAll(ActionEvent ae){
+         SikuliPane pane = getCurrentPane();
+         pane.getActionMap().get(DefaultEditorKit.selectAllAction).actionPerformed(ae);
       }
    }
 
