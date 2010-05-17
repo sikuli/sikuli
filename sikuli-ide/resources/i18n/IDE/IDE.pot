@@ -1,17 +1,16 @@
-#, fuzzy
+#. extracted from resources/i18n/IDE_en_US.properties
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-27 20:52-0400\n"
+"POT-Creation-Date: 2010-05-17 16:33-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-03 03:40+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Generator: Translate Toolkit 1.6.1-pre\n"
 
 #: menuFile
 msgid "File"
@@ -211,6 +210,14 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
+#: prefTabGeneralSettings
+msgid "General Settings"
+msgstr ""
+
+#: prefGeneralAutoCheck
+msgid "Check Update Automatically"
+msgstr ""
+
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
 msgstr ""
@@ -354,7 +361,8 @@ msgstr ""
 
 #: cmdOnChange
 msgid ""
-"Calls <i>handler</i> when anything is changed on the screen or in the Region."
+"Calls <i>handler</i> when anything is changed on the screen or in the "
+"Region."
 msgstr ""
 
 #: cmdObserve
