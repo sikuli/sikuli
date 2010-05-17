@@ -189,6 +189,13 @@ public class SikuliIDE extends JFrame {
       _editMenu.add( createMenuItem(_I("menuEditSelectAll"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
                new EditAction(EditAction.SELECT_ALL)));
+      _editMenu.addSeparator();
+      _editMenu.add( createMenuItem(_I("menuEditIndent"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, 0),
+               new EditAction(EditAction.INDENT)));
+      _editMenu.add( createMenuItem(_I("menuEditUnIndent"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, InputEvent.SHIFT_MASK),
+               new EditAction(EditAction.UNINDENT)));
    }
 
    private void initHelpMenu() throws NoSuchMethodException{
@@ -870,6 +877,8 @@ public class SikuliIDE extends JFrame {
       static final String COPY = "doCopy";
       static final String PASTE = "doPaste";
       static final String SELECT_ALL = "doSelectAll";
+      static final String INDENT = "doIndent";
+      static final String UNINDENT = "doUnindent";
 
       public EditAction(){
          super();
@@ -899,6 +908,18 @@ public class SikuliIDE extends JFrame {
 
       public void doSelectAll(ActionEvent ae){
          performEditorAction(DefaultEditorKit.selectAllAction, ae);
+      }
+
+      public void doIndent(ActionEvent ae){
+         SikuliIDE ide = SikuliIDE.getInstance();
+         SikuliPane pane = ide.getCurrentCodePane();
+         (new SikuliEditorKit.InsertTabAction()).actionPerformed(pane);
+      }
+
+      public void doUnindent(ActionEvent ae){
+         SikuliIDE ide = SikuliIDE.getInstance();
+         SikuliPane pane = ide.getCurrentCodePane();
+         (new SikuliEditorKit.DeindentAction()).actionPerformed(pane);
       }
    }
 

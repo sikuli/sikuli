@@ -218,7 +218,10 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(ActionEvent e) {
          Debug.log(5, "InsertTabAction " + e);
          JTextComponent textArea = (JTextComponent)e.getSource();
+         actionPerformed(textArea);
+      }
 
+      public void actionPerformed(JTextComponent textArea) {
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
          Caret c = textArea.getCaret();
@@ -270,7 +273,10 @@ public class SikuliEditorKit extends StyledEditorKit {
 
       public void actionPerformed(ActionEvent e) {
          JTextComponent textArea = (JTextComponent)e.getSource();
+         actionPerformed(textArea);
+      }
 
+      public void actionPerformed(JTextComponent textArea){
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
          Caret c = textArea.getCaret();
