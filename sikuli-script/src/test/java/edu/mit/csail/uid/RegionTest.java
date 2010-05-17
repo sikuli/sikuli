@@ -32,28 +32,68 @@ public class RegionTest extends TestCase implements SikuliEventObserver
         return new TestSuite( RegionTest.class );
     }
 
-       /*
+    /*
+    public void testFindAll() throws Exception{
+       GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
+       Thread.sleep(1000);
+       Screen s = new Screen();
+       float min=0.70f;
+       Iterator<Match> ms = s.findAll(new Pattern("test-res/button-8.png").similar(min));
+       int count[] = new int[101];
+       while(ms.hasNext()){
+         Match m = ms.next();
+         count[(int)(m.score*100)]++;
+       }
+       for(int i=(int)(min*100);i<=100;i++)
+          System.out.println("" + i + " " + count[i]);
+    }
+    */
+
+
     public void testSpatialOperators() throws Exception{
        GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
-       Thread.sleep(5000);
+       Thread.sleep(1000);
        Screen s = new Screen();
-       Iterator<Match> b5 = s.findAll((new Pattern("test-res/button-5.png")).similar(0.70f));
-       s.click(b5.next(), 0);
-       Thread.sleep(3000);
-       s.click(b5.next(), 0);
-       Thread.sleep(3000);
-       s.click(b5.next(), 0);
-//       s.click(b5, 0);
-       Thread.sleep(2000);
-       assertEquals("clicked", f.getText(5));
-       s.click(b5.above().find("test-res/button-2.png"), 0);
-       s.click(b5.left().find("test-res/button-4.png"), 0);
-       s.click(b5.right().find("test-res/button-6.png"), 0);
-       s.click(b5.below().find("test-res/button-8.png"), 0);
+       Match b8 = s.find(new Pattern("test-res/button-8.png").similar(0.97f));
+       s.click(b8, 0);
+       assertEquals("clicked", f.getText(8));
+       Thread.sleep(1000);
+       System.out.println("above: " + b8.above().find("test-res/button-2.png"));
+       System.out.println("btn2: " + s.find("test-res/button-2.png"));
+       Thread.sleep(1000);
+       assertEquals("clicked", f.getText(2));
        f.setVisible(false);
        f.dispose();
     }
-       */
+
+
+    /*
+    public void testSpatialOperators() throws Exception{
+       GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
+       Thread.sleep(1000);
+       Screen s = new Screen();
+       //Match b2 = s.find((new Pattern("test-res/button-2.png")).similar(0.99f));
+       //s.click(b2, 0);
+       Match b5 = s.find((new Pattern("test-res/button-5.png")).similar(0.99f));
+       s.click(b5, 0);
+       assertEquals("clicked", f.getText(5));
+       b5.above().click("test-res/button-2.png", 0);
+       //s.click(b5.above().find("test-res/button-2.png"), 0);
+       Thread.sleep(1000);
+       s.click(b5.left().find("test-res/button-4.png"), 0);
+       Thread.sleep(1000);
+       s.click(b5.right().find("test-res/button-6.png"), 0);
+       Thread.sleep(1000);
+       s.click(b5.below().find("test-res/button-8.png"), 0);
+       Thread.sleep(1000);
+       assertEquals("clicked", f.getText(2));
+       assertEquals("clicked", f.getText(4));
+       assertEquals("clicked", f.getText(6));
+       assertEquals("clicked", f.getText(8));
+       f.setVisible(false);
+       f.dispose();
+    }
+    */
 
     public void targetAppeared(AppearEvent e){
        System.out.println("targetAppeared: " + e);

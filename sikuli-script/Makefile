@@ -83,6 +83,7 @@ test-native:
 	make -C src/test/native
 
 test-python: update-python
+	rm -rf tmplib
 	for t in $(PYTHON_TESTS); do \
 		java -Dsikuli.Debug=3 -cp $(JAR_PATH) -Dpython.home=$(JAR_PATH) $(JYTHON_CLASS) $(PY_TEST_PATH)/test-$${t}.py; \
 	done

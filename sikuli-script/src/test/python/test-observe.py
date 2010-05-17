@@ -21,13 +21,14 @@ def vanished(event):
 
 with Region(0,0,200,200) as r1:
    onChange(changed)
-   onAppear("test-res/apple.png", appeared)
-   onVanish("test-res/apple.png", vanished)
+   onAppear(Pattern("test-res/apple.png"), appeared)
+   onVanish(Pattern("test-res/apple.png"), vanished)
    print "start observing on r1..."
    observe(time=FOREVER, background=True)
    addCount()
 
-with Region(1000,0,280,100) as r2: 
+b = getBounds()
+with Region(b.width-280,0,280,100) as r2: 
    onChange(changed)   # watch the system clock
    print "start observing on r2..."
    observe(background=True)
