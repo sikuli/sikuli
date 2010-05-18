@@ -51,8 +51,53 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Finder_createFinder___3BII
    cvReleaseImageHeader(&img);
    free(result);
 
-   return reinterpret_cast<jlong>(finder);
+   jlong ptrFinder = reinterpret_cast<jlong>(finder);
+   return ptrFinder;
 
+}
+
+/* Class:     edu_mit_csail_uid_Finder
+ * Method:    findAll
+ * Signature: (JLjava/lang/String;D)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_findAll__JLjava_lang_String_2D
+  (JNIEnv *env, jobject jobj, jlong jfinder, jstring jTemplateFilename, double minSimilarity){
+   Finder *finder = reinterpret_cast<Finder*>(jfinder);
+   const char *fname = env->GetStringUTFChars(jTemplateFilename, NULL);
+   finder->find_all(fname, minSimilarity);
+   env->ReleaseStringUTFChars(jTemplateFilename, fname);
+}
+
+/*
+ * Class:     edu_mit_csail_uid_Finder
+ * Method:    findAll
+ * Signature: (J[BIID)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_findAll__J_3BIID
+  (JNIEnv *env, jobject jobj, jlong jFinder, jbyteArray tplImg, jint w, jint h, jdouble minSimilarity){
+   const int bpp = 24; 
+   const int bpr = w*3; 
+   IplImage* img;
+   jint len;
+   unsigned char* result;
+
+   img = cvCreateImageHeader(cvSize(w,h),8,bpp/8); //create the "shell"
+
+   len = env->GetArrayLength(tplImg);
+   result = (unsigned char *)malloc(len + 1);
+   if (result == 0) {
+      cerr << "out of memory\n";
+      env->DeleteLocalRef(tplImg);
+      return;
+   }
+   env->GetByteArrayRegion(tplImg, 0, len,(jbyte *)result);
+   cvSetData(img,result,bpr);    //set the buffer
+
+   Finder *finder = reinterpret_cast<Finder*>(jFinder);
+   finder->find_all(img, minSimilarity);
+
+   cvReleaseImageHeader(&img);
+   free(result);
 }
 
 
@@ -103,6 +148,7 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_find__JLjava_lang_String_2D
    finder->find(fname, minSimilarity);
    env->ReleaseStringUTFChars(jTemplateFilename, fname);
 }
+
 /*
  * Class:     edu_mit_csail_uid_Finder
  * Method:    hasNext

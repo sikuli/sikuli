@@ -523,7 +523,7 @@ public class Region {
                                              throws  FindFailed{
       ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
-      f.find(ptn);
+      f.findAll(ptn);
       if(f.hasNext()){
          return f;
       }

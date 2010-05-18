@@ -5,6 +5,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.*;
+
 /**
  * Unit test for simple App.
  */
@@ -39,7 +41,7 @@ public class VDictTest
        assertTrue(dict.empty() == true);
     }
 
-    public void test_vdict_insert()
+    public void test_vdict_insert() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
        assertTrue(dict.size() == 0);
@@ -51,7 +53,7 @@ public class VDictTest
        assertTrue(val == 100);
     }
 
-    public void test_vdict_lookup()
+    public void test_vdict_lookup() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
        dict.insert("test-res/1.png", 100);
@@ -61,7 +63,7 @@ public class VDictTest
     }
 
 
-    public void test_vdict_lookup_obj()
+    public void test_vdict_lookup_obj() throws FileNotFoundException
     {
        VDictProxy<String> dict = new VDictProxy();
        dict.insert("test-res/1.png", "hello world");
@@ -70,7 +72,7 @@ public class VDictTest
     }
 
 
-    public void test_vdict_erase()
+    public void test_vdict_erase() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
        dict.insert("test-res/1.png", 100);
@@ -81,7 +83,7 @@ public class VDictTest
     }
 
 
-    public void test_vdict_lookup_n()
+    public void test_vdict_lookup_n() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
        dict.insert("test-res/1.png", 1);
