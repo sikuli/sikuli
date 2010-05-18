@@ -48,6 +48,7 @@
 			<string>$JAVAROOT/junit-3.8.1.jar</string>
 			<string>$JAVAROOT/sikuli-ide.jar</string>
 			<string>$JAVAROOT/swing-layout-1.0.1.jar</string>
+			<string>$JAVAROOT/commons-cli-1.2.jar</string>
 		</array>
 		<key>JVMVersion</key>
 		<string>1.5+</string>

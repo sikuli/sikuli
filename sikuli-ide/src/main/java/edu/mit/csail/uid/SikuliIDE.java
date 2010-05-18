@@ -17,6 +17,8 @@ import javax.swing.event.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.apache.commons.cli.CommandLine;
+
 
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
@@ -42,6 +44,8 @@ public class SikuliIDE extends JFrame {
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
+
+   private CommandLine _cmdLine;
 
    private static SikuliIDE _instance = null;
 
@@ -456,6 +460,9 @@ public class SikuliIDE extends JFrame {
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
+      CommandArgs cmdArgs = new CommandArgs();
+      _cmdLine = cmdArgs.getCommandLine(args);
+
       ScriptRunner srunner = ScriptRunner.getInstance(args);
 
       _native.initIDE(this);
@@ -491,8 +498,10 @@ public class SikuliIDE extends JFrame {
       initWindowListener();
       initTooltip();
 
-      if(args!=null && args.length>=1)
-         loadFile(Utils.slashify(args[0], false));
+      if( _cmdLine.getArgs().length > 0 ){
+         for(String f : _cmdLine.getArgs())
+            loadFile(Utils.slashify(f, false));
+      }
       else
          (new FileAction()).doNew(null);
 
@@ -612,10 +621,23 @@ public class SikuliIDE extends JFrame {
 
    public static void main(String[] args) {
       initNativeLayer();
+      CommandArgs cmdArgs = new CommandArgs();
+      CommandLine cmd = cmdArgs.getCommandLine(args);
+      if( cmd.hasOption("h") ){
+         cmdArgs.printHelp();
+         return;
+      }
+         
       if(args!=null && args.length>=1){
          try{
-            if(args[0].endsWith(".skl")){
-               runSkl(args[0], args);
+            if( cmd.hasOption("run") ){
+               String file = cmd.getOptionValue("run");
+               if(file.endsWith(".skl"))
+                  runSkl(file, cmd.getOptionValues("args"));
+               /*
+               else if(file.endsWith(".sikuli"))
+                  runSikuli(
+               */
                return;
             }
          }
