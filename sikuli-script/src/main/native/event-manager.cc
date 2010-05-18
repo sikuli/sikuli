@@ -62,7 +62,7 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
 
         if(f.hasNext()){
            top_match = f.next();
-           if (top_match.score > ob.similarity ){
+           if (top_match.score >= ob.similarity ){
               if (!ob.active){
                  Event e;
                  e.type = ob.event_type;
@@ -73,8 +73,8 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
                  e.w = top_match.w;
                  events.push_back(e);
                  ob.active = true;
-                 break;
               }
+              break;
            }
         }
         ob.active = false;
@@ -95,8 +95,8 @@ vector<Event> SikuliEventManager::update(const IplImage* screen_image){
               e.h = ob.h;
               events.push_back(e);
               ob.active = true;
-              break;
            }
+           break;
         }
 
         ob.active = false;

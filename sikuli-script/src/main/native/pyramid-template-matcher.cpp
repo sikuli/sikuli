@@ -26,11 +26,12 @@
 #endif
 
 PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
-: factor(_factor), source(_source), target(_target)
+: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
 { 
 
    TimingBlock tb("PyramidTemplateMatcher()");
    if (source.rows < target.rows || source.cols < target.cols){
+      std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
       return;
    }
    

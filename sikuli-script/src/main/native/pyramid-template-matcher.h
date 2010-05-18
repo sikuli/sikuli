@@ -20,44 +20,44 @@ using namespace std;
 #define _MATCH_
 
 struct Match {
-	int x, y;
-	int w, h;
-	double score;
-	Match(){
-		x=0;y=0;w=0;h=0;score=-1;
-	}
-	Match(int _x, int _y, int _w, int _h, double _score){
-		x = _x; y = _y;
-		w = _w; h = _h;
-		score = _score;
-	}
+   int x, y;
+   int w, h;
+   double score;
+   Match(){
+      x=0;y=0;w=0;h=0;score=-1;
+   }
+   Match(int _x, int _y, int _w, int _h, double _score){
+      x = _x; y = _y;
+      w = _w; h = _h;
+      score = _score;
+   }
 };
 #endif
 
 class PyramidTemplateMatcher{
-	
+
 public:
-	
-	PyramidTemplateMatcher(){};
-	PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
-	~PyramidTemplateMatcher();
-	
-	virtual Match next();
-	
+
+   PyramidTemplateMatcher(){};
+   PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
+   ~PyramidTemplateMatcher();
+
+   virtual Match next();
+
 protected:
-	
-	Mat source;
-	Mat target;
-	
-	// create copies of the images to modify
-    Mat copyOfSource;
-    Mat copyOfTarget;	
-	
-	int alg;
-	float factor;
-	
-	PyramidTemplateMatcher* lowerPyramid;
-	Mat result;
+
+   Mat source;
+   Mat target;
+
+   // create copies of the images to modify
+   Mat copyOfSource;
+   Mat copyOfTarget;	
+
+   int alg;
+   float factor;
+
+   PyramidTemplateMatcher* lowerPyramid;
+   Mat result;
 };
 
 #endif
