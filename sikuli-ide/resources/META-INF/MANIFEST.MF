@@ -1,2 +1,2 @@
-Class-Path: sikuli-script.jar junit-3.8.1.jar swing-layout-1.0.1.jar
+Class-Path: sikuli-script.jar junit-3.8.1.jar swing-layout-1.0.1.jar commons-cli-1.2.jar
 Main-Class: edu.mit.csail.uid.SikuliIDE

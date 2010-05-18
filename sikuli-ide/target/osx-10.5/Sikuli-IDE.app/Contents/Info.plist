@@ -44,6 +44,7 @@
 	<dict>
 		<key>ClassPath</key>
 		<array>
+                        <string>$JAVAROOT/commons-cli-1.2.jar</string>
 			<string>$JAVAROOT/sikuli-script.jar</string>
 			<string>$JAVAROOT/junit-3.8.1.jar</string>
 			<string>$JAVAROOT/sikuli-ide.jar</string>

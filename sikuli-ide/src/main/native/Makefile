@@ -28,7 +28,7 @@ TEST_SRC=TestSikuliScript.java
 
 COMMON_LIB_PATH=../../../../lib
 CLASSES_TARGET_PATH=../../../target/classes
-CLASSPATH=../java:$(COMMON_LIB_PATH)/sikuli-script.jar:$(COMMON_LIB_PATH)/junit-3.8.1.jar
+CLASSPATH=../java:$(COMMON_LIB_PATH)/sikuli-script.jar:$(COMMON_LIB_PATH)/junit-3.8.1.jar:$(COMMON_LIB_PATH)/commons-cli-1.2.jar
 PACKAGE=edu.mit.csail.uid
 
 default: check-os 
