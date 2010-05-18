@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-17 16:33-0400\n"
+"POT-Creation-Date: 2010-05-17 21:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,6 +14,10 @@ msgstr ""
 
 #: menuFile
 msgid "File"
+msgstr ""
+
+#: menuEdit
+msgid "Edit"
 msgstr ""
 
 #: menuRun
@@ -55,6 +59,30 @@ msgstr ""
 
 #: menuFileQuit
 msgid "Quit"
+msgstr ""
+
+#: menuEditCut
+msgid "Cut"
+msgstr ""
+
+#: menuEditCopy
+msgid "Copy"
+msgstr ""
+
+#: menuEditPaste
+msgid "Paste"
+msgstr ""
+
+#: menuEditSelectAll
+msgid "Select All"
+msgstr ""
+
+#: menuEditIndent
+msgid "Indent"
+msgstr ""
+
+#: menuEditUnIndent
+msgid "Un-Indent"
 msgstr ""
 
 #: menuRunRun
