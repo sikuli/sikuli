@@ -41,22 +41,6 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_find__J_3BIID
 
 /*
  * Class:     edu_mit_csail_uid_Finder
- * Method:    findAll
- * Signature: (JLjava/lang/String;D)V
- */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_findAll__JLjava_lang_String_2D
-  (JNIEnv *, jobject, jlong, jstring, jdouble);
-
-/*
- * Class:     edu_mit_csail_uid_Finder
- * Method:    findAll
- * Signature: (J[BIID)V
- */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Finder_findAll__J_3BIID
-  (JNIEnv *, jobject, jlong, jbyteArray, jint, jint, jdouble);
-
-/*
- * Class:     edu_mit_csail_uid_Finder
  * Method:    hasNext
  * Signature: (J)Z
  */

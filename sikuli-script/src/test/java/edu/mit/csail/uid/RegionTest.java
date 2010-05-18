@@ -50,7 +50,7 @@ public class RegionTest extends TestCase implements SikuliEventObserver
     */
 
 
-    public void testSpatialOperators() throws Exception{
+    public void _testSpatialOperators() throws Exception{
        GridLayoutDemo f = GridLayoutDemo.createAndShowGUI();
        Thread.sleep(1000);
        Screen s = new Screen();
@@ -112,7 +112,6 @@ public class RegionTest extends TestCase implements SikuliEventObserver
 
     int appear_count = 0, vanish_count = 0, change_count = 0;
 
-    /*
     public void testObserve() throws Exception {
       Region r = new Region(0, 0, 300, 300);
       r.onAppear("test-res/cup-btn.png", this);
@@ -137,10 +136,8 @@ public class RegionTest extends TestCase implements SikuliEventObserver
       assertEquals(2, change_count);
       assertEquals(2, vanish_count);
     }
-    */
 
 
-    /*
     public void testType() throws Exception
     {
        InputsFrame f = new InputsFrame();
@@ -242,7 +239,6 @@ public class RegionTest extends TestCase implements SikuliEventObserver
       assertTrue(end-begin < 2500);
     }
 
-    */
 
 }
 

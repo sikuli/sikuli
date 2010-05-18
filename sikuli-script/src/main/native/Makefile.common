@@ -1,6 +1,6 @@
 CLASSPATH = ../java:../../../lib:../../../../lib/jython-2.5.1.jar
 PACKAGE   = edu.mit.csail.uid
-DEBUG	  = -O2 -DDEBUG  #-DENABLE_TIMING # -g 
+DEBUG	  = -O2 # -DENABLE_TIMING # -g -DDEBUG
 CXXFLAGS  = -I/System/Library/Frameworks/JavaVM.framework/Headers/  `pkg-config --cflags opencv`
 LDFLAGS	  = `pkg-config --libs opencv` 
 

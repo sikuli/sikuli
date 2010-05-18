@@ -80,23 +80,6 @@ public class Finder implements Iterator<Match>{
       find(_instance, fname, minSimilarity);
    }
 
-   public <PSC> void findAll(PSC ptn){
-      if( ptn instanceof Pattern ){
-         _pattern = (Pattern)ptn;
-         findAll(_pattern.imgURL, _pattern.similarity);
-      }
-      else if( ptn instanceof String){
-         findAll((String)ptn, Settings.MinSimilarity);
-      }
-   }
-
-   public void findAll(String templateFilename, double minSimilarity){
-      String fname = templateFilename;
-      if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
-         fname = Settings.BundlePath + File.separator + templateFilename;
-      findAll(_instance, fname, minSimilarity);
-   }
-
    public boolean hasNext(){
       if(_instance!=0)
          return hasNext(_instance);
@@ -132,8 +115,6 @@ public class Finder implements Iterator<Match>{
 
    private native void find(long finder, String templateFilename, double minSimilarity);
    private native void find(long finder, byte[] templateImage, int w, int h, double minSimilarity);
-   private native void findAll(long finder, String templateFilename, double minSimilarity);
-   private native void findAll(long finder, byte[] templateImage, int w, int h, double minSimilarity);
    private native boolean hasNext(long finder);
    private native Match next(long finder);
    private native void destroy(long finder);
