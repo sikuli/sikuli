@@ -1,3 +1,3 @@
 #!/bin/sh
 DIR=`dirname $0`
-java -Xms256M -Xmx1024M -Dfile.encoding=UTF-8 -jar $DIR/sikuli-ide.jar $*
+java -Xms64M -Xmx512M -Dfile.encoding=UTF-8 -jar $DIR/sikuli-ide.jar $*
