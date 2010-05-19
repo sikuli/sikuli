@@ -27,8 +27,8 @@
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <initialHeapSize>256</initialHeapSize>
-    <maxHeapSize>1024</maxHeapSize>
+    <initialHeapSize>64</initialHeapSize>
+    <maxHeapSize>512</maxHeapSize>
     <opt>-Dpython.path=sikuli-script.jar/</opt>
     <opt>-Dfile.encoding-UTF8</opt>
   </jre>
