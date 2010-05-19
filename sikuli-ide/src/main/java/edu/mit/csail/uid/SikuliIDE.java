@@ -592,17 +592,10 @@ public class SikuliIDE extends JFrame {
 
 
    static boolean _runningSkl = false;
-   public static void runSkl(String filename, String[] args) throws IOException{
-      _runningSkl = true;
-      String name = (new File(filename)).getName();
-      name = name.substring(0, name.lastIndexOf('.'));
-      File tmpDir = Utils.createTempDir();
-      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
-      sikuliDir.mkdir();
-      Utils.unzip(filename, sikuliDir.getAbsolutePath());
+   public static void runSikuli(String filename, String[] args) throws IOException{
       ScriptRunner srunner = ScriptRunner.getInstance(args);
       try{
-         srunner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
+         srunner.runPython(Utils.slashify(filename,true));
       }
       catch(Exception e){
          java.util.regex.Pattern p = 
@@ -616,7 +609,17 @@ public class SikuliIDE extends JFrame {
                   _I("msgRunningSklError", filename, e));
          }
       }
-      System.exit(0);
+   }
+
+   public static void runSkl(String filename, String[] args) throws IOException{
+      _runningSkl = true;
+      String name = (new File(filename)).getName();
+      name = name.substring(0, name.lastIndexOf('.'));
+      File tmpDir = Utils.createTempDir();
+      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
+      sikuliDir.mkdir();
+      Utils.unzip(filename, sikuliDir.getAbsolutePath());
+      runSikuli(sikuliDir.getAbsolutePath(), args);
    }
 
    public static void main(String[] args) {
@@ -630,15 +633,24 @@ public class SikuliIDE extends JFrame {
          
       if(args!=null && args.length>=1){
          try{
+            String[] pargs = cmd.getArgs();
+            if( cmd.hasOption("args") ) pargs = cmd.getOptionValues("args");
             if( cmd.hasOption("run") ){
                String file = cmd.getOptionValue("run");
                if(file.endsWith(".skl"))
-                  runSkl(file, cmd.getOptionValues("args"));
-               /*
-               else if(file.endsWith(".sikuli"))
-                  runSikuli(
-               */
+                  runSkl(file, pargs);
+               else if(file.endsWith(".sikuli")){
+                  File f = new File(file);
+                  runSikuli(f.getAbsolutePath(), pargs);
+               }
                return;
+            }
+            if( cmd.getArgs().length>0 ){
+               String file = cmd.getArgs()[0];
+               if(file.endsWith(".skl")){
+                  runSkl(file, pargs);
+                  return;
+               }
             }
          }
          catch(IOException e){
