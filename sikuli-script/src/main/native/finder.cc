@@ -14,6 +14,13 @@
 
 #define MIN_TPL_DIMENSION 12
 
+#ifdef DEBUG
+#define dout std::cerr
+#else
+#define dout if(0) std::cerr
+#endif
+
+
 BaseFinder::BaseFinder(const char* screen_image_filename){
   // load the screen image (released in the desctrutor)
   img = cvLoadImage(screen_image_filename);
@@ -45,12 +52,10 @@ BaseFinder::BaseFinder(const IplImage *screen_image){
 
 
 BaseFinder::~BaseFinder(){
-  if (img)
-    cvReleaseImage(&img);
-  if (roi_img)
-    cvReleaseImage(&roi_img);
-  if (debug_img)
-    cvReleaseImage(&debug_img);
+   dout << "~BaseFinder" << endl;
+   if (img) cvReleaseImage(&img);
+   if (roi_img) cvReleaseImage(&roi_img);
+   if (debug_img) cvReleaseImage(&debug_img);
 }
 
 void 
@@ -337,17 +342,11 @@ Finder::next(){
 
 
 Finder::~Finder(){
+  dout << "~Finder" << endl;
 
   if (matcher)
     delete matcher;
-  if (img)
-    cvReleaseImage( &img );  
-  if (tpl)
-    cvReleaseImage( &tpl );
-  if (roi_img)
-    cvReleaseImage( &roi_img);
-  if (debug_img)
-    cvReleaseImage( &debug_img);
+  if (tpl) cvReleaseImage( &tpl );
 }
 
 
@@ -376,7 +375,6 @@ FaceFinder::FaceFinder(const char* screen_image_name)
 }
 
 FaceFinder::~FaceFinder(){
-  cvReleaseImage(&img);
   if (cascade)
     cvReleaseHaarClassifierCascade(&cascade);
   if (storage)
@@ -462,8 +460,9 @@ ChangeFinder::ChangeFinder(const IplImage* screen_image)
 }
 
 ChangeFinder::~ChangeFinder(){
-  if (storage)
-    cvReleaseMemStorage(&storage);
+   dout << "~ChangeFinder" << endl;
+   if (storage)
+      cvReleaseMemStorage(&storage);
 }
 
 

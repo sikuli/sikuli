@@ -16,6 +16,12 @@
 #define CV_RESIZE_INTERPOLATION_OPTION CV_INTER_LINEAR
 #define NUM_LOOKAHEAD 20
 
+#ifdef DEBUG
+#define dout std::cerr
+#else
+#define dout if(0) std::cerr
+#endif
+
 vector<double> distances_to(CvPoint point, vector<CvPoint>& points){
   vector<double> distances;
   for (int i=0; (int) i < points.size(); ++i){
@@ -135,9 +141,7 @@ LookaheadTemplateMatcher::LookaheadTemplateMatcher(IplImage *img, IplImage *tpl,
 : DownsampleTemplateMatcher(img,tpl,downsample_ratio){};
 
 LookaheadTemplateMatcher::~LookaheadTemplateMatcher(){
-  cvReleaseImage(&img_);
-  cvReleaseImage(&tpl_);  
-  cvReleaseImage(&res_);
+   dout << "~LookaheadTemplateMatcher" << endl;
 };
 
 Match 
@@ -198,9 +202,7 @@ DownsampleTemplateMatcher::DownsampleTemplateMatcher(IplImage *img, IplImage *tp
 };
 
 DownsampleTemplateMatcher::~DownsampleTemplateMatcher(){
-  cvReleaseImage(&img_);
-  cvReleaseImage(&tpl_);  
-  cvReleaseImage(&res_);
+   dout << "~DownsampleTemplateMatcher" << endl;
 };
 
 Match DownsampleTemplateMatcher::next(){
@@ -235,13 +237,13 @@ TemplateMatcher::TemplateMatcher(IplImage *img, IplImage *tpl){
 }
 
 TemplateMatcher::~TemplateMatcher(){
- // cvReleaseImage(&img_);
- // cvReleaseImage(&tpl_);
-  cvReleaseImage(&res_);
+   dout << "~TemplateMatcher" << endl;
+   if(img_) cvReleaseImage(&img_);
+   if(tpl_) cvReleaseImage(&tpl_);
+   if(res_) cvReleaseImage(&res_);
 }
 
-void
-TemplateMatcher::init(IplImage *img, IplImage *tpl){
+void TemplateMatcher::init(IplImage *img, IplImage *tpl){
   TimingBlock tb("TemplateMatcher::init()");
   // create new image for template matching computation
   img_ = img;
@@ -288,260 +290,5 @@ Match TemplateMatcher::next(){
 }
 
 
-Matches match_by_template(const char* screen_image_filename, 
-                          const char* template_image_filename,
-                          int max_num_matches, 
-                          double min_similarity_threshold,
-                          bool search_multiscale,
-                          int x, int y, int w, int h,          
-                          bool display_images,
-                          const char* output_image_filename)
-{
-  TimingBlock tb("match_by_template()");
-
-  IplImage  *img;
-  IplImage  *tpl;
-  Matches matches;
-
-  CvRect roi;
-
-  bool write_images = false;
-  if (output_image_filename){
-    write_images = true;
-  }
-
-  float downsample_ratio = 1.0;
-  int min_tpl_dimension = 12;
-  
-
-  float starttime, stoptime, timeused;
-  starttime = clock();
-
-
-  cout << endl << "screen_match is called with n=" << max_num_matches << " and t=" << min_similarity_threshold << endl;
-
-  // load input image
-  img = cvLoadImage( screen_image_filename, CV_LOAD_IMAGE_COLOR );
-  // released in this function
- 
-  // obtain region of interest rectangle
-   if (w>0&&h>0){
-
-    roi = cvRect(x,y,w,h);
-
-  }else{
-
-    roi = cvRect(0,0,img->width,img->height);
-  }
-
-  // obtain a subimage for the roi rectangle
-  cvSetImageROI(img, roi);
-
-  IplImage *roi_img;
-  roi_img = cvCreateImage(cvGetSize(img),img->depth,img->nChannels);
-  // released in this function
-  cvCopy(img, roi_img);
- 
-  cvResetImageROI(img);
-
-
-  /* always check */
-  if( img == 0 ) {
-    fprintf( stderr, "Cannot load file %s!\n", screen_image_filename );
-    return matches; 
-  }
-
-  /* load template image */
-  tpl = cvLoadImage( template_image_filename, CV_LOAD_IMAGE_COLOR );
-  // released in this function
-
-  /* always check */
-  if( tpl == 0 ) {
-    fprintf( stderr, "Cannot load file %s!\n", template_image_filename );
-    return matches;
-  }
-
-  if (write_images){
-    cvSaveImage("input.jpg", img);
-  }  
-  cout << "[time] after loading images:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
-
-
-  vector<float> scales;
-  if (search_multiscale){
-
-
-    //scales.push_back(0.25);
-    scales.push_back(0.5);
-    scales.push_back(0.75);
-    scales.push_back(1.0);
-    scales.push_back(1.25);
-    scales.push_back(1.5);
-    scales.push_back(1.75);
-    scales.push_back(2.0);
-  }else{
-    scales.push_back(1.0);
-  }
-
-
-  vector<TemplateMatcher*> matchers;
-  vector<IplImage*> scaled_tpls;
-
-
-  for (int t=0; t< scales.size(); ++t){
-
-    float scale = scales[t];
-
-    int scaled_tpl_width  = tpl->width * scale;
-    int scaled_tpl_height = tpl->height * scale;
-    IplImage* scaled_tpl = cvCreateImage(cvSize(scaled_tpl_width, scaled_tpl_height), IPL_DEPTH_8U, 3 );
-    // released at the end of match_by_template()
-    
-    cvResize(tpl, scaled_tpl);
-    scaled_tpls.push_back(scaled_tpl);
-    
-    downsample_ratio = 1.0*min(scaled_tpl->width,scaled_tpl->height) / min_tpl_dimension;
-    
-    
-
-    //DownsampleTemplateMatcher* matcher = new DownsampleTemplateMatcher(img, scaled_tpl, downsample_ratio);
-    TemplateMatcher* matcher = new LookaheadTemplateMatcher(roi_img, scaled_tpl, downsample_ratio);
-    // released at the end
-
-    matchers.push_back(matcher);
-
-  }
-
-  // the best match at each scale
-  vector<Match> best_matches;
-  for (int i=0; i<(int) matchers.size(); ++i){
-    best_matches.push_back(matchers[i]->next());
-  }
-
-  bool detect_more = true;
-  while (detect_more && matches.size() < max_num_matches){
-
-
-    double best_score = 0.0;    
-    int best_i=0;
-    for (int i=0; i<(int) matchers.size(); ++i){
-      if (best_matches[i].score > best_score){
-        best_i     = i;
-        best_score = best_matches[i].score;        
-      }      
-    }
-
-    Match best_match = best_matches[best_i];
-    best_matches[best_i] = matchers[best_i]->next();
-
-
-//    cout << best_match.score << endl;
-
-    if (best_match.score > min_similarity_threshold/2){
-
-      if (!overlap_existing_matches(best_match, matches)){
-        matches.push_back(best_match);
-      }
-
-    }else{
-
-      detect_more = false;
-
-    }
-  }
-
-  //cout << "[time] after finding all:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
-
-  sort_matches(matches);
-
-  for (int i=0;i<(int)matches.size();++i){
-      Match& match = matches[i];
-      match.x = match.x + roi.x;
-      match.y = match.y + roi.y;
-  }
-
-  if (write_images){
-
-    for (int i=0;i<(int)matches.size();++i){
-      Match match = matches[i];
-
-      cvRectangle(img, 
-        cvPoint( match.x, match.y), 
-        cvPoint( match.x + match.w, match.y + match.h),
-        cvScalar( 0, 0, (int)255*match.score, 0 ), 2, 0, 0 );  
-
-
-      cvRectangle(img,
-        cvPoint(roi.x, roi.y),
-        cvPoint(roi.x + roi.width, roi.y + roi.height),
-        cvScalar( 255, 0, 255), 2, 0, 0 );  
-      
-
-      CvPoint center;
-      center.x = match.x + match.w/2;
-      center.y = match.y + match.h/2;
-      //cvCircle(imgdownsampled_img, cvPoint(center.x, center.y), 10, cvScalar(0,0,255,0));
-
-      CvFont font;
-      {
-        stringstream ss;
-        ss << match.score;  
-        CvPoint loc = center;
-        loc.y = loc.y + 20;
-        cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX, 0.5,0.5,0,1);                  
-        cvPutText(img,ss.str().c_str(),loc, &font, cvScalar(255,0,0));
-      }
-
-      {
-        stringstream ss;
-        ss << i+1;
-        cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC, 1.0,1.0,0,3);                  
-        cvPutText(img,ss.str().c_str(),center, &font, cvScalar(255,0,0));
-      }
-
-
-    }
-
-
-
-    cvSaveImage(output_image_filename, img);
-    //cvSaveImage("template.jpg", tpl);
-    cout << "[time] after writing images:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
-  }
-
-  if (display_images){
-    cvNamedWindow("Result", CV_WINDOW_AUTOSIZE);
-    cvShowImage("Result",img);
-
-    cvNamedWindow("Template", CV_WINDOW_AUTOSIZE);
-    cvShowImage("Template",tpl);
-
-    /* wait until user press a key to exit */
-    cvWaitKey( 0 );
-  }
-
-
-
-  cvReleaseImage( &img );
-  cvReleaseImage( &tpl );
-  cvReleaseImage( &roi_img);
-  for (int i=0;i<scaled_tpls.size();i++){
-    cvReleaseImage(&scaled_tpls[i]);
-  }
-
-  cout << "Results: (" << matches.size() << " matches)" << endl;
-  cout << "no.\tx\ty\tscore\n";
-  for(int i=0;i<(int)matches.size();++i){
-    Match& m = matches[i];
-    cout << i+1 << "\t" << m.x << "\t" << m.y << "\t" << m.score << endl;
-  }
-
-  for (int i=0; i<(int) matchers.size(); ++i){
-    delete matchers[i];
-  }
-
-
-  return matches;
-}     
 
 

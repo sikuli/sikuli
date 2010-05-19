@@ -13,7 +13,7 @@ public:
 
   BaseFinder(const IplImage* screen_image);
   BaseFinder(const char* screen_image_filename);
-  ~BaseFinder();
+  virtual ~BaseFinder();
 
   void setROI(int x, int y, int w, int h);
 
@@ -49,7 +49,7 @@ public:
 
   Finder(const IplImage* screen_image);
   Finder(const char* screen_image_filename);
-  ~Finder();
+  virtual ~Finder();
   
 
   void find(const IplImage* tpl, double min_similarity);
@@ -82,7 +82,7 @@ class FaceFinder : public BaseFinder {
 public:
 
   FaceFinder(const char* screen_image_filename);
-  ~FaceFinder();
+  virtual ~FaceFinder();
 
   void find();
   bool hasNext();
@@ -106,7 +106,7 @@ public:
 
   ChangeFinder(const IplImage* screen_image);
   ChangeFinder(const char* screen_image_filename);
-  ~ChangeFinder();
+  virtual ~ChangeFinder();
 
   void find(IplImage* new_img);
   void find(const char* new_screen_image_filename);
