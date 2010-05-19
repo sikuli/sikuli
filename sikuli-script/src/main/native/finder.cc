@@ -99,53 +99,74 @@ Finder::find_all(IplImage* target, double min_similarity){
 void
 Finder::find_all(Mat target, double min_similarity){   
    this->min_similarity = min_similarity;
-   BaseFinder::find();  
-
-   current_rank = 1;   
-   if (roiSource.cols >= target.cols && roiSource.rows >= target.rows){
-      
-      // create a template matcher (released in the destructor)
-      if (matcher){
-         delete matcher;
-         matcher = 0;
-      }
-      
-      float factor = 2.0;      
-      int levels=-1;
-      int w = target.rows;
-      int h = target.cols;
-      while (w >= PYRAMID_MIM_TARGET_DIMENSION_ALL && h >= PYRAMID_MIM_TARGET_DIMENSION_ALL){
-         w = w / factor;
-         h = h / factor;
-         levels++;
-      }
-      
-      Mat roiSourceGray;
-      Mat targetGray;
-      
-      // convert image from RGB to grayscale
-      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-      cvtColor(target, targetGray, CV_RGB2GRAY);
-            
-      matcher = new PyramidTemplateMatcher(roiSource, target, levels, factor);
-      current_match = matcher->next();      
    
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD)){
-         dout << "matching (original resolution: color) ... " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSource, target, 0, 1);
-         current_match = matcher->next();
-      }
-      
-      
-      current_match.x = current_match.x + roi.x;
-      current_match.y = current_match.y + roi.y;
-      
+   BaseFinder::find();  
+   
+   if (roiSource.cols < target.cols || roiSource.rows < target.rows){	   
+	   current_match.score = -1;
+	   return;
    }
-   else{
-      current_match.score = -1;      
-   }   
+      
+   float factor = 2.0;      
+   int levels=-1;
+   int w = target.rows;
+   int h = target.cols;
+   while (w >= PYRAMID_MIM_TARGET_DIMENSION_ALL && h >= PYRAMID_MIM_TARGET_DIMENSION_ALL){
+      w = w / factor;
+      h = h / factor;
+      levels++;
+   }
+   
+   Mat roiSourceGray;
+   Mat targetGray;
+   
+   // convert image from RGB to grayscale
+   cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
+   cvtColor(target, targetGray, CV_RGB2GRAY);
+         
+   create_matcher(roiSourceGray, targetGray, levels, factor);
+   add_matches_to_buffer(5);     
+
+   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
+      return;
+   
+   
+   dout << "matching (original resolution: color) ... " << endl;
+   create_matcher(roiSource, target, 0, 1);
+   add_matches_to_buffer(5);
+
 }
+
+
+bool sort_by_score(Match m1, Match m2){
+   return m1.score > m2.score;
+}
+
+float
+Finder::top_score_in_buffer(){
+   if (buffered_matches.empty())
+      return -1;
+   else
+      return buffered_matches[0].score;
+}
+
+void
+Finder::create_matcher(Mat& source, Mat& target, int level, float ratio){
+   if (matcher){
+      delete matcher;
+   } 
+   matcher = new PyramidTemplateMatcher(source,target,level,ratio);
+}
+
+void 
+Finder::add_matches_to_buffer(int num_matches_to_add){ 
+   buffered_matches.clear();
+   for (int i=0;i<num_matches_to_add;++i){
+      Match next_match = matcher->next();
+      buffered_matches.push_back(next_match);
+   }
+   sort(buffered_matches,sort_by_score);
+} 
 
 void
 Finder::find(Mat target, double min_similarity){
@@ -154,125 +175,97 @@ Finder::find(Mat target, double min_similarity){
    
    BaseFinder::find();  
    
-   current_rank = 1;   
-   if (roiSource.cols >= target.cols && roiSource.rows >= target.rows){
-      
-      // create a template matcher (released in the destructor)
-      if (matcher){
-         delete matcher;
-         matcher = 0;
-      }
+   if (roiSource.cols < target.cols || roiSource.rows < target.rows){	   
+	   current_match.score = -1;
+	   return;
+   }
 
-      float ratio;
-      ratio = min(target.rows * 1.0 / PYRAMID_MIM_TARGET_DIMENSION, 
-               target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
+   float ratio;
+   ratio = min(target.rows * 1.0 / PYRAMID_MIM_TARGET_DIMENSION, 
+            target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
 
-      Mat roiSourceGray;
-      Mat targetGray;
-      
-      // convert image from RGB to grayscale
-      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-      cvtColor(target, targetGray, CV_RGB2GRAY);
+   Mat roiSourceGray;
+   Mat targetGray;
+   
+   // convert image from RGB to grayscale
+   cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
+   cvtColor(target, targetGray, CV_RGB2GRAY);
 
-      
-      TimingBlock *t;
-/*      
-      t = new TimingBlock("BASELINE");
-      float baseline_ratio;
-      baseline_ratio = min(target.rows * 1.0 / 12, 
-               target.cols * 1.0 / 12);
-      dout << "baseline (old template matcher ) " << endl;
-      LookaheadTemplateMatcher lt(&IplImage(roiSource), &IplImage(target), baseline_ratio);
-      delete t;
-*/
-      t = new TimingBlock("NEW METHOD");
-      dout << "matching (center) ... " << endl;            
-      Mat roiSourceGrayCenter = Mat(roiSourceGray, 
+   TimingBlock tb("NEW METHOD");
+
+   dout << "matching (center) ... " << endl;            
+   Mat roiSourceGrayCenter = Mat(roiSourceGray, 
                              Range(roiSourceGray.rows*BORDER_MARGIN,
                                  roiSourceGray.rows*(1-BORDER_MARGIN)),
                              Range(roiSourceGray.cols*BORDER_MARGIN,
                                  roiSourceGray.cols*(1-BORDER_MARGIN)));
-      matcher = new PyramidTemplateMatcher(roiSourceGrayCenter, targetGray, 1, ratio);
-      
-      current_match = matcher->next();
-
-      if (current_match.score < max(min_similarity,CENTER_REMATCH_THRESHOLD)){
-         
-         dout << "matching (whole) ... " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSourceGray, targetGray, 1, ratio);
-         current_match = matcher->next();
-         
-                                    
-      }else{
-         current_match.x = current_match.x + roiSourceGray.cols*BORDER_MARGIN;
-         current_match.y = current_match.y + roiSourceGray.rows*BORDER_MARGIN;
-      }
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD)){
-         dout << "matching (0.75) " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSourceGray, targetGray, 1, ratio*0.75);
-         current_match = matcher->next();
-      }
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD) && ratio > 2){
-         dout << "matching (0.5) " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSourceGray, targetGray, 1, ratio*0.5);
-         current_match = matcher->next();
-      }
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD) && ratio > 4){
-         dout << "matching (0.25) " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSourceGray, targetGray, 1, ratio*0.25);
-         current_match = matcher->next();
-      }      
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD)){
-         dout << "matching (original resolution) ... " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSourceGray, targetGray, 0, 1);
-         current_match = matcher->next();
-      }
-      if (current_match.score < max(min_similarity,REMATCH_THRESHOLD)){
-         dout << "matching (original resolution: color) ... " << endl;
-         delete matcher;
-         matcher = new PyramidTemplateMatcher(roiSource, target, 0, 1);
-         current_match = matcher->next();
-      }
-      
-      delete t;
-      
-      current_match.x = current_match.x + roi.x;
-      current_match.y = current_match.y + roi.y;
-      
+   create_matcher(roiSourceGrayCenter, targetGray, 1, ratio);
+   add_matches_to_buffer(5); 
+   if (top_score_in_buffer() >= max(min_similarity,CENTER_REMATCH_THRESHOLD)){
+      roi.x += roiSourceGray.cols*BORDER_MARGIN;
+      roi.y += roiSourceGray.rows*BORDER_MARGIN;   
+      return;
    }
-   else{
-      
-      current_match.score = -1;
-      
-   }   
+   
+   dout << "matching (whole) ... " << endl;
+   create_matcher(roiSourceGray, targetGray, 1, ratio);
+   add_matches_to_buffer(5);
+   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){
+      return;
+   }  
+   
+   dout << "matching (0.75) ..." << endl;
+   create_matcher(roiSourceGray, targetGray, 1, ratio*0.75);
+   add_matches_to_buffer(5);
+   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
+      return;
+   
+   if (ratio > 2){
+      dout << "matching (0.5) ..." << endl;
+      create_matcher(roiSourceGray, targetGray, 1, ratio*0.5);
+      add_matches_to_buffer(5);
+      if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
+         return;
+   }
+   
+   if (ratio > 4){      
+      dout << "matching (0.25) ..." << endl;
+      create_matcher(roiSourceGray, targetGray, 1, ratio*0.25);
+      add_matches_to_buffer(5);
+      if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
+         return;
+   }
+
+   dout << "matching (original resolution) ... " << endl;
+   create_matcher(roiSourceGray, targetGray, 0, 1);
+   add_matches_to_buffer(5);
+   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
+      return;
+
+   dout << "matching (original resolution: color) ... " << endl;
+   create_matcher(roiSource, target, 0, 1);
+   add_matches_to_buffer(5);
 }
 
 bool
 Finder::hasNext(){  
-   return current_match.score >= (min_similarity-0.0000001);
+   return top_score_in_buffer() >= (min_similarity-0.0000001);
 }
 
 Match
 Finder::next(){
-   Match temp = current_match;
+
+   if (!hasNext())
+      return Match(0,0,0,0,-1);
    
-   if (hasNext()){
-      
-      current_match = matcher->next();
-      current_match.x = current_match.x + roi.x;
-      current_match.y = current_match.y + roi.y;
-      current_rank++;
-      return temp;
-   }else{
-      Match match;
-      match.score = -1;
-      return match;
-   }
+   Match top_match = buffered_matches.front();
+   top_match.x += roi.x;
+   top_match.y += roi.y;
+   
+   Match next_match = matcher->next();
+   buffered_matches[0] = next_match;
+   sort(buffered_matches,sort_by_score);
+   return top_match;
 }
 
 //=========================================================================================

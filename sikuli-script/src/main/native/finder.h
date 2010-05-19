@@ -52,11 +52,22 @@ public:
 	
 private:
 	
+   void create_matcher(Mat& source, Mat& target, int level, float ratio);
 	PyramidTemplateMatcher* matcher;
 	
 	Match current_match;
 	int current_rank;	
 	double min_similarity;		
+	
+	// buffer matches and return top score
+   
+   
+   void add_matches_to_buffer(int num_matches_to_add);
+   float top_score_in_buffer();
+	
+   
+   //int num_cached_matches;
+	vector<Match> buffered_matches;
 };
 
 

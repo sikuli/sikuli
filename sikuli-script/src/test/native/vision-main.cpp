@@ -6,10 +6,18 @@
  *  Copyright 2010 __MyCompanyName__. All rights reserved.
  *
  */
+
+//#define DEBUG
+
 #include <iostream>
 #include "finder.h"
 #include "event-manager.h"
 
+
+#define SIMILARITY_THRESHOLD 0.90
+#define MAX_MATCHES 1
+#define DEBUG_DISPLAY 1
+#define DEBUG_FINDALL 0
 
 string screen_image_path(int screen_i){
 	stringstream ss;
@@ -31,39 +39,45 @@ string result_image_path(int screen_i, int target_i, string testname){
 	return ss.str();
 }
 
-
-#define DEBUG_DISPLAY
 void test(int screen_i, int target_i){
   	
 	string source_filename(screen_image_path(screen_i));
 	string target_filename = target_image_path(screen_i,target_i);
 	
 	char filename[100];
+	
+
 
 	sprintf(filename,"testdata/images/%d-screen.png",screen_i);
-	Mat source = imread(filename,1);
+	
+	IplImage* sourceIpl=cvLoadImage(filename,1);
+	Mat source = imread(filename,3);
 	
 	sprintf(filename,"testdata/images/%d-target-%d.png",screen_i,target_i);	
-	Mat target = imread(filename,1);
+	IplImage* targetIpl=cvLoadImage(filename,1);	
+	Mat target = imread(filename,3);
 	
+	cout << endl << endl << "========================" << endl;
+	cout << filename << endl;
+	
+	//Finder f(sourceIpl);
 	Finder f(source);
-	//source_filename.c_str());
 	
-	/*	int x=50;
-	 int y=50;
-	 int w=source.cols/2;
-	 int h=source.rows/2;*/
-	int x=1;
-	int y=1;
+	int x=0;
+	int y=0;
 	int w=source.cols-1;
 	int h=source.rows-1;
-	f.setROI(x,y,w,h);
+//	f.setROI(x,y,w,h);
 	
-	//f.find(target,0.0);
-	f.find(target,0.9);
+#if DEBUG_FINDALL
+	f.find_all(target,SIMILARITY_THRESHOLD);
+#else
+	f.find(target,SIMILARITY_THRESHOLD);
+#endif
+	//f.find(targetIpl,1.00);
 	
 	
-#ifdef DEBUG_DISPLAY	
+#if DEBUG_DISPLAY	
 	Mat upperLeftCorner(source, Rect(5,5,target.cols,target.rows));
 	target.copyTo(upperLeftCorner);	
 	
@@ -86,18 +100,15 @@ void test(int screen_i, int target_i){
 			  Scalar(0, 0, 0), 5, 0, 0 );  
 #endif
 	
-	
-	
-	//for (int i=0;i<5;++i){
 	int i=0;
-	while (f.hasNext()){
+	while (f.hasNext() && i < MAX_MATCHES){
 		++i;
 		
 		//Match match = pm.next();	
 		Match match = f.next();
-		cout << match.x << " " << match.y << " " << match.score << endl;
+		cout << "#" << i << ": (" << match.x << "," << match.y << ") " << match.w << "x" << match.h << " " << match.score << endl;
 		
-#ifdef DEBUG_DISPLAY
+#if DEBUG_DISPLAY
 		
 		rectangle(source, 
 				  Point( match.x, match.y), 
@@ -119,21 +130,31 @@ void test(int screen_i, int target_i){
 		 }
 		 */	
 		{
-			stringstream ss;
-			ss << i+1;
+			char buf[10];
+			sprintf(buf,"%d",i);
 			//cvInitFont(&font,FONT_HERSHEY_PLAIN, 1.0,1.0,0,3);                  
-			putText(source,ss.str().c_str(),center, FONT_HERSHEY_PLAIN, 1.0, Scalar(255,0,0));
+			putText(source,buf,center, FONT_HERSHEY_PLAIN, 1.0, Scalar(255,0,0));
 		}
 #endif		
 		
 	}
 	
 	
-#ifdef DEBUG_DISPLAY
-	
+#if DEBUG_DISPLAY
 	namedWindow("matches", CV_WINDOW_AUTOSIZE);
-    imshow("matches", source);
+
+	
+	Mat resized;
+	if (source.rows >= 700){
+		pyrDown(source, resized);
+		imshow("matches", resized);
+		
+	}else{	
+		imshow("matches", source);
+	}
+	
 	waitKey();
+	
 #endif	
 	
 	
@@ -168,7 +189,19 @@ void  test_change_finder(){
 }
 
 void test_finder(){
-	
+	if (true){
+
+      test(10,1);     
+      test(10,2); 
+      test(10,3); 
+      test(10,4); 
+      test(10,5); 
+      test(10,6); 
+      test(10,7); 
+		
+
+	}else{
+		
 	test(1,1);
 	test(1,2);
 	test(1,3);
@@ -224,10 +257,14 @@ void test_finder(){
 	test(9,2);
 	test(9,3);
 	test(9,4);
-	
+      
+      
+      test(10,1);     
+      test(10,2);     
+	}
 }
 
-
+/*
 void test_sem(){
 	
 	SikuliEventManager sem;
@@ -268,12 +305,14 @@ void test_sem(){
 		
 	}
 }
+*/
 
 int main (int argc, const char * argv[]) {
 	
 	
 	//test_change_finder();
 	//test_sem();
+	//while (1)
 	test_finder();
 	
     return 0;
