@@ -122,4 +122,26 @@ private:
   CvMemStorage* storage;
 
 };
+
+
+class WordFinder : public BaseFinder {
+	
+public:
+	WordFinder(Mat source);
+   static void train(Mat& trainingImage);
+	
+   void find(const char* word);
+   
+   bool hasNext();
+   Match next();
+   
+ 
+private:
+   vector<Match> matches;
+   vector<Match>::iterator matches_iterator;
+   
+	void recognize(const Mat& inputImage);
+	void test_find(const Mat& inputImage, const vector<string>& testWords);
+};
+
 #endif // _FINDER_H_

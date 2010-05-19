@@ -18,6 +18,8 @@
 		A08C427D11A322AF00DB4D16 /* finder.cc in Sources */ = {isa = PBXBuildFile; fileRef = A08C427611A322AF00DB4D16 /* finder.cc */; };
 		A08C427F11A322AF00DB4D16 /* TimingBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = A08C427A11A322AF00DB4D16 /* TimingBlock.cc */; };
 		A08C429911A3234C00DB4D16 /* pyramid-template-matcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A08C429711A3234C00DB4D16 /* pyramid-template-matcher.cpp */; };
+		A08C448511A425E500DB4D16 /* cv-util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A08C448111A425E500DB4D16 /* cv-util.cpp */; };
+		A08C448611A425E500DB4D16 /* ocr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A08C448311A425E500DB4D16 /* ocr.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +51,10 @@
 		A08C427B11A322AF00DB4D16 /* TimingBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimingBlock.h; path = ../../main/native/TimingBlock.h; sourceTree = SOURCE_ROOT; };
 		A08C429711A3234C00DB4D16 /* pyramid-template-matcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "pyramid-template-matcher.cpp"; path = "../../main/native/pyramid-template-matcher.cpp"; sourceTree = SOURCE_ROOT; };
 		A08C429811A3234C00DB4D16 /* pyramid-template-matcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "pyramid-template-matcher.h"; path = "../../main/native/pyramid-template-matcher.h"; sourceTree = SOURCE_ROOT; };
+		A08C448111A425E500DB4D16 /* cv-util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "cv-util.cpp"; path = "../../main/native/cv-util.cpp"; sourceTree = SOURCE_ROOT; };
+		A08C448211A425E500DB4D16 /* cv-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "cv-util.h"; path = "../../main/native/cv-util.h"; sourceTree = SOURCE_ROOT; };
+		A08C448311A425E500DB4D16 /* ocr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ocr.cpp; path = ../../main/native/ocr.cpp; sourceTree = SOURCE_ROOT; };
+		A08C448411A425E500DB4D16 /* ocr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ocr.h; path = ../../main/native/ocr.h; sourceTree = SOURCE_ROOT; };
 		C6859E8B029090EE04C91782 /* vision.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = vision.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,6 +88,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				A08C448111A425E500DB4D16 /* cv-util.cpp */,
+				A08C448211A425E500DB4D16 /* cv-util.h */,
+				A08C448311A425E500DB4D16 /* ocr.cpp */,
+				A08C448411A425E500DB4D16 /* ocr.h */,
 				A08C429711A3234C00DB4D16 /* pyramid-template-matcher.cpp */,
 				A08C429811A3234C00DB4D16 /* pyramid-template-matcher.h */,
 				A08C427411A322AF00DB4D16 /* event-manager.cc */,
@@ -171,6 +181,8 @@
 				A08C427D11A322AF00DB4D16 /* finder.cc in Sources */,
 				A08C427F11A322AF00DB4D16 /* TimingBlock.cc in Sources */,
 				A08C429911A3234C00DB4D16 /* pyramid-template-matcher.cpp in Sources */,
+				A08C448511A425E500DB4D16 /* cv-util.cpp in Sources */,
+				A08C448611A425E500DB4D16 /* ocr.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

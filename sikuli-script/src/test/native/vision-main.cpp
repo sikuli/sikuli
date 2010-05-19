@@ -19,6 +19,11 @@
 #define DEBUG_DISPLAY 1
 #define DEBUG_FINDALL 0
 
+
+// TEST WordFinder
+
+#define DISPLAY_NUM_TOP_MATCHES 1
+
 string screen_image_path(int screen_i){
 	stringstream ss;
 	ss << "testdata/images/"  << screen_i << "-screen.png";
@@ -307,13 +312,231 @@ void test_sem(){
 }
 */
 
+
+string inputImageName;
+vector<string> testWords;
+void testcase_network(){
+   //	inputImageName = "network_small.png";		
+   //	inputImageName = "network_medium.png";	
+	inputImageName = "network_large.png";	
+   
+	testWords.push_back("Apply");
+	testWords.push_back("Connect");
+	testWords.push_back("Assist");
+	testWords.push_back("Revert");
+	testWords.push_back("Show");
+	testWords.push_back("Advanced");	
+	testWords.push_back("UMIACS");
+   
+}	
+
+void testcase_trash(){
+	inputImageName = "trash_large.png";	
+	
+	//testWords.push_back("Empty");	
+	testWords.push_back("Trash");	
+	testWords.push_back("Compose");	
+	testWords.push_back("Calendar");		
+	testWords.push_back("Applications");		
+	testWords.push_back("Dropbox");		
+	testWords.push_back("Cancel");	
+   
+	testWords.push_back("Finder");	
+	testWords.push_back("File");	
+	testWords.push_back("Edit");	
+	testWords.push_back("View");	
+	testWords.push_back("Go");	
+	testWords.push_back("Window");		
+	testWords.push_back("Help");	
+	testWords.push_back("Back");	
+   
+	testWords.push_back("Action");	
+	testWords.push_back("Search");
+	
+	testWords.push_back("Starred");
+	//testWords.push_back("Inbox");
+	testWords.push_back("sikuli");
+	testWords.push_back("Contacts");
+	testWords.push_back("Tasks");
+	
+	testWords.push_back("Tom");	
+	testWords.push_back("Yeh");	
+	
+	testWords.push_back("Older");	
+	testWords.push_back("Oldest");	
+	
+	testWords.push_back("Images");	
+	testWords.push_back("Yesterday");	
+	testWords.push_back("Documents");	
+	testWords.push_back("Macintosh");	
+	
+}
+
+void testcase_keyboard(){
+	inputImageName = "keyboard.png";	
+   
+	testWords.push_back("Services");	
+	testWords.push_back("Keyboard");	
+	testWords.push_back("Restore");		
+	testWords.push_back("Spotlight");	
+	testWords.push_back("Bluetooth");	
+	testWords.push_back("Shortcuts");		
+	testWords.push_back("Dashboard");
+	testWords.push_back("double");
+	testWords.push_back("Application");
+	testWords.push_back("Replacing");
+	testWords.push_back("Batteries");
+	testWords.push_back("Defaults");
+	testWords.push_back("Show");
+	testWords.push_back("All");
+}
+
+
+void testcase_access(){
+	inputImageName = "access.png";	
+	
+	testWords.push_back("Enhance");	
+	testWords.push_back("Contrast");		
+	testWords.push_back("VoiceOver");	
+	testWords.push_back("white");	
+	testWords.push_back("Display");	
+	testWords.push_back("Zoom");	
+	testWords.push_back("Options");	
+	testWords.push_back("Hearing");	
+	testWords.push_back("Keyboard");	
+	testWords.push_back("Mouse");	
+	testWords.push_back("Trackpad");	
+	testWords.push_back("on");
+   
+}
+
+
+void testcase_gmail(){
+	inputImageName = "gmail.png";	
+	
+	testWords.push_back("Compose");
+	testWords.push_back("Archive");
+	testWords.push_back("Delete");
+	testWords.push_back("All");
+	testWords.push_back("None");
+	testWords.push_back("Read");
+	testWords.push_back("Unread");
+	testWords.push_back("Calendar");
+	testWords.push_back("Document");
+   
+}
+
+void testcase_gmail_zoom(){
+	inputImageName = "gmail_zoom.png";	
+
+	//testWords.push_back("Drafts");
+   
+	testWords.push_back("Sent");
+	testWords.push_back("Compose");
+	testWords.push_back("Inbox");
+	testWords.push_back("Buzz");
+	testWords.push_back("Starred");	
+	testWords.push_back("Mail");
+	
+}
+
+#include "cv-util.h"
+void test_word_finder(){
+   
+   Mat trainingImage = imread("testdata/ocr/arial.png",1);
+   WordFinder::train(trainingImage);
+
+   
+	//testcase_network();
+	//testcase_trash();
+	//testcase_keyboard();
+	//testcase_access();
+	testcase_gmail_zoom();
+   	
+   char buf[50];
+   sprintf(buf,"%s/%s","testdata/ocr",inputImageName.c_str());   
+	Mat inputImage    = imread(buf,1);
+	
+	WordFinder wf(inputImage);
+   
+#if DISPLAY_TEST_SEGMENT
+   test_segment(inputImage,"test");
+#endif   
+   
+   Mat resultImage = inputImage.clone();
+   
+   
+   for (vector<string>::iterator iter = testWords.begin(); 
+        iter != testWords.end(); ++iter){
+      
+      string testWord = *iter;
+      
+
+      wf.find(testWord.c_str());
+      
+      int i = 0;
+      while (wf.hasNext() && i < DISPLAY_NUM_TOP_MATCHES){
+      // draw each match on the result image for visualization
+ 
+         Match m = wf.next();         
+         Rect r(m.x,m.y,m.w,m.h);
+         draw_rectangle(resultImage, r);
+         
+         char buf[50];
+         sprintf(buf, "%d:%s:%0.2f/%d", i+1, 
+                 testWord.c_str(), 
+                 m.score, 
+                 testWord.length());
+         
+         
+         // determine the region the text would occupy
+         // so we can draw a solid background for the
+         // text
+         int baseline = 0;
+         Size textSize = getTextSize(buf, 
+                                     FONT_HERSHEY_SIMPLEX,
+                                     0.5, 1, &baseline);         
+         Point loc(r.x,r.y+25);
+         Scalar black(0,0,0);
+         Scalar red(0,0,255);
+         Scalar fillColor;
+         
+         if (m.score > 0.8){
+            fillColor = black;
+         }else{
+            fillColor = red;
+         }
+         
+         rectangle(resultImage, 
+                   loc+Point(0,baseline), 
+                   loc+Point(textSize.width, -textSize.height),
+                   fillColor, CV_FILLED);
+         
+         
+         Scalar textColor(255,255,255);
+         putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.5, textColor);
+         //imshowDebug("test_find:resultImage",resultImage);
+         
+         i++;
+      }
+   }
+	
+	imshowDebug("test_find:resultImage",resultImage);
+	
+   
+}   
+
 int main (int argc, const char * argv[]) {
 	
 	
+   
 	//test_change_finder();
 	//test_sem();
-	//while (1)
-	test_finder();
 	
+   //while (1)
+	//test_finder();
+	
+   test_word_finder();
+   
     return 0;
 }
