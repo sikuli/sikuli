@@ -238,8 +238,8 @@ TemplateMatcher::TemplateMatcher(IplImage *img, IplImage *tpl){
 
 TemplateMatcher::~TemplateMatcher(){
    dout << "~TemplateMatcher" << endl;
-   if(img_) cvReleaseImage(&img_);
-   if(tpl_) cvReleaseImage(&tpl_);
+   //if(img_) cvReleaseImage(&img_); img_ should be released by its creator
+   //if(tpl_) cvReleaseImage(&tpl_); tpl_ should be released by its creator
    if(res_) cvReleaseImage(&res_);
 }
 

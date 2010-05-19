@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>sikuli-ide.jar</jar>
-  <outfile>c:\sikuli\sikuli-ide\target\Sikuli-IDE\Sikuli-IDE.exe</outfile>
+  <outfile>c:\sikuli\sikuli-ide\target\win32\Sikuli-IDE.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>

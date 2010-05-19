@@ -3,7 +3,7 @@ TARGET_DIR=..\..\..\target\lib
 include Makefile.common.win32
 
 
-SRCS=EventManagerProxy.cc FinderProxy.cc finder.cc event-manager.cc ScreenMatchProxy.cc template-matcher.cc screendiff.cpp TimingBlock.cc
+SRCS=EventManagerProxy.cc FinderProxy.cc finder.cc event-manager.cc template-matcher.cc TimingBlock.cc
 CLASSES_TARGET_PATH=..\..\..\target\classes
 CLASSPATH=..\java;..\..\..\lib
 PACKAGE=edu.mit.csail.uid

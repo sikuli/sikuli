@@ -16,10 +16,10 @@
     <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:style5blue_banner.jpg" Type="1"/>
     <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:style5blue_dialog.jpg" Type="1"/>
     <ROW Property="Manufacturer" Value="Sikuli Development Team" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{BFDE365E-4157-41E1-8071-A125BBD02437} 1028:{23ED3629-73D1-4E40-A15C-353F2D0746E8} 2052:{57814AB2-F130-43C9-814F-BB029602D84B} 1031:{209E267A-C370-4AFD-9CEC-C51F61C821B0} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{501C3749-34F2-44FC-91CB-0EF8E47577E1} 1028:{F56C18CA-1DD2-42E9-94D9-0BE5603C1C34} 2052:{146A41B6-465E-436C-8777-FF341035C41B} 1031:{6A196327-703F-43C0-9946-090235D064A4} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Sikuli" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="0.10.0"/>
+    <ROW Property="ProductVersion" Value="0.10.1"/>
     <ROW Property="REBOOT" MultiBuildValue="DefaultBuild:ReallySuppress"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{A5108546-EF11-4CCE-80C8-C37E18DE2906}"/>
@@ -81,6 +81,7 @@
     <ROW File="Sikuli_IDE.exe" Component_="Sikuli_IDE.exe" FileName="Sikuli~1.exe|Sikuli-IDE.exe" Attributes="0" SourcePath="&lt;AI_STUBS&gt;aijclw.exe" SelfReg="false" Sequence="1" DigSign="true"/>
     <ROW File="VDictProxy.dll" Component_="VDictProxy.dll" FileName="VDictP~1.dll|VDictProxy.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\VDictProxy.dll" SelfReg="false" Sequence="21"/>
     <ROW File="Win32Util.dll" Component_="Win32Util.dll" FileName="Win32U~1.dll|Win32Util.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\Win32Util.dll" SelfReg="false" Sequence="22"/>
+    <ROW File="commons_cli_1.2.jar" Component_="swing_layout_1.0.1.jar" FileName="common~1.jar|commons-cli-1.2.jar" Attributes="0" SourcePath="..\..\..\lib\commons-cli-1.2.jar" SelfReg="false" Sequence="24"/>
     <ROW File="cv210.dll" Component_="cv210.dll" FileName="cv210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cv210.dll" SelfReg="false" Sequence="8"/>
     <ROW File="cvaux210.dll" Component_="cvaux210.dll" FileName="cvaux210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cvaux210.dll" SelfReg="false" Sequence="9"/>
     <ROW File="cxcore210.dll" Component_="cxcore210.dll" FileName="cxcore~1.dll|cxcore210.dll" Attributes="0" SourcePath="..\Sikuli-IDE\tmplib\cxcore210.dll" SelfReg="false" Sequence="10"/>
@@ -196,7 +197,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="Application_Type" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Application Type" Value="gui" Action="0" Component_="Sikuli_IDE.exe"/>
-    <ROW IniFile="Class_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#jintellitype_1.3.2.jar];[#junit_3.8.1.jar];[#sikuli_ide.jar];[#sikuli_script.jar];[#swing_layout_1.0.1.jar];" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Class_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#jintellitype_1.3.2.jar];[#junit_3.8.1.jar];[#sikuli_ide.jar];[#sikuli_script.jar];[#swing_layout_1.0.1.jar];[#commons_cli_1.2.jar];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Failure_Check" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Failure Check" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Library_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Library Path" Value="[tmplib_DIR];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Main_Class" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="edu.mit.csail.uid.SikuliIDE" Action="0" Component_="Sikuli_IDE.exe"/>
@@ -205,7 +206,7 @@
     <ROW IniFile="Override_WorkingDir" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Override WorkingDir" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="URL" FileName="Sikuli~1.url|Sikuli&apos;s Homepage.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org" Action="0" Component_="SHORTCUTDIR"/>
     <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/documentation.shtml" Action="0" Component_="SHORTCUTDIR"/>
-    <ROW IniFile="Virtual_Machine_Parameters" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Virtual Machine Parameters" Value="-Xms256M -Xmx100:2:1200P -Dpython.path=sikuli-script.jar/ -Dfile.encoding=utf-8" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Virtual_Machine_Parameters" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Virtual Machine Parameters" Value="-Xms64M -Xmx512M -Dpython.path=sikuli-script.jar/ -Dfile.encoding=utf-8 " Action="0" Component_="Sikuli_IDE.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -255,7 +256,7 @@
     <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="Contact" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayName" Value="Sikuli" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayVersion" Value="0.10.0" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayVersion" Value="0.10.1" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpLink" Value="https://launchpad.net/sikuli" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpTelephone" Component_="AI_CustomARPName"/>
     <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
