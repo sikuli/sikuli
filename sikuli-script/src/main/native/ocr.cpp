@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
+
+
 
 #include "cv.h"
 #include "highgui.h"
@@ -41,30 +44,18 @@ int L1dist(Vec3b p1, Vec3b p2){
 }
 
 
-vector<Rect> segment_image(Mat color){
-	TimingBlock tb("segment_image");
-	Mat gray;
-	cvtColor(color, gray, CV_RGB2GRAY);	
-	
-#if DISPLAY_SEGMENT_IMAGE
-	Mat resultImage(color.size(), color.type());
-#endif
-	
+Mat remove_horizontal_lines(Mat& im1, int min_length, int min_intensity){
+   
+   
+   
 	typedef uchar T;
 	//typedef Vec3b T;
-	
-	Mat im1 = gray;
-	//Mat im2 = im1.clone();	
-	
-	//Mat im1 = color;
-	Mat im2 = Mat::ones(im1.rows,im1.cols,CV_8UC1);
-	
-	{
-		TimingBlock  tb("Scanning");
-
+   
+  	Mat im2 = Mat::ones(im1.rows,im1.cols,CV_8UC1)*255;
+ 
 	Size size = im1.size();
 	for( int i = 0; i < size.height; i +=1 )
-    {
+   {
 		//cout << i << endl;
 		T* ptr1 = im1.ptr<T>(i);
 		uchar* ptr2 = im2.ptr<uchar>(i);	
@@ -75,12 +66,12 @@ vector<Rect> segment_image(Mat color){
 		
 		current_baseline_startpoint = 0;
 		
-        for( int j = 1; j < size.width; j += 1 )
-        {			
+      for( int j = 1; j < size.width; j += 1 )
+      {			
 			
 			// if a contrast transition is encountered or 
 			// at the right-most edge of the image
-
+         
 			//float diff = norm(ptr1[j]-ptr1[j-1]);//1,p2);//L2dist(p1,p2);//(p1 - p2);//tr1[j] - ptr1[j-1]);
 			//float diff = L1dist(ptr1[j],ptr1[j-1]);
 			float diff = abs(ptr1[j]-ptr1[j-1]);
@@ -88,27 +79,28 @@ vector<Rect> segment_image(Mat color){
 				
 				// check for the condition of a baseline hypothesis
 				// the length of the baseline must be > 15
-				if ((j - current_baseline_startpoint) > 10 || j == size.width - 1){
+				if ((j - current_baseline_startpoint) > min_length || j == size.width - 1){
 					
 					// if there's a previous baseline hypothesis 
 					// and close to the current one, 
 					//int closeness_threshold = 12;
 					
-					//set small for find task because lines usually
+					// set small for find task because lines usually
 					// have plentiy of spacing vertically
 					int closeness_threshold = 1; 
 					
 					if (has_previous_baseline && 
-						L2dist(ptr1[current_baseline_startpoint], 
-							   ptr1[previous_baseline_endpoint]) < 150 &&
-						(current_baseline_startpoint - previous_baseline_endpoint) 
+                   L2dist(ptr1[current_baseline_startpoint], 
+                          ptr1[previous_baseline_endpoint]) < 150 &&
+                   (current_baseline_startpoint - previous_baseline_endpoint) 
 						 <= closeness_threshold){
 						
 						
 						// merge the current baseline with the previously baseline
 						for (int k=previous_baseline_endpoint; 
-							 k < current_baseline_startpoint; k += 1){
-							ptr2[k] = 0;
+                       k < current_baseline_startpoint; k += 1){
+							if (ptr2[k]>=min_intensity)
+                        ptr2[k] = 0;
 						}
 					}
 					
@@ -116,7 +108,8 @@ vector<Rect> segment_image(Mat color){
 					previous_baseline_endpoint = j;
 					
 					for (int k=current_baseline_startpoint; k < j; ++k){
-						ptr2[k] = 0;
+						if (ptr2[k]>=min_intensity)
+                     ptr2[k] = 0;
 					}	
 					
 				}
@@ -124,20 +117,55 @@ vector<Rect> segment_image(Mat color){
 				// forming a new baseline hypothesis
 				current_baseline_startpoint = j+1;
 			}
-        }
-    }	
-	
-	}
+      }
+   }	 
+   
+   return im2;
+}
 
+vector<Rect> segment_image(Mat color){
+	TimingBlock tb("segment_image");
+	Mat gray;
+	cvtColor(color, gray, CV_RGB2GRAY);	
+	
+#if DISPLAY_SEGMENT_IMAGE
+	Mat resultImage(color.size(), color.type());
+#endif
+	
+	Mat im1 = gray;
+	//Mat im2 = im1.clone();
+	
+   Mat im2 = remove_horizontal_lines(im1,6,0);
+   Mat im1T;
+   transpose(im2,im1T);
+   Mat im4 = remove_horizontal_lines(im1T,30,0);
+   //Mat im4 = im1T;
+   Mat im4T;
+   transpose(im4,im4T);
+   bitwise_and(im2,im4T,im4T);
+   
+   
+   
+   
 //	{
 //		TimingBlock tb("athre");
 	Mat im3;// = im2;
-//	adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
-	threshold(im2,im3,0,255,THRESH_BINARY);
-	//namedWindow("segment:binary", CV_WINDOW_AUTOSIZE);			
-//	imshow("segment:binary",im3);			
+	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
+   
+	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_GAUSSIAN_C,
+   //                  THRESH_BINARY_INV,3,1);
+ 
+	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY,3,1);
+
+   threshold(im4T,im3,0,255,THRESH_BINARY);
+   
+//   threshold(im2,im3,0,255,THRESH_BINARY);
+	namedWindow("segment:binary", CV_WINDOW_AUTOSIZE);			
+	imshow("segment:binary",im3);			
 //	waitKey();
-//	}
+
+   im2 = im4T;
+   //	}
 	
 	//adaptiveThreshold(im1,im2,0,255,CV_THRESH_BINARY);
 	
@@ -251,71 +279,6 @@ vector<Rect> segment_image(Mat color){
 }
 
 
-vector<Rect> segment_lineImage_old(Mat m){
-	
-	
-	vector<Rect> rects;
-	
-	typedef uchar T;
-	
-	Mat mt = m.clone().t();
-    //imshowDebug("segment_line:mt",mt);
-	
-	int bg = mt.at<T>(0,0);
-	
-	int p=0;
-	bool spacing=true;
-	for( int i = 0; i < mt.rows; i +=1 )
-    {
-		//cout << i << endl;
-		T* ptr1 = mt.ptr<T>(i);
-		
-		int cnt = 0;
-        for( int j = 1; j < mt.cols; j += 1 )
-        {			
-			
-			if (abs(ptr1[j] - bg) < 150 && j){
-				cnt++;
-			}else{
-				cnt = 0;
-			}
-		}
-		
-		
-		if (!spacing && (cnt >= mt.cols-1 || i == mt.rows - 1)){
-			
-			spacing = true;
-			
-			int y1=p;
-			int y2=i;
-			
-			int x1=0;
-			int x2=mt.cols-2;
-			
-			//
-			//Rect rect(x1,y1,x2-x1+1,y2-y1+1);
-			Rect rect(y1,x1,y2-y1+1,x2-x1+1);
-			rects.push_back(rect);
-			
-			//#if DISPLAY_SEGMENT_LINE
-			//			
-			//			rectangle(mt, 
-			//					  Point( x1, y1), 
-			//					  Point( x2, y2),
-			//					  Scalar(0,0,200), 1, 0, 0 );
-			//			imshowDebug("char",mt);
-			//#end			
-		}else if (spacing && cnt < mt.cols-1){
-			
-			spacing = false;
-			
-			p = i;
-		}
-		
-	}		
-	return rects;
-}
-
 
 bool sort_by_x (Rect a, Rect b){ 
 	return (a.x < b.x); 
@@ -325,29 +288,27 @@ vector<Rect> segment_lineImage(Mat& input){
 	
 	Mat im1;
 	Mat& imrgb = input;
-	cvtColor(imrgb, im1, CV_RGB2GRAY);	
-	
-	uchar bg = im1.at<uchar>(1,1);
 
-	// ToDO: a more reliable background pixel 
-//	if (bg>150){
-		//threshold(im1,im1,55,255,THRESH_BINARY_INV);
-		adaptiveThreshold(im1,im1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
-//	}else{
-		//threshold(im1,im1,200,255,THRESH_BINARY);		
-//		adaptiveThreshold(im1,im1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY,3,1);	
-//	}
 	
-	//erode(im1,im1,Mat());	
-	//Mat im1copy = im1.clone();
-	//imshowDebugZoom("t",im1);
-	
-	
+   
+   cvtColor(imrgb, im1, CV_RGB2GRAY);	
+
+   
+   adaptiveThreshold(im1,im1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
+
+   
+   Mat imm = remove_horizontal_lines(im1,15,0);  
+   bitwise_and(im1,imm,im1);
+
+#if DISPLAY_SEGMENT_LINEIMAGE_RESULT	
+   imshowDebugZoom("segment line binary mask",im1,false);
+#endif	
+  
+  
 	CvMemStorage* storage = cvCreateMemStorage();
 	CvSeq* first_contour = NULL;
 	
 	
-	//CvMat mat = (CvMat) im1.clone();
 	Mat m2 = im1.clone();
 	CvMat mat = (CvMat) m2;
 	
@@ -370,12 +331,7 @@ vector<Rect> segment_lineImage(Mat& input){
 		int y1=im1.rows;
 		int y2=0;		
 		
-		
-		
 		for( int i=0; i < c->total; ++i ){
-			
-			
-			
 			CvPoint* p = CV_GET_SEQ_ELEM( CvPoint, c, i );
 			if (p->x > x2)
 				x2 = p->x;
@@ -402,7 +358,6 @@ vector<Rect> segment_lineImage(Mat& input){
 					  Point( rect.x + rect.width, rect.y + rect.height),
 					  Scalar(0,0,200), 1, 0, 0 ); 			 
 			imshowDebugZoom("t",imrgb);
-			//waitKey();
 #endif
 			rects.push_back(rect);	
 			
@@ -861,7 +816,6 @@ vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects)
 	Rect charRect = characterRects[0];	
 	
 	WordRect wordRect(charRect);
-	//wordRect.charRects.push_back(charRect);	
 	wordRects.push_back(wordRect);
 
 	float averageWidth=0;
@@ -869,17 +823,19 @@ vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects)
 		averageWidth += characterRects[j].width;
 	}
 	averageWidth = averageWidth / characterRects.size();
-	int spacing_threshold = averageWidth * 0.6;
-
-	//int spacing_threshold = 3;
-	for (int j=0; j < characterRects.size() ; ++j){
+	
+   
+   int spacing_threshold = max(3.0,averageWidth * 0.6);
+	
+   for (int j=0; j < characterRects.size() ; ++j){
 		Rect charRect = characterRects[j];		
 		WordRect& currentWordRect = wordRects.back();
 		
 		int spacing = charRect.x - (currentWordRect.x + currentWordRect.width);
-		//int spacing_threshold = 2 + 2 * (charRect.height / 12) ;
+
 		if (spacing <= spacing_threshold || j== 0){
-			// merge the current character into the current word
+		
+         // merge the current character into the current word
 			merge(currentWordRect, charRect);
 			currentWordRect.charRects.push_back(charRect);
 		}else{
@@ -967,21 +923,26 @@ void test_segment(const Mat& inputImage, const char word[]){
 			WordRect& wordRect = wordRects[j];
 			
 			
-			draw_rectangle(resultLineImage, wordRect, Scalar(0,255,0));
+//			draw_rectangle(resultLineImage, wordRect, Scalar(0,255,0));
 			
 			wordRect.x += lineRect.x;
 			wordRect.y += lineRect.y;	
 			
-			if (filter_wordRect(wordRect, word))
-				continue;
 
 			draw_rectangle(resultImage2, wordRect, Scalar(0,255,0));
 			
-			char buf[50];
-			sprintf(buf, "%d:%s", wordRect.charRects.size(),word);
-			Point loc(wordRect.x, wordRect.y);
-			Scalar textColor(255,255,255);
-			putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
+         
+         if (filter_wordRect(wordRect, word))
+				continue;
+
+         // visualize word rects after filtering
+         
+   
+//			char buf[50];
+//			sprintf(buf, "%d:%s", wordRect.charRects.size(),word);
+//			Point loc(wordRect.x, wordRect.y);
+//			Scalar textColor(255,255,255);
+//			putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
 		}
 		
 		//imshowDebugZoom("resultLineImage",resultLineImage);
@@ -995,10 +956,9 @@ void test_segment(const Mat& inputImage, const char word[]){
 	imshowDebug("resultImage1", resultImage1,false);	
 	imshowDebug("resultImage2", resultImage2,false);
 	waitKey();
-	
-	//resultImage2.release();
-	
 }
+
+
 
 bool sort_by_score(Match& m1, Match& m2){
 	return m1.score > m2.score;
@@ -1006,17 +966,17 @@ bool sort_by_score(Match& m1, Match& m2){
 
 
 
-float match_char(Mat& input, Mat& target){
 
+   
+float match_image(Mat& input, Mat& targetG){
+   
 	Mat inputG;
 	if (input.type() == CV_8UC3){
 		cvtColor(input, inputG, CV_RGB2GRAY);
 	}else{
 		input = inputG;
 	}
-	
-	Mat targetG = target;
-	//resize(target, targetG, inputG.size());
+   
 	
 	Mat inputGN;
 	resize(inputG, inputGN, targetG.size());
@@ -1030,14 +990,31 @@ float match_char(Mat& input, Mat& target){
 	minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);	
 	
 #if DISPLAY_MATCH_CHAR
-	cout << "(" << minValue << " " << maxValue << ")" << endl;
-	cout << max(abs(maxValue),abs(minValue)) << endl;
+//	cout << "(" << minValue << " " << maxValue << ")" << endl;
+//	cout << max(abs(maxValue),abs(minValue)) << endl;
 	imshowCompareZoom(inputGN, targetG);
 #endif
 	
 	float score = max(abs(maxValue),abs(minValue));
 	
 	return score;
+}
+
+
+float match_char(Mat& inputCharImage, char targetChar){
+   
+   if (targetChar == 'l' || targetChar == 'I' || targetChar == 'i'){
+      // non-image based matching for special characters
+      
+      if ((inputCharImage.rows / inputCharImage.cols) > 5){
+         return 0.8;
+      }else{
+         return 0.0;
+      }
+   }
+   
+   Mat targetCharImage = get_char_image(targetChar);
+   return match_image(inputCharImage, targetCharImage);
 }
 
 float match_2chars(Mat& input, char c1, char c2){
@@ -1048,7 +1025,7 @@ float match_2chars(Mat& input, char c1, char c2){
 	str[2] = '\0';
 	
 	Mat target = generate_word_image(str);
-	return match_char(input, target);
+	return match_image(input, target);
 }
 
 float match_word(const Mat& inputImage, const WordRect& wordRect, const char targetWord[]){
@@ -1074,20 +1051,33 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
 	while (i < n && j < m){
 		Rect charRect = wordRect.charRects[j];
 		Mat inputCharImage(inputImage, charRect);
-		Mat targetCharImage = get_char_image(targetWord[i]);
-	
+ 
+	   char targetChar = targetWord[i];
+
+      
 		float score_i;		
 		int cnt=0;
 		
-		cnt = 1;
-		score_i = match_char(inputCharImage, targetCharImage);
-		
-		
+      
+      
+      cnt = 1;
+      score_i = match_char(inputCharImage, targetChar);
+#if DISPLAY_MATCH_WORD		
+		cout << "(" << i << " , " << targetChar << ") : " 
+      << setprecision(2)  << score_i << endl; 
+#endif
+      
+      
 		if (score_i < MIN_CHAR_MATCH_THRESHOLD && i < n-1){
 			
 			float score2 = match_2chars(inputCharImage, targetWord[i], targetWord[i+1]);
+
+#if DISPLAY_MATCH_WORD		
+         cout << "(" << i << " , " << targetWord[i] << targetWord[i+1] << ") : " 
+         << setprecision(2)  << score2 << endl; 
+#endif
 			
-			if (score2 > MIN_CHAR_MATCH_THRESHOLD){
+			if (score2 >= MIN_CHAR_MATCH_THRESHOLD){
 				score_i = score2;
 				i++;	
 				cnt = 2;
@@ -1095,39 +1085,42 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
 		
 		}						
 
-#if DISPLAY_MATCH_WORD		
-		cout << "(" << i << ") score:" << score_i << endl; 
-#endif
-		
 		
 		if (score_i >= MIN_CHAR_MATCH_THRESHOLD){
-			score = score + cnt * (1 + (0.1*score_i));
-			i++;
+			
+         //score = score + cnt * (1 + (0.1*score_i));
+			score = score + cnt;//
+ 			
+         i++;
 			j++;
+         
 		}else{
 			
 			if (skipFlag){
 				j++; // skip this charRect
-				score = score - 0.5;
+				score = score - 0.1;
 				
 			}else {
 				i++;	// skip this char
-				score = score - 0.5;
+				score = score - 0.1;
 			}
 			skipFlag = !skipFlag;
 
 		}
 	}	
 	
+   score = score - 0.2*(m-j);
+   
+   
 #if DISPLAY_MATCH_WORD		
-	cout << "total score:" << score << endl; 
+	cout << "Total score:" << score << endl; 
 #endif
 	
 	return score;	
 }
 
 bool filter_lineRect(Rect& line, const char word[]){
-	return line.width < strlen(word)*5;
+	return line.width < strlen(word)*3;
 }
 
 bool filter_wordRect(WordRect& wordRect, const char word[]){
@@ -1139,11 +1132,11 @@ bool filter_wordRect(WordRect& wordRect, const char word[]){
 		return true; // too long
 	}	
 	
-	if (inputWordLength < targetWordLength - 1){
+	if (inputWordLength < targetWordLength - 2){
 		return true; // too short
 	}	
 	
-	if (wordRect.width < strlen(word) * 5){
+	if (wordRect.width < strlen(word) * 3){
 		return true; // too narrow
 	}	
 	
@@ -1220,34 +1213,11 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 
 			seen_words++;
 			
-			float score = 0;
-			
-#if MATCH_BY_ENTIRE_IMAGE			
-			// Match by whole image
-			Mat inputWordImage = Mat(inputImage, wordRect);
-			
-			Mat inputWordImageGray;
-			cvtColor(inputWordImage, inputWordImageGray, CV_RGB2GRAY);	
-		
-
-			Mat targetWordImageN;
-			resize(targetWordImage, targetWordImageN, inputWordImageGray.size());
-
-			Mat result;
-			matchTemplate(inputWordImageGray, targetWordImageN, result, CV_TM_CCOEFF_NORMED); 
-			
-			double minValue, maxValue;
-			Point minLoc, maxLoc;
-			minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);
-			score = maxValue;
-			//cout << maxValue << endl;
-			
-#else			
-			
+			double score = 0;
 			score = match_word(inputImage, wordRect, word);
-#endif			
+
 			Match m;
-			m.score = min(1.0, score / (strlen(word)+1));
+			m.score = min(1.0, score / (strlen(word)));
 			m.x = wordRect.x;
          m.y = wordRect.y;
          m.h = wordRect.height;
@@ -1255,9 +1225,6 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 			candidateMatches.push_back(m);
 			
 		}
-		
-		//}
-	
 	}
 	//
 

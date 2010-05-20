@@ -493,18 +493,23 @@ WordFinder::train(Mat& trainingImage){
 }
 
 void
-WordFinder::find(const char* word){
+WordFinder::find(const char* word, double _min_similarity){
+   this->min_similarity = _min_similarity;
    BaseFinder::find();
    
 	TimingBlock tb("WordFinder::find");
 	matches = find_word_by_image(roiSource, word);
+   cout << matches.size() << endl;
    matches_iterator = matches.begin();
 }
 
 
 bool      
 WordFinder::hasNext(){
-   return matches_iterator != matches.end();
+//   Match current_match = *matches_iterator;
+//   if (matches_iterator != matches.end() 
+   return (matches_iterator != matches.end()) &&
+       (matches_iterator->score >= min_similarity);
 }
 
 Match
@@ -513,7 +518,7 @@ WordFinder::next(){
    Match ret;
    if (hasNext()){
       ret = *matches_iterator;
-      matches_iterator++;
+      ++matches_iterator;
       return ret;
    }else {
       return Match(0,0,0,0,-1);
@@ -526,68 +531,3 @@ void
 WordFinder::recognize(const Mat& inputImage){	
 //	recognize_helper(inputImage);
 }
-/*
-void
-WordFinder::test_find(const Mat& inputImage, const vector<string>& testWords){
-   
-	Mat resultImage = inputImage.clone();
-	
-	
-   for (int i=0; i < testWords.size(); ++i){
-      string testWord(testWords[i]);
-      
-#if DISPLAY_TEST_SEGMENT
-      if (i==0)
-         test_segment(inputImage,testWord.c_str());
-#endif
-      vector<Match> ms = find(inputImage, testWord.c_str());
-      
-      
-      // draw each match on the result image for visualization
-      for (int j=0; j < min(DISPLAY_NUM_TOP_MATCHES, (int) ms.size()); ++j){
-         
-         //Rect r = ms[j].rect;
-         Match m = ms[j];
-         
-         Rect r(m.x,m.y,m.w,m.h);
-         
-         draw_rectangle(resultImage, r);
-         
-         char buf[50];
-         sprintf(buf, "%d:%s:%0.2f/%d", j+1, testWord.c_str(), ms[j].score, testWord.length());
-         
-         int baseline = 0;
-         Size textSize = getTextSize(buf, 
-                                     FONT_HERSHEY_SIMPLEX,
-                                     0.5, 1, &baseline);
-         
-         Point loc(r.x,r.y+25);
-         
-         
-         Scalar black(0,0,0);
-         Scalar red(0,0,255);
-         Scalar fillColor;
-         
-         if (m.score > testWord.length()){
-            fillColor = black;
-         }else{
-            fillColor = red;
-         }
-         
-         rectangle(resultImage, 
-                   loc+Point(0,baseline), 
-                   loc+Point(textSize.width, -textSize.height),
-                   fillColor, CV_FILLED);
-         
-         
-         Scalar textColor(255,255,255);
-         putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.5, textColor);
-         //imshowDebug("test_find:resultImage",resultImage);
- 
-	  }
-  }
-	
-	imshowDebug("test_find:resultImage",resultImage);
-	
-}
-*/

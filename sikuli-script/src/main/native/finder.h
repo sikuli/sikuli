@@ -24,7 +24,10 @@ protected:
 	Rect roi;
 	
 	Mat source;
-	Mat roiSource;		
+	Mat roiSource;
+   
+   
+   double min_similarity;
 };
 
 
@@ -57,7 +60,6 @@ private:
 	
 	Match current_match;
 	int current_rank;	
-	double min_similarity;		
 	
 	// buffer matches and return top score
    
@@ -130,7 +132,7 @@ public:
 	WordFinder(Mat source);
    static void train(Mat& trainingImage);
 	
-   void find(const char* word);
+   void find(const char* word, double min_similarity);
    
    bool hasNext();
    Match next();

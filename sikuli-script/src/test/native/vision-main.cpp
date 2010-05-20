@@ -15,9 +15,11 @@
 
 
 #define SIMILARITY_THRESHOLD 0.90
-#define MAX_MATCHES 1
+#define MAX_MATCHES 10
 #define DEBUG_DISPLAY 1
-#define DEBUG_FINDALL 0
+#define DEBUG_FINDALL 1
+
+
 
 
 // TEST WordFinder
@@ -196,13 +198,19 @@ void  test_change_finder(){
 void test_finder(){
 	if (true){
 
-      test(10,1);     
-      test(10,2); 
-      test(10,3); 
-      test(10,4); 
-      test(10,5); 
-      test(10,6); 
-      test(10,7); 
+//      test(10,1);     
+//      test(10,2); 
+//      test(10,3); 
+//      test(10,4); 
+//      test(10,5); 
+//      test(10,6); 
+//      test(10,7); 
+      
+      test(11,1);
+      test(11,2);
+      test(11,3);
+      test(11,4);
+      test(11,5);
 		
 
 	}else{
@@ -332,8 +340,15 @@ void testcase_network(){
 
 void testcase_trash(){
 	inputImageName = "trash_large.png";	
-	
-	//testWords.push_back("Empty");	
+
+//  	inputImageName = "trash_tom.png";	 
+//   testWords.push_back("Tom");	
+
+//	inputImageName = "trash_contacts.png";	   
+//   testWords.push_back("Contacts");
+   
+   
+	testWords.push_back("Empty");	
 	testWords.push_back("Trash");	
 	testWords.push_back("Compose");	
 	testWords.push_back("Calendar");		
@@ -394,10 +409,11 @@ void testcase_keyboard(){
 
 void testcase_access(){
 	inputImageName = "access.png";	
+
+	testWords.push_back("VoiceOver");	
 	
 	testWords.push_back("Enhance");	
 	testWords.push_back("Contrast");		
-	testWords.push_back("VoiceOver");	
 	testWords.push_back("white");	
 	testWords.push_back("Display");	
 	testWords.push_back("Zoom");	
@@ -440,7 +456,40 @@ void testcase_gmail_zoom(){
 	
 }
 
+void testcase_xp(){
+	inputImageName = "xp.png";	
+ 
+  	testWords.push_back("Authentication");
+ 
+   
+	testWords.push_back("Configure");	
+	testWords.push_back("Cancel");
+	testWords.push_back("OK");   
+	testWords.push_back("Internet");
+	testWords.push_back("Properties");
+	testWords.push_back("Install");
+	testWords.push_back("Uninstall");
+	testWords.push_back("Folders");
+	testWords.push_back("Help");
+
+   
+  	testWords.push_back("Favorites");
+	testWords.push_back("Tools");
+	testWords.push_back("View");
+	testWords.push_back("Edit");
+	testWords.push_back("File");
+   
+	testWords.push_back("Back");   
+	testWords.push_back("Search");   
+   
+ 
+	testWords.push_back("General");   
+
+}
+   
+
 #include "cv-util.h"
+#include "ocr.h"
 void test_word_finder(){
    
    Mat trainingImage = imread("testdata/ocr/arial.png",1);
@@ -451,8 +500,9 @@ void test_word_finder(){
 	//testcase_trash();
 	//testcase_keyboard();
 	//testcase_access();
-	testcase_gmail_zoom();
-   	
+	//testcase_gmail_zoom();
+   testcase_xp();
+
    char buf[50];
    sprintf(buf,"%s/%s","testdata/ocr",inputImageName.c_str());   
 	Mat inputImage    = imread(buf,1);
@@ -472,7 +522,7 @@ void test_word_finder(){
       string testWord = *iter;
       
 
-      wf.find(testWord.c_str());
+      wf.find(testWord.c_str(), 0.5);
       
       int i = 0;
       while (wf.hasNext() && i < DISPLAY_NUM_TOP_MATCHES){
@@ -483,7 +533,7 @@ void test_word_finder(){
          draw_rectangle(resultImage, r);
          
          char buf[50];
-         sprintf(buf, "%d:%s:%0.2f/%d", i+1, 
+         sprintf(buf, "%d:%s:%0.2f", i+1, 
                  testWord.c_str(), 
                  m.score, 
                  testWord.length());
@@ -495,7 +545,7 @@ void test_word_finder(){
          int baseline = 0;
          Size textSize = getTextSize(buf, 
                                      FONT_HERSHEY_SIMPLEX,
-                                     0.5, 1, &baseline);         
+                                     0.4, 1, &baseline);         
          Point loc(r.x,r.y+25);
          Scalar black(0,0,0);
          Scalar red(0,0,255);
@@ -514,9 +564,10 @@ void test_word_finder(){
          
          
          Scalar textColor(255,255,255);
-         putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.5, textColor);
+         putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.4, textColor);
          //imshowDebug("test_find:resultImage",resultImage);
          
+         cout << i << endl;
          i++;
       }
    }
