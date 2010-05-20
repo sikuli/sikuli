@@ -115,7 +115,17 @@ public class EventManager {
       }
    }
 
+   protected void finalize() throws Throwable {
+      dispose();
+   }
+
+
+   public void dispose(){
+      destroy(_c_instance);
+   }
+
    private native long createEventManager(); 
+   private native void destroy(long sem_instance); 
    private native void addObserver(long sem_instance, 
                                    int evt_type, String target_image_filename,
                                    float similiarity,

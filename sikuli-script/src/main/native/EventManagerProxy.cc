@@ -107,3 +107,18 @@ JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
   
 }
 
+/*
+ * Class:     edu_mit_csail_uid_EventManager
+ * Method:    destroy
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_destroy
+  (JNIEnv *env, jobject jobj, jlong jSemInstance){
+  
+   SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 
+   delete sem;
+#ifdef DEBUG
+   cerr << "[JNI] destroy EventManager\n";
+#endif
+}
+

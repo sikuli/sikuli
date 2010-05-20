@@ -23,6 +23,14 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_EventManager_createEventManager
 
 /*
  * Class:     edu_mit_csail_uid_EventManager
+ * Method:    destroy
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_destroy
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     edu_mit_csail_uid_EventManager
  * Method:    addObserver
  * Signature: (JILjava/lang/String;FIIIII)V
  */
