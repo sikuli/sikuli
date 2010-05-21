@@ -55,7 +55,7 @@ public class UserPreferences {
       String os = System.getProperty("os.name").toLowerCase();
       int mod = Event.SHIFT_MASK + Event.META_MASK; // mac default
       if( os.startsWith("windows") || os.startsWith("linux"))
-         mod = Event.SHIFT_MASK + Event.ALT_MASK; 
+         mod = Event.SHIFT_MASK + Event.CTRL_MASK; 
       return pref.getInt("CAPTURE_HOTKEY_MODIFIERS", mod);
    }
 
