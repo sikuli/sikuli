@@ -14,8 +14,8 @@ public:
 	
 	void setROI(int x, int y, int w, int h);
 	
-	//	int get_screen_height() const { return img->height;};
-	//	int get_screen_width()  const {return img->width;};
+	int get_screen_height() const { return source.rows;};
+	int get_screen_width()  const {return source.cols;};
 	
 	void find();
 	
@@ -30,6 +30,25 @@ protected:
    double min_similarity;
 };
 
+class WordFinder : public BaseFinder {
+	
+public:
+	WordFinder(Mat source);
+   static void train(Mat& trainingImage);
+	
+   void find(const char* word, double min_similarity);
+   
+   bool hasNext();
+   Match next();
+   
+   
+private:
+   vector<Match> matches;
+   vector<Match>::iterator matches_iterator;
+   
+	void recognize(const Mat& inputImage);
+	void test_find(const Mat& inputImage, const vector<string>& testWords);
+};
 
 class Finder : public BaseFinder{
 	
@@ -62,14 +81,15 @@ private:
 	int current_rank;	
 	
 	// buffer matches and return top score
-   
-   
    void add_matches_to_buffer(int num_matches_to_add);
-   float top_score_in_buffer();
-	
+   float top_score_in_buffer();	
    
-   //int num_cached_matches;
 	vector<Match> buffered_matches;
+   
+   static int num_matchers;
+   
+   WordFinder *wf;
+   
 };
 
 
@@ -126,24 +146,6 @@ private:
 };
 
 
-class WordFinder : public BaseFinder {
-	
-public:
-	WordFinder(Mat source);
-   static void train(Mat& trainingImage);
-	
-   void find(const char* word, double min_similarity);
-   
-   bool hasNext();
-   Match next();
-   
- 
-private:
-   vector<Match> matches;
-   vector<Match>::iterator matches_iterator;
-   
-	void recognize(const Mat& inputImage);
-	void test_find(const Mat& inputImage, const vector<string>& testWords);
-};
+
 
 #endif // _FINDER_H_

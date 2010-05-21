@@ -37,7 +37,7 @@ void test_segment(const Mat& inputImage, const char word[]);
 #define DISPLAY_SEGMENT_LINEIMAGE_STEP 0
 #define DISPLAY_SEGMENT_LINEIMAGE_RESULT 0
 #define DISPLAY_RECOGNIZE 0
-#define DISPLAY_WORD_FIND_RESULT 1
+#define DISPLAY_WORD_FIND_RESULT 0
 
 #define DISPLAY_TEST_SEGMENT 1
 
@@ -48,6 +48,6 @@ void test_segment(const Mat& inputImage, const char word[]);
 
 #define DISPLAY_NUM_TOP_MATCHES 1
 
-#define MIN_CHAR_MATCH_THRESHOLD 0.5
+#define MIN_CHAR_MATCH_THRESHOLD 0.4
 
 #endif

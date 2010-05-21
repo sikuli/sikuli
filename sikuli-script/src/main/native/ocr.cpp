@@ -144,34 +144,14 @@ vector<Rect> segment_image(Mat color){
    transpose(im4,im4T);
    bitwise_and(im2,im4T,im4T);
    
-   
-   
-   
-//	{
-//		TimingBlock tb("athre");
-	Mat im3;// = im2;
-	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
-   
-	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_GAUSSIAN_C,
-   //                  THRESH_BINARY_INV,3,1);
- 
-	//adaptiveThreshold(gray,im3,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY,3,1);
-
+#if DISPLAY_SEGMENT_IMAGE
+	Mat im3;
    threshold(im4T,im3,0,255,THRESH_BINARY);
-   
-//   threshold(im2,im3,0,255,THRESH_BINARY);
 	namedWindow("segment:binary", CV_WINDOW_AUTOSIZE);			
 	imshow("segment:binary",im3);			
-//	waitKey();
-
-   im2 = im4T;
-   //	}
-	
-	//adaptiveThreshold(im1,im2,0,255,CV_THRESH_BINARY);
-	
-	//imshowDebug("segment:binary",im2);			
-	//waitKey();
-		
+#endif
+   
+   im2 = im4T;		
 	
 	CvMemStorage* storage = cvCreateMemStorage();
 	CvSeq* first_contour = NULL;
@@ -742,7 +722,7 @@ Mat generate_word_image(const char word[]){
 	int x=0;
 	int total_width=0;
 	int max_height=0;
-	int margin=2;
+	int margin=0;  // set margin to 0 because the two letters are too close
 	int spacing=6;
 	int offset=3;
 	int above=0;
@@ -819,17 +799,24 @@ vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects)
 	wordRects.push_back(wordRect);
 
 	float averageWidth=0;
+   float averageHeight=0;
 	for (int j=0; j < characterRects.size() ; ++j){
 		averageWidth += characterRects[j].width;
+      averageHeight += characterRects[j].height;
 	}
 	averageWidth = averageWidth / characterRects.size();
-	
+	averageHeight = averageHeight / characterRects.size();
    
    int spacing_threshold = max(3.0,averageWidth * 0.6);
 	
    for (int j=0; j < characterRects.size() ; ++j){
+      
+      
 		Rect charRect = characterRects[j];		
 		WordRect& currentWordRect = wordRects.back();
+      
+//      if (charRect.height <= averageHeight*0.2)
+//         continue;
 		
 		int spacing = charRect.x - (currentWordRect.x + currentWordRect.width);
 
@@ -851,7 +838,7 @@ vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects)
 		
 }
 
-void test_segment(const Mat& inputImage, const char word[]){
+Mat visualize_segmentation(const Mat& inputImage){
 	
 	//Mat resultImage = inputImage.clone();
 	Mat resultImage1;
@@ -884,7 +871,10 @@ void test_segment(const Mat& inputImage, const char word[]){
 			Rect c = characterRects[j];		
 			c.x += lineRect.x;
 			c.y += lineRect.y;
-		
+		}
+
+		for (int j=0; j < characterRects.size() ; ++j){
+			Rect c = characterRects[j];		
 			
 			//add_margin(characterRect, 1, inputImage.size());
 			
@@ -921,30 +911,48 @@ void test_segment(const Mat& inputImage, const char word[]){
 		
 		for (int j=0; j < wordRects.size() ; ++j){
 			WordRect& wordRect = wordRects[j];
-			
-			
-//			draw_rectangle(resultLineImage, wordRect, Scalar(0,255,0));
-			
 			wordRect.x += lineRect.x;
 			wordRect.y += lineRect.y;	
-			
-
 			draw_rectangle(resultImage2, wordRect, Scalar(0,255,0));
-			
-         
-         if (filter_wordRect(wordRect, word))
-				continue;
 
-         // visualize word rects after filtering
+			char buf[50];
+			sprintf(buf, "%d", wordRect.charRects.size());
+			Point loc(wordRect.x, wordRect.y);
+			Scalar textColor(255,255,255);
+			putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
          
-   
-//			char buf[50];
-//			sprintf(buf, "%d:%s", wordRect.charRects.size(),word);
-//			Point loc(wordRect.x, wordRect.y);
-//			Scalar textColor(255,255,255);
-//			putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
+         
+        
+         
 		}
 		
+      
+      for (int j=0; j < characterRects.size() ; ++j){
+			Rect c = characterRects[j];		
+			c.x += lineRect.x;
+			c.y += lineRect.y;
+         
+         
+         Mat src(inputImage, c);
+			Mat dest(resultImage2, c);
+			src.copyTo(dest);	
+         
+
+			//add_margin(characterRect, 1, inputImage.size());
+			
+			rectangle(resultImage1, 
+                   Point( c.x, c.y), 
+                   Point( c.x + c.width, c.y + c.height),
+                   Scalar(0,0,200), 0.5, 0, 0 ); 
+			
+			rectangle(resultImage2, 
+                   Point( c.x, c.y), 
+                   Point( c.x + c.width, c.y + c.height),
+                   Scalar(0,0,255), 0.5, 0, 0 ); 	
+			
+         
+		}
+      
 		//imshowDebugZoom("resultLineImage",resultLineImage);
 
 		
@@ -953,9 +961,11 @@ void test_segment(const Mat& inputImage, const char word[]){
 	
 			
 	
-	imshowDebug("resultImage1", resultImage1,false);	
-	imshowDebug("resultImage2", resultImage2,false);
-	waitKey();
+	//imshowDebug("resultImage1", resultImage1,false);	
+	//imshowDebug("resultImage2", resultImage2,false);
+	//waitKey();
+   
+   return resultImage2;
 }
 
 
@@ -1144,16 +1154,73 @@ bool filter_wordRect(WordRect& wordRect, const char word[]){
 }
 
 void train_by_image(const Mat& trainingImage){
+   if (letterImages.empty()){
    Mat trainingImageGray;
 	cvtColor(trainingImage, trainingImageGray, CV_RGB2GRAY);	
 	
 	vector<Rect> letters = extract_characters(trainingImage);
 	for (int i=0; i < letters.size(); ++i)
 		letterImages.push_back(Mat(trainingImageGray, letters[i]));  
+   }
+}
+
+
+Mat visualize_matches(const Mat& inputImage, vector<Match> matches){
+   
+   Mat resultImage = inputImage.clone();
+
+   for (int i=0; i < matches.size(); ++i){
+      
+      Match m = matches[i];        
+      Rect r(m.x,m.y,m.w,m.h);
+      draw_rectangle(resultImage, r);
+   }
+   
+   for (int i=0; i < matches.size(); ++i){
+      
+      Match m = matches[i];        
+      Rect r(m.x,m.y,m.w,m.h);
+      
+  //    if (m.score <= 0.0)
+//         continue;
+//         
+      char buf[50];
+      sprintf(buf, "(%d) %0.2f", i+1, m.score);
+   
+      // determine the region the text would occupy
+      // so we can draw a solid background for the
+      // text
+      int baseline = 0;
+      Size textSize = getTextSize(buf, 
+                                  FONT_HERSHEY_SIMPLEX,
+                                  0.4, 1, &baseline);         
+      Point loc(r.x,r.y+25);
+      Scalar black(0,0,0);
+      Scalar red(0,0,255);
+      Scalar fillColor;
+      
+      if (m.score < 0.5){
+         fillColor = black;
+      }else{
+         fillColor = red;
+      }
+      
+      rectangle(resultImage, 
+                loc+Point(0,baseline), 
+                loc+Point(textSize.width, -textSize.height),
+                fillColor, CV_FILLED);
+      
+      
+      Scalar textColor(255,255,255);
+      putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.4, textColor);
+   }
+   
+   return resultImage;
 }
 
 vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 	
+   
 	Mat targetWordImage = generate_word_image(word);
 	
 	
@@ -1226,15 +1293,27 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 			
 		}
 	}
-	//
 
-	cout << "Lines: " << total_lines << endl;	
-	cout << "Seen lines: " << seen_lines << endl;
-	cout << "Chars: " << total_chars << endl;
-	cout << "Words: " << total_words << endl;
-	cout << "Seen Words: " << seen_words << endl;
+//	cout << "Lines: " << total_lines << endl;	
+//	cout << "Seen lines: " << seen_lines << endl;
+//	cout << "Chars: " << total_chars << endl;
+//	cout << "Words: " << total_words << endl;
+//	cout << "Seen Words: " << seen_words << endl;
 
-	sort(candidateMatches, sort_by_score);									   
+	sort(candidateMatches, sort_by_score);				
+   
+   Mat resultImage = visualize_matches(inputImage, candidateMatches);
+   char buf[100];
+   sprintf(buf,"/tmp/ocr.%s.png", word);
+   imwrite(buf, resultImage);
+
+   sprintf(buf,"/tmp/ocr.%s.input.png", word);
+   imwrite(buf, inputImage);
+   
+   Mat segResultImage = visualize_segmentation(inputImage);
+   sprintf(buf,"/tmp/ocr.%s.seg.png", word);
+   imwrite(buf, segResultImage);
+   
 	return candidateMatches;								   
 }
 

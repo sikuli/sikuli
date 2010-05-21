@@ -4,7 +4,7 @@ include Makefile.common
 
 LDFLAGS+=-ltiff 
 
-OBJS = EventManagerProxy.o FinderProxy.o finder.o event-manager.o TimingBlock.o pyramid-template-matcher.o
+OBJS = EventManagerProxy.o FinderProxy.o finder.o event-manager.o TimingBlock.o pyramid-template-matcher.o ocr.o cv-util.o
 DYN_LIB = $(JNI_TARGET_DIR)/libScreenMatchProxy.$(DYN_LIB_POSTFIX) 
 
 default $(DYN_LIB): $(OBJS) $(JNI_TARGET_DIR)
