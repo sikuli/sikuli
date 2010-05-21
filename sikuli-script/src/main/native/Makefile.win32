@@ -10,6 +10,9 @@ PACKAGE=edu.mit.csail.uid
 
 default: dll vdict win32util
 
+$(TARGET_DIR):
+	mkdir $(TARGET_DIR)
+
 vdict:
 	nmake -f Makefile.vdict.win32
 
@@ -41,9 +44,9 @@ jar: lib jni
 clean:
 	del /q $(BIN_OBJS) $(OBJS) $(DYN_LIB) $(BIN)
 
-dll: vdict
+dll: $(TARGET_DIR) vdict
 	set LIB=$(LIBPATH)
-	cl /O2 /oScreenMatchProxy.dll $(CFLAGS) ws2_32.lib user32.lib $(SRCS)
+	cl /oScreenMatchProxy.dll $(CFLAGS) ws2_32.lib user32.lib $(SRCS)
 	copy ScreenMatchProxy.dll $(TARGET_DIR)
 
 init:
