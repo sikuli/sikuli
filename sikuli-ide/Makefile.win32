@@ -1,4 +1,4 @@
-JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Dpython.path=$(LIB_PATH)/sikuli-script.jar/Lib -Xms64M -Xmx512M
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Dpython.path=$(LIB_PATH)/sikuli-script.jar/Lib -Xmx512M
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAVAC=javac
@@ -75,7 +75,7 @@ prepare-jar:
 	cp -rf $(CLASSES_OUT_PATH)/* $(JAR_PATH)
 	
 jar: $(JAR_PATH) all prepare-jar
-	cd $(JAR_PATH); jar cvmf $(MANIFEST) ../$(JAR) *; cd -
+	cd $(JAR_PATH); jar cmf $(MANIFEST) ../$(JAR) *; cd -
 
 install-jar: jar
 	cp $(JAR_PATH)/../$(JAR) $(LIB_PATH)
@@ -88,13 +88,12 @@ release: jar $(RELEASE_TMP_PATH)
 	mkdir -p ../release
 	perl -pi -e 's/<appversion>.*<\/appversion>/$$v=`cat latest-ver`;chomp($$v);"<appversion>$$v<\/appversion>"/xe' install.xml
 	cp $(subst ;, , $(CLASSPATH)) $(JAR_PATH)/../$(JAR) $(RELEASE_TMP_PATH)
-	#cd $(RELEASE_TMP_PATH); rm -f sikuli-ide-full.jar; ../../../utils/merge-jar.sh *.jar; mv out.jar sikuli-ide-full.jar
 	rm -rf $(RELEASE_TMP_PATH)/tmplib
 	cp -r $(LIB_PATH)/win32 $(RELEASE_TMP_PATH)/tmplib
 	-cp $(TARGET_PATH)/win32/* $(RELEASE_TMP_PATH)
-	@echo To generate a win32 package, run Advanced Installer.
 	cd $(TARGET_PATH) ;  zip -r ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP) Sikuli-IDE/{$(RELEASE_FILES)} 
-	#echo "Generated ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP)"
+	echo "Generated ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP)"
+	@echo To generate a win32 package, run Advanced Installer.
 	#/cygdrive/c/Program\ Files/IzPack/bin/compile install.xml
 	#/cygdrive/c/Program\ Files/IzPack/utils/wrappers/izpack2exe/izpack2exe --file=install.jar --no-upx --with-7z=..\\utils\\7za.exe
 	#mv setup.exe $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)
