@@ -548,7 +548,12 @@ public class SikuliPane extends JTextPane implements KeyListener,
                      str.indexOf("\"")+1,str.lastIndexOf("\""));
             if( str.startsWith("similar") ){
                String strArg = str.substring(str.lastIndexOf("(")+1);
-               similarity = Float.valueOf(strArg);
+               try{
+                  similarity = Float.valueOf(strArg);
+               }
+               catch(NumberFormatException e){
+                  return false;
+               }
             }
             if( str.startsWith("firstN") ){
                String strArg = str.substring(str.lastIndexOf("(")+1);
@@ -557,9 +562,14 @@ public class SikuliPane extends JTextPane implements KeyListener,
             if( str.startsWith("targetOffset") ){
                String strArg = str.substring(str.lastIndexOf("(")+1);
                String[] args = strArg.split(",");
-               offset = new Location(0,0);
-               offset.x = Integer.valueOf(args[0]);
-               offset.y = Integer.valueOf(args[1]);
+               try{
+                  offset = new Location(0,0);
+                  offset.x = Integer.valueOf(args[0]);
+                  offset.y = Integer.valueOf(args[1]);
+               }
+               catch(NumberFormatException e){
+                  return false;
+               }
             }
          }
       }
