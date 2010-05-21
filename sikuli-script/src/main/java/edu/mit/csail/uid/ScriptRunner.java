@@ -19,7 +19,7 @@ public class ScriptRunner {
       return _instance;
    }
 
-   protected ScriptRunner(String[] args){
+   public ScriptRunner(String[] args){
       init(args);
    }
 
