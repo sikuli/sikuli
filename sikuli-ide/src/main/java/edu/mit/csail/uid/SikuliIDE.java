@@ -45,7 +45,7 @@ public class SikuliIDE extends JFrame {
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
 
-   private CommandLine _cmdLine;
+   private static CommandLine _cmdLine;
 
    private static SikuliIDE _instance = null;
 
@@ -460,10 +460,7 @@ public class SikuliIDE extends JFrame {
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
-      CommandArgs cmdArgs = new CommandArgs();
-      _cmdLine = cmdArgs.getCommandLine(args);
-
-      ScriptRunner srunner = ScriptRunner.getInstance(args);
+      ScriptRunner.getInstance(getPyArgs());
 
       _native.initIDE(this);
 
@@ -593,7 +590,7 @@ public class SikuliIDE extends JFrame {
 
    static boolean _runningSkl = false;
    public static void runSikuli(String filename, String[] args) throws IOException{
-      ScriptRunner srunner = ScriptRunner.getInstance(args);
+      ScriptRunner srunner = new ScriptRunner(args);
       try{
          srunner.runPython(Utils.slashify(filename,true));
       }
@@ -622,21 +619,28 @@ public class SikuliIDE extends JFrame {
       runSikuli(sikuliDir.getAbsolutePath(), args);
    }
 
+   static String[] getPyArgs(){
+      String[] pargs = _cmdLine.getArgs();
+      if( _cmdLine.hasOption("args") ) 
+         pargs = _cmdLine.getOptionValues("args");
+      return pargs; 
+   }
+
    public static void main(String[] args) {
       initNativeLayer();
       CommandArgs cmdArgs = new CommandArgs();
-      CommandLine cmd = cmdArgs.getCommandLine(args);
-      if( cmd.hasOption("h") ){
+      _cmdLine = cmdArgs.getCommandLine(args);
+
+      if( _cmdLine.hasOption("h") ){
          cmdArgs.printHelp();
          return;
       }
          
       if(args!=null && args.length>=1){
          try{
-            String[] pargs = cmd.getArgs();
-            if( cmd.hasOption("args") ) pargs = cmd.getOptionValues("args");
-            if( cmd.hasOption("run") ){
-               String file = cmd.getOptionValue("run");
+            String[] pargs = getPyArgs();
+            if( _cmdLine.hasOption("run") ){
+               String file = _cmdLine.getOptionValue("run");
                if(file.endsWith(".skl"))
                   runSkl(file, pargs);
                else if(file.endsWith(".sikuli")){
@@ -645,8 +649,8 @@ public class SikuliIDE extends JFrame {
                }
                return;
             }
-            if( cmd.getArgs().length>0 ){
-               String file = cmd.getArgs()[0];
+            if( _cmdLine.getArgs().length>0 ){
+               String file = _cmdLine.getArgs()[0];
                if(file.endsWith(".skl")){
                   runSkl(file, pargs);
                   return;
@@ -1140,7 +1144,7 @@ public class SikuliIDE extends JFrame {
       }
 
       protected void runPython(File f) throws IOException{
-         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         ScriptRunner srunner = new ScriptRunner(getPyArgs());
          String path = SikuliIDE.getInstance().getCurrentBundlePath();
          srunner.addTempHeader("initSikuli()");
          srunner.addTempHeader("setShowActions(True)");
@@ -1163,7 +1167,7 @@ public class SikuliIDE extends JFrame {
       }
 
       protected void runPython(File f) throws IOException{
-         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         ScriptRunner srunner = new ScriptRunner(getPyArgs());
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
          srunner.addTempHeader("initSikuli()");
          srunner.runPython(path, f);
