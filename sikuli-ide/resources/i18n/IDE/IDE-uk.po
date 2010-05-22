@@ -1,11 +1,16 @@
+# Ukrainian translation for sikuli
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the sikuli package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: sikuli\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-18 03:18+0000\n"
-"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2010-05-19 22:04+0000\n"
+"Last-Translator: Nick <nickzam@gmail.com>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,387 +19,383 @@ msgstr ""
 
 #: menuFile
 msgid "File"
-msgstr "檔案"
+msgstr "Файл"
 
 #: menuEdit
 msgid "Edit"
-msgstr "編輯"
+msgstr "Редагувати"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr "執行"
+msgstr "Запустити"
 
 #: menuView
 msgid "View"
-msgstr "檢視"
+msgstr "Вигляд"
 
 #: menuFileNew
 msgid "New"
-msgstr "新增"
+msgstr "Новий"
 
 #: menuFileOpen
 msgid "Open..."
-msgstr "開啟..."
+msgstr "Відкрити..."
 
 #: menuFileSave
 msgid "Save"
-msgstr "儲存"
+msgstr "Зберегти"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr "另存為..."
+msgstr "Зберегти як..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr "匯出.SKL可執行檔"
+msgstr "Експортувати як виконуваний"
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr "偏好設定..."
+msgstr "Налаштування..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
-msgstr "關閉分頁"
+msgstr "Закрити вкладку"
 
 #: menuFileQuit
 msgid "Quit"
-msgstr "結束"
+msgstr "Вихід"
 
 #: menuEditCut
 msgid "Cut"
-msgstr "剪下"
+msgstr "Вирізати"
 
 #: menuEditCopy
 msgid "Copy"
-msgstr "複製"
+msgstr "Копіювати"
 
 #: menuEditPaste
 msgid "Paste"
-msgstr "貼上"
+msgstr "Вставити"
 
 #: menuEditSelectAll
 msgid "Select All"
-msgstr "全部選取"
+msgstr "Виділити все"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr "縮排"
+msgstr "Зробити відступ"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
-msgstr "減少縮排"
+msgstr "Забрати відступ"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr "執行"
+msgstr "Запустити"
 
 #: menuRunRunAndShowActions
 msgid "Run and show actions"
-msgstr "執行並顯示動作"
+msgstr "Запустити та показати дії"
 
 #: menuRunStop
 msgid "Stop"
-msgstr "停止"
+msgstr "Зупинити"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr "單元測試"
+msgstr "Юніт-тест"
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "命令列表"
+msgstr "Список команд"
 
 #: menuHelp
 msgid "Help"
-msgstr "說明"
+msgstr "Довідка"
 
 #: menuHelpCheckUpdate
 msgid "Check Update..."
-msgstr "檢查更新..."
+msgstr "Перевірити оновлення"
 
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
-msgstr "Sikuli Script完全手冊"
+msgstr "Повний довідник по Sikuli Script"
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
-msgstr "教學, 範例, How-To's"
+msgstr ""
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
-msgstr "提問, 找答案"
+msgstr ""
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr "回報錯誤"
+msgstr ""
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
-msgstr "Sikuli首頁"
+msgstr ""
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
-msgstr "Sikuli {0} 已經釋出!"
+msgstr ""
 
 #: msgNoUpdate
 msgid "No update is available."
-msgstr "沒有任何更新。"
+msgstr ""
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr "自動截圖"
+msgstr ""
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
 msgid "Command List"
-msgstr "命令列表"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
-msgstr "訊息"
+msgstr ""
 
 #: paneTestTrace
 msgid "Test Trace"
-msgstr "單元測試訊息"
+msgstr ""
 
 #: tabUntitled
 msgid "Untitled"
-msgstr "未命名"
+msgstr ""
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr "單元測試"
+msgstr ""
 
 #: btnRun
 msgid "Run ({0})"
-msgstr "執行 ({0})"
+msgstr ""
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr "按下 {0} 中止"
+msgstr ""
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr "建立一個「區域」限制螢幕比對範圍"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "抓取螢幕截圖 ({0})"
+msgstr ""
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr "插入磁碟中的圖片"
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
-"執行 {0} 時發生錯誤\n"
-"{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr "程式中止, 結束代碼: {0}"
+msgstr ""
 
 #: msgStopped
 msgid "Stopped"
-msgstr "程式已中止"
+msgstr ""
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr "在第{0}行發生錯誤"
+msgstr ""
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
-"錯誤訊息:\n"
-"{0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
-msgstr "在螢幕上選取一塊區域"
+msgstr ""
 
 #: winPreferences
 msgid "Preferences"
-msgstr "偏好設定"
+msgstr ""
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "螢幕截圖"
+msgstr ""
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr "螢幕截圖快速鍵:"
+msgstr ""
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr "截圖前延遲:"
+msgstr ""
 
 #: prefSeconds
 msgid "seconds"
-msgstr "秒"
+msgstr ""
 
 #: prefTabGeneralSettings
 msgid "General Settings"
-msgstr "一般設定"
+msgstr ""
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
-msgstr "自動檢查更新"
+msgstr ""
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
-msgstr "確定要關閉這個檔案嗎?"
+msgstr ""
 
 #: msgAskSaveChanges
 msgid "{0} has been modified. Save changes?"
-msgstr "您要儲存對 {0} 所做的更動嗎？"
+msgstr ""
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
-msgstr "行: {0,number,integer}, 列: {1,number,integer}"
+msgstr ""
 
 #: winPatternSettings
 msgid "Pattern Settings"
-msgstr "圖片樣式設定"
+msgstr ""
 
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr "圖片比對預覽"
+msgstr ""
 
 #: tabTargetOffset
 msgid "Target Offset"
-msgstr "目標位置偏移"
+msgstr ""
 
 #: lblSimilarity
 msgid "Similarity:"
-msgstr "相似度："
+msgstr ""
 
 #: lblNumberOfMatches
 msgid "Number of matches:"
-msgstr "比對結果顯示數量："
+msgstr ""
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
-msgstr "目標位置偏移 X:"
+msgstr ""
 
 #: lblTargetOffsetY
 msgid ", Y:"
-msgstr "，Y："
+msgstr ""
 
 #: ok
 msgid "OK"
-msgstr "確定"
+msgstr ""
 
 #: cancel
 msgid "Cancel"
-msgstr "取消"
+msgstr ""
 
 #: yes
 msgid "Yes"
-msgstr "是"
+msgstr ""
 
 #: no
 msgid "No"
-msgstr "否"
+msgstr ""
 
 #: cmdFind
 msgid ""
 "Looks for the best matched GUI component on the screen or in the Region."
-msgstr "在螢幕上或是指定區域內搜尋給定的圖形樣式，並傳回最佳的比對結果。"
+msgstr ""
 
 #: cmdFindAll
 msgid "Looks for all matched GUI component on the screen or in the Region."
-msgstr "在螢幕上或是指定區域內搜尋給定的圖形樣式，並傳回全部的比對結果。"
+msgstr ""
 
 #: cmdWait
 msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
-msgstr "在螢幕上或是指定區域內等待給定的圖形樣式出現，最長等待<i>timeout</i>秒。"
+msgstr ""
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
-msgstr "在螢幕上或是指定區域內等待給定的圖形樣式消失，最長等待<i>timeout</i>秒。"
+msgstr ""
 
 #: cmdExists
 msgid ""
 "Checks if the given GUI component exists on the screen or in the "
 "Region.<br>If it can not be found, None is returned without throwing an "
 "exception."
-msgstr "檢查給定的圖形樣式是否出現在螢幕上或是指定區域內，如果沒有，只會回傳None而不會丟出例外。"
+msgstr ""
 
 #: cmdClick
 msgid ""
 "Clicks on the best matched GUI component on the screen or in the Region."
-msgstr "點擊螢幕上或是指定區域內最佳匹配的圖形樣式。"
+msgstr ""
 
 #: cmdDoubleClick
 msgid ""
 "Double clicks on the best matched GUI component on the screen or in the "
 "Region."
-msgstr "雙擊螢幕上或是指定區域內最佳匹配的圖形樣式。"
+msgstr ""
 
 #: cmdRightClick
 msgid ""
 "Right clicks on the best matched GUI component on the screen or in the "
 "Region."
-msgstr "右鍵點擊螢幕上或是指定區域內最佳匹配的圖形樣式。"
+msgstr ""
 
 #: cmdHover
 msgid "Moves the mouse cursor on the best matched GUI component."
-msgstr "將滑鼠游標移至螢幕上或是指定區域內最佳匹配的圖形樣式上。"
+msgstr ""
 
 #: cmdDragDrop
 msgid "Drags the first component, and drops at the second component."
-msgstr "將第一個圖形樣式拖至第二個圖形樣式上放開。"
+msgstr ""
 
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."
-msgstr "用鍵盤輸入 <i>text</i> 到目前的視窗。"
+msgstr ""
 
 #: cmdType2
 msgid ""
 "Clicks on the given component to gain the focus and then types the given "
 "<i>text</i>."
-msgstr "點擊給定的圖形樣式取得視窗焦點後，用鍵盤輸入 <i>text</i>。"
+msgstr ""
 
 #: cmdPaste
 msgid "Pastes the given <i>text</i> to the current focused window."
-msgstr "透過剪貼簿將 <i>text</i> 貼到目前的視窗。"
+msgstr ""
 
 #: cmdPaste2
 msgid ""
 "Clicks on the given component to gain the focus and then pastes the given "
 "<i>text</i>."
-msgstr "點擊給定的圖形樣式取得視窗焦點後，再透過剪貼簿將 <i>text</i> 貼上。"
+msgstr ""
 
 #: cmdOnAppear
 msgid ""
 "Calls <i>handler</i> when the given image pattern appears on the screen or "
 "in the Region."
-msgstr "當給定的圖形樣式出現在螢幕上或區域內時，呼叫函式 <i>handler</i> 。"
+msgstr ""
 
 #: cmdOnVanish
 msgid ""
 "Calls <i>handler</i> when the given image pattern disappears on the screen "
 "or in the Region."
-msgstr "當給定的圖形樣式消失在螢幕上或區域內時，呼叫函式 <i>handler</i> 。"
+msgstr ""
 
 #: cmdOnChange
 msgid ""
 "Calls <i>handler</i> when anything is changed on the screen or in the Region."
-msgstr "當螢幕上或指定區域內有變化時，呼叫函式 <i>handler</i> 。"
+msgstr ""
 
 #: cmdObserve
 msgid ""
@@ -402,4 +403,3 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
-"開始監控螢幕或指定區域，最多 <i>time</i> 秒。如果 <i>background</i>設為True，監控將在背景與剩餘指令同時執行。"
