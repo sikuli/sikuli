@@ -429,12 +429,12 @@ public class SikuliIDE extends JFrame {
             java.awt.event.KeyEvent ke = (java.awt.event.KeyEvent)e;
             //Debug.log(ke.toString());
             if( ke.getID() == java.awt.event.KeyEvent.KEY_PRESSED ){
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT && 
-                   ke.getModifiers() == scMask)
+               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+                   ke.getModifiers() == InputEvent.CTRL_MASK)
                   nextTab();
                else
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT && 
-                   ke.getModifiers() == scMask)
+               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+                   ke.getModifiers() == (InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK) )
                   prevTab();
             }
          } }, AWTEvent.KEY_EVENT_MASK );
