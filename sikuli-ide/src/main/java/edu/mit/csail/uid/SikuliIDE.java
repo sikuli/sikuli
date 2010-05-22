@@ -425,16 +425,33 @@ public class SikuliIDE extends JFrame {
    private void initShortcutKeys(){
       final int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       Toolkit.getDefaultToolkit().addAWTEventListener( new AWTEventListener() {
+         private boolean isKeyNextTab(java.awt.event.KeyEvent ke){
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+               ke.getModifiers() == InputEvent.CTRL_MASK)
+                  return true;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_CLOSE_BRACKET && 
+               ke.getModifiers()==(InputEvent.META_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            return false;
+         }
+
+         private boolean isKeyPrevTab(java.awt.event.KeyEvent ke){
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+               ke.getModifiers()==(InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_OPEN_BRACKET && 
+               ke.getModifiers()==(InputEvent.META_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            return false;
+         }
+
          public void eventDispatched( AWTEvent e ){
             java.awt.event.KeyEvent ke = (java.awt.event.KeyEvent)e;
             //Debug.log(ke.toString());
             if( ke.getID() == java.awt.event.KeyEvent.KEY_PRESSED ){
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
-                   ke.getModifiers() == InputEvent.CTRL_MASK)
+               if( isKeyNextTab(ke) ) 
                   nextTab();
-               else
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
-                   ke.getModifiers() == (InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK) )
+               else if( isKeyPrevTab(ke) )
                   prevTab();
             }
          } }, AWTEvent.KEY_EVENT_MASK );
