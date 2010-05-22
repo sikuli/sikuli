@@ -485,14 +485,13 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
       this.horizontalTextPosition = horizontalTextPosition;
     }
  
-    Color darkTabColor = new Color(220,220,220);
+    Color darkTabColor = new Color(200,200,200);
     protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected){
     
        super.paintTabBackground(g, tabPlacement, tabIndex, x, y, w, h, isSelected);
        if(!isSelected){
           g.setColor(darkTabColor);
           g.fillRect(x+1, y+1, w-1, h-1);
-         
        }
     }
     /**
