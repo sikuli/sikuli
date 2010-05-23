@@ -545,11 +545,19 @@ WordFinder::find(const char* word, double _min_similarity){
    matches_iterator = matches.begin();
 }
 
+void
+WordFinder::find(vector<string> words, double _min_similarity){
+   this->min_similarity = _min_similarity;
+   BaseFinder::find();
+	TimingBlock tb("WordFinder::find");
+	matches = find_phrase(roiSource, words);
+   matches_iterator = matches.begin();   
+}
 
 bool      
 WordFinder::hasNext(){
    
-   dout << "[WordFinder] " << matches_iterator->score  << endl;
+//   dout << "[WordFinder] " << matches_iterator->score  << endl;
    return (matches_iterator != matches.end()) &&
        (matches_iterator->score >= min_similarity);
 }

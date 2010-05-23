@@ -38,6 +38,8 @@ public:
 	
    void find(const char* word, double min_similarity);
    
+   void find(vector<string> words, double min_similarity);
+   
    bool hasNext();
    Match next();
    
@@ -62,7 +64,7 @@ public:
 
 	void find(Mat target, double min_similarity);
 	void find(IplImage* target, double min_similarity);
-	void find(const char *target_image_filename, double min_similarity);  
+	void find(const char *target_image_filename, double min_similarity);
 
 	
 	void find_all(Mat target, double min_similarity);

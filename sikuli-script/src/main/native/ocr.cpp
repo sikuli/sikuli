@@ -13,6 +13,12 @@
 
 #include "TimingBlock.h"
 
+#ifdef DEBUG
+#define dout std::cerr
+#else
+#define dout if(0) std::cerr
+#endif
+
 using namespace cv;
 using namespace std;
 
@@ -46,8 +52,6 @@ int L1dist(Vec3b p1, Vec3b p2){
 
 Mat remove_horizontal_lines(Mat& im1, int min_length, int min_intensity){
    
-   
-   
 	typedef uchar T;
 	//typedef Vec3b T;
    
@@ -56,7 +60,7 @@ Mat remove_horizontal_lines(Mat& im1, int min_length, int min_intensity){
 	Size size = im1.size();
 	for( int i = 0; i < size.height; i +=1 )
    {
-		//cout << i << endl;
+
 		T* ptr1 = im1.ptr<T>(i);
 		uchar* ptr2 = im2.ptr<uchar>(i);	
 		
@@ -132,6 +136,8 @@ vector<Rect> segment_image(Mat color){
 	Mat resultImage(color.size(), color.type());
 #endif
 	
+   
+// TODO: clean this up
 	Mat im1 = gray;
 	//Mat im2 = im1.clone();
 	
@@ -181,12 +187,7 @@ vector<Rect> segment_image(Mat color){
 		int y1=im2.rows;
 		int y2=0;		
 		
-		
-		
 		for( int i=0; i < c->total; ++i ){
-			
-			
-			
 			CvPoint* p = CV_GET_SEQ_ELEM( CvPoint, c, i );
 			if (p->x > x2)
 				x2 = p->x;
@@ -266,22 +267,27 @@ bool sort_by_x (Rect a, Rect b){
 
 vector<Rect> segment_lineImage(Mat& input){
 	
-	Mat im1;
-	Mat& imrgb = input;
+	Mat im1 = input;
+	//Mat& imrgb = input;
 
 	
    
-   cvtColor(imrgb, im1, CV_RGB2GRAY);	
-
+   //cvtColor(imrgb, im1, CV_RGB2GRAY);	
+   //im1 = Mat::ones(im1.size(), im1.type())*255 - im1;
    
-   adaptiveThreshold(im1,im1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,3,1);
-
+   int m = 3;
+   if (input.rows > 15)
+      m = 5;
+ 
+//   dout << input.rows << endl;
+   
+   adaptiveThreshold(im1,im1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,m,1);
    
    Mat imm = remove_horizontal_lines(im1,15,0);  
    bitwise_and(im1,imm,im1);
 
 #if DISPLAY_SEGMENT_LINEIMAGE_RESULT	
-   imshowDebugZoom("segment line binary mask",im1,false);
+   imshowDebugZoom("segment line binary mask",im1,true);
 #endif	
   
   
@@ -300,8 +306,7 @@ vector<Rect> segment_lineImage(Mat& input){
 				   CV_RETR_EXTERNAL);
 	
 	CvSeq* c = first_contour;
- 	//cvReleaseMat(&mat);
-	
+ 	
 	vector<Rect> rects;	
 	while (c!= NULL){
 		
@@ -348,28 +353,7 @@ vector<Rect> segment_lineImage(Mat& input){
 	
 	sort(rects.begin(), rects.end(), sort_by_x);	
 	
-#if 0
-	if (rects.size()>1){
-		// use the spacing between the first two letters as an estimate of the letter spacing
-		Rect& r1 = rects[0];
-		Rect& r2 = rects[1];
-		
-		int sp = r2.x - r1.x - r1.width;
-		
-		// expand each rect by the amount of letter spacing
-		for (int i=0; i<rects.size();++i){
-			
-			Rect& rect = rects[i];
-			int x1 = max(rect.x-sp,0);
-			int x2 = min(rect.x+rect.width+sp, input.cols);
-			
-			rect.x = x1; 
-			rect.width = x2 - x1 + 1;
-		}
-	}
-#endif
-	
-	
+
 #if DISPLAY_SEGMENT_LINEIMAGE_RESULT	
 	for (int i=0; i<rects.size();++i){		
 		Rect& rect = rects[i];
@@ -390,43 +374,28 @@ vector<Rect> extract_characters(const Mat& imrgb){
 	
 	Mat im1;
 	cvtColor(imrgb, im1, CV_RGB2GRAY);	
-	//imshowDebug("1",imrgb);
-	
-	
 	Mat im = imrgb.clone();
 	
 	vector<Rect> lines = segment_image(imrgb);
 	
-	cout << "found " << lines.size() << " lines" << endl;
-	
-	//for (int j=0; j < min(30,(int)lines.size()) ; ++j){
+	dout << "found " << lines.size() << " lines" << endl;
 	for (int j=0; j < lines.size() ; ++j){
 		
-		cout << "segmenting line: " << j << " ...";
+		dout << "segmenting line: " << j << " ...";
 		Rect o = lines[j];
 		
-		cout << o.x << " " << o.y << " " << o.width << " " << o.height;
+		dout << o.x << " " << o.y << " " << o.width << " " << o.height;
 		
-		Mat m(imrgb, o);
+		Mat m(im1, o);
 		vector<Rect> chs = segment_lineImage(m);
 		
-		cout << " found " << chs.size() << " blocks" << endl;
+		dout << " found " << chs.size() << " blocks" << endl;
 		for (int i=0; i < chs.size() ; ++i){
 			Rect c = chs[i];		
 			
 			c.x += o.x;
-			//c.y += o.y;
 			c.y += o.y;
 			
-			/*		
-			 c.y = o.y;
-			 c.height = o.height;
-			 
-			 Rect r = strip_top_bottom(Mat(im1,c));
-			 c.y += r.y;
-			 c.height = r.height;
-			 
-			 */		
 			ret.push_back(c);
 			
 			rectangle(im, 
@@ -435,16 +404,8 @@ vector<Rect> extract_characters(const Mat& imrgb){
 					  Scalar(0,0,200), 1, 0, 0 ); 	
 		}
 		
-		//		rectangle(im, 
-		//				  Point( o.x, o.y), 
-		//				  Point( o.x + o.width, o.y + o.height),
-		//				  Scalar(0,200,0), 1, 0, 0 ); 		
-		
 	}	
-	//imshowDebug("1",im);
-	
-	return ret;
-	
+	return ret;	
 }
 
 
@@ -478,7 +439,6 @@ char recognize_character(Mat& charImageGray, int mode = 0){
 			c = 'a' + j - 26;	
 		}
 		
-		//cout << c << ":" <<  min(ar1,ar2)/max(ar1,ar2) << " : ";
 		float aspect_ratio_measure = min(ar1,ar2)/max(ar1,ar2);
 		if (aspect_ratio_measure>0.5){
 			
@@ -509,7 +469,6 @@ char recognize_character(Mat& charImageGray, int mode = 0){
 			double minValue, maxValue;
 			Point minLoc, maxLoc;
 			minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);
-			//cout << maxValue << endl;
 			
 			if (maxValue > bestScore){
 				bestScore = maxValue;
@@ -518,7 +477,7 @@ char recognize_character(Mat& charImageGray, int mode = 0){
 		}
 	}
 	
-	cout << bestChar << " " << bestScore << endl;
+	dout << bestChar << " " << bestScore << endl;
 	
 	return bestChar;
 	
@@ -593,15 +552,15 @@ void recognize_helper(const Mat& image){
 	
 	vector<Rect> lines = segment_image(image);
 	
-	cout << "found " << lines.size() << " lines" << endl;		
+	dout << "found " << lines.size() << " lines" << endl;		
 	//for (int j=0; j < min(20,(int)lines.size()) ; ++j){
 	for (int j=0; j < lines.size() ; ++j){
 		
-		cout << "segmenting line: " << j << " ...";
+		dout << "segmenting line: " << j << " ...";
 		Rect o = lines[j];
 		Rect lineRect = lines[j];
 		
-		cout << o.x << " " << o.y << " " << o.width << " " << o.height;
+		dout << o.x << " " << o.y << " " << o.width << " " << o.height;
 		
 		Mat m(image, o);
 		vector<Rect> chs = segment_lineImage(m);
@@ -613,7 +572,7 @@ void recognize_helper(const Mat& image){
 		char prevChar;
 		Rect prevCharRect;
 		
-		cout << " found " << chs.size() << " blocks" << endl;
+		dout << " found " << chs.size() << " blocks" << endl;
 		for (int i=0; i < chs.size() ; ++i){
 			Rect c = chs[i];	
 			
@@ -792,39 +751,82 @@ Mat generate_word_image(const char word[]){
 vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects){
 	
 	vector<WordRect> wordRects;
-
-	Rect charRect = characterRects[0];	
 	
-	WordRect wordRect(charRect);
-	wordRects.push_back(wordRect);
-
-	float averageWidth=0;
-   float averageHeight=0;
-	for (int j=0; j < characterRects.size() ; ++j){
-		averageWidth += characterRects[j].width;
-      averageHeight += characterRects[j].height;
-	}
-	averageWidth = averageWidth / characterRects.size();
-	averageHeight = averageHeight / characterRects.size();
+	
    
-   int spacing_threshold = max(3.0,averageWidth * 0.6);
+   if (characterRects.size() == 1){
+      Rect charRect = characterRects[0];
+      WordRect wordRect(charRect);
+      wordRect.charRects.push_back(charRect);
+      wordRects.push_back(wordRect);
+      return wordRects;
+   }
+   
+   
+   float averageSpacing=0;
+   float maxSpacing=0;
+   float minSpacing=100000;
+   for (int j=0; j < characterRects.size() - 1 ; ++j){ 
+      
+      Rect charRect1 = characterRects[j];     
+      Rect charRect2 = characterRects[j+1];  
+      float spacing = max(0,charRect2.x - (charRect1.x + charRect1.width));
+      
+      averageSpacing += spacing;
+      maxSpacing = max(maxSpacing, spacing);
+      minSpacing = min(minSpacing, spacing);
+   }
+   averageSpacing = averageSpacing / (characterRects.size()-1);
+   
+   
+   if ((maxSpacing - minSpacing) < 3){
+      
+      Rect charRect = characterRects[0];	
+      WordRect wordRect(charRect);
+      
+      for (int j=0; j < characterRects.size() ; ++j){         
+         Rect charRect = characterRects[j];	
+         
+         merge(wordRect, charRect);
+         wordRect.charRects.push_back(charRect); 
+      }
+      
+      wordRects.push_back(wordRect);
+      return wordRects;
+   }        
+      
+
+//	float averageWidth=0;
+//   float averageHeight=0;
+//	for (int j=0; j < characterRects.size() ; ++j){
+//		averageWidth += characterRects[j].width;
+//      averageHeight += characterRects[j].height;
+//	}
+//	averageWidth = averageWidth / characterRects.size();
+//	averageHeight = averageHeight / characterRects.size();
+//   
+//   float spacing_threshold = max(3.0, averageSpacing * 0.4);
+   Rect charRect = characterRects[0];	
+   WordRect wordRect(charRect);
+   wordRects.push_back(wordRect);
 	
    for (int j=0; j < characterRects.size() ; ++j){
       
       
 		Rect charRect = characterRects[j];		
 		WordRect& currentWordRect = wordRects.back();
-      
+
+      // get rid of overly short char blocks      
 //      if (charRect.height <= averageHeight*0.2)
 //         continue;
-		
-		int spacing = charRect.x - (currentWordRect.x + currentWordRect.width);
-
-		if (spacing <= spacing_threshold || j== 0){
+      float spacing = max(0,charRect.x - (currentWordRect.x + currentWordRect.width));
+      
+		if (abs(spacing - minSpacing) < 3 || j== 0){
 		
          // merge the current character into the current word
 			merge(currentWordRect, charRect);
 			currentWordRect.charRects.push_back(charRect);
+         
 		}else{
 			
 			WordRect newWordRect(charRect);			
@@ -838,12 +840,19 @@ vector<WordRect> characterRects_to_wordRects(const vector<Rect>& characterRects)
 		
 }
 
-Mat visualize_segmentation(const Mat& inputImage){
+Mat visualize_segmentation(const Mat& inputImage, bool flipContrast = false){
 	
 	//Mat resultImage = inputImage.clone();
 	Mat resultImage1;
 	Mat resultImage2;
 	
+   
+   Mat inputImageGray;
+   cvtColor(inputImage,inputImageGray,CV_RGB2GRAY);
+   
+   if (flipContrast)
+   absdiff(inputImageGray, 255, inputImageGray);
+
 	
 	resultImage1 = inputImage.clone();	
 	resultImage2 = Mat(inputImage.size(), inputImage.type(), Scalar(0,0,0));
@@ -852,20 +861,20 @@ Mat visualize_segmentation(const Mat& inputImage){
 	for (int i=0; i < linesRects.size(); ++i){
 		
 		Rect lineRect = linesRects[i];
-		Mat lineImage = Mat(inputImage, lineRect);
+		Mat lineImageGray = Mat(inputImageGray, lineRect);
 		
-		vector<Rect> characterRects = segment_lineImage(lineImage);
+		vector<Rect> characterRects = segment_lineImage(lineImageGray);
 		if (characterRects.empty())
 			continue;
 		
-		
-		Mat resultLineImage = lineImage.clone();
-		for (int j=0; j < characterRects.size() ; ++j){
-			Rect& c = characterRects[j];
-			draw_rectangle(resultLineImage, c, Scalar(0,0,255));
-		}
-		//imshowDebugZoom("resultLineImage",resultLineImage);
-			
+	//	
+//		Mat resultLineImage = lineImage.clone();
+//		for (int j=0; j < characterRects.size() ; ++j){
+//			Rect& c = characterRects[j];
+//			draw_rectangle(resultLineImage, c, Scalar(0,0,255));
+//		}
+//		//imshowDebugZoom("resultLineImage",resultLineImage);
+//			
 		
 		for (int j=0; j < characterRects.size() ; ++j){
 			Rect c = characterRects[j];		
@@ -910,20 +919,21 @@ Mat visualize_segmentation(const Mat& inputImage){
 		vector<WordRect> wordRects = characterRects_to_wordRects(characterRects);
 		
 		for (int j=0; j < wordRects.size() ; ++j){
-			WordRect& wordRect = wordRects[j];
-			wordRect.x += lineRect.x;
-			wordRect.y += lineRect.y;	
-			draw_rectangle(resultImage2, wordRect, Scalar(0,255,0));
+			WordRect wordRect = wordRects[j];
+			wordRect.x += lineRect.x - 1;
+			wordRect.y += lineRect.y - 1;
+         wordRect.height += 2;
+         wordRect.width += 2;
+         
+ 			draw_rectangle(resultImage2, wordRect, Scalar(0,255,0));
 
-			char buf[50];
-			sprintf(buf, "%d", wordRect.charRects.size());
-			Point loc(wordRect.x, wordRect.y);
-			Scalar textColor(255,255,255);
-			putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
-         
-         
-        
-         
+         if (wordRect.charRects.size()>1){
+            char buf[50];
+            sprintf(buf, "%d", wordRect.charRects.size());
+            Point loc(wordRect.x, wordRect.y);
+            Scalar textColor(255,255,255);
+            putText(resultImage2,buf, loc, FONT_HERSHEY_SIMPLEX, 0.6, textColor);
+         }
 		}
 		
       
@@ -978,20 +988,12 @@ bool sort_by_score(Match& m1, Match& m2){
 
 
    
-float match_image(Mat& input, Mat& targetG){
+float match_image(Mat& inputG, Mat& targetG){
    
-	Mat inputG;
-	if (input.type() == CV_8UC3){
-		cvtColor(input, inputG, CV_RGB2GRAY);
-	}else{
-		input = inputG;
-	}
-   
-	
 	Mat inputGN;
 	resize(inputG, inputGN, targetG.size());
 	
-	
+
 	Mat result;
 	matchTemplate(inputGN, targetG, result, CV_TM_CCOEFF_NORMED); 	
 	
@@ -1000,9 +1002,7 @@ float match_image(Mat& input, Mat& targetG){
 	minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);	
 	
 #if DISPLAY_MATCH_CHAR
-//	cout << "(" << minValue << " " << maxValue << ")" << endl;
-//	cout << max(abs(maxValue),abs(minValue)) << endl;
-	imshowCompareZoom(inputGN, targetG);
+   imshowCompareZoom(inputGN, targetG);
 #endif
 	
 	float score = max(abs(maxValue),abs(minValue));
@@ -1042,7 +1042,7 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
 	float score = 0;
 
 #if DISPLAY_MATCH_WORD	
-	cout << wordRect.charRects.size() << endl;		
+	dout << wordRect.charRects.size() << endl;		
 	Mat m1(inputImage, wordRect);
 	Mat m1g;
 	cvtColor(m1, m1g, CV_RGB2GRAY);
@@ -1073,7 +1073,7 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
       cnt = 1;
       score_i = match_char(inputCharImage, targetChar);
 #if DISPLAY_MATCH_WORD		
-		cout << "(" << i << " , " << targetChar << ") : " 
+		dout << "(" << i << " , " << targetChar << ") : " 
       << setprecision(2)  << score_i << endl; 
 #endif
       
@@ -1083,7 +1083,7 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
 			float score2 = match_2chars(inputCharImage, targetWord[i], targetWord[i+1]);
 
 #if DISPLAY_MATCH_WORD		
-         cout << "(" << i << " , " << targetWord[i] << targetWord[i+1] << ") : " 
+         dout << "(" << i << " , " << targetWord[i] << targetWord[i+1] << ") : " 
          << setprecision(2)  << score2 << endl; 
 #endif
 			
@@ -1123,7 +1123,7 @@ float match_word(const Mat& inputImage, const WordRect& wordRect, const char tar
    
    
 #if DISPLAY_MATCH_WORD		
-	cout << "Total score:" << score << endl; 
+	dout << "Total score:" << score << endl; 
 #endif
 	
 	return score;	
@@ -1181,66 +1181,189 @@ Mat visualize_matches(const Mat& inputImage, vector<Match> matches){
       Match m = matches[i];        
       Rect r(m.x,m.y,m.w,m.h);
       
-  //    if (m.score <= 0.0)
-//         continue;
-//         
       char buf[50];
       sprintf(buf, "(%d) %0.2f", i+1, m.score);
-   
-      // determine the region the text would occupy
-      // so we can draw a solid background for the
-      // text
-      int baseline = 0;
-      Size textSize = getTextSize(buf, 
-                                  FONT_HERSHEY_SIMPLEX,
-                                  0.4, 1, &baseline);         
+
       Point loc(r.x,r.y+25);
       Scalar black(0,0,0);
       Scalar red(0,0,255);
-      Scalar fillColor;
-      
-      if (m.score < 0.5){
-         fillColor = black;
-      }else{
-         fillColor = red;
-      }
-      
-      rectangle(resultImage, 
-                loc+Point(0,baseline), 
-                loc+Point(textSize.width, -textSize.height),
-                fillColor, CV_FILLED);
-      
       
       Scalar textColor(255,255,255);
-      putText(resultImage,buf, loc, FONT_HERSHEY_SIMPLEX, 0.4, textColor);
+      Scalar bgColor;
+      
+      if (m.score < 0.5){
+         bgColor = black;
+      }else{
+         bgColor = red;
+      }
+      
+      
+      putTextWithBackground(bgColor,resultImage,buf,loc,FONT_HERSHEY_SIMPLEX, 0.4, textColor);      
+      
    }
    
    return resultImage;
 }
 
-vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
-	
+
+Match 
+match_words(const Mat& inputImage, 
+            const vector<WordRect>& wordRects, 
+            const vector<string>& targetWords){
    
-	Mat targetWordImage = generate_word_image(word);
-	
-	
-	Rect bestRect;
-	vector<Match> candidateMatches;
-	
-	int total_lines=0;
-	int seen_lines=0;
-	int total_words=0;
-	int total_chars=0;
-	int seen_words=0;
-	
-	vector<Rect> linesRects = segment_image(inputImage);
-	total_lines = linesRects.size();
-	
+   // if the words on this line are too few, skip
+   if (wordRects.size() < targetWords.size())
+      return Match(0,0,0,0,-1);
+   
+   int i=0; // word rects
+   int j=0; // target words
+   int n=wordRects.size();
+   int m=targetWords.size();
+   vector<WordRect> matchedWordRects;
+  
+   while (i<n && j<m){
+      
+      WordRect wordRect = wordRects[i];
+      string targetWord = targetWords[j];
+      
+//      Mat wordImage(inputImage,wordRect);
+//      imshowDebugZoom("wordImage", wordImage);
+      
+      double score_per_word = match_word(inputImage, wordRect, targetWord.c_str());
+      // noramlzie the score
+      score_per_word = score_per_word / targetWord.size();
+      
+      if (score_per_word > 0.5){
+
+         dout << "[ocr:find_phrase] " << targetWord << " : " << score_per_word << endl;
+
+         matchedWordRects.push_back(wordRect);
+         
+         i++;
+         j++;
+         
+      }else{
+         
+         matchedWordRects.clear();
+         
+         i++;            
+         j=0;
+      }
+   }
+   
+   
+   if (matchedWordRects.size() != targetWords.size())
+      return Match(0,0,0,0,-1);
+
+   Rect r = matchedWordRects[0];
+   for (int j=1; j < matchedWordRects.size(); ++j){
+      merge(r, matchedWordRects[j]);
+   }
+   
+   
+   Match match;
+   match.score = 1.0;
+   match.x = r.x;
+   match.y = r.y;
+   match.h = r.height;
+   match.w = r.width;
+   
+   return match;
+}
+
+vector<Match> 
+find_phrase_helper(const Mat& inputImageColor, 
+                   vector<string> targetWords,
+                   bool flipContrast = false){
+  
+   
+//   Mat segResultImage = visualize_segmentation(inputImage);
+//   imshowDebug("find_phrase:segment", segResultImage);
+   //sprintf(buf,"/tmp/ocr.%s.seg.png", word);
+   //imwrite(buf, segResultImage);
+   
+   
+   Mat inputImageGray;
+   cvtColor(inputImageColor,inputImageGray,CV_RGB2GRAY);
+   
+   if (flipContrast)
+      absdiff(inputImageGray, 255, inputImageGray);
+ 
+   vector<Match> candidateMatches;
+
+  	vector<Rect> linesRects = segment_image(inputImageColor);
+   
 	for (int i=0; i < linesRects.size(); ++i){
 		
 		Rect lineRect = linesRects[i];
-		Mat lineImage = Mat(inputImage, lineRect);
+		Mat lineImageGray = Mat(inputImageGray, lineRect);
 		
+		// break the line down into characters
+		vector<Rect> charRects = segment_lineImage(lineImageGray);
+     
+      if (charRects.size() == 0){
+			continue;
+		}	
+      
+ 		for (int j=0; j < charRects.size(); ++j){
+			Rect& charRect = charRects[j];
+			charRect.x += lineRect.x;
+			charRect.y += lineRect.y;
+		}
+      
+		vector<WordRect> wordRects = characterRects_to_wordRects(charRects);
+      
+      Match match = match_words(inputImageGray, wordRects, targetWords);
+
+      if (match.score > 0)
+         candidateMatches.push_back(match);
+    
+      
+   }
+   
+   return candidateMatches;
+}
+
+
+vector<Match> 
+find_phrase(const Mat& inputImageColor, 
+            vector<string> targetWords){
+   
+   vector<Match> candidateMatches;
+   
+   candidateMatches = find_phrase_helper(inputImageColor, targetWords);
+   
+   vector<Match> candidateMatchesMore = find_phrase_helper(inputImageColor, targetWords, true);
+   
+   candidateMatches.insert(candidateMatches.end(), candidateMatchesMore.begin(), candidateMatchesMore.end() );
+  	sort(candidateMatches, sort_by_score);				
+   return candidateMatches;
+}
+
+vector<Match> 
+find_word_helper(const Mat& inputImageColor, 
+                 const char word[],
+                 bool flipContrast = false){
+   
+	Mat targetWordImage = generate_word_image(word);
+   
+   Mat inputImageGray;
+   cvtColor(inputImageColor,inputImageGray,CV_RGB2GRAY);
+	
+   if (flipContrast)
+      absdiff(inputImageGray, 255, inputImageGray);
+
+	Rect bestRect;
+	vector<Match> candidateMatches;
+	
+	vector<Rect> linesRects = segment_image(inputImageColor);
+	
+	for (int i=0; i < linesRects.size(); ++i){
+
+		Rect lineRect = linesRects[i];
+		Mat lineImageGray = Mat(inputImageGray, lineRect);
+      
+      
 		
 		// line is too short
 		if (filter_lineRect(lineRect, word)){
@@ -1249,7 +1372,7 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 		
 		// break the line down into characters
 		vector<Rect> charRects;
-		charRects = segment_lineImage(lineImage);
+		charRects = segment_lineImage(lineImageGray);
 	
 		// skip if too few characters
 		if (charRects.size() < strlen(word) - 2){
@@ -1265,23 +1388,16 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 			charRect.x += lineRect.x;
 			charRect.y += lineRect.y;
 		}
-		total_chars += charRects.size();
 		
-		
-		seen_lines++;
-		vector<WordRect> wordRects = characterRects_to_wordRects(charRects);
-		total_words += wordRects.size();
-		
+      vector<WordRect> wordRects = characterRects_to_wordRects(charRects);
 		for (int j=0; j < wordRects.size(); ++j){
 			WordRect wordRect = wordRects[j];
 			
 			if (filter_wordRect(wordRect, word))
 				continue;
-
-			seen_words++;
 			
 			double score = 0;
-			score = match_word(inputImage, wordRect, word);
+			score = match_word(inputImageGray, wordRect, word);
 
 			Match m;
 			m.score = min(1.0, score / (strlen(word)));
@@ -1294,29 +1410,47 @@ vector<Match> find_word_by_image(const Mat& inputImage, const char word[]){
 		}
 	}
 
-//	cout << "Lines: " << total_lines << endl;	
-//	cout << "Seen lines: " << seen_lines << endl;
-//	cout << "Chars: " << total_chars << endl;
-//	cout << "Words: " << total_words << endl;
-//	cout << "Seen Words: " << seen_words << endl;
+
 
 	sort(candidateMatches, sort_by_score);				
-   
-   Mat resultImage = visualize_matches(inputImage, candidateMatches);
-   char buf[100];
-   sprintf(buf,"/tmp/ocr.%s.png", word);
-   imwrite(buf, resultImage);
 
-   sprintf(buf,"/tmp/ocr.%s.input.png", word);
-   imwrite(buf, inputImage);
-   
-   Mat segResultImage = visualize_segmentation(inputImage);
-   sprintf(buf,"/tmp/ocr.%s.seg.png", word);
-   imwrite(buf, segResultImage);
-   
 	return candidateMatches;								   
 }
 
 
 
+vector<Match> find_word_by_image(const Mat& inputImageColor, 
+                                 const char word[]){
+   
+   vector<Match> candidateMatches;
+   
+   candidateMatches = find_word_helper(inputImageColor, word);
+   
+   vector<Match> candidateMatchesMore = find_word_helper(inputImageColor, word, true);
+   
+   candidateMatches.insert(candidateMatches.end(), candidateMatchesMore.begin(), candidateMatchesMore.end() );
+  	sort(candidateMatches, sort_by_score);				
+ 
 
+#if OUTPUT_RESULT_IMAGES   
+   Mat resultImage = visualize_matches(inputImageColor, candidateMatches);
+   char buf[100];
+   sprintf(buf,"/tmp/ocr.%s.output.png", word);
+   imwrite(buf, resultImage);
+   
+   sprintf(buf,"/tmp/ocr.%s.input.png", word);
+   imwrite(buf, inputImageColor);
+   
+   Mat segResultImage1 = visualize_segmentation(inputImageColor);
+   sprintf(buf,"/tmp/ocr.%s.seg.1.png", word);
+   imwrite(buf, segResultImage1);
+
+   Mat segResultImage2 = visualize_segmentation(inputImageColor,true);
+   sprintf(buf,"/tmp/ocr.%s.seg.2.png", word);
+   imwrite(buf, segResultImage2);
+   
+
+#endif   
+   
+   return candidateMatches;
+}

@@ -17,9 +17,15 @@ using namespace cv;
 
 void paste(const Mat& src, Mat& dest, int x, int y);
 void add_margin(Rect& r, int margin, Size bound);
-void merge(Rect& r1, Rect& r2);
+void merge(Rect& r1, const Rect& r2);
 void print_rect(Rect& r);
 void print_matrix(Mat& m);
+
+
+void 
+putTextWithBackground(Scalar fillColor, Mat& img, const string text, Point org, int fontFace, 
+                      double fontScale, Scalar color, int thickness=1, 
+                      int linetype=8, bool bottomLeftOrigin=false);
 
 void draw_rectangle(Mat& img, Rect& rect, Scalar color = Scalar(0,0,255));
 

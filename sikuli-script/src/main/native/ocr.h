@@ -30,8 +30,10 @@ struct WordRect : public Rect{
 
 void train_by_image(const Mat& trainingImage);
 vector<Match> find_word_by_image(const Mat& inputImage, const char word[]);
-void test_segment(const Mat& inputImage, const char word[]);
+vector<Match> find_phrase(const Mat& inputImage, vector<string> targetWords);
 
+
+void test_segment(const Mat& inputImage, const char word[]);
 
 #define DISPLAY_SEGMENT_IMAGE 0
 #define DISPLAY_SEGMENT_LINEIMAGE_STEP 0
@@ -49,5 +51,7 @@ void test_segment(const Mat& inputImage, const char word[]);
 #define DISPLAY_NUM_TOP_MATCHES 1
 
 #define MIN_CHAR_MATCH_THRESHOLD 0.4
+
+#define OUTPUT_RESULT_IMAGES 1
 
 #endif

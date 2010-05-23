@@ -10,6 +10,12 @@
 #include "cv-util.h"
 #include <iostream>
 
+#ifdef DEBUG
+#define dout std::cerr
+#else
+#define dout if(0) std::cerr
+#endif
+
 using namespace std;
 
 
@@ -69,6 +75,27 @@ void imshowDebugZoom(const char* name, Mat& m, bool  pause){
 
 
 
+void 
+putTextWithBackground(Scalar fillColor, Mat& img, const string text, Point org, int fontFace, 
+                      double fontScale, Scalar color, int thickness, 
+                      int linetype, bool bottomLeftOrigin){
+   
+   // determine the region the text would occupy
+   // so we can draw a solid background for the
+   // text
+   int baseline = 0;
+   Size textSize = getTextSize(text.c_str(), 
+                               fontFace,
+                               fontScale, thickness, &baseline);    
+   
+   rectangle(img, 
+             org+Point(0,baseline), 
+             org+Point(textSize.width, -textSize.height),
+             fillColor, CV_FILLED);
+   
+   putText(img,text,org,fontFace,fontScale,color,thickness,linetype,bottomLeftOrigin);
+}
+
 
 void draw_rectangle(Mat& img, Rect& rect, Scalar color){
 	Rect& c = rect;
@@ -111,7 +138,7 @@ void add_margin(Rect& r, int margin, Size bound){;
 }
 
 
-void merge(Rect& r1, Rect& r2){
+void merge(Rect& r1, const Rect& r2){
 	int x1 = min(r1.x, r2.x);
 	int y1 = min(r1.y, r2.y);
 	int x2 = max(r1.x+r1.width-1, r2.x+r2.width-1);
