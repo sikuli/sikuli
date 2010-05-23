@@ -62,7 +62,7 @@
 			<string>UTF-8</string>
 		</dict>
 		<key>VMOptions</key>
-		<string>-Xmx1024M</string>
+		<string>-Xmx512M</string>
 	</dict>
 	<key>NSJavaRoot</key>
 	<string>Contents/Resources/Java</string>
