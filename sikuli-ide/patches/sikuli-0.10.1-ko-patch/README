@@ -1,0 +1,22 @@
+This patch fixes the Korean language resource file in Sikuli IDE 0.10.1.
+Please follow the instruction below to apply the patch.
+
+= Windows users =
+
+1. unzip this package in the folder of Sikuli (e.g. C:\Program Files\Sikuli).
+2. double click sikuli-0.10.1-ko-patch\patch-windows.bat to run it.
+
+
+= Linux = 
+
+1. unzip this package in the folder of Sikuli (e.g. ~/Sikuli).
+2. cd into the unzipped folder: cd ~/Sikuli/sikuli-0.10.1-ko-patch
+3. run the patch script: ./patch-linux.sh
+
+= Mac OS X=
+
+0. Assuming Sikuli is installed in /Applications/Sikuli-IDE.app 
+1. unzip this package at anywhere, e.g. ~/Download/sikuli-0.10.1-ko-patch. 
+2. open Terminal.app
+3. type "cd ~/Download/sikuli-0.10.1-ko-patch" 
+4. type "./patch-mac.sh" 

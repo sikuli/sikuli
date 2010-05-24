@@ -21,7 +21,7 @@ LIB_PATH=../lib
 CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar:$(LIB_PATH)/sikuli-script.jar:$(LIB_PATH)/swing-layout-1.0.1.jar:$(LIB_PATH)/commons-cli-1.2.jar
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
-JAVA_ARGS=-Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms64m -Xmx512m #-Duser.language=zh -Duser.region=TW
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Xms64m -Xmx512m #-Duser.language=zh -Duser.region=TW
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAR=sikuli-ide.jar
