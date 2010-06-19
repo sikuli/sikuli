@@ -182,7 +182,7 @@ class HighlightLabelView extends LabelView {
        "mouseMove", "mouseDown", "mouseUp",
        "keyDown", "keyUp",
        "onAppear", "onVanish", "onChange", "observe", "stopObserver",
-       "popup", "capture", "input", "sleep",
+       "popup", "capture", "input", "sleep", "run",
        "switchApp", "openApp", "closeApp",
        "assertExist", "assertNotExist",
        "selectRegion",

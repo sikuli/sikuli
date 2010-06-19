@@ -475,7 +475,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
    }
 
-   static Pattern patPngStr = Pattern.compile("(\".+?\\.png\")");
+   static Pattern patPngStr = Pattern.compile("(\".[^\"]+?\\.(?i)png\")");
    static Pattern patHistoryBtnStr = Pattern.compile("(\"\\[SIKULI-(CAPTURE|DIFF)\\]\")");
    static Pattern patPatternStr = Pattern.compile(
             "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
