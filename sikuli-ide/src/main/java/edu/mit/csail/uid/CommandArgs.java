@@ -24,6 +24,7 @@ public class CommandArgs {
    void init(){
       _options = new Options();
       _options.addOption("h", "help", false, "print this help message");
+      _options.addOption("s", "stderr", false, "print runtime errors to stderr instead of popping up a message box");
       _options.addOption(
             OptionBuilder.withLongOpt("run")
                          .withDescription("run .sikuli or .skl file")

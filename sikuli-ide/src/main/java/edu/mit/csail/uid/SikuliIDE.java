@@ -46,6 +46,7 @@ public class SikuliIDE extends JFrame {
    private UnitTestRunner _testRunner;
 
    private static CommandLine _cmdLine;
+   private static boolean _useStderr = false;
 
    private static SikuliIDE _instance = null;
 
@@ -58,8 +59,10 @@ public class SikuliIDE extends JFrame {
    }
 
    public static void errorMsg(String msg){
-      System.err.println(msg);
-   
+      if(_useStderr)
+         System.err.println(msg);
+      else
+         JOptionPane.showMessageDialog(null, msg);
    }
 
    public static ImageIcon getIconResource(String name) {
@@ -612,7 +615,7 @@ public class SikuliIDE extends JFrame {
 
    static boolean _runningSkl = false;
    public static int runSikuli(String filename, String[] args) throws IOException{
-      int exitCode = 0;
+      int exitCode = -1;
       File file = new File(filename);
       if(!file.exists())
          throw new IOException(filename + ": No such file");
@@ -630,8 +633,7 @@ public class SikuliIDE extends JFrame {
             Debug.info(_I("msgExit", matcher.group(1) ));
          }
          else{
-            JOptionPane.showMessageDialog(null, 
-                  _I("msgRunningSklError", filename, e));
+            errorMsg( _I("msgRunningSklError", filename, e) );
          }
       }
       return exitCode;
@@ -666,6 +668,10 @@ public class SikuliIDE extends JFrame {
       if( _cmdLine.hasOption("h") ){
          cmdArgs.printHelp();
          return;
+      }
+
+      if( _cmdLine.hasOption("s") ){
+         _useStderr = true;
       }
          
       if(args!=null && args.length>=1){
