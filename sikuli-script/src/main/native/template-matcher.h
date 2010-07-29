@@ -45,6 +45,7 @@ private:
 
   IplImage *original_img_;
   IplImage *original_tpl_;
+  IplImage *downsampled_img_, *downsampled_tpl_;
   float downsample_ratio_;
 
 };

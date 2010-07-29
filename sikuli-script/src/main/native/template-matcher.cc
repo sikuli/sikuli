@@ -144,8 +144,7 @@ LookaheadTemplateMatcher::~LookaheadTemplateMatcher(){
    dout << "~LookaheadTemplateMatcher" << endl;
 };
 
-Match 
-LookaheadTemplateMatcher::next(){
+Match LookaheadTemplateMatcher::next(){
   TimingBlock tb("LookaheadTemplateMatcher::next()");
   if (top_matches_.size() == 0){
     for (int i=0;i<NUM_LOOKAHEAD;++i){
@@ -182,27 +181,21 @@ DownsampleTemplateMatcher::DownsampleTemplateMatcher(IplImage *img, IplImage *tp
   if (downsample_ratio < 1.0)
     downsample_ratio = 1.0;
 
-  //cout << "screen/template: (" << img->width << "," << img->height << ")";
-  //cout << "/(" << tpl->width << "," << tpl->height << ")" << endl;
-
-  IplImage* downsampled_img = cvCreateImage(cvSize(img->width/downsample_ratio, img->height/downsample_ratio), IPL_DEPTH_8U, 3 );
+  downsampled_img_ = cvCreateImage(cvSize(img->width/downsample_ratio, img->height/downsample_ratio), IPL_DEPTH_8U, 3 );
   // released in DownsampleTempalteMatcher's desctrutor
-  cvResize(img, downsampled_img, CV_RESIZE_INTERPOLATION_OPTION);
+  cvResize(img, downsampled_img_, CV_RESIZE_INTERPOLATION_OPTION);
 
-  IplImage* downsampled_tpl = cvCreateImage(cvSize(tpl->width/downsample_ratio, tpl->height/downsample_ratio), IPL_DEPTH_8U, 3 );
+  downsampled_tpl_ = cvCreateImage(cvSize(tpl->width/downsample_ratio, tpl->height/downsample_ratio), IPL_DEPTH_8U, 3 );
   // released in DownsampleTempalteMatcher's desctrutor
-  cvResize(tpl, downsampled_tpl, CV_RESIZE_INTERPOLATION_OPTION);
+  cvResize(tpl, downsampled_tpl_, CV_RESIZE_INTERPOLATION_OPTION);
 
-  //cout << "downsampled to: (" << downsampled_img->width << "," << downsampled_img->height << ")";
-  //cout << "/(" << downsampled_tpl->width << "," << downsampled_tpl->height << ")" << " ratio = " << downsample_ratio << endl;
-
-  //cout << "[time] after downsampling:\t" << (clock() - starttime)/CLOCKS_PER_SEC << " sec." << endl;
-
-  init(downsampled_img,downsampled_tpl);  
+  init(downsampled_img_,downsampled_tpl_);
 };
 
 DownsampleTemplateMatcher::~DownsampleTemplateMatcher(){
    dout << "~DownsampleTemplateMatcher" << endl;
+   if(downsampled_img_) cvReleaseImage(&downsampled_img_);
+   if(downsampled_tpl_) cvReleaseImage(&downsampled_tpl_);
 };
 
 Match DownsampleTemplateMatcher::next(){
@@ -252,7 +245,7 @@ void TemplateMatcher::init(IplImage *img, IplImage *tpl){
   int res_height = img->height - tpl->height + 1;
   res_ = cvCreateImage( cvSize( res_width, res_height ), IPL_DEPTH_32F, 1 );
   cvMatchTemplate(img, tpl, res_, CV_TM_CCOEFF_NORMED );
-  // released by descructor
+  // res_ should be released by descructor
 }
 
 Match TemplateMatcher::next(){
