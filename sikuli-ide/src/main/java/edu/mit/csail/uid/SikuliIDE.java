@@ -57,6 +57,11 @@ public class SikuliIDE extends JFrame {
       return I18N._I(key, args);
    }
 
+   public static void errorMsg(String msg){
+      System.err.println(msg);
+   
+   }
+
    public static ImageIcon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
       if (url == null) {
@@ -608,6 +613,10 @@ public class SikuliIDE extends JFrame {
    static boolean _runningSkl = false;
    public static int runSikuli(String filename, String[] args) throws IOException{
       int exitCode = 0;
+      File file = new File(filename);
+      if(!file.exists())
+         throw new IOException(filename + ": No such file");
+
       ScriptRunner srunner = new ScriptRunner(args);
       try{
          srunner.runPython(Utils.slashify(filename,true));
@@ -630,7 +639,10 @@ public class SikuliIDE extends JFrame {
 
    public static int runSkl(String filename, String[] args) throws IOException{
       _runningSkl = true;
-      String name = (new File(filename)).getName();
+      File file = new File(filename);
+      if(!file.exists())
+         throw new IOException(filename + ": No such file");
+      String name = file.getName();
       name = name.substring(0, name.lastIndexOf('.'));
       File tmpDir = Utils.createTempDir();
       File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
@@ -661,12 +673,13 @@ public class SikuliIDE extends JFrame {
             String[] pargs = getPyArgs();
             int exitCode = 0;
             if( _cmdLine.hasOption("run") ){
-               String file = _cmdLine.getOptionValue("run");
-               if(file.endsWith(".skl"))
-                  exitCode = runSkl(file, pargs);
-               else if(file.endsWith(".sikuli")){
-                  File f = new File(file);
-                  exitCode = runSikuli(f.getAbsolutePath(), pargs);
+               String filename = _cmdLine.getOptionValue("run");
+               File file = new File(filename);
+               filename = file.getAbsolutePath();
+               if(filename.endsWith(".skl"))
+                  exitCode = runSkl(filename, pargs);
+               else if(filename.endsWith(".sikuli")){
+                  exitCode = runSikuli(filename, pargs);
                }
                System.exit(exitCode);
             }
@@ -679,7 +692,8 @@ public class SikuliIDE extends JFrame {
             }
          }
          catch(IOException e){
-            System.err.println("Can't open file: " + args[0] + "\n" + e);
+            errorMsg(e.getMessage());
+            System.exit(-2);
          }
       }
       try{
@@ -1392,4 +1406,5 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       ide.setVisible(true);
       codePane.requestFocus();
    }
+
 }
