@@ -324,13 +324,18 @@ public class Region {
    public <PSRML> int dragDrop(PSRML t1, PSRML t2, int modifiers)
                                              throws  FindFailed {
       int ret = 0;
-      pressModifiers(modifiers);
-      if(drag(t1)!=0){
-         _robot.delay((int)(Settings.DelayAfterDrag*1000));
-         ret = dropAt(t2, Settings.DelayBeforeDrop);
+      Location loc1 = getLocationFromPSRML(t1);
+      Location loc2 = getLocationFromPSRML(t2);
+      if(loc1 != null && loc2 != null){
+         pressModifiers(modifiers);
+         if(drag(loc1)!=0){
+            _robot.delay((int)(Settings.DelayAfterDrag*1000));
+            ret = dropAt(loc2, Settings.DelayBeforeDrop);
+         }
+         releaseModifiers(modifiers);
+         return 1;
       }
-      releaseModifiers(modifiers);
-      return ret;
+      return 0;
    }
 
    public <PSRML> int drag(PSRML target) throws  FindFailed{
