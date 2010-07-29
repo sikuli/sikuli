@@ -606,26 +606,29 @@ public class SikuliIDE extends JFrame {
 
 
    static boolean _runningSkl = false;
-   public static void runSikuli(String filename, String[] args) throws IOException{
+   public static int runSikuli(String filename, String[] args) throws IOException{
+      int exitCode = 0;
       ScriptRunner srunner = new ScriptRunner(args);
       try{
          srunner.runPython(Utils.slashify(filename,true));
       }
       catch(Exception e){
          java.util.regex.Pattern p = 
-            java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
+            java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
          Matcher matcher = p.matcher(e.toString());
          if(matcher.find()){
-            Debug.info(_I("msgExit", matcher.group(1)));
+            exitCode = Integer.parseInt(matcher.group(1));
+            Debug.info(_I("msgExit", matcher.group(1) ));
          }
          else{
             JOptionPane.showMessageDialog(null, 
                   _I("msgRunningSklError", filename, e));
          }
       }
+      return exitCode;
    }
 
-   public static void runSkl(String filename, String[] args) throws IOException{
+   public static int runSkl(String filename, String[] args) throws IOException{
       _runningSkl = true;
       String name = (new File(filename)).getName();
       name = name.substring(0, name.lastIndexOf('.'));
@@ -633,7 +636,7 @@ public class SikuliIDE extends JFrame {
       File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
       sikuliDir.mkdir();
       Utils.unzip(filename, sikuliDir.getAbsolutePath());
-      runSikuli(sikuliDir.getAbsolutePath(), args);
+      return runSikuli(sikuliDir.getAbsolutePath(), args);
    }
 
    static String[] getPyArgs(){
@@ -656,21 +659,22 @@ public class SikuliIDE extends JFrame {
       if(args!=null && args.length>=1){
          try{
             String[] pargs = getPyArgs();
+            int exitCode = 0;
             if( _cmdLine.hasOption("run") ){
                String file = _cmdLine.getOptionValue("run");
                if(file.endsWith(".skl"))
-                  runSkl(file, pargs);
+                  exitCode = runSkl(file, pargs);
                else if(file.endsWith(".sikuli")){
                   File f = new File(file);
-                  runSikuli(f.getAbsolutePath(), pargs);
+                  exitCode = runSikuli(f.getAbsolutePath(), pargs);
                }
-               return;
+               System.exit(exitCode);
             }
             if( _cmdLine.getArgs().length>0 ){
                String file = _cmdLine.getArgs()[0];
                if(file.endsWith(".skl")){
-                  runSkl(file, pargs);
-                  return;
+                  exitCode = runSkl(file, pargs);
+                  System.exit(exitCode);
                }
             }
          }
@@ -1289,7 +1293,7 @@ public class SikuliIDE extends JFrame {
                   }
                   catch(Exception e){
                      java.util.regex.Pattern p = 
-                        java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
+                        java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
                      Matcher matcher = p.matcher(e.toString());
                      if(matcher.find()){
                         Debug.info(_I("msgExit", matcher.group(1)));
