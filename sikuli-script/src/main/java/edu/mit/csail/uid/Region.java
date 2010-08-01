@@ -539,6 +539,7 @@ public class Region {
       if(f.hasNext()){
          return f;
       }
+      f.destroy();
       return null;
    }
 
