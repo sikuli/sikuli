@@ -26,6 +26,12 @@ public class CommandArgs {
       _options.addOption("h", "help", false, "print this help message");
       _options.addOption("s", "stderr", false, "print runtime errors to stderr instead of popping up a message box");
       _options.addOption(
+            OptionBuilder.withLongOpt("test")
+                         .withDescription("run .sikuli as a unit test case with junit's text UI runner")
+                         .hasArg()
+                         .withArgName("sikuli-test-case")
+                         .create('r') );
+      _options.addOption(
             OptionBuilder.withLongOpt("run")
                          .withDescription("run .sikuli or .skl file")
                          .hasArg()

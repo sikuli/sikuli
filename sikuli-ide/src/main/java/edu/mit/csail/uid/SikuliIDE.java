@@ -673,6 +673,24 @@ public class SikuliIDE extends JFrame {
       if( _cmdLine.hasOption("s") ){
          _useStderr = true;
       }
+      
+      if( _cmdLine.hasOption("test") ){
+         TextUnitTestRunner tester = new TextUnitTestRunner();
+         String filename = _cmdLine.getOptionValue("test");
+         if(filename.endsWith(".sikuli")){
+            try{
+               boolean result = tester.testSikuli(filename);
+               if(!result)
+                  System.exit(1);
+               System.exit(0);
+            }
+            catch(Exception e){
+               System.err.println(e.getMessage());
+               System.exit(2);
+            }
+         }
+         System.exit(-1);
+      }
          
       if(args!=null && args.length>=1){
          try{
