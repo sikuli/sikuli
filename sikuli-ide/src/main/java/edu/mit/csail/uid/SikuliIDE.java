@@ -660,6 +660,23 @@ public class SikuliIDE extends JFrame {
       return pargs; 
    }
 
+   private void runUnitTest(String filename){
+      TextUnitTestRunner tester = new TextUnitTestRunner();
+      if(filename.endsWith(".sikuli")){
+         try{
+            boolean result = tester.testSikuli(filename);
+            if(!result)
+               System.exit(1);
+            System.exit(0);
+         }
+         catch(Exception e){
+            System.err.println(e.getMessage());
+            System.exit(2);
+         }
+      }
+      System.exit(-1);
+   }
+
    public static void main(String[] args) {
       initNativeLayer();
       CommandArgs cmdArgs = new CommandArgs();
@@ -675,21 +692,7 @@ public class SikuliIDE extends JFrame {
       }
       
       if( _cmdLine.hasOption("test") ){
-         TextUnitTestRunner tester = new TextUnitTestRunner();
-         String filename = _cmdLine.getOptionValue("test");
-         if(filename.endsWith(".sikuli")){
-            try{
-               boolean result = tester.testSikuli(filename);
-               if(!result)
-                  System.exit(1);
-               System.exit(0);
-            }
-            catch(Exception e){
-               System.err.println(e.getMessage());
-               System.exit(2);
-            }
-         }
-         System.exit(-1);
+         runUnitTest(_cmdLine.getOptionValue("test"));
       }
          
       if(args!=null && args.length>=1){
