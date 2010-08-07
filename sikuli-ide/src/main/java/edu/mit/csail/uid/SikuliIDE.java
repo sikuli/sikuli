@@ -607,7 +607,8 @@ public class SikuliIDE extends JFrame {
    }
 
    private void adjustCodePaneWidth(){
-      int pos = getWidth() - _sidePane.getMinimumSize().width-15;
+      int pos = getWidth() - _sidePane.getMinimumSize().width-15 
+                           - _cmdToolBar.getWidth();
       if(_codeAndUnitPane != null && pos >= 0)
          _codeAndUnitPane.setDividerLocation(pos);
    }
@@ -660,7 +661,7 @@ public class SikuliIDE extends JFrame {
       return pargs; 
    }
 
-   private void runUnitTest(String filename){
+   private static void runUnitTest(String filename){
       TextUnitTestRunner tester = new TextUnitTestRunner();
       if(filename.endsWith(".sikuli")){
          try{
