@@ -56,7 +56,8 @@ public class ScriptRunner {
          String line = it.next();
          py.exec(line);
       }
-      py.exec("setBundlePath('" + bundlePath + "')");
+      String fullpath = new File(bundlePath).getAbsolutePath();
+      Settings.BundlePath = fullpath;
       py.execfile(pyFile.getAbsolutePath());
       _tmp_headers.clear();
       //py.cleanup();
