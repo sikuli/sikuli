@@ -8,11 +8,15 @@ CLASSES_TARGET_PATH=..\..\..\target\classes
 CLASSPATH=..\java;..\..\..\lib
 PACKAGE=edu.mit.csail.uid
 
-default: dll vdict win32util
+WIN32_LIB_PATH=..\..\..\..\lib\win32
+
+default: dll vdict win32util copylib
 
 $(TARGET_DIR):
 	mkdir $(TARGET_DIR)
 
+copylib:
+	copy $(OPENCV_DIR)\bin\*210.dll $(WIN32_LIB_PATH)
 vdict:
 	nmake -f Makefile.vdict.win32
 
