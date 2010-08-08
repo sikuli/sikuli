@@ -663,6 +663,8 @@ public class SikuliIDE extends JFrame {
 
    private static void runUnitTest(String filename){
       TextUnitTestRunner tester = new TextUnitTestRunner();
+      File file = new File(filename);
+      filename = file.getAbsolutePath();
       if(filename.endsWith(".sikuli")){
          try{
             boolean result = tester.testSikuli(filename);

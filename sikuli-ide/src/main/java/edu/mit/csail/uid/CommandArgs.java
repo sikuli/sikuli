@@ -30,7 +30,7 @@ public class CommandArgs {
                          .withDescription("run .sikuli as a unit test case with junit's text UI runner")
                          .hasArg()
                          .withArgName("sikuli-test-case")
-                         .create('r') );
+                         .create('t') );
       _options.addOption(
             OptionBuilder.withLongOpt("run")
                          .withDescription("run .sikuli or .skl file")
