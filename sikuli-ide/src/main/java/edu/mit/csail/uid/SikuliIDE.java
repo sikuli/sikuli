@@ -512,7 +512,7 @@ public class SikuliIDE extends JFrame {
 
       setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
       adjustCodePaneWidth();
-      mainAndConsolePane.setDividerLocation(500);
+      mainAndConsolePane.setDividerLocation(450);
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
