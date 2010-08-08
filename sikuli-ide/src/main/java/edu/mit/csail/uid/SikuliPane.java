@@ -40,7 +40,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       addCaretListener(this);
       setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
-      setTabSize(4);
+      //setTabSize(4);
       setBackground(Color.WHITE);
       getDocument().addDocumentListener(new DirtyHandler());
    }

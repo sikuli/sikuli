@@ -215,39 +215,39 @@ class HighlightLabelView extends LabelView {
     static {
        Debug.log(4, "init patternColors");
        fontParenthesis = new Font("Osaka-Mono", Font.PLAIN, 30);
-        // NOTE: the order is important!
-        patternColors = new HashMap<Pattern, Color>();
-        patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
-        patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
-        patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
-        patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
-        for(int i=0;i<keywords.length;i++)
-           patternColors.put(Pattern.compile("\\b("+keywords[i]+")\\b"), 
-                             Color.blue);
+       // NOTE: the order is important!
+       patternColors = new HashMap<Pattern, Color>();
+       patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
+       patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
+       patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
+       patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
+       for(int i=0;i<keywords.length;i++)
+          patternColors.put(Pattern.compile("\\b("+keywords[i]+")\\b"), 
+                Color.blue);
 
-        for(int i=0;i<keywordsSikuli.length;i++){
-           patternColors.put(Pattern.compile("\\b("+keywordsSikuli[i]+")\\b"), 
-                             new Color(63,127,127));
-        }
+       for(int i=0;i<keywordsSikuli.length;i++){
+          patternColors.put(Pattern.compile("\\b("+keywordsSikuli[i]+")\\b"), 
+                new Color(63,127,127));
+       }
 
-        for(int i=0;i<keywordsSikuliClass.length;i++){
-           patternColors.put(Pattern.compile(
-                            "\\b("+keywordsSikuliClass[i]+")\\b"), 
-                             new Color(215,41,56));
-        }
+       for(int i=0;i<keywordsSikuliClass.length;i++){
+          patternColors.put(Pattern.compile(
+                   "\\b("+keywordsSikuliClass[i]+")\\b"), 
+                new Color(215,41,56));
+       }
 
-        for(int i=0;i<constantsSikuli.length;i++){
-           patternColors.put(Pattern.compile(
-                            "\\b("+constantsSikuli[i]+")\\b"), 
-                             new Color(128,64,0));
-        }
+       for(int i=0;i<constantsSikuli.length;i++){
+          patternColors.put(Pattern.compile(
+                   "\\b("+constantsSikuli[i]+")\\b"), 
+                new Color(128,64,0));
+       }
 
-        //patternColors.put(Pattern.compile("(\t)"), Color.white);
+       //patternColors.put(Pattern.compile("(\t)"), Color.white);
 
-        /*
-        patternColors.put(Pattern.compile("(\\()$"), Color.black);
-        patternColors.put(Pattern.compile("^(\\))"), Color.black);
-        */
+       /*
+          patternColors.put(Pattern.compile("(\\()$"), Color.black);
+          patternColors.put(Pattern.compile("^(\\))"), Color.black);
+          */
 
     }
 
@@ -264,18 +264,31 @@ class HighlightLabelView extends LabelView {
       return count;
    }
 
-   private int tabbedWidth(){
-      if(_fMetrics==null)
-         return -1;
+   private int stringWidth(String str){
+      if(_fMetrics == null)
+         _fMetrics = getGraphics().getFontMetrics();
+      return _fMetrics.stringWidth(str);
+   }
+
+   private int getTabWidth(){
+      return stringWidth(tabStr);
+   }
+
+   private float getRealTabWidth(){
+      final int tabCharWidth = stringWidth("\t");
+      return getTabWidth() - tabCharWidth /*+ 1f */; //still buggy
+   }
+
+   private float tabbedWidth(){
       String str = getText(getStartOffset(), getEndOffset()).toString();
       int tab = countTab(str);
-      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
-      return _fMetrics.stringWidth(str) + tabWidth*tab;
+      return stringWidth(str) + getRealTabWidth()*tab;
+
    }
 
    public float getMinimumSpan(int axis) {
       float f = super.getMinimumSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
@@ -283,7 +296,7 @@ class HighlightLabelView extends LabelView {
 
    public float getMaximumSpan(int axis) {
       float f = super.getMaximumSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null ){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
@@ -291,11 +304,12 @@ class HighlightLabelView extends LabelView {
 
    public float getPreferredSpan(int axis) {
       float f = super.getPreferredSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
    }
+
 
 
    public int viewToModel(float fx, float fy, Shape a, Position.Bias[] bias) {
@@ -342,8 +356,6 @@ class HighlightLabelView extends LabelView {
    public Shape modelToView(int pos, Shape a, Position.Bias b)
                                              throws BadLocationException {
       
-      if(_fMetrics==null)  
-         return super.modelToView(pos, a, b);
       int start = getStartOffset(), end = getEndOffset();
       Debug.log(9,"[modelToView] start: " + start + 
                   " end: " + end + " pos:" + pos);
@@ -355,10 +367,9 @@ class HighlightLabelView extends LabelView {
       Shape s = super.modelToView(pos, a, b);
       Rectangle ret = s.getBounds();
       Debug.log(9, "[modelToView] super.bounds: " + ret);
-      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
       if(pos!=end)
-         ret.x += tabHead*tabWidth;
-      //ret.width += tabTail*tabWidth;
+         ret.x += tabHead * getRealTabWidth();
+         //ret.width += tabTail*tabWidth;
       Debug.log(9, "[modelToView] new bounds: " + ret);
       return ret;
    }
@@ -419,8 +430,7 @@ class HighlightLabelView extends LabelView {
    }
 
    int drawTab(Graphics2D g2d, int x, int y){
-      drawString(g2d, tabStr, x, y);
-      return x + _fMetrics.stringWidth(tabStr);
+      return drawString(g2d, tabStr, x, y);
    }
 
    int drawString(Graphics2D g2d, String str, int x, int y){
@@ -434,7 +444,7 @@ class HighlightLabelView extends LabelView {
       }
       else{
          g2d.drawString(str, x, y);
-         x += _fMetrics.stringWidth(str);
+         x += stringWidth(str);
       }
       return x;
    }
