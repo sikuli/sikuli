@@ -1,7 +1,7 @@
 UNAME=$(shell uname)
 
 TARGET_DIR=../../../target/lib
-OS=$(shell uname -rs)
+UNAME_R=$(shell uname -rs)
 
 
 CXX=g++
