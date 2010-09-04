@@ -94,6 +94,7 @@ JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
    }
    env->GetByteArrayRegion(screenImg, 0, len,(jbyte *)result);
    cvSetData(img,result,bpr);    //set the buffer
+   cvCvtColor(img, img, CV_RGB2BGR);
 
    SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 
    vector<Event> events = sem->update(img);
