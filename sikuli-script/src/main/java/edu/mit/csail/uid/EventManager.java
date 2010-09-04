@@ -40,10 +40,14 @@ public class EventManager {
    }
 
    private <PSC> float getSimiliarity(PSC ptn){
+      float similarity=-1f;
       if( ptn instanceof Pattern ){
-         return ((Pattern)ptn).similarity;
+         similarity=((Pattern)ptn).similarity;
       }
-      return -1f;
+      if(similarity<0) {
+         similarity=(float)Settings.MinSimilarity;
+      }
+      return similarity;
    }
 
    private <PSC> String getFilename(PSC ptn){
