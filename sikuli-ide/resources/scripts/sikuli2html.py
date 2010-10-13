@@ -201,16 +201,16 @@ if locals().has_key('sikuli_src'):
 
 for sikuli in srcs:
    f_py = glob.glob(sikuli + "/*.py")
-   if len(f_py) > 0: 
-      src = open(f_py[0], "r")
-   dest = open(f_py[0].replace(".py", ".html"), "w")
-   filename = re.search(r'/([^/]*)\.py', f_py[0])
-   if filename: 
-      filename = filename.group(1)
-   else:
-      filename = re.search(r'\\([^\\]*)\.py', f_py[0]).group(1)
+   for py in f_py:
+      src = open(py, "r")
+      dest = open(py.replace(".py", ".html"), "w")
+      filename = re.search(r'/([^/]*)\.py', f_py[0])
+      if filename: 
+         filename = filename.group(1)
+      else:
+         filename = re.search(r'\\([^\\]*)\.py', f_py[0]).group(1)
 
-   Parser(src.read(), dest).format(filename)
-   dest.close()
-   src.close()
+      Parser(src.read(), dest).format(filename)
+      dest.close()
+      src.close()
 

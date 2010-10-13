@@ -160,96 +160,98 @@ class HighlightLabelView extends LabelView {
    private static Map<Pattern, Color> patternColors;
    private static Font fontParenthesis;
 
-    private static String[] keywords = {
-       "and",       "del",       "for",       "is",        "raise",    
-       "assert",    "elif",      "from",      "lambda",    "return",   
-       "break",     "else",      "global",    "not",       "try",      
-       "class",     "except",    "if",        "or",        "while",    
-       "continue",  "exec",      "import",    "pass",      "yield",    
-       "def",       "finally",   "in",        "print",     "with"
-    };
+   private static String[] keywords = {
+      "and",       "del",       "for",       "is",        "raise",    
+      "assert",    "elif",      "from",      "lambda",    "return",   
+      "break",     "else",      "global",    "not",       "try",      
+      "class",     "except",    "if",        "or",        "while",    
+      "continue",  "exec",      "import",    "pass",      "yield",    
+      "def",       "finally",   "in",        "print",     "with"
+   };
 
-    private static String[] keywordsSikuliClass = {
-       "Region", "Screen", "Match", "Pattern",
-       "Location", "VDict", "Env", "Key", "Button", "Finder"
-    };
+   private static String[] keywordsSikuliClass = {
+      "Region", "Screen", "Match", "Pattern",
+      "Location", "VDict", "Env", "Key", "Button", "Finder"
+   };
 
-    private static String[] keywordsSikuli = {
-       "find", "wait", "findAll", "waitVanish", "exists",
-       "click", "doubleClick", "rightClick", "hover", 
-       "type", "paste",
-       "dragDrop", "drag", "dropAt",
-       "mouseMove", "mouseDown", "mouseUp",
-       "keyDown", "keyUp",
-       "onAppear", "onVanish", "onChange", "observe", "stopObserver",
-       "popup", "capture", "input", "sleep",
-       "switchApp", "openApp", "closeApp",
-       "assertExist", "assertNotExist",
-       "selectRegion",
-       "getOS", "getMouseLocation", "exit",
-       "right", "left", "above", "below", "nearby", "inside",
-       "getScreen", "getCenter", 
-       "setX", "setY", "setW", "setH", "setRect", "setROI",
-       "getX", "getY", "getW", "getH", "getRect", "getROI",
-       "getNumberScreens", "getBounds",
-       "similar", "targetOffset", "getLastMatch", "getLastMatches",
-       "getTargetOffset", "getFilename",
-       "setAutoWaitTimeout", "setBundlePath", "setShowActions",
-       "setThrowException",
-       "hasNext", "next", "destroy", "exact", "offset",
-       "getOSVersion", "getScore", "getTarget",
-       "getBundlePath", "getAutoWaitTimeout", "getThrowException",
-       "getClipboard"
-    };
+   private static String[] keywordsSikuli = {
+      "find", "wait", "findAll", "waitVanish", "exists",
+      "click", "doubleClick", "rightClick", "hover", 
+      "type", "paste",
+      "dragDrop", "drag", "dropAt",
+      "mouseMove", "mouseDown", "mouseUp",
+      "keyDown", "keyUp",
+      "onAppear", "onVanish", "onChange", "observe", "stopObserver",
+      "popup", "capture", "input", "sleep", "run",
+      "switchApp", "openApp", "closeApp",
+      "assertExist", "assertNotExist",
+      "selectRegion",
+      "getOS", "getMouseLocation", "exit",
+      "right", "left", "above", "below", "nearby", "inside",
+      "getScreen", "getCenter", 
+      "setX", "setY", "setW", "setH", "setRect", "setROI",
+      "getX", "getY", "getW", "getH", "getRect", "getROI",
+      "getNumberScreens", "getBounds",
+      "similar", "targetOffset", "getLastMatch", "getLastMatches",
+      "getTargetOffset", "getFilename",
+      "setAutoWaitTimeout", "setBundlePath", "setShowActions",
+      "setThrowException",
+      "hasNext", "next", "destroy", "exact", "offset",
+      "getOSVersion", "getScore", "getTarget",
+      "getBundlePath", "getAutoWaitTimeout", "getThrowException",
+      "getClipboard"
+   };
 
-    private static String[] constantsSikuli = {
-       "FOREVER",
-       "KEY_SHIFT", "KEY_CTRL", "KEY_META", "KEY_ALT", "KEY_CMD", "KEY_WIN",
-       "ENTER", "BACKSPACE", "TAB", "ESC", "UP", "RIGHT", "DOWN", "LEFT",
-       "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
-       "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-       "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD", "WIN",
-       "SCREEN", "MIDDLE"
-    };
+   private static String[] constantsSikuli = {
+      "FOREVER",
+      "KEY_SHIFT", "KEY_CTRL", "KEY_META", "KEY_ALT", "KEY_CMD", "KEY_WIN",
+      "ENTER", "BACKSPACE", "TAB", "ESC", "UP", "RIGHT", "DOWN", "LEFT",
+      "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
+      "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+      "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD", "WIN",
+      "SCREEN", "MIDDLE"
+   };
 
-    static {
-       Debug.log(4, "init patternColors");
-       fontParenthesis = new Font("Osaka-Mono", Font.PLAIN, 30);
-        // NOTE: the order is important!
-        patternColors = new HashMap<Pattern, Color>();
-        patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
-        patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
-        patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
-        patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
-        for(int i=0;i<keywords.length;i++)
-           patternColors.put(Pattern.compile("\\b("+keywords[i]+")\\b"), 
-                             Color.blue);
+   static {
+      Debug.log(4, "init patternColors");
+      fontParenthesis = new Font("Osaka-Mono", Font.PLAIN, 30);
+      // NOTE: the order is important!
+      patternColors = new HashMap<Pattern, Color>();
+      patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
+      patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
+      patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
+      patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
+      for(int i=0;i<keywords.length;i++)
+         patternColors.put(Pattern.compile("\\b("+keywords[i]+")\\b"), 
+               Color.blue);
 
-        for(int i=0;i<keywordsSikuli.length;i++){
-           patternColors.put(Pattern.compile("\\b("+keywordsSikuli[i]+")\\b"), 
-                             new Color(63,127,127));
-        }
+      for(int i=0;i<keywordsSikuli.length;i++){
+         patternColors.put(Pattern.compile("\\b("+keywordsSikuli[i]+")\\b"), 
+               new Color(63,127,127));
+      }
 
-        for(int i=0;i<keywordsSikuliClass.length;i++){
-           patternColors.put(Pattern.compile(
-                            "\\b("+keywordsSikuliClass[i]+")\\b"), 
-                             new Color(215,41,56));
-        }
+      for(int i=0;i<keywordsSikuliClass.length;i++){
+         patternColors.put(Pattern.compile(
+                  "\\b("+keywordsSikuliClass[i]+")\\b"), 
+               new Color(215,41,56));
+      }
 
-        for(int i=0;i<constantsSikuli.length;i++){
-           patternColors.put(Pattern.compile(
-                            "\\b("+constantsSikuli[i]+")\\b"), 
-                             new Color(128,64,0));
-        }
+      for(int i=0;i<constantsSikuli.length;i++){
+         patternColors.put(Pattern.compile(
+                  "\\b("+constantsSikuli[i]+")\\b"), 
+               new Color(128,64,0));
+      }
 
-        //patternColors.put(Pattern.compile("(\t)"), Color.white);
+      //patternColors.put(Pattern.compile("(\t)"), Color.white);
 
-        /*
-        patternColors.put(Pattern.compile("(\\()$"), Color.black);
-        patternColors.put(Pattern.compile("^(\\))"), Color.black);
-        */
+      /*
+         patternColors.put(Pattern.compile("(\\()$"), Color.black);
+         patternColors.put(Pattern.compile("^(\\))"), Color.black);
+         */
 
-    }
+
+   }
+
 
    public HighlightLabelView(Element elm){
       super(elm);
@@ -264,18 +266,40 @@ class HighlightLabelView extends LabelView {
       return count;
    }
 
-   private int tabbedWidth(){
-      if(_fMetrics==null)
-         return -1;
+
+   private int getTabWidth(){
+      return stringWidth(tabStr);
+   }
+
+
+   private int stringWidth(String str){
+      if(_fMetrics == null)
+         _fMetrics = getGraphics().getFontMetrics();
+      return _fMetrics.stringWidth(str);
+   }
+
+
+   private float getRealTabWidth(){
+      final int tabCharWidth;
+      if(Utils.isMacOSX())
+         tabCharWidth = stringWidth("\t");
+      else
+         tabCharWidth = stringWidth(" ");
+      return getTabWidth() - tabCharWidth /* + 1f */; //still buggy
+   }
+
+   private float tabbedWidth(){
       String str = getText(getStartOffset(), getEndOffset()).toString();
       int tab = countTab(str);
-      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
-      return _fMetrics.stringWidth(str) + tabWidth*tab;
+      if(Utils.isMacOSX())
+         return stringWidth(str) + getRealTabWidth()*tab;
+      else
+         return stringWidth(str) + getTabWidth()*tab;
    }
 
    public float getMinimumSpan(int axis) {
       float f = super.getMinimumSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
@@ -283,7 +307,7 @@ class HighlightLabelView extends LabelView {
 
    public float getMaximumSpan(int axis) {
       float f = super.getMaximumSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null ){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
@@ -291,11 +315,12 @@ class HighlightLabelView extends LabelView {
 
    public float getPreferredSpan(int axis) {
       float f = super.getPreferredSpan(axis);
-      if(axis == View.X_AXIS && _fMetrics!=null){
+      if(axis == View.X_AXIS){
          f = tabbedWidth();
       }
       return f;
    }
+
 
 
    public int viewToModel(float fx, float fy, Shape a, Position.Bias[] bias) {
@@ -342,8 +367,6 @@ class HighlightLabelView extends LabelView {
    public Shape modelToView(int pos, Shape a, Position.Bias b)
                                              throws BadLocationException {
       
-      if(_fMetrics==null)  
-         return super.modelToView(pos, a, b);
       int start = getStartOffset(), end = getEndOffset();
       Debug.log(9,"[modelToView] start: " + start + 
                   " end: " + end + " pos:" + pos);
@@ -355,10 +378,9 @@ class HighlightLabelView extends LabelView {
       Shape s = super.modelToView(pos, a, b);
       Rectangle ret = s.getBounds();
       Debug.log(9, "[modelToView] super.bounds: " + ret);
-      int tabWidth = _fMetrics.stringWidth(tabStr.substring(1));
       if(pos!=end)
-         ret.x += tabHead*tabWidth;
-      //ret.width += tabTail*tabWidth;
+         ret.x += tabHead * getRealTabWidth();
+         //ret.width += tabTail*tabWidth;
       Debug.log(9, "[modelToView] new bounds: " + ret);
       return ret;
    }
@@ -419,8 +441,7 @@ class HighlightLabelView extends LabelView {
    }
 
    int drawTab(Graphics2D g2d, int x, int y){
-      drawString(g2d, tabStr, x, y);
-      return x + _fMetrics.stringWidth(tabStr);
+      return drawString(g2d, tabStr, x, y);
    }
 
    int drawString(Graphics2D g2d, String str, int x, int y){
@@ -434,7 +455,7 @@ class HighlightLabelView extends LabelView {
       }
       else{
          g2d.drawString(str, x, y);
-         x += _fMetrics.stringWidth(str);
+         x += stringWidth(str);
       }
       return x;
    }

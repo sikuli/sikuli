@@ -47,6 +47,55 @@ public class RegionTest extends TestCase implements SikuliEventObserver
        frame.dispose();
     }
 
+    public void testRegionFind() throws Exception
+    {
+       System.out.println("testRegionFind");
+       Screen scr = new Screen();
+       scr.setROI(new Region(0,0,300,300));
+       scr.setAutoWaitTimeout(2);
+       scr.setThrowException(true);
+       long begin = (new Date()).getTime();
+       boolean gotFindFailed = false;
+       try{
+          Match m = scr.find("test-res/google.png");
+          System.out.println("match: " + m);
+       }
+       catch(FindFailed e){
+          gotFindFailed = true;
+       }
+       long end = (new Date()).getTime();
+       assertTrue(gotFindFailed);
+       assertTrue(end-begin >= 2000);
+
+       scr.setAutoWaitTimeout(0);
+       scr.setThrowException(false);
+       begin = (new Date()).getTime();
+       scr.find("test-res/google.png");
+       end = (new Date()).getTime();
+       assertTrue(end-begin < 2500);
+    }
+
+
+
+    public void testSmallRegion() throws Exception
+    {
+       System.out.println("testSmallRegion");
+       Screen scr = new Screen();
+       scr.setROI(new Region(0,0,100,200));
+       scr.setAutoWaitTimeout(2);
+       scr.setThrowException(true);
+       long begin = (new Date()).getTime();
+       boolean gotFindFailed = false;
+       try{
+          Match m = scr.find("test-res/google.png");
+          System.out.println("match: " + m);
+       }
+       catch(FindFailed e){
+          gotFindFailed = true;
+       }
+       long end = (new Date()).getTime();
+       assertTrue(gotFindFailed);
+    }
 
     /*
     public void testFindAll() throws Exception{
@@ -212,6 +261,20 @@ public class RegionTest extends TestCase implements SikuliEventObserver
        frame.dispose();
     }
 
+    public void testRegionClickOffset() throws Exception
+    {
+       System.out.println("testRegionClickOffset");
+       JButtons frame = new JButtons();
+       assertEquals(0, frame.getCount()[1]);
+       assertEquals(0, frame.getCount()[2]);
+       Screen scr = new Screen();
+       Pattern ptn = new Pattern("test-res/cup-btn.png").targetOffset(-80,2);
+       int ret = scr.click(ptn, 0);
+       Thread.sleep(500);
+       assertEquals(1, frame.getCount()[1]);
+       assertEquals(0, frame.getCount()[2]);
+       frame.dispose();
+    }
 
     public void testDragDrop() throws Exception {
        System.out.println("testDragDrop");

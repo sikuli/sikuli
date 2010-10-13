@@ -126,6 +126,12 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       }
    }
 
+   public void captureWithAutoDelay(){
+      UserPreferences pref = UserPreferences.getInstance();
+      int delay = (int)(pref.getCaptureDelay() * 1000.0) +1;
+      capture(delay);
+   }
+
    public void capture(final int delay){
       if(_isCapturing)
          return;
@@ -147,8 +153,6 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
 
    public void actionPerformed(ActionEvent e) {
       Debug.log("capture!");
-      UserPreferences pref = UserPreferences.getInstance();
-      int delay = (int)(pref.getCaptureDelay() * 1000.0) +1;
-      capture(delay);
+      captureWithAutoDelay();
    }
 }

@@ -21,7 +21,6 @@ class VDict(VDictProxy):
    _DEFAULT_SIMILARITY = 0.7
 
    _DEFAULT_GET_ITEM_N = 0
-   _bundlePath = "."
 
    ##
    # Constructs a new visual dictionary with the same mapping as the given dict.
@@ -31,15 +30,6 @@ class VDict(VDictProxy):
       if dict:
          for k in dict.keys():
             self[k] = dict[k]
-
-   def _setBundlePath(cls, path):
-      VDict._bundlePath = path
-
-   _setBundlePath = classmethod(_setBundlePath)
-
-   def _getInBundle(self, f):
-      if java.io.File(f).isAbsolute(): return f
-      return self._bundlePath + "/" + f
 
    ##
    # Returns the number of keys in this visual dictionary.
@@ -51,8 +41,7 @@ class VDict(VDictProxy):
    # Maps the specified key to the specified item in this visual dictionary.
    #
    def __setitem__(self, key, item):
-      bkey = self._getInBundle(key)
-      self.insert(bkey, item)
+      self.insert(key, item)
       self._keys[key] = item
 
    ##
@@ -74,8 +63,7 @@ class VDict(VDictProxy):
    # Deletes the key and its corresponding value from this visual dictionary.
    #
    def __delitem__(self, key):
-      bkey = self._getInBundle(key)
-      self.erase(bkey)
+      self.erase(key)
       del self._keys[key]
 
    ##
@@ -90,7 +78,6 @@ class VDict(VDictProxy):
    #
    def get_exact(self, key):
       if key == None: return None
-      key = self._getInBundle(key)
       return self.lookup(key)
 
    ##
@@ -102,7 +89,6 @@ class VDict(VDictProxy):
    #
    def get(self, key, similarity=_DEFAULT_SIMILARITY, n=_DEFAULT_GET_ITEM_N):
       if key == None: return None
-      key = self._getInBundle(key)
       return self.lookup_similar_n(key, similarity, n)
 
    ##
@@ -112,7 +98,6 @@ class VDict(VDictProxy):
    #
    def get1(self, key, similarity=_DEFAULT_SIMILARITY):
       if key == None: return None
-      key = self._getInBundle(key)
       return self.lookup_similar(key, similarity)
    
 

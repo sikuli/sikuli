@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>sikuli-ide.jar</jar>
-  <outfile>c:\sikuli\sikuli-ide\target\Sikuli-IDE\Sikuli-IDE.exe</outfile>
+  <outfile>c:\sikuli\sikuli-ide\target\win32\Sikuli-IDE.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -18,6 +18,7 @@
     <mainClass>edu.mit.csail.uid.SikuliIDE</mainClass>
     <cp>sikuli-ide.jar</cp>
     <cp>sikuli-script.jar</cp>
+    <cp>commons-cli-1.2.jar</cp>
     <cp>jintellitype-1.3.2.jar</cp>
     <cp>junit-3.8.1.jar</cp>
   </classPath>
@@ -26,8 +27,8 @@
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <initialHeapSize>256</initialHeapSize>
-    <maxHeapSize>1024</maxHeapSize>
+    <initialHeapSize>64</initialHeapSize>
+    <maxHeapSize>512</maxHeapSize>
     <opt>-Dpython.path=sikuli-script.jar/</opt>
     <opt>-Dfile.encoding-UTF8</opt>
   </jre>

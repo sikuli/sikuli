@@ -64,11 +64,11 @@ void test_sem(){
 
   SikuliEventManager sem;
   sem.setDebugMode(true);
-  sem.addObserver(SIKULI_EVENT_APPEAR, "testdata/advanced.png", 1, 450, 300, 400, 400);
-  sem.addObserver(SIKULI_EVENT_VANISH, "testdata/advanced.png", 2, 450, 300, 400, 400);
-  sem.addObserver(SIKULI_EVENT_CHANGE, "", 3, 450, 300, 400, 400);
-  sem.addObserver(SIKULI_EVENT_APPEAR, "testdata/firewire.png", 4, 100, 150, 250, 400);
-  sem.addObserver(SIKULI_EVENT_VANISH, "testdata/firewire.png", 4, 100, 150, 250, 400);
+  sem.addObserver(SIKULI_EVENT_APPEAR, "testdata/advanced.png", 0.7, 1, 450, 300, 400, 400);
+  sem.addObserver(SIKULI_EVENT_VANISH, "testdata/advanced.png", 0.7, 2, 450, 300, 400, 400);
+  sem.addObserver(SIKULI_EVENT_CHANGE, "", 0.7, 3, 450, 300, 400, 400);
+  sem.addObserver(SIKULI_EVENT_APPEAR, "testdata/firewire.png", 0.7, 4, 100, 150, 250, 400);
+  sem.addObserver(SIKULI_EVENT_VANISH, "testdata/firewire.png", 0.7, 4, 100, 150, 250, 400);
 
 
   vector<Event> events;
@@ -109,7 +109,7 @@ void test_finder(int screen_i, int target_i){
     string testcase = "single-case";   
 
     Match m;
-    f.find(target_image_path(screen_i,target_i).c_str());
+    f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
     m = f.next();
 
     cout << "saving test result to " << result_image_path(screen_i,target_i,testcase) << endl;
@@ -142,7 +142,7 @@ void test_finder_all(){
 
     Match m;
 
-    f.find(target_image_path(screen_i,target_i).c_str());
+    f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
 
     m = f.next();
 
@@ -178,7 +178,7 @@ void test_finder_all(){
     testcase = "top-5";
     for (int target_i=1;target_i<=4;target_i++){
 
-      f.find(target_image_path(screen_i,target_i).c_str());
+      f.find(target_image_path(screen_i,target_i).c_str(), 0.7);
 
       for (int i=0;i<5;++i){      
         Match m;
@@ -240,7 +240,7 @@ void test_finder_all(){
     Match m;
 
     f.setROI(f.get_screen_width()/2,f.get_screen_height()/2,f.get_screen_width()/2,f.get_screen_height()/2);
-    f.find(target_image_path(screen_i,target_i).c_str());             
+    f.find(target_image_path(screen_i,target_i).c_str(), 0.7);             
 
     for (int i=0; i < 5 && f.hasNext(); i++)
       m = f.next();
@@ -270,17 +270,39 @@ void  test_change_finder(){
   }
 }
 
+void test_find(char** argv){
+   for(int i=0;i<1;i++){
+      Finder f(argv[1]);
+      f.debug(false);
+
+      Match m;
+      f.find(argv[2], 0.7);
+      while(f.hasNext()){
+         m = f.next();
+         cout << "match " << m.score << " " << m.x << " " << m.y  << endl;
+      }
+   }
+} 
+
 int main(int argc, char** argv){
 
   //while (true)
 
   //test_face_finder();
-  //test_change_finder();  
   //test_sem();  
   
-  test_finder_all();
+  //test_finder_all();
     
   //test_finder(4,3);
   
+    if(argc==1){
+       cerr << "Usage: " << argv[0] << " screen-image template-image" << endl;
+      return -1;
+    }
+    test_find(argv);
+    test_change_finder();  
+    while(1){
+      sleep(1);
+    }
 
 }

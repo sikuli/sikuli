@@ -17,7 +17,6 @@ using namespace std;
 #define CENTER_REMATCH_THRESHOLD 0.99
 #define BORDER_MARGIN 0.2
 
-
 #ifdef DEBUG
 #define dout std::cerr
 #else
@@ -41,6 +40,10 @@ BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, true)){
 }
 
 BaseFinder::~BaseFinder(){
+   dout << "~BaseFinder" << endl;
+   if (img) cvReleaseImage(&img);
+   if (roi_img) cvReleaseImage(&roi_img);
+   if (debug_img) cvReleaseImage(&debug_img);
 }
 
 void 
@@ -310,6 +313,8 @@ Finder::next(){
    sort(buffered_matches,sort_by_score);
    return top_match;
 }
+
+
 
 //=========================================================================================
 

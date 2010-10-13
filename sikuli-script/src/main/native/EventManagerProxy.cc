@@ -94,6 +94,7 @@ JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
    }
    env->GetByteArrayRegion(screenImg, 0, len,(jbyte *)result);
    cvSetData(img,result,bpr);    //set the buffer
+   cvCvtColor(img, img, CV_RGB2BGR);
 
    SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 
    vector<Event> events = sem->update(img);
@@ -105,5 +106,20 @@ JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
    free(result);
    return ret;
   
+}
+
+/*
+ * Class:     edu_mit_csail_uid_EventManager
+ * Method:    destroy
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_destroy
+  (JNIEnv *env, jobject jobj, jlong jSemInstance){
+  
+   SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 
+   delete sem;
+#ifdef DEBUG
+   cerr << "[JNI] destroy EventManager\n";
+#endif
 }
 

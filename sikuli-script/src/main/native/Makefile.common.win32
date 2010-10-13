@@ -1,7 +1,8 @@
 OPENCV_DIR=C:\OpenCV2.1
-TESSERACT_DIR= C:\tesseract-2.04
-JDK_DIR=C:\Program Files\Java\jdk1.6.0_20
+JDK_DIR=C:\Program Files\Java\jdk1.6.0_21
 
-LIBPATH= "$(OPENCV_DIR)\lib";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib";"$(TESSERACT_DIR)"
+LIBPATH= "$(OPENCV_DIR)\lib";"c:\Program Files\Microsoft Visual Studio 9.0\vc\lib";"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
 
-CFLAGS=/MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" -I"$(TESSERACT_DIR)\ccmain" cv210.lib highgui210.lib cxcore210.lib  -LD 
+DEBUG=/Zi #-LDd #/DDEBUG #/D_DEBUG /DEBUG /nodefaultlib:libcmt.lib   /nodefaultlib:msvcrt.lib   /nodefaultlib:libcd.lib   /nodefaultlib:libcmtd.lib    /nodefaultlib:libc.lib /nodefaultlib:libcpmtd.lib
+
+CFLAGS= /MT -I"$(JDK_DIR)\include" -I"$(JDK_DIR)\include\win32" -I"$(OPENCV_DIR)\include\opencv" cv210.lib highgui210.lib cxcore210.lib -LD /dll /O2 #$(DEBUG) # -LD  

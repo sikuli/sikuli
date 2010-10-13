@@ -15,14 +15,14 @@ f_py = glob.glob(path + "/*.py")
 pngFilter = re.compile("\"([^\"]+\.png)\"", re.I)
 goodFiles = []
 
-if len(f_py) > 0: 
-   src = open(f_py[0], "r")
+for py in f_py:
+   src = open(py, "r")
    for line in src:
       m = pngFilter.findall(line)
       if m:
          goodFiles += m
    src.close()
-   for png in glob.glob(path + "/*.png"):
-      if not os.path.basename(png) in goodFiles:
-         os.remove(png)
+for png in glob.glob(path + "/*.png"):
+   if not os.path.basename(png) in goodFiles:
+      os.remove(png)
 

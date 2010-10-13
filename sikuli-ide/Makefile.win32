@@ -1,19 +1,20 @@
-JAVA_ARGS=-Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Dpython.path=$(LIB_PATH)/sikuli-script.jar/Lib
+JAVA_ARGS=-Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 -Dpython.path=$(LIB_PATH)/sikuli-script.jar/Lib -Xmx512M
 ARGS=#evaluation/TestJEdit.sikuli 
 
 JAVAC=javac
 JAVA=java
 
 LIB_PATH=../lib
-CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar;$(LIB_PATH)/sikuli-script.jar;$(LIB_PATH)/jintellitype-1.3.2/jintellitype-1.3.2.jar;$(LIB_PATH)/swing-layout-1.0.1.jar
+CLASSPATH=$(LIB_PATH)/junit-3.8.1.jar;$(LIB_PATH)/sikuli-script.jar;$(LIB_PATH)/jintellitype-1.3.2/jintellitype-1.3.2.jar;$(LIB_PATH)/swing-layout-1.0.1.jar;$(LIB_PATH)/commons-cli-1.2.jar
+
 RESOURCE_PATH=resources
 MAIN_CLASS=edu.mit.csail.uid.SikuliIDE
 
 JAR=sikuli-ide.jar
 APP=$(TARGET_OS)/Sikuli-IDE.app
 RECORDER=../sikuli-redo/target/MacRecorder.app
-RELEASE_APP_ZIP=Sikuli-IDE-win32-`cat latest-ver`.zip
-RELEASE_APP_INSTALLER=Sikuli-IDE-win32-`cat latest-ver`.exe
+RELEASE_APP_ZIP=Sikuli-IDE-win32-$(shell cat latest-ver).zip
+RELEASE_APP_INSTALLER=Sikuli-IDE-win32-$(shell cat latest-ver).exe
 
 TARGET_PATH=target
 SOURCE_PATH=src/main/java
@@ -21,7 +22,7 @@ CLASSES_OUT_PATH=target/classes
 JAR_PATH=target/jar
 RELEASE_TMP_PATH=$(TARGET_PATH)/Sikuli-IDE
 RELEASE_PATH=../release
-RELEASE_FILES=*.exe,*.ico,sikuli-ide-full.jar,tmplib,*.bat
+RELEASE_FILES=*.exe,*.ico,*.jar,tmplib,*.bat
 APP_FRAMEWORKS_PATH=$(TARGET_PATH)/$(APP)/Contents/Frameworks
 
 SRC=$(shell find $(SOURCE_PATH) -name \*.java -and -not -regex '.*/NativeLayerFor.*.java')
@@ -33,6 +34,8 @@ JFLAGS=-sourcepath $(SOURCE_PATH) -d $(CLASSES_OUT_PATH) -cp "$(CLASSPATH)"
 
 SRC+=$(SOURCE_PATH)/edu/mit/csail/uid/NativeLayerForWindows.java
 CLASSES+=$(CLASSES_OUT_PATH)/edu/mit/csail/uid/NativeLayerForWindows.class
+
+MANIFEST=META-INF/MANIFEST-win32.MF
 
 default: test
 
@@ -72,7 +75,7 @@ prepare-jar:
 	cp -rf $(CLASSES_OUT_PATH)/* $(JAR_PATH)
 	
 jar: $(JAR_PATH) all prepare-jar
-	cd $(JAR_PATH); jar cvMf ../$(JAR) *; cd -
+	cd $(JAR_PATH); jar cmf $(MANIFEST) ../$(JAR) *; cd -
 
 install-jar: jar
 	cp $(JAR_PATH)/../$(JAR) $(LIB_PATH)
@@ -85,13 +88,12 @@ release: jar $(RELEASE_TMP_PATH)
 	mkdir -p ../release
 	perl -pi -e 's/<appversion>.*<\/appversion>/$$v=`cat latest-ver`;chomp($$v);"<appversion>$$v<\/appversion>"/xe' install.xml
 	cp $(subst ;, , $(CLASSPATH)) $(JAR_PATH)/../$(JAR) $(RELEASE_TMP_PATH)
-	#cd $(RELEASE_TMP_PATH); rm -f sikuli-ide-full.jar; ../../../utils/merge-jar.sh *.jar; mv out.jar sikuli-ide-full.jar
 	rm -rf $(RELEASE_TMP_PATH)/tmplib
 	cp -r $(LIB_PATH)/win32 $(RELEASE_TMP_PATH)/tmplib
 	-cp $(TARGET_PATH)/win32/* $(RELEASE_TMP_PATH)
+	cd $(TARGET_PATH) ;  zip -r ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP) Sikuli-IDE/{$(RELEASE_FILES)} 
+	echo "Generated ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP)"
 	@echo To generate a win32 package, run Advanced Installer.
-	#cd $(TARGET_PATH) ;  zip -r ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP) Sikuli-IDE/{$(RELEASE_FILES)} -x '*/.svn/*'
-	#echo "Generated ../$(RELEASE_PATH)/$(RELEASE_APP_ZIP)"
 	#/cygdrive/c/Program\ Files/IzPack/bin/compile install.xml
 	#/cygdrive/c/Program\ Files/IzPack/utils/wrappers/izpack2exe/izpack2exe --file=install.jar --no-upx --with-7z=..\\utils\\7za.exe
 	#mv setup.exe $(RELEASE_PATH)/$(RELEASE_APP_INSTALLER)

@@ -40,10 +40,14 @@ public class EventManager {
    }
 
    private <PSC> float getSimiliarity(PSC ptn){
+      float similarity=-1f;
       if( ptn instanceof Pattern ){
-         return ((Pattern)ptn).similarity;
+         similarity=((Pattern)ptn).similarity;
       }
-      return -1f;
+      if(similarity<0) {
+         similarity=(float)Settings.MinSimilarity;
+      }
+      return similarity;
    }
 
    private <PSC> String getFilename(PSC ptn){
@@ -115,7 +119,17 @@ public class EventManager {
       }
    }
 
+   protected void finalize() throws Throwable {
+      dispose();
+   }
+
+
+   public void dispose(){
+      destroy(_c_instance);
+   }
+
    private native long createEventManager(); 
+   private native void destroy(long sem_instance); 
    private native void addObserver(long sem_instance, 
                                    int evt_type, String target_image_filename,
                                    float similiarity,

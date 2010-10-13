@@ -18,7 +18,7 @@ public class Region {
    protected double _autoWaitTimeout = 3.0;
 
    protected boolean _observing = false;
-   protected EventManager _evtMgr;
+   protected EventManager _evtMgr = null;
 
    protected Match _lastMatch;
    protected Iterator<Match> _lastMatches;
@@ -52,7 +52,12 @@ public class Region {
       _scr = initScreen();
       //_robot = _scr.getRobot();
       _robot = Screen.getRobot(0); // mouseMove only works on the primary robot
-      _evtMgr = new EventManager(this);
+   }
+
+   protected EventManager getEventManager(){
+      if(_evtMgr == null)
+         _evtMgr = new EventManager(this);
+      return _evtMgr;
    }
 
    private Screen initScreen(){
@@ -319,13 +324,18 @@ public class Region {
    public <PSRML> int dragDrop(PSRML t1, PSRML t2, int modifiers)
                                              throws  FindFailed {
       int ret = 0;
-      pressModifiers(modifiers);
-      if(drag(t1)!=0){
-         _robot.delay((int)(Settings.DelayAfterDrag*1000));
-         ret = dropAt(t2, Settings.DelayBeforeDrop);
+      Location loc1 = getLocationFromPSRML(t1);
+      Location loc2 = getLocationFromPSRML(t2);
+      if(loc1 != null && loc2 != null){
+         pressModifiers(modifiers);
+         if(drag(loc1)!=0){
+            _robot.delay((int)(Settings.DelayAfterDrag*1000));
+            ret = dropAt(loc2, Settings.DelayBeforeDrop);
+         }
+         releaseModifiers(modifiers);
+         return 1;
       }
-      releaseModifiers(modifiers);
-      return ret;
+      return 0;
    }
 
    public <PSRML> int drag(PSRML target) throws  FindFailed{
@@ -436,15 +446,15 @@ public class Region {
 
 
    public <PSC> void onAppear(PSC target, SikuliEventObserver observer){
-      _evtMgr.addAppearObserver(target, observer);
+      getEventManager().addAppearObserver(target, observer);
    }
 
    public <PSC> void onVanish(PSC target, SikuliEventObserver observer){
-      _evtMgr.addVanishObserver(target, observer);
+      getEventManager().addVanishObserver(target, observer);
    }
 
    public void onChange(SikuliEventObserver observer){
-      _evtMgr.addChangeObserver(observer);
+      getEventManager().addChangeObserver(observer);
    }
 
    public void observe(){
@@ -465,6 +475,8 @@ public class Region {
    }
 
    public void observe(double secs){
+      if(_evtMgr == null)
+         return;
       int MaxTimePerScan = (int)(1000.0/Settings.ObserveScanRate); 
       long begin_t = (new Date()).getTime();
       _observing = true;
@@ -527,6 +539,7 @@ public class Region {
       if(f.hasNext()){
          return f;
       }
+      f.destroy();
       return null;
    }
 

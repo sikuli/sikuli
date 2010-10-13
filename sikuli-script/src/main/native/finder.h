@@ -55,7 +55,6 @@ private:
 class Finder : public BaseFinder{
 	
 public:
-	
 	Finder(Mat source);
 	Finder(IplImage* source);
 	Finder(const char* source_image_filename);
@@ -101,7 +100,7 @@ class FaceFinder : public BaseFinder {
 public:
 
   FaceFinder(const char* screen_image_filename);
-  ~FaceFinder();
+  virtual ~FaceFinder();
 
   void find();
   bool hasNext();
@@ -127,7 +126,7 @@ public:
   ChangeFinder(const Mat screen_image);
 	
   ChangeFinder(const char* screen_image_filename);
-  ~ChangeFinder();
+  virtual ~ChangeFinder();
 
   void find(IplImage* new_img);
   void find(Mat new_img);

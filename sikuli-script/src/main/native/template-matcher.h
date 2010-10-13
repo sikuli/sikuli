@@ -14,7 +14,7 @@ public:
 
   TemplateMatcher(){};
   TemplateMatcher(IplImage *img, IplImage *tpl);
-  ~TemplateMatcher();
+  virtual ~TemplateMatcher();
 
   virtual Match next();
   bool more();
@@ -37,7 +37,7 @@ class DownsampleTemplateMatcher : public TemplateMatcher {
 public:
 
   DownsampleTemplateMatcher(IplImage *img, IplImage *tpl, float downsample_ratio=1.0);
-  ~DownsampleTemplateMatcher();
+  virtual ~DownsampleTemplateMatcher();
 
   virtual Match next();
 
@@ -45,6 +45,7 @@ private:
 
   IplImage *original_img_;
   IplImage *original_tpl_;
+  IplImage *downsampled_img_, *downsampled_tpl_;
   float downsample_ratio_;
 
 };
@@ -53,7 +54,7 @@ class LookaheadTemplateMatcher : public DownsampleTemplateMatcher{
 
 public:
   LookaheadTemplateMatcher(IplImage *img, IplImage *tpl, float downsample_ratio=1.0);
-  ~LookaheadTemplateMatcher();
+  virtual ~LookaheadTemplateMatcher();
   virtual Match next();
 
 private:

@@ -99,7 +99,7 @@ public class ButtonGenCommand extends JButton implements ActionListener{
             if(!first) pane.insertString(", ");
             pane.insertComponent(btnCapture);
             if( pref.getAutoCaptureForCmdButtons() ){
-               btnCapture.capture(300);
+               btnCapture.captureWithAutoDelay();
             }
             first = false;
             continue;

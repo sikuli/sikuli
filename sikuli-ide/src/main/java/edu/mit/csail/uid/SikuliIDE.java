@@ -17,6 +17,8 @@ import javax.swing.event.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.apache.commons.cli.CommandLine;
+
 
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
@@ -43,6 +45,9 @@ public class SikuliIDE extends JFrame {
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
 
+   private static CommandLine _cmdLine;
+   private static boolean _useStderr = false;
+
    private static SikuliIDE _instance = null;
 
    private static Icon PY_SRC_ICON = getIconResource("/icons/py-src-16x16.png");
@@ -51,6 +56,13 @@ public class SikuliIDE extends JFrame {
 
    static String _I(String key, Object... args){ 
       return I18N._I(key, args);
+   }
+
+   public static void errorMsg(String msg){
+      if(_useStderr)
+         System.err.println(msg);
+      else
+         JOptionPane.showMessageDialog(null, msg);
    }
 
    public static ImageIcon getIconResource(String name) {
@@ -421,16 +433,33 @@ public class SikuliIDE extends JFrame {
    private void initShortcutKeys(){
       final int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       Toolkit.getDefaultToolkit().addAWTEventListener( new AWTEventListener() {
+         private boolean isKeyNextTab(java.awt.event.KeyEvent ke){
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+               ke.getModifiers() == InputEvent.CTRL_MASK)
+                  return true;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_CLOSE_BRACKET && 
+               ke.getModifiers()==(InputEvent.META_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            return false;
+         }
+
+         private boolean isKeyPrevTab(java.awt.event.KeyEvent ke){
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_TAB && 
+               ke.getModifiers()==(InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_OPEN_BRACKET && 
+               ke.getModifiers()==(InputEvent.META_MASK|InputEvent.SHIFT_MASK) )
+                  return true;
+            return false;
+         }
+
          public void eventDispatched( AWTEvent e ){
             java.awt.event.KeyEvent ke = (java.awt.event.KeyEvent)e;
             //Debug.log(ke.toString());
             if( ke.getID() == java.awt.event.KeyEvent.KEY_PRESSED ){
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT && 
-                   ke.getModifiers() == scMask)
+               if( isKeyNextTab(ke) ) 
                   nextTab();
-               else
-               if( ke.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT && 
-                   ke.getModifiers() == scMask)
+               else if( isKeyPrevTab(ke) )
                   prevTab();
             }
          } }, AWTEvent.KEY_EVENT_MASK );
@@ -456,7 +485,7 @@ public class SikuliIDE extends JFrame {
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
 
-      ScriptRunner srunner = ScriptRunner.getInstance(args);
+      ScriptRunner.getInstance(getPyArgs());
 
       _native.initIDE(this);
 
@@ -483,7 +512,7 @@ public class SikuliIDE extends JFrame {
 
       setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
       adjustCodePaneWidth();
-      mainAndConsolePane.setDividerLocation(500);
+      mainAndConsolePane.setDividerLocation(450);
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -491,8 +520,10 @@ public class SikuliIDE extends JFrame {
       initWindowListener();
       initTooltip();
 
-      if(args!=null && args.length>=1)
-         loadFile(Utils.slashify(args[0], false));
+      if( _cmdLine.getArgs().length > 0 ){
+         for(String f : _cmdLine.getArgs())
+            loadFile(Utils.slashify(f, false));
+      }
       else
          (new FileAction()).doNew(null);
 
@@ -576,51 +607,123 @@ public class SikuliIDE extends JFrame {
    }
 
    private void adjustCodePaneWidth(){
-      int pos = getWidth() - _sidePane.getMinimumSize().width-15;
+      int pos = getWidth() - _sidePane.getMinimumSize().width-15 
+                           - _cmdToolBar.getWidth();
       if(_codeAndUnitPane != null && pos >= 0)
          _codeAndUnitPane.setDividerLocation(pos);
    }
 
 
    static boolean _runningSkl = false;
-   public static void runSkl(String filename, String[] args) throws IOException{
+   public static int runSikuli(String filename, String[] args) throws IOException{
+      int exitCode = -1;
+      File file = new File(filename);
+      if(!file.exists())
+         throw new IOException(filename + ": No such file");
+
+      ScriptRunner srunner = new ScriptRunner(args);
+      try{
+         srunner.runPython(Utils.slashify(filename,true));
+      }
+      catch(Exception e){
+         java.util.regex.Pattern p = 
+            java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
+         Matcher matcher = p.matcher(e.toString());
+         if(matcher.find()){
+            exitCode = Integer.parseInt(matcher.group(1));
+            Debug.info(_I("msgExit", matcher.group(1) ));
+         }
+         else{
+            errorMsg( _I("msgRunningSklError", filename, e) );
+         }
+      }
+      return exitCode;
+   }
+
+   public static int runSkl(String filename, String[] args) throws IOException{
       _runningSkl = true;
-      String name = (new File(filename)).getName();
+      File file = new File(filename);
+      if(!file.exists())
+         throw new IOException(filename + ": No such file");
+      String name = file.getName();
       name = name.substring(0, name.lastIndexOf('.'));
       File tmpDir = Utils.createTempDir();
       File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
       sikuliDir.mkdir();
       Utils.unzip(filename, sikuliDir.getAbsolutePath());
-      ScriptRunner srunner = ScriptRunner.getInstance(args);
-      try{
-         srunner.runPython(Utils.slashify(sikuliDir.getAbsolutePath(),true));
-      }
-      catch(Exception e){
-         java.util.regex.Pattern p = 
-            java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
-         Matcher matcher = p.matcher(e.toString());
-         if(matcher.find()){
-            Debug.info(_I("msgExit", matcher.group(1)));
+      return runSikuli(sikuliDir.getAbsolutePath(), args);
+   }
+
+   static String[] getPyArgs(){
+      String[] pargs = _cmdLine.getArgs();
+      if( _cmdLine.hasOption("args") ) 
+         pargs = _cmdLine.getOptionValues("args");
+      return pargs; 
+   }
+
+   private static void runUnitTest(String filename){
+      TextUnitTestRunner tester = new TextUnitTestRunner();
+      File file = new File(filename);
+      filename = file.getAbsolutePath();
+      if(filename.endsWith(".sikuli")){
+         try{
+            boolean result = tester.testSikuli(filename);
+            if(!result)
+               System.exit(1);
+            System.exit(0);
          }
-         else{
-            JOptionPane.showMessageDialog(null, 
-                  _I("msgRunningSklError", filename, e));
+         catch(Exception e){
+            System.err.println(e.getMessage());
+            System.exit(2);
          }
       }
-      System.exit(0);
+      System.exit(-1);
    }
 
    public static void main(String[] args) {
       initNativeLayer();
+      CommandArgs cmdArgs = new CommandArgs();
+      _cmdLine = cmdArgs.getCommandLine(args);
+
+      if( _cmdLine.hasOption("h") ){
+         cmdArgs.printHelp();
+         return;
+      }
+
+      if( _cmdLine.hasOption("s") ){
+         _useStderr = true;
+      }
+      
+      if( _cmdLine.hasOption("test") ){
+         runUnitTest(_cmdLine.getOptionValue("test"));
+      }
+         
       if(args!=null && args.length>=1){
          try{
-            if(args[0].endsWith(".skl")){
-               runSkl(args[0], args);
-               return;
+            String[] pargs = getPyArgs();
+            int exitCode = 0;
+            if( _cmdLine.hasOption("run") ){
+               String filename = _cmdLine.getOptionValue("run");
+               File file = new File(filename);
+               filename = file.getAbsolutePath();
+               if(filename.endsWith(".skl"))
+                  exitCode = runSkl(filename, pargs);
+               else if(filename.endsWith(".sikuli")){
+                  exitCode = runSikuli(filename, pargs);
+               }
+               System.exit(exitCode);
+            }
+            if( _cmdLine.getArgs().length>0 ){
+               String file = _cmdLine.getArgs()[0];
+               if(file.endsWith(".skl")){
+                  exitCode = runSkl(file, pargs);
+                  System.exit(exitCode);
+               }
             }
          }
          catch(IOException e){
-            System.err.println("Can't open file: " + args[0] + "\n" + e);
+            errorMsg(e.getMessage());
+            System.exit(-2);
          }
       }
       try{
@@ -1106,7 +1209,7 @@ public class SikuliIDE extends JFrame {
       }
 
       protected void runPython(File f) throws IOException{
-         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         ScriptRunner srunner = new ScriptRunner(getPyArgs());
          String path = SikuliIDE.getInstance().getCurrentBundlePath();
          srunner.addTempHeader("initSikuli()");
          srunner.addTempHeader("setShowActions(True)");
@@ -1129,7 +1232,7 @@ public class SikuliIDE extends JFrame {
       }
 
       protected void runPython(File f) throws IOException{
-         ScriptRunner srunner = ScriptRunner.getInstance(null);
+         ScriptRunner srunner = new ScriptRunner(getPyArgs());
          String path= SikuliIDE.getInstance().getCurrentBundlePath();
          srunner.addTempHeader("initSikuli()");
          srunner.runPython(path, f);
@@ -1234,7 +1337,7 @@ public class SikuliIDE extends JFrame {
                   }
                   catch(Exception e){
                      java.util.regex.Pattern p = 
-                        java.util.regex.Pattern.compile("SystemExit:( [0-9]+)");
+                        java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
                      Matcher matcher = p.matcher(e.toString());
                      if(matcher.find()){
                         Debug.info(_I("msgExit", matcher.group(1)));
@@ -1333,4 +1436,5 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       ide.setVisible(true);
       codePane.requestFocus();
    }
+
 }

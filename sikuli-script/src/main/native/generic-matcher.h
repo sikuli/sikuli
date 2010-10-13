@@ -23,6 +23,7 @@ class GenericMatcher{
 public:
 
   virtual Match next() = 0;
+  virtual ~GenericMatcher(){};
 
 };
 

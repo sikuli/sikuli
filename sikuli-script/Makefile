@@ -64,7 +64,7 @@ all: $(TARGET_PATH) $(CLASSES) native-lib
 doc: python-doc java-doc install-doc
 
 java-doc:
-	javadoc -sourcepath $(SOURCE_PATH) -d $(DOC_PATH) -classpath $(CLASSPATH)  edu.mit.csail.uid
+	javadoc -windowtitle "Javadoc of Sikuli Script" -sourcepath $(SOURCE_PATH) -d $(DOC_PATH) -classpath $(CLASSPATH)  edu.mit.csail.uid
 
 
 python-doc:
