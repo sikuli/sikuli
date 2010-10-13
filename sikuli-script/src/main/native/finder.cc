@@ -36,7 +36,7 @@ BaseFinder::BaseFinder(const char* source_image_filename){
 
 
 // somwhow after changing it to false works!!
-BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, false)){
+BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, true)){
    roi = Rect(0,0,source.cols,source.rows);
 }
 

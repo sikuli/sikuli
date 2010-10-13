@@ -1,4 +1,5 @@
 UNAME=$(shell uname)
+UNAME_R=$(shell uname -r)
 
 TARGET_DIR=../../../target/lib
 OS=$(shell uname -rs)

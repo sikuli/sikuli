@@ -10,7 +10,7 @@ public:
 	BaseFinder(IplImage* screen_image);
 	BaseFinder(Mat source);
 	BaseFinder(const char* source_image_filename);
-	~BaseFinder();
+	virtual ~BaseFinder();
 	
 	void setROI(int x, int y, int w, int h);
 	
@@ -59,7 +59,7 @@ public:
 	Finder(Mat source);
 	Finder(IplImage* source);
 	Finder(const char* source_image_filename);
-	~Finder();
+	virtual ~Finder();
 	
 
 	void find(Mat target, double min_similarity);
