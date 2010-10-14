@@ -16,6 +16,8 @@ ENDIF()
 
 
 SET(BASE_DIR "${CMAKE_SOURCE_DIR}")
+SET(JAVA_SRC_DIR "${BASE_DIR}/src/main/java")
+SET(NATIVE_SRC_DIR "${BASE_DIR}/src/main/native")
 SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
 SET(BINARY_DIR "${BASE_DIR}/target")
 SET(INCLUDE_LIB_DIR "${BASE_DIR}/lib")
@@ -44,4 +46,4 @@ add_custom_target( ${JAR_FILE} ALL
 add_dependencies(${JAR_FILE} ${PROJECT_NAME}.classes)
 
 
-SUBDIRS(src/main/java src/main/native)
+SUBDIRS(${JAVA_SRC_DIR} ${NATIVE_SRC_DIR})
