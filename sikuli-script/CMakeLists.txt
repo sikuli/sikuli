@@ -3,7 +3,7 @@ PROJECT (sikuli-script Java)
 
 ENABLE_TESTING()
 
-SET(CMAKE_VERBOSE_MAKEFILE 1)
+SET(CMAKE_VERBOSE_MAKEFILE 0)
 #SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake_modules/")
 
 FIND_PACKAGE(Java)
@@ -43,7 +43,8 @@ SET(JAR_FILE sikuli-script.jar)
 add_custom_target( ${JAR_FILE} ALL
    COMMAND ${JAVA_ARCHIVE} cfm ${BINARY_DIR}/${JAR_FILE}
            ${BINARY_DIR}/MANIFEST.txt -C ${JAR_DIR} *
-   COMMENT "Prepare and package ${JAR_FILE}."
+   COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/${JAR_FILE} ${COMMON_LIB_DIR}/${JAR_FILE}
+   COMMENT "Preparing and packaging ${JAR_FILE}"
    WORKING_DIRECTORY ${JAR_DIR}
 )
 
@@ -54,6 +55,7 @@ add_custom_target( ${JAR_FILE}.includes-in-jar
 IF(NOT EXISTS ${JAR_DIR}/org/python)
    add_custom_target( ${JAR_FILE}.jython-in-jar
       COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JYTHON_JAR}
+      COMMENT "Merging Jython's JAR"
    )
 ENDIF()
 
@@ -61,6 +63,7 @@ SET(LIB_IN_JAR_DIR "${JAR_DIR}/Lib")
 add_custom_target( ${JAR_FILE}.python-src-in-jar
    COMMAND ${CMAKE_COMMAND} -E make_directory ${LIB_IN_JAR_DIR}
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PYTHON_SRC_DIR} ${LIB_IN_JAR_DIR}
+   COMMENT "Copying Sikuli's Python Source"
 )
 
 IF(NOT EXISTS ${LIB_IN_JAR_DIR}/glob.py)
@@ -68,6 +71,7 @@ IF(NOT EXISTS ${LIB_IN_JAR_DIR}/glob.py)
       COMMAND ${CMAKE_COMMAND} -E make_directory ${LIB_IN_JAR_DIR}
       COMMAND ${CMAKE_COMMAND} -E chdir ${LIB_IN_JAR_DIR} 
               ${CMAKE_COMMAND} -E tar xzf ${JYTHON_LIB_FILE}
+      COMMENT "Copying Jython Libraries"
    )
 ENDIF()
 
