@@ -41,9 +41,11 @@ BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, true)){
 
 BaseFinder::~BaseFinder(){
    dout << "~BaseFinder" << endl;
+   /*
    if (img) cvReleaseImage(&img);
    if (roi_img) cvReleaseImage(&roi_img);
    if (debug_img) cvReleaseImage(&debug_img);
+   */
 }
 
 void 
