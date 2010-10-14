@@ -3,6 +3,7 @@ PROJECT (sikuli-script Java)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
+#SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake_modules/")
 
 FIND_PACKAGE(Java)
 SET( NON_NATIVE_TARGET TRUE)
@@ -27,12 +28,11 @@ SET(CLASSPATH
    ${INCLUDE_LIB_DIR}${SEP}${JYTHON_JAR}${SEP}.
 )
 
+FILE(MAKE_DIRECTORY ${BINARY_DIR})
 FILE(MAKE_DIRECTORY ${CLASS_DIR})
 FILE(MAKE_DIRECTORY ${JAR_DIR})
 
 SET(JAR_FILE sikuli-script.jar)
-
-SUBDIRS(src/main/java)
 
 add_custom_target( ${JAR_FILE} ALL
    COMMAND ${JAVA_ARCHIVE} cfm ${BINARY_DIR}/${JAR_FILE}
@@ -42,3 +42,6 @@ add_custom_target( ${JAR_FILE} ALL
 # Dependencies
 
 add_dependencies(${JAR_FILE} ${PROJECT_NAME}.classes)
+
+
+SUBDIRS(src/main/java src/main/native)
