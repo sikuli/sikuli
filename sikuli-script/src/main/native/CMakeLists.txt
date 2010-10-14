@@ -11,7 +11,7 @@ SET(JNI_HEADERS
    edu_mit_csail_uid_Win32Util.h
 )
 
-SET(LIBRARY_OUTPUT_PATH "${BINARY_DIR}/lib")
+SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
 
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(JNI REQUIRED)
@@ -51,7 +51,7 @@ foreach(JNI_HEADER ${JNI_HEADERS})
    ADD_CUSTOM_COMMAND(
       OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${JNI_HEADER}
       COMMAND ${JAVA_JAVA_H} -d ${CMAKE_CURRENT_SOURCE_DIR} 
-                             -classpath ${CLASS_DIR} ${JNI_CLASS}
+                             -classpath ${BINARY_CLASS_DIR} ${JNI_CLASS}
       DEPENDS ${JAVA_SRC_DIR}/${JNI_JAVA_SOURCE}
    )
 endforeach(JNI_HEADER ${JNI_HEADERS})
@@ -63,3 +63,8 @@ foreach(BUILD_TARGET ${BUILD_TARGETS})
       set_target_properties(${BUILD_TARGET} PROPERTIES SUFFIX ".jnilib")
    endif(APPLE)
 endforeach(BUILD_TARGET ${BUILD_TARGETS})
+
+add_custom_target(${JAR_FILE}.libs-in-jar
+   COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_DIR}/META-INF
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_DIR}/META-INF/lib
+)

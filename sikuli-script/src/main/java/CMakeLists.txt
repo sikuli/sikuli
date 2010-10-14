@@ -37,7 +37,13 @@ SET(JAVA_SOURCE_FILES
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
-    COMMAND ${JAVA_COMPILE} -d ${CLASS_DIR} -classpath ${CLASSPATH}
+    COMMAND ${JAVA_COMPILE} -d ${BINARY_CLASS_DIR} -classpath ${CLASSPATH}
             ${JAVA_SOURCE_FILES}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
      
+
+add_custom_target( ${JAR_FILE}.classes-in-jar
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_CLASS_DIR} ${JAR_DIR}
+)
+
+add_dependencies(${JAR_FILE}.classes-in-jar ${PROJECT_NAME}.classes)
