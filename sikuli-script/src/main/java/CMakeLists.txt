@@ -1,36 +1,3 @@
-PROJECT (sikuli-script Java)
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-
-SET(CMAKE_VERBOSE_MAKEFILE 0)
-
-FIND_PACKAGE(Java)
-SET( NON_NATIVE_TARGET TRUE)
-
-IF(UNIX)
-   SET(SEP ":")
-ELSE()
-   SET(SEP ";")
-ENDIF()
-
-
-SET(BASE_DIR "${CMAKE_SOURCE_DIR}/../../..")
-SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
-SET(BINARY_DIR "${BASE_DIR}/target")
-SET(INCLUDE_LIB_DIR "${BASE_DIR}/lib")
-SET(CLASS_DIR "${BINARY_DIR}/classes")
-SET(JAR_DIR "${BINARY_DIR}/jar")
-
-SET(JYTHON_JAR "${COMMON_LIB_DIR}/jython-2.5.1.jar")
-
-SET(CLASSPATH 
-   ${INCLUDE_LIB_DIR}${SEP}${JYTHON_JAR}${SEP}.
-)
-
-FILE(MAKE_DIRECTORY ${CLASS_DIR})
-FILE(MAKE_DIRECTORY ${JAR_DIR})
-
-SET(JAR_FILE sikuli-script.jar)
 SET(JAVA_SOURCE_FILES 
    edu/mit/csail/uid/AppearEvent.java
    edu/mit/csail/uid/CapturePrompt.java
@@ -69,18 +36,8 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/Win32Util.java
 )
 
-add_custom_target( ${PROJECT_NAME}.jar.classes
+add_custom_target( ${PROJECT_NAME}.classes
     COMMAND ${JAVA_COMPILE} -d ${CLASS_DIR} -classpath ${CLASSPATH}
             ${JAVA_SOURCE_FILES}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
      
-add_custom_target( ${JAR_FILE} ALL
-   COMMAND ${JAVA_ARCHIVE} cfm ${BINARY_DIR}/${JAR_FILE}
-           ${BINARY_DIR}/MANIFEST.txt -C ${JAR_DIR} *
-   WORKING_DIRECTORY ${JAR_DIR})
-
-# Dependencies
-
-add_dependencies( ${JAR_FILE}
-                  ${PROJECT_NAME}.jar.classes)
-
