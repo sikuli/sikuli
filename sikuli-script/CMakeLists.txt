@@ -57,12 +57,6 @@ IF(NOT EXISTS ${JAR_DIR}/org/python)
    )
 ENDIF()
 
-IF(NOT EXISTS ${JAR_DIR}/org/python)
-   add_custom_target( ${JAR_FILE}.jython-in-jar
-      COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JYTHON_JAR}
-   )
-ENDIF()
-
 SET(LIB_IN_JAR_DIR "${JAR_DIR}/Lib")
 add_custom_target( ${JAR_FILE}.python-src-in-jar
    COMMAND ${CMAKE_COMMAND} -E make_directory ${LIB_IN_JAR_DIR}
@@ -105,6 +99,14 @@ SET(JYTHON_CLASS org.python.util.jython)
 FOREACH(TEST_TARGET ${PYTHON_TESTS})
    ADD_TEST(Python_${TEST_TARGET} ${CMAKE_COMMAND} -E chdir ${BASE_DIR} 
                   java -Dsikuli.Debug=3 -cp ${JAR_DIR} -Dpython.home=${JAR_DIR} 
+                  ${JYTHON_CLASS} ${PY_TEST_DIR}/test-${TEST_TARGET}.py
+   )
+ENDFOREACH(TEST_TARGET)
+
+FOREACH(TEST_TARGET ${PYTHON_TESTS})
+   ADD_TEST(Jar_${TEST_TARGET} ${CMAKE_COMMAND} -E chdir ${BASE_DIR} 
+                  java -Dsikuli.Debug=3 -cp ${BINARY_DIR}/${JAR_FILE} 
+                  -Dpython.home=${BINARY_DIR}/${JAR_FILE} 
                   ${JYTHON_CLASS} ${PY_TEST_DIR}/test-${TEST_TARGET}.py
    )
 ENDFOREACH(TEST_TARGET)
