@@ -52,9 +52,9 @@ foreach(JNI_HEADER ${JNI_HEADERS})
       OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${JNI_HEADER}
       COMMAND ${JAVA_JAVA_H} -d ${CMAKE_CURRENT_SOURCE_DIR} 
                              -classpath ${CLASS_DIR} ${JNI_CLASS}
-      #DEPENDS ${JAVA_SRC_DIR}/${JNI_JAVA_SOURCE}
+      DEPENDS ${JAVA_SRC_DIR}/${JNI_JAVA_SOURCE}
    )
-endforeach()
+endforeach(JNI_HEADER ${JNI_HEADERS})
 
 
 foreach(BUILD_TARGET ${BUILD_TARGETS})
