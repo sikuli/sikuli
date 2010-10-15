@@ -134,20 +134,20 @@ IF(APPLE)
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
       COMMAND cp ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
       COMMAND cp ${deplibs} ${FRAMEWORKS_IN_APP_DIR}
-      COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} change-lib-path.sh
+      #COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} change-lib-path.sh
+      ##FIXME lib-path doesn't have /opt...
       COMMENT "Packaging Frameworks"
    )
-   add_dependencies( ${APP_FILE} ${APP_FILE}.framework )
+
+   file(READ ${BASE_DIR}/latest-ver VERSION)
+   add_custom_target( ${APP_FILE}.update_ver
+	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion ${VERSION}
+	COMMAND plutil -convert xml1 ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info.plist
+   )
+
+   add_dependencies( ${APP_FILE} ${APP_FILE}.framework ${APP_FILE}.update_ver)
 
 ENDIF(APPLE)
-
-#app-frameworks: $(NATIVE_TARGET_PATH) 
-#	mkdir -p $(APP_FRAMEWORKS_PATH)
-#	cp $(NATIVE_TARGET_PATH)/*.jnilib $(APP_FRAMEWORKS_PATH)
-#	cp ../sikuli-script/target/lib/*.jnilib $(APP_FRAMEWORKS_PATH)
-#	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.jnilib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
-#	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.dylib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
-#	cd $(APP_FRAMEWORKS_PATH); ./change-lib-path.sh
 
 
 
