@@ -1,3 +1,9 @@
+SET(OpenCV_DIR "/opt/opencv")
+SET(CMAKE_LIBRARY_PATH "${OpenCV_DIR}/lib")
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/detect_osx_ver.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/find_dep_libs.cmake)
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT (sikuli-ide Java)
 
@@ -30,6 +36,7 @@ SET(SIKULI_SCRIPT_JAR "${COMMON_LIB_DIR}/sikuli-script.jar")
 SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(SWING_LAYOUT_JAR "${COMMON_LIB_DIR}/swing-layout-1.0.1.jar")
 SET(COMMONS_CLI_JAR "${COMMON_LIB_DIR}/commons-cli-1.2.jar")
+
 
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
 FILE(MAKE_DIRECTORY ${BINARY_CLASS_DIR})
@@ -82,6 +89,84 @@ add_custom_target( run
                         -classpath ${CLASSPATH}${SEP}${JAR_DIR} 
                         ${MAIN_CLASS} ${ARGS}
 )
+
+
+## Sikuli-IDE.App for Mac OS X
+
+SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR} 
+                 ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
+                 ${BINARY_DIR}/${JAR_FILE}
+)
+
+IF(APPLE)
+   IF(APPLE_SNOW_LEOPARD)
+      SET(OSX_VER "osx-10.6")
+   ELSEIF(APPLE_LEOPARD)
+      SET(OSX_VER "osx-10.5")
+   ENDIF()
+
+   SET(APP_FILE  "Sikuli-IDE.app")
+   SET(BINARY_APP_DIR  "${BINARY_DIR}/${OSX_VER}")
+   SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Resources/Java)
+   SET(FRAMEWORKS_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Frameworks)
+
+   FILE(GLOB jnilibs "${BINARY_LIB_DIR}/*.jnilib")
+   FILE(GLOB sikuli_script_jnilibs "${BASE_DIR}/../sikuli-script/target/lib/*.jnilib")
+   LIST(APPEND jnilibs ${sikuli_script_jnilibs})
+
+   find_dep_libs("${jnilibs}" deplibs)
+   find_dep_libs("${deplibs}" deplibs)
+   LIST(REMOVE_ITEM deplibs "/usr/lib/libstdc++.6.dylib" "/usr/lib/libSystem.B.dylib" 
+                            "/usr/lib/system/libmathCommon.A.dylib" 
+                            "/usr/lib/libbz2.1.0.dylib" "/usr/lib/libobjc.A.dylib")
+   MESSAGE("Dep: ${deplibs}")
+
+ENDIF(APPLE)
+
+## Packaging App
+add_custom_target( ${APP_FILE}
+)
+
+add_dependencies( ${APP_FILE} ${JAR_FILE} )
+
+IF(APPLE)
+   add_custom_target( ${APP_FILE}.framework 
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp ${deplibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} change-lib-path.sh
+      COMMENT "Packaging Frameworks"
+   )
+   add_dependencies( ${APP_FILE} ${APP_FILE}.framework )
+
+ENDIF(APPLE)
+
+#app-frameworks: $(NATIVE_TARGET_PATH) 
+#	mkdir -p $(APP_FRAMEWORKS_PATH)
+#	cp $(NATIVE_TARGET_PATH)/*.jnilib $(APP_FRAMEWORKS_PATH)
+#	cp ../sikuli-script/target/lib/*.jnilib $(APP_FRAMEWORKS_PATH)
+#	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.jnilib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
+#	cp `otool -L $(APP_FRAMEWORKS_PATH)/*.dylib  | grep /opt | awk '{print $$1}' | sort | uniq` $(APP_FRAMEWORKS_PATH)/
+#	cd $(APP_FRAMEWORKS_PATH); ./change-lib-path.sh
+
+
+
+FOREACH(JAR ${INCLUDE_JARS})
+   get_filename_component(JAR_FILENAME ${JAR} NAME)
+   get_filename_component(target ${JAR} NAME_WE)
+   add_custom_target( ${target}
+      COMMAND ${CMAKE_COMMAND} -E copy ${JAR} ${JAR_IN_APP_DIR}/${JAR_FILENAME}
+                  
+      COMMENT "Copying ${JAR_FILENAME}"
+   )
+   add_dependencies( ${APP_FILE} ${target} )
+ENDFOREACH(JAR ${INCLUDE_JARS})
+
+
+add_custom_target( app
+)
+
+add_dependencies( app ${APP_FILE} )
 
 # Dependencies
 

@@ -1,0 +1,31 @@
+IF(APPLE)
+   FIND_PROGRAM(OTOOL otool /usr/bin) 
+
+   MACRO(find_dep_libs IN_LIBS OUT_LIBS)
+      FOREACH(DYLIB ${IN_LIBS})
+         #MESSAGE("abs_dylib: ${ABS_DYLIB}")
+         EXECUTE_PROCESS(
+            COMMAND ${OTOOL} -L ${DYLIB} 
+            COMMAND grep "lib.*.dylib[^:]"
+            COMMAND awk "{print \$1}"
+            COMMAND tr "\n" ";"
+            OUTPUT_VARIABLE libs
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+         )
+         FOREACH(lib ${libs})
+            STRING(REGEX MATCH "^lib(.*)\\.dylib" isDylib ${lib})
+            IF(isDylib)
+               STRING(REGEX REPLACE "^lib(.*)\\.dylib" "\\1" lib_name ${lib})
+               FIND_LIBRARY(${lib_name} "${lib_name}")
+               SET(ABS_DYLIB ${${lib_name}})
+            ELSE()
+               SET(ABS_DYLIB ${lib})
+            ENDIF()
+            #MESSAGE("add ${ABS_DYLIB}")
+            LIST(APPEND ${OUT_LIBS} ${ABS_DYLIB})
+         ENDFOREACH(lib ${libs})
+      ENDFOREACH(DYLIB ${IN_LIBS})
+      LIST(REMOVE_DUPLICATES ${OUT_LIBS})
+   ENDMACRO(find_dep_libs)
+
+ENDIF(APPLE)
