@@ -16,7 +16,7 @@ ELSE()
 ENDIF()
 
 
-SET(BASE_DIR "${CMAKE_SOURCE_DIR}")
+SET(BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 SET(JAVA_SRC_DIR "${BASE_DIR}/src/main/java")
 SET(NATIVE_SRC_DIR "${BASE_DIR}/src/main/native")
 SET(PYTHON_SRC_DIR "${BASE_DIR}/src/main/python")
