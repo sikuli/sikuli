@@ -7,15 +7,15 @@ import java.awt.color.*;
 public class OpenCV {
    public static BufferedImage createBufferedImage(int w, int h)
    {
-      ComponentColorModel cm = new ComponentColorModel(
-            ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
-            false,  //no alpha channel
-            false,  //not premultiplied
-            ColorModel.OPAQUE,
-            DataBuffer.TYPE_BYTE); //important - data in the buffer is saved by the byte
+      ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+      int[] nBits = {8, 8, 8, 8};
+      ColorModel cm = new ComponentColorModel(cs, nBits, 
+                                    true, false,
+                                    Transparency.TRANSLUCENT, 
+                                    DataBuffer.TYPE_BYTE);
 
       SampleModel sm = cm.createCompatibleSampleModel(w, h);
-      DataBufferByte db = new DataBufferByte(w*h*3); //3 channels buffer
+      DataBufferByte db = new DataBufferByte(w*h*4); //4 channels buffer
       WritableRaster r = WritableRaster.createWritableRaster(sm, db, new Point(0,0));
       BufferedImage bm = new BufferedImage(cm,r,false,null);
       return bm;

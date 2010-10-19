@@ -160,7 +160,7 @@ find_helper(FindInput& input){
       
    }else{
       TemplateFinder f(input.getSourceMat());
-	   Mat image = input.getTargetMat();
+      Mat image = input.getTargetMat();
       
       if (input.isFindingAll()){
          f.find_all(image, input.getSimilarity());
@@ -241,11 +241,9 @@ Vision::recognize(Mat image){
 
 
 cv::Mat Vision::createMat(int _rows, int _cols, unsigned char* _data){
-   Mat mat_ref = Mat(_rows, _cols, CV_8UC3, _data);
-   CvMat tmpCvMat = CvMat(mat_ref);
-   Mat mat = Mat(&tmpCvMat, true);
-   cvtColor(mat, mat, CV_RGB2BGR);
-   //FIXME: fix the color difference caused by Mat conversion
+   Mat mat_ref = Mat(_rows, _cols, CV_8UC4, _data);
+   Mat mat;
+   cvtColor(mat_ref, mat, CV_RGBA2BGR, 3);
    //cout << "createMat: " << mat.rows << " " << mat.cols << endl;
    //imwrite("createMat.png", mat);
    return mat;
