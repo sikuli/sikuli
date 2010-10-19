@@ -13,3 +13,29 @@
 1. cd sikuli/sikuli-ide
    make do_release
 
+
+
+= tesseract's patch for building universal binary(i386+x86_64) =
+When "port install tesseract +universal" fails, patch this file:
+/opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macports.org
+_release_ports_textproc_tesseract/work/tesseract-2.04/ccmain/Makefile
+
+718c718
+<       ld -r -o libtesseract_full.o tesseractfull.o \
+---
+>       ld -arch i386 -r -o libtesseract_full_i386.o tesseractfull.o \
+729a730,742
+>       ld -arch x86_64 -r -o libtesseract_full_x86_64.o tesseractfull.o \
+>     libtesseract_main.a \
+>     ../textord/libtesseract_textord.a \
+>     ../pageseg/libtesseract_pageseg.a \
+>     ../wordrec/libtesseract_wordrec.a \
+>     ../classify/libtesseract_classify.a \
+>     ../dict/libtesseract_dict.a \
+>     ../viewer/libtesseract_viewer.a \
+>     ../image/libtesseract_image.a \
+>     ../cutil/libtesseract_cutil.a \
+>     ../ccstruct/libtesseract_ccstruct.a \
+>     ../ccutil/libtesseract_ccutil.a
+>       lipo -create -output libtesseract_full.o libtesseract_full_i386.o libtes
+seract_full_x86_64.o

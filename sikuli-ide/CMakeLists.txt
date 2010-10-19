@@ -119,7 +119,7 @@ IF(APPLE)
    LIST(REMOVE_ITEM deplibs "/usr/lib/libstdc++.6.dylib" "/usr/lib/libSystem.B.dylib" 
                             "/usr/lib/system/libmathCommon.A.dylib" 
                             "/usr/lib/libbz2.1.0.dylib" "/usr/lib/libobjc.A.dylib")
-   MESSAGE("Dep: ${deplibs}")
+   #MESSAGE("Dep: ${deplibs}")
 
 ENDIF(APPLE)
 
