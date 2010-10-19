@@ -10,11 +10,14 @@ public class Finder implements Iterator<Match>{
    private long _instance = 0;
    private Region _region = null;
    private Pattern _pattern = null;
+   private FindInput _findInput = null;
+   private FindResults _results = null;
+   private int _cur_result_i = 0;
 
    static {
       try{
-         NativeLoader.loadLibrary("ScreenMatchProxy");
-         System.out.println("ScreenMatchProxy loaded.");
+         NativeLoader.loadLibrary("VisionProxy");
+         System.out.println("Sikuli vision engine loaded.");
       }
       catch(IOException e){
          e.printStackTrace();
@@ -37,14 +40,15 @@ public class Finder implements Iterator<Match>{
       String fname = screenFilename;
       if( !(new File(screenFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + screenFilename;
-      _instance = createFinder(fname);
+      _findInput = new FindInput();
+      _findInput.setSource(screenFilename);
       _region = region;
    }
 
    public Finder(ScreenImage img, Region region){
-      byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
-      _instance = createFinder(data, img.w, img.h);
       _region = region;
+      byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
+      Mat target = new Mat(img.h, img.w, VisionProxyConstants.CV_8UC3, data);
    }
 
    public void __del__(){
@@ -55,8 +59,19 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
-   private native long createFinder(String screenFilename);
-   private native long createFinder(byte[] screenImage, int w, int h);
+   public <PSC> void setFindInput(PSC ptn){
+      if( ptn instanceof Pattern ){
+         _pattern = (Pattern)ptn;
+         _findInput.setTarget(_pattern.imgURL);
+         _findInput.setSimilarity(_pattern.similarity);
+      }
+      else if( ptn instanceof String){
+         boolean isText = false;
+         //TODO: check if we need to use OCR
+         _findInput.setTarget((String)ptn, isText);
+         _findInput.setSimilarity(Settings.MinSimilarity);
+      }
+   }
 
 
    /**
@@ -64,78 +79,67 @@ public class Finder implements Iterator<Match>{
     * finds the given pattern in the given ScreenImage.
     */
    public <PSC> void find(PSC ptn){
-      if( ptn instanceof Pattern ){
-         _pattern = (Pattern)ptn;
-         find(_pattern.imgURL, _pattern.similarity);
-      }
-      else if( ptn instanceof String){
-         find((String)ptn, Settings.MinSimilarity);
-      }
+      setFindInput(ptn);
+      _results = Vision.find(_findInput);
    }
 
    public void find(String templateFilename, double minSimilarity){
       String fname = templateFilename;
       if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + templateFilename;
-      find(_instance, fname, minSimilarity);
+      _findInput.setTarget(templateFilename);
+      _findInput.setSimilarity(minSimilarity);
+      _results = Vision.find(_findInput);
    }
 
    public <PSC> void findAll(PSC ptn){
-      if( ptn instanceof Pattern ){
-         _pattern = (Pattern)ptn;
-         findAll(_pattern.imgURL, _pattern.similarity);
-      }
-      else if( ptn instanceof String){
-         findAll((String)ptn, Settings.MinSimilarity);
-      }
+      setFindInput(ptn);
+      _findInput.setFindAll(true);
+      _results = Vision.find(_findInput);
    }
 
    public void findAll(String templateFilename, double minSimilarity){
       String fname = templateFilename;
       if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + templateFilename;
-      findAll(_instance, fname, minSimilarity);
+      _findInput.setTarget(templateFilename);
+      _findInput.setSimilarity(minSimilarity);
+      _findInput.setFindAll(true);
+      _results = Vision.find(_findInput);
    }
 
    public boolean hasNext(){
-      if(_instance!=0)
-         return hasNext(_instance);
+      if(_results != null && _results.size() > _cur_result_i)
+         return true;
       return false;
    }
 
 
    public Match next(){
-      if(_instance!=0 ){
-         Match ret = next(_instance);
+      Match ret = null;
+      if(hasNext()){
+         FindResult fr = _results.get(_cur_result_i++);
+         try{
+            ret = new Match(fr);
+         }
+         catch(AWTException e){
+            e.printStackTrace();
+         }
          if(_region != null)
             ret = _region.toGlobalCoord(ret);
          if(_pattern != null){
             Location offset = _pattern.getTargetOffset();
             ret.setTargetOffset(offset);
          }
-         return ret;
       }
-      return null;
+      return ret;
    }
 
    public void remove(){
    }
 
    public void destroy(){  
-      if(_instance!=0){
-         Debug.log(6,"destroy finder " + _instance);
-         destroy(_instance);  
-         _instance = 0;
-      }
    }
 
-
-   private native void find(long finder, String templateFilename, double minSimilarity);
-   private native void find(long finder, byte[] templateImage, int w, int h, double minSimilarity);
-   private native void findAll(long finder, String templateFilename, double minSimilarity);
-   private native void findAll(long finder, byte[] templateImage, int w, int h, double minSimilarity);
-   private native boolean hasNext(long finder);
-   private native Match next(long finder);
-   private native void destroy(long finder);
 }
 

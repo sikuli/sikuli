@@ -21,16 +21,22 @@ class FindInput{
       
 public:
    
+   FindInput();
    FindInput(Mat source, Mat target);
    FindInput(Mat source, const char* target, bool text = false);
    FindInput(const char* source_filename, const char* target, bool text = false);
 
+   void setSource(const char* source_filename);
+   void setTarget(const char* target_string, bool text = false);
+   void setSource(Mat source);
+   void setTarget(Mat target);
    Mat getSourceMat();
    Mat getTargetMat();
       
    void setFindAll(bool all);
-      
    bool isFindingAll();
+
+   void setFindText(bool text);
    bool isFindingText();
 
    void setLimit(int limit);

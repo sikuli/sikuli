@@ -13,6 +13,10 @@
 
 using namespace sikuli;
 
+FindInput::FindInput(){
+   init();
+}
+
 FindInput::FindInput(Mat source_, Mat target_){
    source = source_;
    target = target_;
@@ -49,6 +53,25 @@ FindInput::init(Mat source_, const char* target_string, bool text){
    bFindingText = text;
 }
 
+void FindInput::setSource(const char* source_filename){
+   source = cv::imread(source_filename,1);
+}
+
+void FindInput::setTarget(const char* target_string, bool text){
+   if (text){
+      targetText = target_string;
+   }else{
+      target = cv::imread(target_string,1);
+   }
+}
+
+void FindInput::setSource(Mat source_){
+   source = source_;
+}
+
+void FindInput::setTarget(Mat target_){
+   target = target_;
+}
 
 Mat 
 FindInput::getSourceMat(){
@@ -89,6 +112,11 @@ FindInput::setSimilarity(double similarity_){
 double 
 FindInput::getSimilarity(){
    return similarity;
+}
+
+
+void FindInput::setFindText(bool text){
+  bFindingText = text; 
 }
 
 bool 

@@ -21,6 +21,11 @@ public class Match extends Region implements Comparable {
       score = m.score;
    }
 
+   public Match(FindResult f) throws AWTException{
+      init(f.getX(), f.getY(), f.getW(), f.getH());
+      score = f.getScore();
+   }
+
    public int compareTo(Object o){
       return getScore() < ((Match)o).getScore() ? -1 :
              getScore() > ((Match)o).getScore() ? 1 : 0;
