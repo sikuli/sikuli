@@ -256,6 +256,7 @@ OCR::init(const char* datapath){
    bool numeric_mode = false;
    TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    isInitialized = true;   
+   cerr << "OCR initialized." << endl;
 }
 
 

@@ -1,8 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
 ENABLE_LANGUAGE(CXX)
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake_modules") #REMOVE ME
 SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
 SET(CMAKE_OSX_ARCHITECTURES i386 x86_64)
 
@@ -19,15 +19,26 @@ SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(Tesseract REQUIRED)
 FIND_PACKAGE(JNI REQUIRED)
+FIND_PACKAGE(SWIG REQUIRED)
 
 INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${Tesseract_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE(${SWIG_USE_FILE})
+
+SET(CMAKE_SWIG_FLAGS -package ${PACKAGE})
+SET(SWIG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 SET(BUILD_TARGETS
-      VisionProxy
-      #      VDictProxy
+   #todo move VDictProxy to swig
+   #      VDictProxy
+)
+
+SET(NATIVE_LIBS
+   VisionProxy
+   ${BUILD_TARGETS}
 )
 
 #ADD_LIBRARY(VDictProxy SHARED
@@ -35,7 +46,10 @@ SET(BUILD_TARGETS
 #   edu_mit_csail_uid_VDictProxy.h
 #)
 
-ADD_LIBRARY(VisionProxy SHARED
+
+## SWIG: generate a JNI wrapper 
+SET_SOURCE_FILES_PROPERTIES(vision.i PROPERTIES CPLUSPLUS ON)
+SWIG_ADD_MODULE(VisionProxy java vision.i
    TimingBlock.cc
    cvgui.cpp
    finder.cpp
@@ -43,9 +57,11 @@ ADD_LIBRARY(VisionProxy SHARED
    pyramid-template-matcher.cpp
    tessocr.cpp
    vision.cpp
-)
-TARGET_LINK_LIBRARIES(VisionProxy ${Tesseract_LIBRARY})
+) 
+SWIG_LINK_LIBRARIES(VisionProxy ${Tesseract_LIBRARY} ${OpenCV_LIBS})  
 
+
+#TODO: replace jni custom commands by swig
 foreach(JNI_HEADER ${JNI_HEADERS})
    STRING(REGEX REPLACE "_" "." JNI_CLASS ${JNI_HEADER})
    STRING(REGEX REPLACE "\\.h$" "" JNI_CLASS ${JNI_CLASS})
@@ -72,4 +88,4 @@ add_custom_target(${JAR_FILE}.libs-in-jar
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_DIR}/META-INF/lib
 )
 
-add_dependencies(${JAR_FILE}.libs-in-jar ${BUILD_TARGETS})
+add_dependencies(${JAR_FILE}.libs-in-jar ${NATIVE_LIBS})

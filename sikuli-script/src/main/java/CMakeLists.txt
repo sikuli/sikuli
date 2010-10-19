@@ -34,6 +34,7 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/VDictProxy.java
    edu/mit/csail/uid/VanishEvent.java
    edu/mit/csail/uid/Win32Util.java
+   ${CMAKE_SWIG_OUTDIR}/*.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
@@ -47,3 +48,4 @@ add_custom_target( ${JAR_FILE}.classes-in-jar
 )
 
 add_dependencies(${JAR_FILE}.classes-in-jar ${PROJECT_NAME}.classes)
+add_dependencies(${PROJECT_NAME}.classes VisionProxy)
