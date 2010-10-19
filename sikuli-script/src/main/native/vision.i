@@ -118,7 +118,8 @@ public:
    static void initOCR(const char* ocrDataPath);
       
    static std::string recognize(cv::Mat image);
-   
+
+   static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
 };
 
 }
@@ -130,29 +131,9 @@ namespace cv{
      unsigned char* _data;
 
    public:
-     Mat(int _rows, int _cols, int _type, unsigned char* _data);
+     //Mat(int _rows, int _cols, int _type, unsigned char* _data);
    };
 
 }
 
-#define CV_DEPTH_MAX  (1 << CV_CN_SHIFT)
-#define CV_CN_SHIFT   3
-#define CV_8U   0
-#define CV_8S   1
-#define CV_16U  2
-#define CV_16S  3
-#define CV_32S  4
-#define CV_32F  5
-#define CV_64F  6
-#define CV_USRTYPE1 7
-
-#define CV_MAT_DEPTH_MASK       (CV_DEPTH_MAX - 1)
-#define CV_MAT_DEPTH(flags)     ((flags) & CV_MAT_DEPTH_MASK)
-
-#define CV_MAKETYPE(depth,cn) (CV_MAT_DEPTH(depth) + (((cn)-1) << CV_CN_SHIFT))
-#define CV_MAKE_TYPE CV_MAKETYPE
-
-#define CV_8UC1 CV_MAKETYPE(CV_8U,1)
-#define CV_8UC2 CV_MAKETYPE(CV_8U,2)
-#define CV_8UC3 CV_MAKETYPE(CV_8U,3)
 

@@ -10,7 +10,7 @@ public class Finder implements Iterator<Match>{
    private long _instance = 0;
    private Region _region = null;
    private Pattern _pattern = null;
-   private FindInput _findInput = null;
+   private FindInput _findInput = new FindInput();
    private FindResults _results = null;
    private int _cur_result_i = 0;
 
@@ -40,15 +40,15 @@ public class Finder implements Iterator<Match>{
       String fname = screenFilename;
       if( !(new File(screenFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + screenFilename;
-      _findInput = new FindInput();
       _findInput.setSource(screenFilename);
       _region = region;
    }
 
    public Finder(ScreenImage img, Region region){
-      _region = region;
       byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
-      Mat target = new Mat(img.h, img.w, VisionProxyConstants.CV_8UC3, data);
+      Mat target = Vision.createMat(img.h, img.w, data);
+      _findInput.setSource(target);
+      _region = region;
    }
 
    public void __del__(){
