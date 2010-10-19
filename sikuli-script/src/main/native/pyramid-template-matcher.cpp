@@ -109,11 +109,11 @@ PyramidTemplateMatcher::~PyramidTemplateMatcher(){
       delete lowerPyramid;   
 };
 
-Match PyramidTemplateMatcher::next(){
+FindResult PyramidTemplateMatcher::next(){
    TimingBlock tb("PyramidTemplateMatcher::next()");
    
    if (source.rows < target.rows || source.cols < target.cols){
-      return Match(0,0,0,0,-1);
+      return FindResult(0,0,0,0,-1);
    }
    
    if (lowerPyramid == NULL){
@@ -140,12 +140,12 @@ Match PyramidTemplateMatcher::next(){
       rectangle(result, Point(x0, y0), Point(x1-1, y1-1), 
               Scalar(0), CV_FILLED);
       
-      return Match(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);;
+      return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);;
       
       
    }else{
       
-      Match match = lowerPyramid->next();
+      FindResult match = lowerPyramid->next();
       
       int x = match.x*factor;
       int y = match.y*factor;
@@ -185,7 +185,7 @@ Match PyramidTemplateMatcher::next(){
       detectionLoc.y += roi.y;
       
       
-      return Match(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
+      return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
       
    }
    

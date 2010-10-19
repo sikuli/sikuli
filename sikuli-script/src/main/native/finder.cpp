@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include "cv.h"
-#include "highgui.h"
 
 #include "finder.h"
 #include "pyramid-template-matcher.h"
@@ -12,10 +10,11 @@ using namespace cv;
 using namespace std;
 
 #define PYRAMID_MIM_TARGET_DIMENSION 6
-#define PYRAMID_MIM_TARGET_DIMENSION_ALL 24
+#define PYRAMID_MIM_TARGET_DIMENSION_ALL 50
 #define REMATCH_THRESHOLD 0.9
 #define CENTER_REMATCH_THRESHOLD 0.99
 #define BORDER_MARGIN 0.2
+
 
 #ifdef DEBUG
 #define dout std::cerr
@@ -35,17 +34,11 @@ BaseFinder::BaseFinder(const char* source_image_filename){
 
 
 // somwhow after changing it to false works!!
-BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, true)){
+BaseFinder::BaseFinder(IplImage*  _source) : source(Mat(_source, false)){
    roi = Rect(0,0,source.cols,source.rows);
 }
 
 BaseFinder::~BaseFinder(){
-   dout << "~BaseFinder" << endl;
-   /*
-   if (img) cvReleaseImage(&img);
-   if (roi_img) cvReleaseImage(&roi_img);
-   if (debug_img) cvReleaseImage(&debug_img);
-   */
 }
 
 void 
@@ -62,79 +55,59 @@ BaseFinder::find(){
 
 //=======================================================================================
 
-int Finder::num_matchers = 0;
-Finder::Finder(Mat _source) : BaseFinder(_source){
-   matcher = NULL;
-   wf = NULL;
+bool sort_by_score(FindResult m1, FindResult m2){
+   return m1.score > m2.score;
 }
 
-Finder::Finder(IplImage* _source) : BaseFinder(_source){
+
+TemplateFinder::TemplateFinder(Mat _source) : BaseFinder(_source){
    matcher = NULL;
-   wf = NULL;
 }
 
-Finder::Finder(const char* source_image_filename)
+TemplateFinder::TemplateFinder(IplImage* _source) : BaseFinder(_source){
+   matcher = NULL;
+}
+
+TemplateFinder::TemplateFinder(const char* source_image_filename)
 : BaseFinder(source_image_filename){
    matcher = NULL;
-   wf = NULL; 
 }
 
-Finder::~Finder(){
-   if (matcher){
+TemplateFinder::~TemplateFinder(){
+   if (matcher)
       delete matcher;
-      num_matchers--;
-   }
-   
-   if (wf)
-      delete wf;
 }
 
 void 
-Finder::find(const char *target_image_filename, double min_similarity){   
-   
-   const char* p = target_image_filename;
-   const char* ext = p + strlen(p) - 3;
-   dout << ext;
-   if (strncmp(ext,"png",3) != 0){
-      // get name after bundle path, which is
-      // assumed to be the query word
-      int j;
-      for (j = (strlen(p)-1); j >=0; j--){      
-         if (p[j]=='/')
-            break;
-      }
-      
-      Mat im = imread("/arial.png",1);
-      WordFinder::train(im);
-      wf = new WordFinder(source);
-      wf->find(p+j+1,0.6);
-      return;
-   }
-   
-   
+TemplateFinder::find(const char *target_image_filename, double min_similarity){     
    Mat target = imread(target_image_filename, 1);
+   if (target.data == NULL)
+      throw cv::Exception();
    find(target, min_similarity);
 }   
 
 void 
-Finder::find(IplImage* target, double min_similarity){
+TemplateFinder::find(IplImage* target, double min_similarity){
    find(Mat(target, false), min_similarity);
 }   
 
 void 
-Finder::find_all(const char *target_image_filename, double min_similarity){
+TemplateFinder::find_all(const char *target_image_filename, double min_similarity){
    Mat target = imread(target_image_filename, 1);
+   if (target.data == NULL)
+      throw cv::Exception();
+
    find_all(target, min_similarity);
 }   
 
 
 void 
-Finder::find_all(IplImage* target, double min_similarity){
+TemplateFinder::find_all(IplImage* target, double min_similarity){
    find_all(Mat(target, true), min_similarity);
 }   
 
 void
-Finder::find_all(Mat target, double min_similarity){   
+TemplateFinder::find_all(Mat target, double min_similarity){   
    this->min_similarity = min_similarity;
    
    BaseFinder::find();  
@@ -143,7 +116,7 @@ Finder::find_all(Mat target, double min_similarity){
 	   current_match.score = -1;
 	   return;
    }
-      
+   
    float factor = 2.0;      
    int levels=-1;
    int w = target.rows;
@@ -160,10 +133,10 @@ Finder::find_all(Mat target, double min_similarity){
    // convert image from RGB to grayscale
    cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
    cvtColor(target, targetGray, CV_RGB2GRAY);
-         
+   
    create_matcher(roiSourceGray, targetGray, levels, factor);
    add_matches_to_buffer(5);     
-
+   
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
       return;
    
@@ -171,16 +144,12 @@ Finder::find_all(Mat target, double min_similarity){
    dout << "[find_all] matching (original resolution: color) ... " << endl;
    create_matcher(roiSource, target, 0, 1);
    add_matches_to_buffer(5);
-
+   
 }
 
-
-bool sort_by_score(Match m1, Match m2){
-   return m1.score > m2.score;
-}
 
 float
-Finder::top_score_in_buffer(){
+TemplateFinder::top_score_in_buffer(){
    if (buffered_matches.empty())
       return -1;
    else
@@ -188,29 +157,25 @@ Finder::top_score_in_buffer(){
 }
 
 void
-Finder::create_matcher(Mat& source, Mat& target, int level, float ratio){
-   if (matcher){
-      num_matchers--;
+TemplateFinder::create_matcher(Mat& source, Mat& target, int level, float ratio){
+   if (matcher)
       delete matcher;
-   } 
    matcher = new PyramidTemplateMatcher(source,target,level,ratio);
-   num_matchers++;
-   dout << "[Memleak debug] # of matchers: " << num_matchers << endl;
 }
 
 void 
-Finder::add_matches_to_buffer(int num_matches_to_add){ 
+TemplateFinder::add_matches_to_buffer(int num_matches_to_add){ 
    buffered_matches.clear();
    for (int i=0;i<num_matches_to_add;++i){
-      Match next_match = matcher->next();
+      FindResult next_match = matcher->next();
       buffered_matches.push_back(next_match);
    }
    sort(buffered_matches,sort_by_score);
 } 
 
 void
-Finder::find(Mat target, double min_similarity){
-      
+TemplateFinder::find(Mat target, double min_similarity){
+   
    this->min_similarity = min_similarity;   
    BaseFinder::find();  
    
@@ -218,27 +183,27 @@ Finder::find(Mat target, double min_similarity){
 	   current_match.score = -1;
 	   return;
    }
-
-
+   
+   
    float ratio;
    ratio = min(target.rows * 1.0 / PYRAMID_MIM_TARGET_DIMENSION, 
-            target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
-
+               target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
+   
    Mat roiSourceGray;
    Mat targetGray;
    
    // convert image from RGB to grayscale
    cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
    cvtColor(target, targetGray, CV_RGB2GRAY);
-
+   
    TimingBlock tb("NEW METHOD");
-
+   
    dout << "matching (center) ... " << endl;            
    Mat roiSourceGrayCenter = Mat(roiSourceGray, 
-                             Range(roiSourceGray.rows*BORDER_MARGIN,
-                                 roiSourceGray.rows*(1-BORDER_MARGIN)),
-                             Range(roiSourceGray.cols*BORDER_MARGIN,
-                                 roiSourceGray.cols*(1-BORDER_MARGIN)));
+                                 Range(roiSourceGray.rows*BORDER_MARGIN,
+                                       roiSourceGray.rows*(1-BORDER_MARGIN)),
+                                 Range(roiSourceGray.cols*BORDER_MARGIN,
+                                       roiSourceGray.cols*(1-BORDER_MARGIN)));
    create_matcher(roiSourceGrayCenter, targetGray, 1, ratio);
    add_matches_to_buffer(5); 
    if (top_score_in_buffer() >= max(min_similarity,CENTER_REMATCH_THRESHOLD)){
@@ -275,13 +240,13 @@ Finder::find(Mat target, double min_similarity){
       if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
          return;
    }
-
+   
    dout << "matching (original resolution) ... " << endl;
    create_matcher(roiSourceGray, targetGray, 0, 1);
    add_matches_to_buffer(5);
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
       return;
-
+   
    dout << "matching (original resolution: color) ... " << endl;
    create_matcher(roiSource, target, 0, 1);
    add_matches_to_buffer(5);
@@ -289,34 +254,25 @@ Finder::find(Mat target, double min_similarity){
 }
 
 bool
-Finder::hasNext(){  
-   
-   if (wf)
-      return true;//wf->hasNext();
-  
+TemplateFinder::hasNext(){  
    return top_score_in_buffer() >= (min_similarity-0.0000001);
 }
 
-Match
-Finder::next(){
+FindResult
+TemplateFinder::next(){
    
-   if (wf)
-      return wf->next();   
-
    if (!hasNext())
-      return Match(0,0,0,0,-1);
+      return FindResult(0,0,0,0,-1);
    
-   Match top_match = buffered_matches.front();
+   FindResult top_match = buffered_matches.front();
    top_match.x += roi.x;
    top_match.y += roi.y;
    
-   Match next_match = matcher->next();
+   FindResult next_match = matcher->next();
    buffered_matches[0] = next_match;
    sort(buffered_matches,sort_by_score);
    return top_match;
 }
-
-
 
 //=========================================================================================
 
@@ -365,7 +321,7 @@ FaceFinder::hasNext(){
    return faces && face_i < faces->total;
 }
 
-Match
+FindResult
 FaceFinder::next(){
    
    
@@ -373,7 +329,7 @@ FaceFinder::next(){
    CvRect* r = (CvRect*)cvGetSeqElem(faces ,face_i);  
    face_i++;
    
-   Match match;
+   FindResult match;
    match.x = r->x + roi.x;
    match.y = r->y + roi.y;
    match.w = r->width;
@@ -499,7 +455,7 @@ ChangeFinder::hasNext(){
    return !is_identical  && c !=NULL;
 }
 
-Match
+FindResult
 ChangeFinder::next(){ 
    
    // find bounding boxes
@@ -520,7 +476,7 @@ ChangeFinder::next(){
          y1 = p->y;         
     }
    
-    Match m;
+    FindResult m;
     m.x = x1 + roi.x;
     m.y = y1 + roi.y;
     m.w = x2 - x1 + 1;
@@ -531,60 +487,207 @@ ChangeFinder::next(){
 }
 
 
-//=====================================================================================
-#include "ocr.h"
 
-WordFinder::WordFinder(Mat inputImage)
+//=====================================================================================
+#include "tessocr.h"
+
+TextFinder::TextFinder(Mat inputImage)
 : BaseFinder(inputImage){
 };
 
 void
-WordFinder::train(Mat& trainingImage){	
-	train_by_image(trainingImage);
+TextFinder::train(Mat& trainingImage){	
+//	train_by_image(trainingImage);
+}
+
+
+// Code copied from 
+// http://oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
+static void Tokenize(const string& str,
+              vector<string>& tokens,
+              const string& delimiters = " ")
+{
+   // Skip delimiters at beginning.
+   string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+   // Find first "non-delimiter".
+   string::size_type pos     = str.find_first_of(delimiters, lastPos);
+   
+   while (string::npos != pos || string::npos != lastPos)
+   {
+      // Found a token, add it to the vector.
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      // Skip delimiters.  Note the "not_of"
+      lastPos = str.find_first_not_of(delimiters, pos);
+      // Find next "non-delimiter"
+      pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+
+
+void
+TextFinder::find(const char* text, double _min_similarity){
+   vector<string> words;
+   Tokenize(text, words, " ");
+   return find(words, _min_similarity);
 }
 
 void
-WordFinder::find(const char* word, double _min_similarity){
+TextFinder::find(vector<string> words, double _min_similarity){
    this->min_similarity = _min_similarity;
    BaseFinder::find();
-	TimingBlock tb("WordFinder::find");
-	matches = find_word_by_image(roiSource, word);
-   matches_iterator = matches.begin();
-}
-
-void
-WordFinder::find(vector<string> words, double _min_similarity){
-   this->min_similarity = _min_similarity;
-   BaseFinder::find();
-	TimingBlock tb("WordFinder::find");
-	matches = find_phrase(roiSource, words);
+	TimingBlock tb("TextFinder::find");
+	matches = OCR::find_phrase(roiSource, words);
    matches_iterator = matches.begin();   
 }
 
 bool      
-WordFinder::hasNext(){
+TextFinder::hasNext(){
    
-//   dout << "[WordFinder] " << matches_iterator->score  << endl;
+//   dout << "[TextFinder] " << matches_iterator->score  << endl;
    return (matches_iterator != matches.end()) &&
-       (matches_iterator->score >= min_similarity);
+   (matches_iterator->score >= min_similarity);
 }
 
-Match
-WordFinder::next(){ 
+FindResult
+TextFinder::next(){ 
    
-   Match ret;
+   FindResult ret;
    if (hasNext()){
       ret = *matches_iterator;
       ++matches_iterator;
       return ret;
    }else {
-      return Match(0,0,0,0,-1);
+      return FindResult(0,0,0,0,-1);
    }
 
 }
    
 
-void
-WordFinder::recognize(const Mat& inputImage){	
-//	recognize_helper(inputImage);
+vector<string>
+TextFinder::recognize(const Mat& inputImage){	
+	return vector<string>();//recognize_words(inputImage);
 }
+
+
+//=====================================================================================
+Finder::Finder(Mat source)
+: _source(source){
+   _finder = NULL;
+}
+
+Finder::Finder(IplImage* source)
+: _source(Mat(source)){
+   _finder = NULL;
+}
+
+Finder::Finder(const char* source){
+   _source = imread(source,1);
+   _finder = NULL;
+}
+
+Finder::~Finder(){
+   if (_finder)
+      delete _finder;
+}
+
+void 
+Finder::find(IplImage* target, double min_similarity){
+   dout << "[Finder::find]" << endl;
+   
+   
+   if (abs(min_similarity - 100)< 0.00001){
+      cout << "training.." << endl;
+      Mat im(target);
+      TextFinder::train(im);
+      
+   }else{
+   
+      TemplateFinder* tf = new TemplateFinder(_source);
+      tf->find(target, min_similarity);
+      _finder = tf;
+      
+   }
+}
+
+void 
+Finder::find(const char *target, double min_similarity){
+   dout << "[Finder::find]" << endl;
+
+   const char* p = target;
+   const char* ext = p + strlen(p) - 3;
+   
+   if (abs(min_similarity - 100)< 0.00001){
+      
+      Mat im = imread(target,1);
+      TextFinder::train(im);
+      
+   }else if (strncmp(ext,"png",3) != 0){
+      TextFinder* wf = new TextFinder(_source);
+      
+         // get name after bundle path, which is
+         // assumed to be the query word
+      int j;
+      for (j = (strlen(p)-1); j >=0; j--){      
+         if (p[j]=='/')
+         break;
+      }
+     
+      const char* q = p + j + 1;
+         
+      wf->find(q,0.6);
+      _finder = wf;
+      
+   }else {
+      
+      TemplateFinder* tf = new TemplateFinder(_source);
+      tf->find(target, min_similarity);
+      _finder = tf;
+   }                    
+}
+
+void 
+Finder::find_all(IplImage*  target, double min_similarity){
+   TemplateFinder* tf  = new TemplateFinder(_source);
+   tf->find_all(target, min_similarity);
+   _finder = tf;
+}
+
+void 
+Finder::find_all(const char *target, double min_similarity){
+   
+   const char* p = target;
+   const char* ext = p + strlen(p) - 3;
+   
+   if (strncmp(ext,"png",3) != 0){
+      TextFinder* wf = new TextFinder(_source);
+      
+      // get name after bundle path, which is
+      // assumed to be the query word
+      int j;
+      for (j = (strlen(p)-1); j >=0; j--){      
+         if (p[j]=='/')
+            break;
+      }
+      
+      const char* q = p + j + 1;
+      
+      wf->find(q,0.6);
+      _finder = wf;
+   }else {
+      
+      TemplateFinder* tf = new TemplateFinder(_source);
+      tf->find_all(target, min_similarity);
+      _finder = tf;
+   }     
+}
+
+bool 
+Finder::hasNext(){
+   return _finder->hasNext();
+}
+
+FindResult 
+Finder::next(){
+   return _finder->next();
+}
+

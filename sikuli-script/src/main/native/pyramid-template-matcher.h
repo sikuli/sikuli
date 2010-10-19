@@ -3,7 +3,7 @@
  *  vision
  *
  *  Created by Tom Yeh on 5/1/10.
- *  Copyright 2010 __MyCompanyName__. All rights reserved.
+ *  Copyright 2010 sikuli.org. All rights reserved.
  *
  */
 #ifndef _PYRAMID_TEMPLATE_MATCHER_
@@ -11,28 +11,13 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "cv.h"
-#include "highgui.h"
+
+
+#include "opencv.hpp"
+#include "find-result.h"
 
 using namespace cv;
 using namespace std;
-#ifndef _MATCH_
-#define _MATCH_
-
-struct Match {
-   int x, y;
-   int w, h;
-   double score;
-   Match(){
-      x=0;y=0;w=0;h=0;score=-1;
-   }
-   Match(int _x, int _y, int _w, int _h, double _score){
-      x = _x; y = _y;
-      w = _w; h = _h;
-      score = _score;
-   }
-};
-#endif
 
 class PyramidTemplateMatcher{
 
@@ -42,7 +27,7 @@ public:
    PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
    ~PyramidTemplateMatcher();
 
-   virtual Match next();
+   virtual FindResult next();
 
 protected:
 
