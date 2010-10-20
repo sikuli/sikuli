@@ -4,6 +4,7 @@ PROJECT (sikuli-script Java)
 ENABLE_TESTING()
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
+SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/")
 
 FIND_PACKAGE(Java)

@@ -39,25 +39,30 @@ public class DefaultJniExtractor implements JniExtractor {
      * @throws IOException if there's a problem creating the dir
      */
     public File getJniDir() throws IOException {
-        if(jniDir == null) {
-           String frameworkPath = "Sikuli-IDE.app/Contents/Frameworks";
-            jniDir = new File(frameworkPath);
-            if( jniDir.exists() ){
-               System.setProperty("java.library.tmpdir", frameworkPath);
-               return jniDir;
-            }
-            String tmpdir = System.getProperty("java.io.tmpdir") + "tmplib";
+       String[] libPaths = {
+          "Sikuli-IDE.app/Contents/Frameworks", "lib"
+       };
+       if(jniDir == null) {
+          for(int i=0;i<libPaths.length;i++){
+             String path = libPaths[i];
+             jniDir = new File(path);
+             if( jniDir.exists() ){
+                System.setProperty("java.library.tmpdir", path);
+                return jniDir;
+             }
+          }
 
-            jniDir = new File( System.getProperty("java.library.tmpdir",tmpdir));
-            if(debug)
-                System.err.println("Initialised JNI library working directory to '"+jniDir+"'");
-        }
+          String tmpdir = System.getProperty("java.io.tmpdir") + "tmplib";
+          jniDir = new File( System.getProperty("java.library.tmpdir",tmpdir));
+          if(debug)
+             System.err.println("Initialised JNI library working directory to '"+jniDir+"'");
+       }
 
-        if ( !jniDir.exists() ) {
-            if( !jniDir.mkdirs())
-                throw new IOException("Unable to create JNI library working directory "+jniDir);
-        }
-        return jniDir;
+       if ( !jniDir.exists() ) {
+          if( !jniDir.mkdirs())
+             throw new IOException("Unable to create JNI library working directory "+jniDir);
+       }
+       return jniDir;
     }
 
     /**
@@ -98,11 +103,11 @@ public class DefaultJniExtractor implements JniExtractor {
         if(debug)
             System.err.println("Extracting '"+resourcename+"' to '"+outfile.getAbsolutePath()+"'");
         //FIXME: check the file utime and determine if it needs overwritten
-        //if( !outfile.exists() ){
+        if( !outfile.exists() || outfile.getParent().endsWith("tmplib") ){
            OutputStream out = new FileOutputStream(outfile);
            copy(in,out);
            out.close();
-        //}
+        }
         in.close();
         return outfile;
     }

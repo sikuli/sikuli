@@ -1,8 +1,9 @@
 #!/bin/sh
 for dylib in *.dylib *.jnilib
 do
-   for ref in `otool -L $dylib | grep opt | awk '{print $1'}`
+   for ref in `otool -L $dylib | grep "lib.*.dylib[^:]" | awk '{print $1'} | grep ^[^/]`
    do
+      #echo $ref
       install_name_tool -change $ref @executable_path/../Frameworks/`basename $ref` $dylib
    done
 done

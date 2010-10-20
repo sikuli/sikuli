@@ -67,7 +67,7 @@ ELSE()
 ENDIF()
 
 
-add_custom_target( ${JAR_FILE} ALL
+add_custom_target( ${JAR_FILE} 
    COMMAND ${JAVA_ARCHIVE} cfm ${BINARY_DIR}/${JAR_FILE}
            ${MANIFEST} -C ${JAR_DIR} *
    COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/${JAR_FILE} ${COMMON_LIB_DIR}/${JAR_FILE}
@@ -134,8 +134,7 @@ IF(APPLE)
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
       COMMAND cp ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
       COMMAND cp ${deplibs} ${FRAMEWORKS_IN_APP_DIR}
-      #COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} change-lib-path.sh
-      ##FIXME lib-path doesn't have /opt...
+      COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} ./change-lib-path.sh
       COMMENT "Packaging Frameworks"
    )
 
@@ -163,7 +162,7 @@ FOREACH(JAR ${INCLUDE_JARS})
 ENDFOREACH(JAR ${INCLUDE_JARS})
 
 
-add_custom_target( app
+add_custom_target( app ALL
 )
 
 add_dependencies( app ${APP_FILE} )
