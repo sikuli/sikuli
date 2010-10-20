@@ -31,15 +31,15 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
       setPreferredSize(new Dimension(w, DEFAULT_H));
 
       Finder f = new Finder(_simg, new Region(0,0,0,0));
-      f.find(patFilename);
-      if(f.hasNext()){
-         _match = f.next();
-         if(initOffset!=null)
-            setTarget(initOffset.x, initOffset.y);
-         else
-            setTarget(0,0);
-      }
-      try {
+      try{
+         f.find(patFilename);
+         if(f.hasNext()){
+            _match = f.next();
+            if(initOffset!=null)
+               setTarget(initOffset.x, initOffset.y);
+            else
+               setTarget(0,0);
+         }
          _img = ImageIO.read(new File(patFilename));
       } catch (IOException e) {
          Debug.error("Can't load " + patFilename);

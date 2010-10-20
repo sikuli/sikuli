@@ -3,13 +3,11 @@ ENABLE_LANGUAGE(CXX)
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
 
-SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
 SET(CMAKE_OSX_ARCHITECTURES i386 x86_64)
 
 FIND_PROGRAM ( JAVA_JAVA_H javah PATHS ${JAVA_BIN_PATH} )
 SET(JNI_HEADERS
    edu_mit_csail_uid_EventManager.h
-#   edu_mit_csail_uid_Finder.h
    edu_mit_csail_uid_VDictProxy.h
 #   edu_mit_csail_uid_Win32Util.h
 )
