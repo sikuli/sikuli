@@ -10,8 +10,14 @@
 #include "vision.h"
 #include "finder.h"
 #include "tessocr.h"
+#include <sys/stat.h> 
 
 using namespace sikuli;
+
+bool fileExists(const char* strFilename){
+   struct stat stFileInfo;
+   return !stat(strFilename,&stFileInfo);
+}
 
 FindInput::FindInput(){
    init();
@@ -28,7 +34,8 @@ FindInput::FindInput(Mat source_, const char* target_string, bool text){
 }
 
 FindInput::FindInput(const char* source_filename, const char* target_string, bool text){
-   source = cv::imread(source_filename,1);
+   if(fileExists(source_filename))
+      source = cv::imread(source_filename,1);
    init(source, target_string, text);
 }
 
@@ -47,21 +54,24 @@ FindInput::init(Mat source_, const char* target_string, bool text){
    if (text){
       targetText = target_string;
    }else{
-      target = cv::imread(target_string,1);
+      if(fileExists(target_string))
+         target = cv::imread(target_string,1);
    }
    
    bFindingText = text;
 }
 
 void FindInput::setSource(const char* source_filename){
-   source = cv::imread(source_filename,1);
+   if(fileExists(source_filename))
+      source = cv::imread(source_filename,1);
 }
 
 void FindInput::setTarget(const char* target_string, bool text){
    if (text){
       targetText = target_string;
    }else{
-      target = cv::imread(target_string,1);
+      if(fileExists(target_string))
+         target = cv::imread(target_string,1);
    }
 }
 
@@ -141,9 +151,12 @@ find_helper(FindInput& input){
    vector<FindResult> results;
    
    if (input.isFindingText()){
+      Mat source = input.getSourceMat();
       
+      if(!source.rows || !source.cols) 
+         return results;
       
-      TextFinder f(input.getSourceMat());
+      TextFinder f(source);
       f.find(input.getTargetText().c_str(), input.getSimilarity());
       
       if (input.isFindingAll()){
@@ -159,8 +172,12 @@ find_helper(FindInput& input){
       
       
    }else{
-      TemplateFinder f(input.getSourceMat());
+      Mat source = input.getSourceMat();
       Mat image = input.getTargetMat();
+      if(!source.rows || !source.cols || !image.rows || !image.cols)
+         return results;
+         
+      TemplateFinder f(source);
       
       if (input.isFindingAll()){
          f.find_all(image, input.getSimilarity());

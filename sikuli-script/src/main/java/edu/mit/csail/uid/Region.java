@@ -515,14 +515,19 @@ public class Region {
     * finds the given pattern on the screen and returns the best match 
     * without waiting.
     */
-   public <PSC> Match findNow(PSC ptn) throws  FindFailed{
+   public <PSC> Match findNow(PSC ptn) throws FindFailed{
       ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
       Match ret = null;
-      f.find(ptn);
-      if(f.hasNext())
-         ret = f.next();
-      f.destroy();
+      try{
+         f.find(ptn);
+         if(f.hasNext())
+            ret = f.next();
+         f.destroy();
+      }
+      catch(IOException e){
+         throw new FindFailed(e.getMessage());
+      }
       return ret;
    }
 
@@ -535,11 +540,16 @@ public class Region {
                                              throws  FindFailed{
       ScreenImage simg = _scr.capture(x, y, w, h);
       Finder f = new Finder(simg, this);
-      f.findAll(ptn);
-      if(f.hasNext()){
-         return f;
+      try{
+         f.findAll(ptn);
+         if(f.hasNext()){
+            return f;
+         }
+         f.destroy();
       }
-      f.destroy();
+      catch(IOException e){
+         throw new FindFailed(e.getMessage());
+      }
       return null;
    }
 

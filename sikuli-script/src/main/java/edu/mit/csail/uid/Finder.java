@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 public class Finder implements Iterator<Match>{
@@ -32,14 +33,12 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
-   public Finder(String screenFilename){
+   public Finder(String screenFilename) throws IOException{
       this(screenFilename, null);
    }
 
-   public Finder(String screenFilename, Region region){
-      String fname = screenFilename;
-      if( !(new File(screenFilename)).exists() && Settings.BundlePath!=null)
-         fname = Settings.BundlePath + File.separator + screenFilename;
+   public Finder(String screenFilename, Region region) throws IOException{
+      String fname = findInBundle(screenFilename);
       _findInput.setSource(fname);
       _region = region;
    }
@@ -59,18 +58,27 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
-   public <PSC> void setFindInput(PSC ptn){
+   protected <PSC> void setFindInput(PSC ptn) throws IOException{
       if( ptn instanceof Pattern ){
          _pattern = (Pattern)ptn;
-         _findInput.setTarget(_pattern.imgURL);
+         _findInput.setTarget(findInBundle(_pattern.imgURL));
          _findInput.setSimilarity(_pattern.similarity);
       }
       else if( ptn instanceof String){
          boolean isText = false;
          //TODO: check if we need to use OCR
-         _findInput.setTarget((String)ptn, isText);
+         _findInput.setTarget(findInBundle((String)ptn), isText);
          _findInput.setSimilarity(Settings.MinSimilarity);
       }
+   }
+
+   protected String findInBundle(String filename) throws IOException{
+      String ret = filename;
+      if( !(new File(filename)).exists() && Settings.BundlePath!=null)
+         ret = Settings.BundlePath + File.separator + filename;
+      if(!(new File(ret)).exists())
+         throw new FileNotFoundException("File " + ret + " not exists");
+      return ret;
    }
 
 
@@ -78,30 +86,26 @@ public class Finder implements Iterator<Match>{
     * void find( Pattern/String/PatternClass ) 
     * finds the given pattern in the given ScreenImage.
     */
-   public <PSC> void find(PSC ptn){
+   public <PSC> void find(PSC ptn) throws IOException{
       setFindInput(ptn);
       _results = Vision.find(_findInput);
    }
 
-   public void find(String templateFilename, double minSimilarity){
-      String fname = templateFilename;
-      if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
-         fname = Settings.BundlePath + File.separator + templateFilename;
+   public void find(String templateFilename, double minSimilarity) throws IOException{
+      String fname = findInBundle(templateFilename);
       _findInput.setTarget(fname);
       _findInput.setSimilarity(minSimilarity);
       _results = Vision.find(_findInput);
    }
 
-   public <PSC> void findAll(PSC ptn){
+   public <PSC> void findAll(PSC ptn) throws IOException {
       setFindInput(ptn);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);
    }
 
-   public void findAll(String templateFilename, double minSimilarity){
-      String fname = templateFilename;
-      if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
-         fname = Settings.BundlePath + File.separator + templateFilename;
+   public void findAll(String templateFilename, double minSimilarity) throws IOException {
+      String fname = findInBundle(templateFilename);
       _findInput.setTarget(fname);
       _findInput.setSimilarity(minSimilarity);
       _findInput.setFindAll(true);

@@ -1,12 +1,14 @@
 from __future__ import with_statement
 from sikuli.Sikuli import *
 
-setThrowException(False)
+setThrowException(True)
 setAutoWaitTimeout(0.3)
 print "(before setting bundle path) can't find the image: "
-find("apple.png")
-setThrowException(True)
+try:
+   find("apple.png")
+except FindFailed,e:
+   print "got exception" , e
 setBundlePath("test-res/")
 m = find("apple.png")
-print "(fter setting bundle path) found: " + str(m) 
+print "(after setting bundle path) found: " + str(m) 
 assert( m != None )
