@@ -4,20 +4,20 @@
 #include "pyramid-template-matcher.h"
 
 class BaseFinder{
-	
-public:
-	
-	BaseFinder(IplImage* screen_image);
-	BaseFinder(Mat source);
-	BaseFinder(const char* source_image_filename);
-	virtual ~BaseFinder();
-	
-	void setROI(int x, int y, int w, int h);
-	
-	int get_screen_height() const { return source.rows;};
-	int get_screen_width()  const {return source.cols;};
    
-	
+public:
+   
+   BaseFinder(IplImage* screen_image);
+   BaseFinder(Mat source);
+   BaseFinder(const char* source_image_filename);
+   virtual ~BaseFinder();
+   
+   void setROI(int x, int y, int w, int h);
+   
+   int get_screen_height() const { return source.rows;};
+   int get_screen_width()  const {return source.cols;};
+   
+   
    void find();
    
  //  virtual void find(const char* str, double min_similarity) = 0;   
@@ -25,23 +25,23 @@ public:
    virtual bool hasNext() = 0;
    virtual FindResult next() = 0;
    
-	
+   
 protected:
-	
-	Rect roi;
-	Mat source;
-	Mat roiSource;
+   
+   Rect roi;
+   Mat source;
+   Mat roiSource;
    
    
    double min_similarity;
 };
 
 class TextFinder : public BaseFinder {
-	
+   
 public:
-	TextFinder(Mat source);
+   TextFinder(Mat source);
    static void train(Mat& trainingImage);
-	
+   
    void find(const char* word, double min_similarity);   
    void find(vector<string> words, double min_similarity);
    
@@ -54,70 +54,71 @@ private:
    vector<FindResult> matches;
    vector<FindResult>::iterator matches_iterator;
    
-	void test_find(const Mat& inputImage, const vector<string>& testWords);
+   void test_find(const Mat& inputImage, const vector<string>& testWords);
 };
 
 class TemplateFinder : public BaseFinder{
-	
+   
 public:
-	
-	TemplateFinder(Mat source);
-	TemplateFinder(IplImage* source);
-	TemplateFinder(const char* source_image_filename);
-	~TemplateFinder();
-	
    
-	void find(Mat target, double min_similarity);
-	void find(IplImage* target, double min_similarity);
-	void find(const char *target_image_filename, double min_similarity);
+   TemplateFinder(Mat source);
+   TemplateFinder(IplImage* source);
+   TemplateFinder(const char* source_image_filename);
+   ~TemplateFinder();
    
-	
-	void find_all(Mat target, double min_similarity);
-	void find_all(IplImage*  target, double min_similarity);
-	void find_all(const char *target_image_filename, double min_similarity);  
-	
-	bool hasNext();
-	FindResult next();
-	
+   
+   void find(Mat target, double min_similarity);
+   void find(IplImage* target, double min_similarity);
+   void find(const char *target_image_filename, double min_similarity);
+   
+   
+   void find_all(Mat target, double min_similarity);
+   void find_all(IplImage*  target, double min_similarity);
+   void find_all(const char *target_image_filename, double min_similarity);  
+   
+   bool hasNext();
+   FindResult next();
+   
 private:
-	
-   void create_matcher(Mat& source, Mat& target, int level, float ratio);
-	PyramidTemplateMatcher* matcher;
-	
-	FindResult current_match;
-	int current_rank;	
-	
-	// buffer matches and return top score
-   void add_matches_to_buffer(int num_matches_to_add);
-   float top_score_in_buffer();	
    
-	vector<FindResult> buffered_matches;   
+   void create_matcher(Mat& source, Mat& target, int level, float ratio);
+   PyramidTemplateMatcher* matcher;
+   
+   FindResult current_match;
+   int current_rank;   
+   
+   // buffer matches and return top score
+   void add_matches_to_buffer(int num_matches_to_add);
+   float top_score_in_buffer();   
+   
+   vector<FindResult> buffered_matches;   
 };
 
 class Finder {
 public:
    
    
-	Finder(Mat mat);	
-	Finder(IplImage* source);
+   Finder(Mat mat);   
+   Finder(IplImage* source);
    Finder(const char* source);
-	~Finder();
+   ~Finder();
 
-	void setROI(int x, int y, int w, int h);
+   void setROI(int x, int y, int w, int h);
    
-	void find(IplImage* target, double min_similarity);
-	void find(const char *target, double min_similarity);
+   void find(IplImage* target, double min_similarity);
+   void find(const char *target, double min_similarity);
    
-	void find_all(IplImage*  target, double min_similarity);
-	void find_all(const char *target, double min_similarity);  
-	
-	bool hasNext();
-	FindResult next();
-	
+   void find_all(IplImage*  target, double min_similarity);
+   void find_all(const char *target, double min_similarity);  
+   
+   bool hasNext();
+   FindResult next();
+   
 private:
-	
+   
    Mat _source;
    BaseFinder* _finder;
+   Rect _roi;
 };
 
 class FaceFinder : public BaseFinder {

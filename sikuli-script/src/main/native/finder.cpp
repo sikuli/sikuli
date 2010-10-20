@@ -573,16 +573,19 @@ TextFinder::recognize(const Mat& inputImage){
 Finder::Finder(Mat source)
 : _source(source){
    _finder = NULL;
+   _roi = Rect(-1,-1,-1,-1);
 }
 
 Finder::Finder(IplImage* source)
 : _source(Mat(source)){
    _finder = NULL;
+   _roi = Rect(-1,-1,-1,-1);
 }
 
 Finder::Finder(const char* source){
    _source = imread(source,1);
    _finder = NULL;
+   _roi = Rect(-1,-1,-1,-1);
 }
 
 Finder::~Finder(){
@@ -603,6 +606,7 @@ Finder::find(IplImage* target, double min_similarity){
    }else{
    
       TemplateFinder* tf = new TemplateFinder(_source);
+      if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find(target, min_similarity);
       _finder = tf;
       
@@ -623,6 +627,7 @@ Finder::find(const char *target, double min_similarity){
       
    }else if (strncmp(ext,"png",3) != 0){
       TextFinder* wf = new TextFinder(_source);
+      if(_roi.width>0) wf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       
          // get name after bundle path, which is
          // assumed to be the query word
@@ -640,6 +645,7 @@ Finder::find(const char *target, double min_similarity){
    }else {
       
       TemplateFinder* tf = new TemplateFinder(_source);
+      if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find(target, min_similarity);
       _finder = tf;
    }                    
@@ -648,6 +654,7 @@ Finder::find(const char *target, double min_similarity){
 void 
 Finder::find_all(IplImage*  target, double min_similarity){
    TemplateFinder* tf  = new TemplateFinder(_source);
+   if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
    tf->find_all(target, min_similarity);
    _finder = tf;
 }
@@ -660,6 +667,7 @@ Finder::find_all(const char *target, double min_similarity){
    
    if (strncmp(ext,"png",3) != 0){
       TextFinder* wf = new TextFinder(_source);
+      if(_roi.width>0) wf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       
       // get name after bundle path, which is
       // assumed to be the query word
@@ -676,6 +684,7 @@ Finder::find_all(const char *target, double min_similarity){
    }else {
       
       TemplateFinder* tf = new TemplateFinder(_source);
+      if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find_all(target, min_similarity);
       _finder = tf;
    }     
@@ -693,5 +702,5 @@ Finder::next(){
 
 
 void Finder::setROI(int x, int y, int w, int h){
-   _finder->setROI(x, y, w, h);
+   _roi = Rect(x, y, w, h);
 }
