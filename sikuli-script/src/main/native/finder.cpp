@@ -691,3 +691,7 @@ Finder::next(){
    return _finder->next();
 }
 
+
+void Finder::setROI(int x, int y, int w, int h){
+   _finder->setROI(x, y, w, h);
+}

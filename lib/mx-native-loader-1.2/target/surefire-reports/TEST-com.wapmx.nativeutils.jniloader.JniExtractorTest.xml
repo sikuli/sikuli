@@ -1,110 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.123" errors="0" skipped="0" tests="1" name="com.wapmx.nativeutils.jniloader.JniExtractorTest">
+<testsuite failures="0" time="0.118" errors="0" skipped="0" tests="1" name="com.wapmx.nativeutils.jniloader.JniExtractorTest">
   <properties>
-    <property name="java.vendor" value="Apple Inc."/>
-    <property name="env.	:cd" value="\E[J:ce=\E[K:cl=\E[H\E[J:cm=\E[%i%d;%dH:ct=\E[3g:\"/>
-    <property name="localRepository" value="/Users/vgod/.m2/repository"/>
-    <property name="sun.java.launcher" value="SUN_STANDARD"/>
-    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler"/>
-    <property name="env.TERMCAP" value="SC|screen|VT 100/ANSI X3.64 virtual terminal:\"/>
-    <property name="env.JAVA_MAIN_CLASS_45809" value="org.codehaus.classworlds.Launcher"/>
-    <property name="os.name" value="Mac OS X"/>
-    <property name="sun.boot.class.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsfd.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/ui.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/laf.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/sunrsasign.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jce.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/charsets.jar"/>
-    <property name="env.TMPDIR" value="/var/folders/sD/sD3aJ+jGFxW2ZSjXCqQn4E+++TI/-Tmp-/"/>
-    <property name="env.PWD" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2"/>
-    <property name="java.library.debug" value="1"/>
-    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
-    <property name="java.runtime.version" value="1.6.0_15-b03-219"/>
-    <property name="env.Apple_PubSub_Socket_Render" value="/tmp/launch-ji95bf/Render"/>
-    <property name="env.DISPLAY" value="/tmp/launch-SqamKj/:0"/>
-    <property name="env.	:DO" value="\E[%dB:LE=\E[%dD:RI=\E[%dC:UP=\E[%dA:bs:bt=\E[Z:\"/>
-    <property name="user.name" value="vgod"/>
-    <property name="env.USER" value="vgod"/>
-    <property name="env.SHELL" value="/bin/bash"/>
-    <property name="env.__CF_USER_TEXT_ENCODING" value="0x1F5:0:0"/>
-    <property name="awt.nativeDoubleBuffering" value="true"/>
-    <property name="env.	:ti" value="\E[?1049h:te=\E[?1049l:us=\E[4m:ue=\E[24m:so=\E[3m:\"/>
-    <property name="env.PATH" value="/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/vgod/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:~/bin:/usr/local/bin:/usr/local/texlive/2007/bin/i386-darwin:/opt/flex_sdk_3/bin:/sw/bin/:~/bin:/usr/local/bin:/usr/local/texlive/2007/bin/i386-darwin:/opt/flex_sdk_3/bin"/>
-    <property name="user.language" value="en"/>
-    <property name="env.WINDOW" value="1"/>
-    <property name="sun.boot.library.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Libraries"/>
-    <property name="classworlds.conf" value="/usr/share/maven/bin/m2.conf"/>
-    <property name="env.	:as" value="\E(0:ae=\E(B:\"/>
-    <property name="java.version" value="1.6.0_15"/>
-    <property name="user.timezone" value="America/New_York"/>
-    <property name="sun.arch.data.model" value="64"/>
-    <property name="java.endorsed.dirs" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/endorsed"/>
-    <property name="sun.cpu.isalist" value=""/>
-    <property name="sun.jnu.encoding" value="MacRoman"/>
-    <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="env.SHLVL" value="2"/>
-    <property name="env.	:ac" value="\140\140aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++,,hhII00:\"/>
-    <property name="file.separator" value="/"/>
-    <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="env.STY" value="44408.ttys009.mbook"/>
-    <property name="java.class.version" value="50.0"/>
-    <property name="user.country" value="US"/>
-    <property name="java.home" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home"/>
-    <property name="java.vm.info" value="mixed mode"/>
-    <property name="env.	:li#25:co#80:am:xn:xv:LP:sr" value="\EM:al=\E[L:AL=\E[%dL:\"/>
-    <property name="env.LOGNAME" value="vgod"/>
-    <property name="env.	:se" value="\E[23m:md=\E[1m:mr=\E[7m:me=\E[m:ms:\"/>
-    <property name="os.version" value="10.6"/>
-    <property name="env.TERM_PROGRAM_VERSION" value="272"/>
-    <property name="path.separator" value=":"/>
-    <property name="java.vm.version" value="14.1-b02-90"/>
-    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob"/>
-    <property name="env.TERM" value="xterm-color"/>
-    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
-    <property name="awt.toolkit" value="apple.awt.CToolkit"/>
-    <property name="env.	:le" value="^H:bl=^G:cr=^M:it#8:ho=\E[H:nw=\EE:ta=^I:is=\E)0:\"/>
-    <property name="env.LSCOLORS" value="gxfxcxdxbxegedabagacad"/>
-    <property name="user.home" value="/Users/vgod"/>
-    <property name="env.OLDPWD" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2"/>
-    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
-    <property name="env.TERM_PROGRAM" value="Apple_Terminal"/>
-    <property name="java.library.path" value=".:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
-    <property name="java.vendor.url" value="http://www.apple.com/"/>
-    <property name="java.vm.vendor" value="Apple Inc."/>
-    <property name="gopherProxySet" value="false"/>
-    <property name="maven.home" value="/usr/share/maven"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="java.class.path" value="/usr/share/maven/boot/classworlds-1.1.jar"/>
-    <property name="env.	:kl" value="\EOD:km:"/>
-    <property name="env.	:Co#8:pa#64:AF" value="\E[3%dm:AB=\E[4%dm:op=\E[39;49m:AX:\"/>
-    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="env.	:ke" value="\E[?1l\E&gt;:vi=\E[?25l:ve=\E[34h\E[?25h:vs=\E[34l:\"/>
-    <property name="java.vm.specification.version" value="1.0"/>
-    <property name="env.	:kb" value="^H:kh=\E[1~:@1=\E[1~:kH=\E[4~:@7=\E[4~:kN=\E[6~:\"/>
+    <property name="sun.boot.library.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Libraries"/>
+    <property name="java.vm.version" value="16.3-b01-279"/>
+    <property name="awt.nativeDoubleBuffering" value="true"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="mrj.build" value="10M3065"/>
+    <property name="java.vm.vendor" value="Apple Inc."/>
+    <property name="java.vendor.url" value="http://www.apple.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
-    <property name="sun.cpu.endian" value="little"/>
-    <property name="env.HOME" value="/Users/vgod"/>
-    <property name="surefire.test.class.path" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2/target/test-classes:/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2/target/classes:/Users/vgod/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar:"/>
-    <property name="java.io.tmpdir" value="/var/folders/sD/sD3aJ+jGFxW2ZSjXCqQn4E+++TI/-Tmp-/"/>
-    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/"/>
-    <property name="env.SSH_AUTH_SOCK" value="/tmp/launch-lJK0oH/Listeners"/>
-    <property name="env.COMMAND_MODE" value="unix2003"/>
-    <property name="env.	:do" value="^J:nd=\E[C:pt:rc=\E8:rs=\Ec:sc=\E7:st=\EH:up=\EM:\"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2"/>
+    <property name="java.runtime.version" value="1.6.0_20-b02-279-10M3065"/>
     <property name="java.awt.graphicsenv" value="apple.awt.CGraphicsEnvironment"/>
-    <property name="os.arch" value="x86_64"/>
-    <property name="java.ext.dirs" value="/Library/Java/Extensions:/System/Library/Java/Extensions:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext"/>
-    <property name="env.	:kP" value="\E[5~:kI=\E[2~:kD=\E[3~:ku=\EOA:kd=\EOB:kr=\EOC:\"/>
     <property name="java.library.tmpdir" value="target/extractortest/foo"/>
-    <property name="user.dir" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2"/>
-    <property name="mrj.version" value="1060.1.6.0_15-219"/>
+    <property name="basedir" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2"/>
+    <property name="java.endorsed.dirs" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="surefire.real.class.path" value="/var/folders/uR/uRqVsq97GVeEWE6B0-dHIE+++TI/-Tmp-/surefirebooter461137182416029953.jar"/>
+    <property name="java.io.tmpdir" value="/var/folders/uR/uRqVsq97GVeEWE6B0-dHIE+++TI/-Tmp-/"/>
     <property name="line.separator" value="
 "/>
-    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
-    <property name="env.EDITOR" value="vim"/>
-    <property name="basedir" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/lib/mx-native-loader-1.2"/>
-    <property name="file.encoding" value="MacRoman"/>
-    <property name="env.	:cs" value="\E[%i%d;%dr:dl=\E[M:DL=\E[%dM:dc=\E[P:DC=\E[%dP:\"/>
-    <property name="env.	:k6" value="\E[17~:k7=\E[18~:k8=\E[19~:k9=\E[20~:k;=\E[21~:\"/>
-    <property name="env.	:F6" value="\E[29~:F7=\E[31~:F8=\E[32~:F9=\E[33~:FA=\E[34~:\"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="sun.jnu.encoding" value="MacRoman"/>
+    <property name="java.library.path" value=".:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="surefire.test.class.path" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2/target/test-classes:/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2/target/classes:/Users/vgod/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler"/>
+    <property name="os.version" value="10.6.4"/>
+    <property name="user.home" value="/Users/vgod"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob"/>
     <property name="java.specification.version" value="1.6"/>
-    <property name="env.	:k0" value="\E[10~:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:k5=\E[15~:\"/>
-    <property name="env.	:F1" value="\E[23~:F2=\E[24~:F3=\E[25~:F4=\E[26~:F5=\E[28~:\"/>
-    <property name="env.	:im" value="\E[4h:ei=\E[4l:mi:IC=\E[%d@:ks=\E[?1h\E=:\"/>
+    <property name="file.encoding" value="MacRoman"/>
+    <property name="user.name" value="vgod"/>
+    <property name="java.class.path" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2/target/test-classes:/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2/target/classes:/Users/vgod/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar:"/>
+    <property name="java.library.debug" value="1"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="apple.awt.CToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_20"/>
+    <property name="java.ext.dirs" value="/Library/Java/Extensions:/System/Library/Java/Extensions:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext"/>
+    <property name="sun.boot.class.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsfd.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/ui.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/laf.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/sunrsasign.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jce.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/charsets.jar"/>
+    <property name="java.vendor" value="Apple Inc."/>
+    <property name="localRepository" value="/Users/vgod/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="mrj.version" value="1060.1.6.0_20-279"/>
+    <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.09" classname="com.wapmx.nativeutils.jniloader.JniExtractorTest" name="testExtract"/>
+  <testcase time="0.102" classname="com.wapmx.nativeutils.jniloader.JniExtractorTest" name="testExtract"/>
 </testsuite>

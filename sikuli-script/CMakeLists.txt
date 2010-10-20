@@ -105,13 +105,6 @@ SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")
 SET(JYTHON_CLASS org.python.util.jython)
 
 FOREACH(TEST_TARGET ${PYTHON_TESTS})
-   ADD_TEST(Python_${TEST_TARGET} ${CMAKE_COMMAND} -E chdir ${BASE_DIR} 
-                  java -Dsikuli.Debug=3 -cp ${JAR_DIR} -Dpython.home=${JAR_DIR} 
-                  ${JYTHON_CLASS} ${PY_TEST_DIR}/test-${TEST_TARGET}.py
-   )
-ENDFOREACH(TEST_TARGET)
-
-FOREACH(TEST_TARGET ${PYTHON_TESTS})
    ADD_TEST(Jar_${TEST_TARGET} ${CMAKE_COMMAND} -E chdir ${BASE_DIR} 
                   java -Dsikuli.Debug=3 -cp ${BINARY_DIR}/${JAR_FILE} 
                   -Dpython.home=${BINARY_DIR}/${JAR_FILE} 

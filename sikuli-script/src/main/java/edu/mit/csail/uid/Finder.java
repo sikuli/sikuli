@@ -40,7 +40,7 @@ public class Finder implements Iterator<Match>{
       String fname = screenFilename;
       if( !(new File(screenFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + screenFilename;
-      _findInput.setSource(screenFilename);
+      _findInput.setSource(fname);
       _region = region;
    }
 
@@ -87,7 +87,7 @@ public class Finder implements Iterator<Match>{
       String fname = templateFilename;
       if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + templateFilename;
-      _findInput.setTarget(templateFilename);
+      _findInput.setTarget(fname);
       _findInput.setSimilarity(minSimilarity);
       _results = Vision.find(_findInput);
    }
@@ -102,7 +102,7 @@ public class Finder implements Iterator<Match>{
       String fname = templateFilename;
       if( !(new File(templateFilename)).exists() && Settings.BundlePath!=null)
          fname = Settings.BundlePath + File.separator + templateFilename;
-      _findInput.setTarget(templateFilename);
+      _findInput.setTarget(fname);
       _findInput.setSimilarity(minSimilarity);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);

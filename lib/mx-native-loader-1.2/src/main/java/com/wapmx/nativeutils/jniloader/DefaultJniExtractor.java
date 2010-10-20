@@ -46,8 +46,9 @@ public class DefaultJniExtractor implements JniExtractor {
                System.setProperty("java.library.tmpdir", frameworkPath);
                return jniDir;
             }
+            String tmpdir = System.getProperty("java.io.tmpdir") + "tmplib";
 
-            jniDir = new File( System.getProperty("java.library.tmpdir","tmplib"));
+            jniDir = new File( System.getProperty("java.library.tmpdir",tmpdir));
             if(debug)
                 System.err.println("Initialised JNI library working directory to '"+jniDir+"'");
         }
@@ -96,11 +97,12 @@ public class DefaultJniExtractor implements JniExtractor {
         File outfile = new File(getJniDir(),outputname);
         if(debug)
             System.err.println("Extracting '"+resourcename+"' to '"+outfile.getAbsolutePath()+"'");
-        if( !outfile.exists() ){
+        //FIXME: check the file utime and determine if it needs overwritten
+        //if( !outfile.exists() ){
            OutputStream out = new FileOutputStream(outfile);
            copy(in,out);
            out.close();
-        }
+        //}
         in.close();
         return outfile;
     }

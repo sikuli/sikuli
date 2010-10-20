@@ -17,8 +17,8 @@ public class EventManager {
 
    static {
       try{
-         NativeLoader.loadLibrary("ScreenMatchProxy");
-         System.out.println("ScreenMatchProxy loaded.");
+         NativeLoader.loadLibrary("VisionProxy");
+         System.out.println("EventManager loaded.");
       }
       catch(IOException e){
          e.printStackTrace();

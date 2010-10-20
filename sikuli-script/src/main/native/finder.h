@@ -102,6 +102,8 @@ public:
 	Finder(IplImage* source);
    Finder(const char* source);
 	~Finder();
+
+	void setROI(int x, int y, int w, int h);
    
 	void find(IplImage* target, double min_similarity);
 	void find(const char *target, double min_similarity);
