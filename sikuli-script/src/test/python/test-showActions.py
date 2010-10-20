@@ -3,7 +3,7 @@ from sikuli.Sikuli import *
 
 if getNumberScreens()>1:
    s = Screen(1)
-else
+else:
    s = SCREEN
 
 with s:

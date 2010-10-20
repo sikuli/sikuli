@@ -97,7 +97,7 @@ SUBDIRS(${NATIVE_SRC_DIR} ${JAVA_SRC_DIR})
 
 SET(PYTHON_TESTS
    basic bundle capture click dragdrop env findAll 
-   keys mouse multiscreen observe print-objs region 
+   keys mouse multiscreen observe region 
    showActions sikuli type vdict wait with
 )
 
