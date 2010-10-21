@@ -49,16 +49,8 @@ void
 FindInput::init(Mat source_, const char* target_string, bool text){
    init();
    
-   source = source_;
-   
-   if (text){
-      targetText = target_string;
-   }else{
-      if(fileExists(target_string))
-         target = cv::imread(target_string,1);
-   }
-   
-   bFindingText = text;
+   setSource(source_);
+   setTarget(target_string, text);
 }
 
 void FindInput::setSource(const char* source_filename){
@@ -67,6 +59,7 @@ void FindInput::setSource(const char* source_filename){
 }
 
 void FindInput::setTarget(const char* target_string, bool text){
+   bFindingText = text;
    if (text){
       targetText = target_string;
    }else{

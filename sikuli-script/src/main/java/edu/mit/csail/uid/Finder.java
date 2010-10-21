@@ -65,10 +65,21 @@ public class Finder implements Iterator<Match>{
          _findInput.setSimilarity(_pattern.similarity);
       }
       else if( ptn instanceof String){
-         boolean isText = false;
-         //TODO: check if we need to use OCR
-         _findInput.setTarget(findInBundle((String)ptn), isText);
+         setTargetSmartly(_findInput, (String)ptn);
          _findInput.setSimilarity(Settings.MinSimilarity);
+      }
+   }
+
+   protected void setTargetSmartly(FindInput fin, String target){
+      try{
+         //assume it's a file first
+         String filename = findInBundle(target);
+         fin.setTarget(filename, false);
+      }
+      catch(IOException e){
+         //assume it's text 
+         fin.setTarget(target, true);
+         Vision.initOCR("/opt/local/share/tessdata");
       }
    }
 
@@ -92,8 +103,7 @@ public class Finder implements Iterator<Match>{
    }
 
    public void find(String templateFilename, double minSimilarity) throws IOException{
-      String fname = findInBundle(templateFilename);
-      _findInput.setTarget(fname);
+      setTargetSmartly(_findInput, templateFilename);
       _findInput.setSimilarity(minSimilarity);
       _results = Vision.find(_findInput);
    }
@@ -105,8 +115,7 @@ public class Finder implements Iterator<Match>{
    }
 
    public void findAll(String templateFilename, double minSimilarity) throws IOException {
-      String fname = findInBundle(templateFilename);
-      _findInput.setTarget(fname);
+      setTargetSmartly(_findInput, templateFilename);
       _findInput.setSimilarity(minSimilarity);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);

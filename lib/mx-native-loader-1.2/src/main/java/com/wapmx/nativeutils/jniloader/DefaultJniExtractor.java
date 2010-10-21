@@ -40,7 +40,7 @@ public class DefaultJniExtractor implements JniExtractor {
      */
     public File getJniDir() throws IOException {
        String[] libPaths = {
-          "Sikuli-IDE.app/Contents/Frameworks", "lib"
+          "Sikuli-IDE.app/Contents/Frameworks", "libs"
        };
        if(jniDir == null) {
           for(int i=0;i<libPaths.length;i++){

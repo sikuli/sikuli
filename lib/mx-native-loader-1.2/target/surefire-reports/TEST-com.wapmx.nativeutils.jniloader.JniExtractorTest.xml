@@ -23,7 +23,7 @@
     <property name="basedir" value="/Users/vgod/Documents/School/MIT/projects/sikuli-svn/public-bzr/branches/X1/lib/mx-native-loader-1.2"/>
     <property name="java.endorsed.dirs" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/endorsed"/>
     <property name="os.arch" value="x86_64"/>
-    <property name="surefire.real.class.path" value="/var/folders/uR/uRqVsq97GVeEWE6B0-dHIE+++TI/-Tmp-/surefirebooter2806213365699380249.jar"/>
+    <property name="surefire.real.class.path" value="/var/folders/uR/uRqVsq97GVeEWE6B0-dHIE+++TI/-Tmp-/surefirebooter4217909509863097391.jar"/>
     <property name="java.io.tmpdir" value="/var/folders/uR/uRqVsq97GVeEWE6B0-dHIE+++TI/-Tmp-/"/>
     <property name="line.separator" value="
 "/>
@@ -63,5 +63,5 @@
     <property name="mrj.version" value="1060.1.6.0_20-279"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.007" classname="com.wapmx.nativeutils.jniloader.JniExtractorTest" name="testExtract"/>
+  <testcase time="0.008" classname="com.wapmx.nativeutils.jniloader.JniExtractorTest" name="testExtract"/>
 </testsuite>
