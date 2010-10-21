@@ -198,15 +198,12 @@ Painter::drawOCRWord(Mat& ocr_result_image, OCRWord& ocrword){
       OCRChar& ocrchar = *it;
       char ch = ocrchar.ch;
       
-      OCRRect ocr_rect = ocrchar;
-      
-      //cout << ocrchar.ch;
-      
       char buf[2];
       buf[0] = ch;
       buf[1] = 0;
-      //Point pt(ocr_rect.x,ocrword.y+ocrword.height);
-      Point pt(ocr_rect.x,ocr_rect.y + ocr_rect.height);
+     
+      Point pt(ocrchar.x, ocrword.y + ocrword.height);      
+//      //Point pt(ocr_rect.x,ocr_rect.y + ocr_rect.height);
       
       Scalar white(255,255,255);
       Scalar black(0,0,0);
@@ -1156,14 +1153,12 @@ cvgui::segmentScreenshot(const Mat& screen, vector<Blob>& text_blobs, vector<Blo
       
    }
    
-   
-   return;
-   
-   
    Mat image_result = bg.clone();
    
    Painter::drawBlobs(image_result, image_blobs, Scalar(0,0,255));
    VLOG("ImageRecordsExtracted", image_result);
+
+   return;
    
    Mat ui_mask = Mat::zeros(screen.size(), CV_8UC1);
    Mat photo_mask = Mat::zeros(screen.size(), CV_8UC1);
@@ -1571,7 +1566,7 @@ cvgui::findLongLines(const Mat& src, Mat& dest){
 }
 
 
-#define LONGLINE_THRESHOLD 20
+#define LONGLINE_THRESHOLD 100
 void
 cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest){
    

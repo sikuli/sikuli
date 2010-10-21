@@ -44,8 +44,7 @@ public class Finder implements Iterator<Match>{
    }
 
    public Finder(ScreenImage img, Region region){
-      byte[] data = OpenCV.convertBufferedImageToByteArray(img.getImage());
-      Mat target = Vision.createMat(img.h, img.w, data);
+      Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
       _findInput.setSource(target);
       _region = region;
    }

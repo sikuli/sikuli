@@ -29,5 +29,10 @@ public class OpenCV {
       return ((DataBufferByte)cvImg.getRaster().getDataBuffer()).getData();
    }
 
+   public static Mat convertBufferedImageToMat(BufferedImage img){
+      byte[] data = convertBufferedImageToByteArray(img);
+      return Vision.createMat(img.getHeight(), img.getWidth(), data);
+   }
+
 }
 

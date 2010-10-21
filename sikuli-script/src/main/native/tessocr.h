@@ -27,15 +27,19 @@ class OCRRect {
   
 public:
    
-   OCRRect(){};
+   OCRRect();
    
-   OCRRect(int x_, int y_, int width_, int height_)
-   : x(x_), y(y_), width(width_), height(height_){};
+   OCRRect(int x_, int y_, int width_, int height_);
    
    int x;
    int y;
    int height;
    int width;
+   
+protected:
+   
+   void addOCRRect(const OCRRect& r);
+   
 };
 
 class OCRChar : public OCRRect{
@@ -55,7 +59,7 @@ public:
    
    string str();
    
-    void clear() { ocr_chars_.clear();};
+    void clear();
    
     bool empty() { return ocr_chars_.empty();};
    
@@ -92,7 +96,7 @@ public:
    
 };
 
-class OCRText{
+class OCRText : public OCRRect{
 
 public:   
    void add(OCRWord& ocr_word);
@@ -109,6 +113,8 @@ public:
    vector<string> getLineStrings();
    vector<string> getWordStrings();
    string getString();
+   
+   vector<OCRWord> getWords();
    
 //private:
    vector<OCRLine> ocr_lines_;

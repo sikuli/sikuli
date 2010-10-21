@@ -501,6 +501,11 @@ public class Region {
       return _lastMatches;
    }
 
+   public String text(){
+      ScreenImage simg = _scr.capture(x, y, w, h);
+      return TextRecognizer.getInstance().recognize(simg);
+   }
+
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS
    ////////////////////////////////////////////////////////////////

@@ -23,9 +23,40 @@ static char* mytesseract(const unsigned char* imagedata,
    return text;
 }
 
+OCRRect::OCRRect(int x_, int y_, int width_, int height_)
+: x(x_), y(y_), width(width_), height(height_){};
+
+OCRRect::OCRRect(){
+   x = -1;
+   y = -1;
+   width = -1;
+   height = -1;
+}
+
+void
+OCRRect::addOCRRect(const OCRRect& rect){
+   if (width < 0 && height < 0){
+      x = rect.x;
+      y = rect.y;
+      height = rect.height;
+      width = rect.width;
+   }else{
+      int left = x < rect.x ? x : rect.x;
+      int top = y < rect.y ? y : rect.y;
+      int lhs = x + width;
+      int rhs = rect.x + rect.width;
+      int right = lhs > rhs ? lhs : rhs;
+      lhs = y + height;
+      rhs = rect.y + rect.height;
+      int bottom = lhs > rhs ? lhs : rhs;
+      x = left; y = top; width = right - left; height = bottom - top;
+   }
+}
+   
 
 void
 OCRWord::add(const OCRChar& ocr_char){
+   addOCRRect(ocr_char);
    ocr_chars_.push_back(ocr_char);
 }
 
@@ -43,6 +74,12 @@ OCRWord::getString(){
    return str();
 }
 
+void
+OCRWord::clear() { 
+   width = -1; height = -1;
+   ocr_chars_.clear();
+};
+
 bool
 OCRWord::isValidWord(){
    return TessBaseAPI::IsValidWord(str().c_str());
@@ -50,9 +87,9 @@ OCRWord::isValidWord(){
 
 void
 OCRLine::addWord(OCRWord& ocr_word){
+   addOCRRect(ocr_word);
    ocr_words_.push_back(ocr_word);
 }
-
 
 string
 OCRLine::getString(){   
@@ -71,6 +108,7 @@ OCRLine::getString(){
 
 void
 OCRParagraph::addLine(OCRLine& ocr_line){
+   addOCRRect(ocr_line);
    ocr_lines_.push_back(ocr_line);
 }
 
@@ -102,13 +140,18 @@ OCRText::save(const char* filename){
 void
 OCRText::save_with_location(const char* filename){
    
+   
+   vector<OCRWord> words = getWords();
+   
    ofstream of(filename);
    
-   for (iterator it = begin();
-        it != end(); ++it){
+   for (vector<OCRWord>::iterator it = words.begin();
+        it != words.end(); ++it){
       
-      of << it->x << " " << it->y << " " << it->width << " " << it->height << " ";
-      of << it->str() << " ";
+      OCRWord& w = *it;
+      
+      of << w.x << " " << w.y << " " << w.width << " " << w.height << " ";
+      of << w.getString() << " ";
       of << endl;
    }
    
@@ -117,6 +160,7 @@ OCRText::save_with_location(const char* filename){
 
 void 
 OCRText::addParagraph(OCRParagraph& ocr_paragraph){
+   addOCRRect(ocr_paragraph);
    ocr_paragraphs_.push_back(ocr_paragraph);
 }
 
@@ -144,6 +188,32 @@ OCRText::getLineStrings(){
    return line_strings;
 }
 
+
+vector<OCRWord> 
+OCRText::getWords(){
+   vector<OCRWord> words;
+   
+   for (vector<OCRParagraph>::iterator it = ocr_paragraphs_.begin(); 
+        it != ocr_paragraphs_.end(); ++it){
+      
+      OCRParagraph& para = *it;
+      
+      for (vector<OCRLine>::iterator it1 = para.ocr_lines_.begin(); 
+           it1 != para.ocr_lines_.end(); ++it1){
+         
+         OCRLine& line = *it1;
+         
+         for (vector<OCRWord>::iterator it2 = line.ocr_words_.begin();
+              it2 != line.ocr_words_.end(); ++it2){
+            
+            OCRWord& word = *it2;
+            words.push_back(word);
+         }
+      }
+   }
+   
+   return words;
+}
 
 vector<string> 
 OCRText::getWordStrings(){
@@ -256,7 +326,6 @@ OCR::init(const char* datapath){
    bool numeric_mode = false;
    TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    isInitialized = true;   
-   cerr << "OCR initialized." << endl;
 }
 
 
@@ -588,13 +657,7 @@ linkOCRCharsToOCRLine(const vector<OCRChar>& ocrchars){
    } 
    
    if (!ocrword.empty())
-   
       ocrline.addWord(ocrword);
-   //cout << endl;
-   
-//   ocrword.add(ocrchar);
-//   ocrword.y = lineblob.y;
-//   ocrword.height = lineblob.height;
          
    return ocrline;
 }
