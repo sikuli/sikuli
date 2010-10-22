@@ -1,6 +1,7 @@
 %module VisionProxy
 %{
 #include "vision.h"
+#include "debug.h"
 #include <iostream>
 #include "opencv.hpp"
 %}
@@ -57,71 +58,75 @@ struct FindResult {
 namespace sikuli {
 
 
-class FindInput{
-      
-public:
-   
-   FindInput();
-   FindInput(cv::Mat source, cv::Mat target);
-   FindInput(cv::Mat source, const char* target, bool text = false);
-   FindInput(const char* source_filename, const char* target, bool text = false);
+   class FindInput{
 
-   void setSource(const char* source_filename);
-   void setTarget(const char* target_string, bool text = false);
-   void setSource(cv::Mat source);
-   void setTarget(cv::Mat target);
-   cv::Mat getSourceMat();
-   cv::Mat getTargetMat();
+   public:
 
-   void setFindAll(bool all);
-   bool isFindingAll();
+      FindInput();
+      FindInput(cv::Mat source, cv::Mat target);
+      FindInput(cv::Mat source, const char* target, bool text = false);
+      FindInput(const char* source_filename, const char* target, bool text = false);
 
-   void setFindText(bool text);
-   bool isFindingText();
+      void setSource(const char* source_filename);
+      void setTarget(const char* target_string, bool text = false);
+      void setSource(cv::Mat source);
+      void setTarget(cv::Mat target);
+      cv::Mat getSourceMat();
+      cv::Mat getTargetMat();
 
-   void setLimit(int limit);
-   int getLimit();
-   
-   void setSimilarity(double similarity);
-   double getSimilarity();
+      void setFindAll(bool all);
+      bool isFindingAll();
 
-   std::string getTargetText();
-   
-private:
-   
-   void init(cv::Mat source_, const char* target_string, bool text);
-   void init();
+      void setFindText(bool text);
+      bool isFindingText();
 
-      
-   cv::Mat source;
-   cv::Mat target;
-   std::string targetText;
-   
-   int limit;
-   double similarity;
-   
-   int ordering;
-   int position;
-   
-   bool bFindingAll;
-   bool bFindingText;
-};
+      void setLimit(int limit);
+      int getLimit();
+
+      void setSimilarity(double similarity);
+      double getSimilarity();
+
+      std::string getTargetText();
+
+   private:
+
+      void init(cv::Mat source_, const char* target_string, bool text);
+      void init();
 
 
-class Vision{
-public:
-      
-   static std::vector<FindResult> find(FindInput q);
-   
-   static double compare(cv::Mat m1, cv::Mat m2);
-   
-   static void initOCR(const char* ocrDataPath);
-      
-   static std::string recognize(cv::Mat image);
+      cv::Mat source;
+      cv::Mat target;
+      std::string targetText;
 
-   static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
-};
+      int limit;
+      double similarity;
 
+      int ordering;
+      int position;
+
+      bool bFindingAll;
+      bool bFindingText;
+   };
+
+
+   class Vision{
+   public:
+
+      static std::vector<FindResult> find(FindInput q);
+
+      static double compare(cv::Mat m1, cv::Mat m2);
+
+      static void initOCR(const char* ocrDataPath);
+
+      static std::string recognize(cv::Mat image);
+
+      static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
+   };
+
+   enum DebugCategories {
+      OCR, FINDER
+   };
+   void setDebug(DebugCategories cat, int level);
 }
 
 

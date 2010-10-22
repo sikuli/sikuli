@@ -12,6 +12,7 @@
 #include "opencv.hpp"
 #include <iostream>
 #include "tessocr.h"
+#include "debug.h"
 
 using namespace cv;
 
@@ -35,11 +36,11 @@ public:
    
    static void log(const char* name, const Mat& image){
       char buf[200];
+      if(sikuli::OCR_DEBUG_LEVEL<=0)
+         return;
       
       if (prefix){
-         
          sprintf(buf, "%s-%02d-%s.vlog.png", prefix, step_i, name);
-         
       }else{
          sprintf(buf, "%03d-%02d-%s.vlog.png",image_i,step_i,name);           
       }

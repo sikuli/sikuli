@@ -57,6 +57,7 @@ SWIG_ADD_MODULE(VisionProxy java vision.i
    vision.cpp
    EventManagerProxy.cc
    event-manager.cc
+   debug.cpp
    edu_mit_csail_uid_EventManager.h
 ) 
 SWIG_LINK_LIBRARIES(VisionProxy ${Tesseract_LIBRARY} ${OpenCV_LIBS})  
