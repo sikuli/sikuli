@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 public class Finder implements Iterator<Match>{
-   private long _instance = 0;
    private Region _region = null;
    private Pattern _pattern = null;
    private FindInput _findInput = new FindInput();
@@ -19,6 +18,7 @@ public class Finder implements Iterator<Match>{
       try{
          NativeLoader.loadLibrary("VisionProxy");
          System.out.println("Sikuli vision engine loaded.");
+         TextRecognizer tr = TextRecognizer.getInstance();
       }
       catch(IOException e){
          e.printStackTrace();
@@ -78,7 +78,6 @@ public class Finder implements Iterator<Match>{
       catch(IOException e){
          //assume it's text 
          fin.setTarget(target, true);
-         Vision.initOCR("/opt/local/share/tessdata");
       }
    }
 

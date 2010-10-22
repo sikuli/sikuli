@@ -5,6 +5,7 @@ ENABLE_TESTING()
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
 SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
+SET(TESSERACT_DATA_DIR "/opt/local/share/tessdata") #REMOVE ME
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/")
 
 FIND_PACKAGE(Java)
@@ -80,11 +81,21 @@ IF(NOT EXISTS ${LIB_IN_JAR_DIR}/glob.py)
    )
 ENDIF()
 
+SET(TESSDATA_IN_JAR_DIR "${JAR_DIR}/tessdata")
+IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
+   add_custom_target( ${JAR_FILE}.tessdata-in-jar
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${TESSDATA_IN_JAR_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${TESSERACT_DATA_DIR} ${TESSDATA_IN_JAR_DIR}
+      COMMENT "Copying Tesseract Data"
+   )
+ENDIF()
+
 # Dependencies
 
 add_dependencies(${JAR_FILE} 
         ${JAR_FILE}.classes-in-jar 
         ${JAR_FILE}.python-src-in-jar
+        ${JAR_FILE}.tessdata-in-jar
         ${JAR_FILE}.libs-in-jar
         ${JAR_FILE}.includes-in-jar
         ${JAR_FILE}.jython-in-jar

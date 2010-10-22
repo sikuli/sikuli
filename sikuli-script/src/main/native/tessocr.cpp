@@ -324,7 +324,9 @@ OCR::init(const char* datapath){
    char outputbase[] = "output";
    char lang[] = "eng";
    bool numeric_mode = false;
-   TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
+   setenv("TESSDATA_PREFIX", datapath,1);
+   int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
+   cout << (ret==0?"done":"failed") << endl;
    isInitialized = true;   
 }
 
