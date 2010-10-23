@@ -31,6 +31,7 @@ SET(BINARY_CLASS_DIR "${BINARY_DIR}/classes")
 SET(BINARY_LIB_DIR "${BINARY_DIR}/lib")
 SET(JAR_DIR "${BINARY_DIR}/jar")
 SET(RESOURCE_DIR "${BASE_DIR}/resources")
+SET(RELEASE_DIR "${BASE_DIR}/../release")
 
 SET(SIKULI_SCRIPT_JAR "${COMMON_LIB_DIR}/sikuli-script.jar")
 SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
@@ -90,6 +91,8 @@ add_custom_target( run
                         ${MAIN_CLASS} ${ARGS}
 )
 
+file(READ ${BASE_DIR}/latest-ver VERSION)
+STRING(STRIP ${VERSION} VERSION)
 
 ## Sikuli-IDE.App for Mac OS X
 
@@ -104,6 +107,7 @@ IF(APPLE)
    ELSEIF(APPLE_LEOPARD)
       SET(OSX_VER "osx-10.5")
    ENDIF()
+   SET(OS ${OSX_VER})
 
    SET(APP_FILE  "Sikuli-IDE.app")
    SET(BINARY_APP_DIR  "${BINARY_DIR}/${OSX_VER}")
@@ -123,8 +127,11 @@ IF(APPLE)
 
 ENDIF(APPLE)
 
+SET(RELEASE_FILE "Sikuli-${VERSION}-${OS}")
+
 ## Packaging App
 add_custom_target( ${APP_FILE}
+   COMMENT "Generate ${BINARY_DIR}/${APP_FILE}"
 )
 
 add_dependencies( ${APP_FILE} ${JAR_FILE} )
@@ -138,13 +145,17 @@ IF(APPLE)
       COMMENT "Packaging Frameworks"
    )
 
-   file(READ ${BASE_DIR}/latest-ver VERSION)
    add_custom_target( ${APP_FILE}.update_ver
 	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion ${VERSION}
 	COMMAND plutil -convert xml1 ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info.plist
    )
 
    add_dependencies( ${APP_FILE} ${APP_FILE}.framework ${APP_FILE}.update_ver)
+
+   install(DIRECTORY ${BINARY_APP_DIR}/${APP_FILE}
+      USE_SOURCE_PERMISSIONS
+      DESTINATION .
+   )
 
 ENDIF(APPLE)
 
@@ -167,7 +178,27 @@ add_custom_target( app ALL
 
 add_dependencies( app ${APP_FILE} )
 
-# Dependencies
+## Packaging
+
+if(APPLE)
+   SET(CPACK_GENERATOR DragNDrop )
+else(APPLE)
+   SET(CPACK_GENERATOR 
+      ZIP
+   )
+endif(APPLE)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Sikuli ${VERSION}")
+SET(CPACK_PACKAGE_VENDOR "Sikuli Development Team")
+#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${BASE_DIR}/../readme.txt")
+#SET(CPACK_RESOURCE_FILE_LICENSE "${BASE_DIR}/../copyright.txt")
+SET(CPACK_PACKAGE_FILE_NAME ${RELEASE_FILE})
+
+INCLUDE(CPack)
+
+# type "make package" to generate release packages
+
+## Dependencies
 
 add_dependencies( ${JAR_FILE}.prepare
         ${JAR_FILE}.resources
