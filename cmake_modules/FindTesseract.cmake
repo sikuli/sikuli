@@ -25,6 +25,11 @@ find_library(Tesseract_LIBRARY
   PATHS ${Tesseract_PKGCONF_LIBRARY_DIRS}
 )
 
+find_library(Tesseract_LIBRARY
+  NAMES tesseract_main
+  PATHS ${Tesseract_PKGCONF_LIBRARY_DIRS}
+)
+
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
 set(Tesseract_PROCESS_INCLUDES Tesseract_INCLUDE_DIR Tesseract_INCLUDE_DIRS)

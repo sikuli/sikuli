@@ -1,6 +1,7 @@
 SET(OpenCV_DIR "/opt/opencv")
 SET(CMAKE_LIBRARY_PATH "${OpenCV_DIR}/lib")
 
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/common.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/detect_osx_ver.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/find_dep_libs.cmake)
 
@@ -9,7 +10,7 @@ PROJECT (sikuli-ide Java)
 
 ENABLE_TESTING()
 
-SET(CMAKE_VERBOSE_MAKEFILE 0)
+SET(CMAKE_VERBOSE_MAKEFILE 1)
 
 FIND_PACKAGE(Java)
 SET( NON_NATIVE_TARGET TRUE)
@@ -37,6 +38,7 @@ SET(SIKULI_SCRIPT_JAR "${COMMON_LIB_DIR}/sikuli-script.jar")
 SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(SWING_LAYOUT_JAR "${COMMON_LIB_DIR}/swing-layout-1.0.1.jar")
 SET(COMMONS_CLI_JAR "${COMMON_LIB_DIR}/commons-cli-1.2.jar")
+SET(JXGRABKEY_JAR "${COMMON_LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar")
 
 
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
@@ -63,6 +65,7 @@ SET(RESOURCES icons META-INF scripts i18n)
 
 IF(LINUX)
    SET(MANIFEST ${RESOURCE_DIR}/META-INF/MANIFEST-linux.MF)
+   SET(CLASSPATH ${CLASSPATH}${SEP}${JXGRABKEY_JAR})
 ELSE()
    SET(MANIFEST ${RESOURCE_DIR}/META-INF/MANIFEST.MF)
 ENDIF()
@@ -94,12 +97,28 @@ add_custom_target( run
 file(READ ${BASE_DIR}/latest-ver VERSION)
 STRING(STRIP ${VERSION} VERSION)
 
-## Sikuli-IDE.App for Mac OS X
-
 SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR} 
                  ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
                  ${BINARY_DIR}/${JAR_FILE}
 )
+
+## Linux Package
+
+IF(LINUX)
+   SET(OS "linux")
+   SET(APP_FILE "Sikuli-IDE")
+   SET(BINARY_APP_DIR  "${BINARY_DIR}/${OS}")
+   SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE})
+   SET(FRAMEWORKS_IN_APP_DIR  ${JAR_IN_APP_DIR}/libs)
+   SET(JAR_LIB_DIR  ${JAR_DIR}/META-INF/lib)
+
+   LIST(APPEND INCLUDE_JARS ${JXGRABKEY_JAR})
+   SET(jnilibs "")
+   FILE(GLOB sikuli_script_jnilibs "${BASE_DIR}/../sikuli-script/target/lib/*.so")
+   LIST(APPEND jnilibs ${sikuli_script_jnilibs})
+ENDIF(LINUX)
+
+## Sikuli-IDE.App for Mac OS X
 
 IF(APPLE)
    IF(APPLE_SNOW_LEOPARD)
@@ -110,7 +129,7 @@ IF(APPLE)
    SET(OS ${OSX_VER})
 
    SET(APP_FILE  "Sikuli-IDE.app")
-   SET(BINARY_APP_DIR  "${BINARY_DIR}/${OSX_VER}")
+   SET(BINARY_APP_DIR  "${BINARY_DIR}/${OS}")
    SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Resources/Java)
    SET(FRAMEWORKS_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Frameworks)
 
@@ -136,6 +155,30 @@ add_custom_target( ${APP_FILE}
 
 add_dependencies( ${APP_FILE} ${JAR_FILE} )
 
+IF(LINUX)
+   EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE SYSTEM_ARCH)
+   if(SYSTEM_ARCH MATCHES "x86_64")
+      SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-64.so")
+   else()
+      SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-32.so")
+   endif()
+   add_custom_target( ${JAR_FILE}.framework 
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_LIB_DIR}
+      COMMAND cp ${LIB_GRABKEY} ${JAR_LIB_DIR}/libJXGrabKey.so
+      COMMENT "Packaging Frameworks in Jar"
+   )
+   add_dependencies( ${JAR_FILE} ${JAR_FILE}.framework ) 
+
+   add_custom_target( ${APP_FILE}.framework 
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp ${LIB_GRABKEY} ${FRAMEWORKS_IN_APP_DIR}/libJXGrabKey.so
+      COMMENT "Packaging Frameworks in App"
+   )
+   add_dependencies( ${APP_FILE} ${APP_FILE}.framework ) 
+
+ENDIF(LINUX)
+
 IF(APPLE)
    add_custom_target( ${APP_FILE}.framework 
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
@@ -152,18 +195,22 @@ IF(APPLE)
 
    add_dependencies( ${APP_FILE} ${APP_FILE}.framework ${APP_FILE}.update_ver)
 
-   install(DIRECTORY ${BINARY_APP_DIR}/${APP_FILE}
-      USE_SOURCE_PERMISSIONS
-      DESTINATION .
-   )
-
 ENDIF(APPLE)
 
+install(DIRECTORY ${BINARY_APP_DIR}/${APP_FILE}
+   USE_SOURCE_PERMISSIONS
+   DESTINATION .
+)
+
+
+add_custom_target( app ALL
+)
 
 
 FOREACH(JAR ${INCLUDE_JARS})
    get_filename_component(JAR_FILENAME ${JAR} NAME)
    get_filename_component(target ${JAR} NAME_WE)
+   set(target "include_${target}")
    add_custom_target( ${target}
       COMMAND ${CMAKE_COMMAND} -E copy ${JAR} ${JAR_IN_APP_DIR}/${JAR_FILENAME}
                   
@@ -173,10 +220,7 @@ FOREACH(JAR ${INCLUDE_JARS})
 ENDFOREACH(JAR ${INCLUDE_JARS})
 
 
-add_custom_target( app ALL
-)
-
-add_dependencies( app ${APP_FILE} )
+#add_dependencies( app ${APP_FILE})
 
 ## Packaging
 
@@ -208,6 +252,7 @@ add_dependencies( ${JAR_FILE}.prepare
 
 add_dependencies( ${JAR_FILE} ${JAR_FILE}.prepare )
 add_dependencies( run ${JAR_FILE}.prepare )
+add_dependencies( app ${APP_FILE}) 
 
 SUBDIRS(${JAVA_SRC_DIR} ${NATIVE_SRC_DIR})
 

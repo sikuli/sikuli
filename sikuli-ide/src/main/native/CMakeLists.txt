@@ -23,12 +23,13 @@ IF(APPLE)
    SET(BUILD_TARGETS
       NativeLayerForMac
    )
-ENDIF(APPLE)
 
-ADD_LIBRARY(NativeLayerForMac SHARED
-   NativeLayerForMac.cc
-   edu_mit_csail_uid_NativeLayerForMac.h
-)
+   ADD_LIBRARY(NativeLayerForMac SHARED
+      NativeLayerForMac.cc
+      edu_mit_csail_uid_NativeLayerForMac.h
+   )
+
+ENDIF(APPLE)
 
 foreach(JNI_HEADER ${JNI_HEADERS})
    STRING(REGEX REPLACE "_" "." JNI_CLASS ${JNI_HEADER})
@@ -56,4 +57,6 @@ add_custom_target(${JAR_FILE}.libs-in-jar
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_DIR}/META-INF/lib
 )
 
-add_dependencies(${JAR_FILE}.libs-in-jar ${BUILD_TARGETS})
+IF(EXISTS ${BUILD_TARGETS})
+   add_dependencies(${JAR_FILE}.libs-in-jar ${BUILD_TARGETS})
+ENDIF()

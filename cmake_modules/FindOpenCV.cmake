@@ -47,8 +47,20 @@
 # 
 #----------------------------------------------------------
 
-
 find_path(OpenCV_DIR "OpenCVConfig.cmake" DOC "Root directory of OpenCV")
+
+include(LibFindMacros)
+
+# Use pkg-config to get hints about paths
+libfind_pkg_check_modules(OpenCV_PKGCONF opencv)
+if(${OpenCV_PKGCONF_FOUND})
+	SET(OpenCV_INCLUDE_DIR ${OpenCV_PKGCONF_INCLUDE_DIRS})
+	SET(OPENCV_INCLUDE_DIR ${OpenCV_PKGCONF_INCLUDE_DIRS})
+	SET(OpenCV_LIBRARIES ${OpenCV_PKGCONF_LIBRARIES})
+	SET(OpenCV_FOUND 1)
+else()
+	SET(OpenCV_LIBRARY_DIR "${OpenCV_DIR}/lib")
+endif()
 
 ##====================================================
 ## Find OpenCV libraries
@@ -94,8 +106,8 @@ if(EXISTS "${OpenCV_DIR}")
         ## Loop over each components
         foreach(__CVLIB ${OPENCV_LIB_COMPONENTS})
 
-                find_library(OpenCV_${__CVLIB}_LIBRARY_DEBUG NAMES "${__CVLIB}${CVLIB_SUFFIX}d" "lib${__CVLIB}${CVLIB_SUFFIX}d" PATHS "${OpenCV_DIR}/lib" NO_DEFAULT_PATH)
-                find_library(OpenCV_${__CVLIB}_LIBRARY_RELEASE NAMES "${__CVLIB}${CVLIB_SUFFIX}" "lib${__CVLIB}${CVLIB_SUFFIX}" PATHS "${OpenCV_DIR}/lib" NO_DEFAULT_PATH)
+                find_library(OpenCV_${__CVLIB}_LIBRARY_DEBUG NAMES "${__CVLIB}${CVLIB_SUFFIX}d" "lib${__CVLIB}${CVLIB_SUFFIX}d" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
+                find_library(OpenCV_${__CVLIB}_LIBRARY_RELEASE NAMES "${__CVLIB}${CVLIB_SUFFIX}" "lib${__CVLIB}${CVLIB_SUFFIX}" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
                 
                 #Remove the cache value
                 set(OpenCV_${__CVLIB}_LIBRARY "" CACHE STRING "" FORCE)
@@ -159,4 +171,3 @@ if(OpenCV_BACKWARD_COMPA)
 endif(OpenCV_BACKWARD_COMPA)
 endif(OpenCV_FOUND)
 ##====================================================
-
