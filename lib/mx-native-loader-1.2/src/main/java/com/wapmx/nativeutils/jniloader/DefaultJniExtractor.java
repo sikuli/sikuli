@@ -52,7 +52,7 @@ public class DefaultJniExtractor implements JniExtractor {
              }
           }
 
-          String tmpdir = System.getProperty("java.io.tmpdir") + "tmplib";
+          String tmpdir = System.getProperty("java.io.tmpdir") + "/tmplib";
           jniDir = new File( System.getProperty("java.library.tmpdir",tmpdir));
           if(debug)
              System.err.println("Initialised JNI library working directory to '"+jniDir+"'");
