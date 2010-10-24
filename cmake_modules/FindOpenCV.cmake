@@ -77,7 +77,7 @@ if(EXISTS "${OpenCV_DIR}")
                 ## Search for a specific version
                 set(CVLIB_SUFFIX "${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}")
 
-                 message("found OpenCVConfig${OpenCV_INCLUDE_DIRS}")
+                 message("found OpenCVConfig ${OpenCV_INCLUDE_DIRS}")
         #Otherwise it try to guess it.
         else(EXISTS "${OpenCV_DIR}/OpenCVConfig.cmake")
 
@@ -101,38 +101,38 @@ if(EXISTS "${OpenCV_DIR}")
         
 
         ## Initiate the variable before the loop
-        set(OpenCV_LIBS "")
+#        set(OpenCV_LIBS "")
         set(OpenCV_FOUND_TMP true)
-
-        ## Loop over each components
-        foreach(__CVLIB ${OPENCV_LIB_COMPONENTS})
-
-                find_library(OpenCV_${__CVLIB}_LIBRARY_DEBUG NAMES "${__CVLIB}${CVLIB_SUFFIX}d" "lib${__CVLIB}${CVLIB_SUFFIX}d" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
-                find_library(OpenCV_${__CVLIB}_LIBRARY_RELEASE NAMES "${__CVLIB}${CVLIB_SUFFIX}" "lib${__CVLIB}${CVLIB_SUFFIX}" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
-                
-                #Remove the cache value
-                set(OpenCV_${__CVLIB}_LIBRARY "" CACHE STRING "" FORCE)
-        
-                #both debug/release
-                if(OpenCV_${__CVLIB}_LIBRARY_DEBUG AND OpenCV_${__CVLIB}_LIBRARY_RELEASE)
-                        set(OpenCV_${__CVLIB}_LIBRARY debug ${OpenCV_${__CVLIB}_LIBRARY_DEBUG} optimized ${OpenCV_${__CVLIB}_LIBRARY_RELEASE}  CACHE STRING "" FORCE)
-                #only debug
-                elseif(OpenCV_${__CVLIB}_LIBRARY_DEBUG)
-                        set(OpenCV_${__CVLIB}_LIBRARY ${OpenCV_${__CVLIB}_LIBRARY_DEBUG}  CACHE STRING "" FORCE)
-                #only release
-                elseif(OpenCV_${__CVLIB}_LIBRARY_RELEASE)
-                        set(OpenCV_${__CVLIB}_LIBRARY ${OpenCV_${__CVLIB}_LIBRARY_RELEASE}  CACHE STRING "" FORCE)
-                #no library found
-                else()
-                        set(OpenCV_FOUND_TMP false)
-                endif()
-                
-                #Add to the general list
-                if(OpenCV_${__CVLIB}_LIBRARY)
-                        set(OpenCV_LIBS ${OpenCV_LIBS} ${OpenCV_${__CVLIB}_LIBRARY})
-                endif(OpenCV_${__CVLIB}_LIBRARY)
-                
-        endforeach(__CVLIB)
+#
+#        ## Loop over each components
+#        foreach(__CVLIB ${OPENCV_LIB_COMPONENTS})
+#
+#                find_library(OpenCV_${__CVLIB}_LIBRARY_DEBUG NAMES "${__CVLIB}${CVLIB_SUFFIX}d" "lib${__CVLIB}${CVLIB_SUFFIX}d" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
+#                find_library(OpenCV_${__CVLIB}_LIBRARY_RELEASE NAMES "${__CVLIB}${CVLIB_SUFFIX}" "lib${__CVLIB}${CVLIB_SUFFIX}" PATHS "${OpenCV_LIBRARY_DIR}" NO_DEFAULT_PATH)
+#                
+#                #Remove the cache value
+#                set(OpenCV_${__CVLIB}_LIBRARY "" CACHE STRING "" FORCE)
+#        
+#                #both debug/release
+#                if(OpenCV_${__CVLIB}_LIBRARY_DEBUG AND OpenCV_${__CVLIB}_LIBRARY_RELEASE)
+#                        set(OpenCV_${__CVLIB}_LIBRARY debug ${OpenCV_${__CVLIB}_LIBRARY_DEBUG} optimized ${OpenCV_${__CVLIB}_LIBRARY_RELEASE}  CACHE STRING "" FORCE)
+#                #only debug
+#                elseif(OpenCV_${__CVLIB}_LIBRARY_DEBUG)
+#                        set(OpenCV_${__CVLIB}_LIBRARY ${OpenCV_${__CVLIB}_LIBRARY_DEBUG}  CACHE STRING "" FORCE)
+#                #only release
+#                elseif(OpenCV_${__CVLIB}_LIBRARY_RELEASE)
+#                        set(OpenCV_${__CVLIB}_LIBRARY ${OpenCV_${__CVLIB}_LIBRARY_RELEASE}  CACHE STRING "" FORCE)
+#                #no library found
+#                else()
+#                        set(OpenCV_FOUND_TMP false)
+#                endif()
+#                
+#                #Add to the general list
+#                if(OpenCV_${__CVLIB}_LIBRARY)
+#                        set(OpenCV_LIBS ${OpenCV_LIBS} ${OpenCV_${__CVLIB}_LIBRARY})
+#                endif(OpenCV_${__CVLIB}_LIBRARY)
+#                
+#        endforeach(__CVLIB)
 
 
         set(OpenCV_FOUND ${OpenCV_FOUND_TMP} CACHE BOOL "" FORCE)
