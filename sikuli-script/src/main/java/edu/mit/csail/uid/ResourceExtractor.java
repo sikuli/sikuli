@@ -11,7 +11,7 @@ public class ResourceExtractor {
    public static String extract(String path) throws IOException{
       ClassLoader cl = ClassLoader.getSystemClassLoader();
       InputStream in = cl.getResourceAsStream(path + "/filelist.txt");
-      String localPath = System.getProperty("java.io.tmpdir") + "sikuli/"+ path;
+      String localPath = System.getProperty("java.io.tmpdir") + "/sikuli/"+ path;
       new File(localPath).mkdirs();
       Debug.log(4, "extract resources " + path + " to " + localPath);
       writeFileList(in, path, localPath);

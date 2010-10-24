@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT (sikuli)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
-SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
+INCLUDE(${CMAKE_MODULE_PATH}/common.cmake)
 
 SUBDIRS(sikuli-script sikuli-ide)
 

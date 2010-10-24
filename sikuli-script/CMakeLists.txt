@@ -4,9 +4,8 @@ PROJECT (sikuli-script Java)
 ENABLE_TESTING()
 
 SET(CMAKE_VERBOSE_MAKEFILE 1)
-SET(OpenCV_DIR "/opt/opencv/share/opencv") #REMOVE ME
-SET(TESSERACT_DATA_DIR "/opt/local/share/tessdata") #REMOVE ME
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/")
+INCLUDE("${CMAKE_MODULE_PATH}/common.cmake")
 
 FIND_PACKAGE(Java)
 SET( NON_NATIVE_TARGET TRUE)
@@ -86,6 +85,7 @@ IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
    add_custom_target( ${JAR_FILE}.tessdata-in-jar
       COMMAND ${CMAKE_COMMAND} -E make_directory ${TESSDATA_IN_JAR_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${TESSERACT_DATA_DIR} ${TESSDATA_IN_JAR_DIR}
+      COMMAND cd ${TESSDATA_IN_JAR_DIR} && (find . -type f > filelist.txt)
       COMMENT "Copying Tesseract Data"
    )
 ENDIF()

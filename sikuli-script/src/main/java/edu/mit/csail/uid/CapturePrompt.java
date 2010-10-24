@@ -197,7 +197,12 @@ class CapturePrompt extends JWindow implements Subject{
 
    public void close(){
       if(_gdev != null ){
-	 _gdev.setFullScreenWindow(null);
+         try{
+            _gdev.setFullScreenWindow(null);
+         }
+         catch(Exception e){
+            Debug.log("Switch to windowed mode failed: " + e.getMessage());
+         }
       }
       this.setVisible(false);
       this.dispose();
