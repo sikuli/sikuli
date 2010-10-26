@@ -8,7 +8,7 @@ FIND_PROGRAM ( JAVA_JAVA_H javah PATHS ${JAVA_BIN_PATH} )
 SET(JNI_HEADERS
    edu_mit_csail_uid_EventManager.h
    edu_mit_csail_uid_VDictProxy.h
-#   edu_mit_csail_uid_Win32Util.h
+   edu_mit_csail_uid_Win32Util.h
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
@@ -62,6 +62,15 @@ SET(BUILD_TARGETS
    #TODO move VDictProxy to swig
    VDictProxy
 )
+
+IF(WIN32)
+   LIST(APPEND BUILD_TARGETS Win32Util)
+
+   ADD_LIBRARY(Win32Util SHARED
+      Win32Util.cc
+      edu_mit_csail_uid_Win32Util.h
+   )
+ENDIF()
 
 SET(NATIVE_LIBS
    VisionProxy
