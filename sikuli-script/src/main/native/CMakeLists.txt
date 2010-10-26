@@ -22,10 +22,10 @@ INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE(${SWIG_USE_FILE})
 
-if(NOT WIN32)
+IF(NOT WIN32)
    FIND_PACKAGE(Tesseract REQUIRED)
    INCLUDE_DIRECTORIES(${Tesseract_INCLUDE_DIR})
-else()
+ELSE()
    SET(TESSERACT_SRC_DIRS ccmain ccutil ccstruct viewer 
                           image textord wordrec dict cutil
                           classify aspirin dict display pageseg)
@@ -45,7 +45,7 @@ else()
    SET(Tesseract_INCLUDE_DIR "")
    SET(Tesseract_LIBRARY user32 ws2_32)
    SET(CMAKE_CXX_FLAGS "/D__MSW32__ /DWIN32 /D_WINDOWS /D_CRT_SECURE_NO_WARNINGS")
-endif()
+ENDIF()
 
 
 LINK_DIRECTORIES(${OpenCV_LIBRARY_DIR})

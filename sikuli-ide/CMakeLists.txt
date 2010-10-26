@@ -1,6 +1,3 @@
-SET(OpenCV_DIR "/opt/opencv")
-SET(CMAKE_LIBRARY_PATH "${OpenCV_DIR}/lib")
-
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/common.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/detect_osx_ver.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/find_dep_libs.cmake)
