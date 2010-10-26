@@ -200,6 +200,8 @@ ENDIF(LINUX)
 
 IF(WIN32)
    SET(APP_FILES Sikuli-IDE.bat Sikuli-IDE.exe ide-icon.ico)
+   SET(WIN32_LIBS ${COMMON_LIB_DIR}/win32)
+   SET(OPENCV_LIBS cv210 cvaux210 cxcore210 highgui210 ml210)
 
    SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.2/JIntellitype.dll")
    add_custom_target( ${JAR_FILE}.framework 
@@ -211,12 +213,20 @@ IF(WIN32)
 
    add_custom_target( ${APP_FILE}.framework 
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
-      #COMMAND copy ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${WIN32_LIBS} ${FRAMEWORKS_IN_APP_DIR}
       COMMENT "Packaging Frameworks in App"
    )
    add_dependencies( ${APP_FILE} ${APP_FILE}.framework ) 
+
+   #libs
+
    install(FILES ${jnilibs}
            DESTINATION ${FRAMEWORKS_IN_APP_DIR})
+   FOREACH(F ${OPENCV_LIBS})
+      install(FILES ${OpenCV_DIR}/bin/${F}.dll
+              DESTINATION ${FRAMEWORKS_IN_APP_DIR})
+   ENDFOREACH()
+
    FOREACH(F ${APP_FILES})
       install(FILES ${BINARY_APP_DIR}/${F}
               DESTINATION ${JAR_IN_APP_DIR})
