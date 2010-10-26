@@ -7,28 +7,25 @@
 
 include(LibFindMacros)
 
-# Dependencies
-#libfind_package(Tesseract Magick)
-
 # Use pkg-config to get hints about paths
 libfind_pkg_check_modules(Tesseract_PKGCONF Tesseract)
 
 # Include dir
 find_path(Tesseract_INCLUDE_DIR
   NAMES tesseract/baseapi.h
-  PATHS ${Tesseract_PKGCONF_INCLUDE_DIRS}
+  HINTS "/usr/include"
+        "/usr/local/include"
+        ${Tesseract_PKGCONF_INCLUDE_DIRS}
 )
 
 # Finally the library itself
 find_library(Tesseract_LIBRARY
   NAMES tesseract_full
-  PATHS ${Tesseract_PKGCONF_LIBRARY_DIRS}
+  HINTS "/usr/lib"
+        "/usr/local/lib"
+        ${Tesseract_PKGCONF_LIBRARY_DIRS}
 )
 
-find_library(Tesseract_LIBRARY
-  NAMES tesseract_main
-  PATHS ${Tesseract_PKGCONF_LIBRARY_DIRS}
-)
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.

@@ -1,4 +1,4 @@
-#include "debug.h"
+#include "sikuli-debug.h"
 
 
 int sikuli::OCR_DEBUG_LEVEL = 0;

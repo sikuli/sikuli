@@ -1,5 +1,5 @@
-#ifndef _DEBUG_H
-#define _DEBUG_H
+#ifndef _SIKULU_DEBUG_H
+#define _SIKULI_DEBUG_H
 
 namespace sikuli{
    enum DebugCategories {

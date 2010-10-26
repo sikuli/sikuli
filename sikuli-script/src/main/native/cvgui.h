@@ -12,7 +12,7 @@
 #include "opencv.hpp"
 #include <iostream>
 #include "tessocr.h"
-#include "debug.h"
+#include "sikuli-debug.h"
 
 using namespace cv;
 
