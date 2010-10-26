@@ -2,7 +2,7 @@ IF(APPLE)
    SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/NativeLayerForMac.java)
 ELSEIF(LINUX)
    SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/NativeLayerForLinux.java)
-ELSEIF(WINDOWS)
+ELSEIF(WIN32)
    SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/NativeLayerForWindows.java)
 ENDIF()
 
@@ -54,7 +54,7 @@ SET(JAVA_SOURCE_FILES
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
-    COMMAND ${JAVA_COMPILE} -d ${BINARY_CLASS_DIR} -classpath ${CLASSPATH}
+    COMMAND ${JAVA_COMPILE} -d ${BINARY_CLASS_DIR} -classpath "${CLASSPATH}"
             ${JAVA_SOURCE_FILES}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
      
