@@ -59,8 +59,6 @@ if(${OpenCV_PKGCONF_FOUND})
 	SET(OpenCV_LIBRARIES ${OpenCV_PKGCONF_LIBRARIES})
 	SET(OpenCV_LIBS ${OpenCV_PKGCONF_LIBRARIES})
 	SET(OpenCV_FOUND 1)
-else()
-	SET(OpenCV_LIBRARY_DIR "${OpenCV_DIR}/lib")
 endif()
 
 ##====================================================
@@ -98,8 +96,6 @@ if(EXISTS "${OpenCV_DIR}")
         endif(EXISTS "${OpenCV_DIR}/OpenCVConfig.cmake")
 
         
-        
-
         ## Initiate the variable before the loop
 #        set(OpenCV_LIBS "")
         set(OpenCV_FOUND_TMP true)

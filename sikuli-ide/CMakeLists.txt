@@ -149,6 +149,10 @@ IF(APPLE)
    SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Resources/Java)
    SET(FRAMEWORKS_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Frameworks)
 
+   FIND_PACKAGE(OpenCV REQUIRED)
+   #message("opencv lib: ${OpenCV_LIB_DIR}")
+   LIST(APPEND CMAKE_LIBRARY_PATH ${OpenCV_LIB_DIR})
+
    FILE(GLOB jnilibs "${BINARY_LIB_DIR}/*.jnilib")
    FILE(GLOB sikuli_script_jnilibs "${BASE_DIR}/../sikuli-script/target/lib/*.jnilib")
    LIST(APPEND jnilibs ${sikuli_script_jnilibs})
