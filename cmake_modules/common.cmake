@@ -9,6 +9,7 @@ FIND_PATH(OpenCV_DIR OpenCVConfig.cmake
 
 FIND_PATH(TESSERACT_DATA_DIR confsets 
    "/opt/local/share/tessdata"
+   "/usr/local/share/tessdata"
    "/usr/share/tesseract-ocr/tessdata"
    "/usr/share/tessdata"
    "c:/tesseract-2.04/tessdata"
@@ -21,7 +22,7 @@ IF(WIN32)
 
 ENDIF()
 
-#message("Tesseract-OCR Data Path: ${TESSERACT_DATA_DIR}")
+message("Tesseract-OCR Data Path: ${TESSERACT_DATA_DIR}")
 #message("OpenCV Path: ${OpenCV_DIR}")
 
 IF(UNIX AND NOT APPLE)
