@@ -4,8 +4,6 @@
 ./configs/inter
 ./configs/kannada
 ./configs/makebox
-./configs/Makefile.am
-./configs/Makefile.in
 ./configs/unlv
 ./confsets
 ./eng.DangAmbigs
@@ -18,8 +16,6 @@
 ./eng.word-dawg
 ./tessconfigs/batch
 ./tessconfigs/batch.nochop
-./tessconfigs/Makefile.am
-./tessconfigs/Makefile.in
 ./tessconfigs/matdemo
 ./tessconfigs/msdemo
 ./tessconfigs/nobatch
