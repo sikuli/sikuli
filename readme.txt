@@ -1,16 +1,26 @@
+= What is Sikuli? =
+
+Sikuli is a visual technology to automate graphical user interfaces (GUI) 
+using images (screenshots). The current release of Sikuli contains Sikuli 
+Script, a visual scripting API for Jython, and Sikuli IDE, an integrated 
+development environment for writing visual scripts with screenshots easily. 
+Sikuli Script automates anything you see on the screen without 
+internal API's support. You can programmatically control a web page, a 
+desktop application running on Windows/Linux/Mac OS X, or even an 
+iphone application running in an emulator. 
+
+More detail information can be found on http://sikuli.org
+
 = How To Build Sikuli =
 
-Prerequisite: CMake 2.8+, OpenCV 2.0+, Tesseract-OCR 2.04 (3.0 won't work), SWIG 1.3+
+The instructions to build Sikuli can be found in build-win32.txt, 
+build-linux.txt, or build-mac.txt, according to your platform.
 
-Note for Linux: The Ubuntu package tesseract-ocr doesn't have headers and libraries. You need to compile and install tesseract-ocr from its official site. Besides, you also need libtiff-dev on Linux.
+= Copyright =
 
-Assume you are in the top directory of Sikuli's source tree.
+Sikuli is a research project being developed by Tsung-Hsiang Chang and Tom Yeh
+under the supervision of Professor Rob Miller in MIT Computer Science and 
+Artificial Intelligence Laboratory (CSAIL).
 
-1. make a "build" directory 
-  mkdir build
-
-2. generate makefiles with CMake
-  cd build; cmake ..
-
-3. generate a release package. The package will be generated in "build".
-  make package
+Sikuli is released under the MIT License. The details of the license
+is in copyright.txt.

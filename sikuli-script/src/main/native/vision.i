@@ -1,7 +1,7 @@
 %module VisionProxy
 %{
 #include "vision.h"
-#include "debug.h"
+#include "sikuli-debug.h"
 #include <iostream>
 #include "opencv.hpp"
 %}

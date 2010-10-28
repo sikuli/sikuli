@@ -1,6 +1,3 @@
-SET(OpenCV_DIR "/opt/opencv")
-SET(CMAKE_LIBRARY_PATH "${OpenCV_DIR}/lib")
-
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/common.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/detect_osx_ver.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/find_dep_libs.cmake)
@@ -39,6 +36,7 @@ SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(SWING_LAYOUT_JAR "${COMMON_LIB_DIR}/swing-layout-1.0.1.jar")
 SET(COMMONS_CLI_JAR "${COMMON_LIB_DIR}/commons-cli-1.2.jar")
 SET(JXGRABKEY_JAR "${COMMON_LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar")
+SET(JINTELLITYPE_JAR "${COMMON_LIB_DIR}/jintellitype-1.3.2/jintellitype-1.3.2.jar")
 
 
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
@@ -66,6 +64,9 @@ SET(RESOURCES icons META-INF scripts i18n)
 IF(LINUX)
    SET(MANIFEST ${RESOURCE_DIR}/META-INF/MANIFEST-linux.MF)
    SET(CLASSPATH ${CLASSPATH}${SEP}${JXGRABKEY_JAR})
+ELSEIF(WIN32)
+   SET(MANIFEST ${RESOURCE_DIR}/META-INF/MANIFEST-win32.MF)
+   SET(CLASSPATH ${CLASSPATH}${SEP}${JINTELLITYPE_JAR})
 ELSE()
    SET(MANIFEST ${RESOURCE_DIR}/META-INF/MANIFEST.MF)
 ENDIF()
@@ -90,7 +91,7 @@ add_custom_target( ${JAR_FILE}.prepare
 
 add_custom_target( run
    COMMAND ${JAVA_RUNTIME} ${RUN_ARGS} 
-                        -classpath ${CLASSPATH}${SEP}${JAR_DIR} 
+                        -classpath "${CLASSPATH}${SEP}${JAR_DIR}"
                         ${MAIN_CLASS} ${ARGS}
 )
 
@@ -101,6 +102,21 @@ SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR}
                  ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
                  ${BINARY_DIR}/${JAR_FILE}
 )
+
+## Windows Package
+
+IF(WIN32)
+   SET(OS "win32")
+   SET(APP_FILE "Sikuli-IDE")
+   SET(BINARY_APP_DIR  "${BINARY_DIR}/${OS}")
+   SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE})
+   SET(FRAMEWORKS_IN_APP_DIR  ${JAR_IN_APP_DIR}/libs)
+   SET(JAR_LIB_DIR  ${JAR_DIR}/META-INF/lib)
+
+   LIST(APPEND INCLUDE_JARS ${JINTELLITYPE_JAR})
+   FILE(GLOB sikuli_script_jnilibs "${BASE_DIR}/../sikuli-script/target/lib/*.dll")
+   SET(jnilibs ${sikuli_script_jnilibs})
+ENDIF()
 
 ## Linux Package
 
@@ -132,6 +148,10 @@ IF(APPLE)
    SET(BINARY_APP_DIR  "${BINARY_DIR}/${OS}")
    SET(JAR_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Resources/Java)
    SET(FRAMEWORKS_IN_APP_DIR  ${BINARY_APP_DIR}/${APP_FILE}/Contents/Frameworks)
+
+   FIND_PACKAGE(OpenCV REQUIRED)
+   #message("opencv lib: ${OpenCV_LIB_DIR}")
+   LIST(APPEND CMAKE_LIBRARY_PATH ${OpenCV_LIB_DIR})
 
    FILE(GLOB jnilibs "${BINARY_LIB_DIR}/*.jnilib")
    FILE(GLOB sikuli_script_jnilibs "${BASE_DIR}/../sikuli-script/target/lib/*.jnilib")
@@ -178,6 +198,42 @@ IF(LINUX)
    add_dependencies( ${APP_FILE} ${APP_FILE}.framework ) 
 
 ENDIF(LINUX)
+
+IF(WIN32)
+   SET(APP_FILES Sikuli-IDE.bat Sikuli-IDE.exe ide-icon.ico)
+   SET(WIN32_LIBS ${COMMON_LIB_DIR}/win32)
+   SET(OPENCV_LIBS cv210 cvaux210 cxcore210 highgui210 ml210)
+
+   SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.2/JIntellitype.dll")
+   add_custom_target( ${JAR_FILE}.framework 
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_LIB_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY} ${JAR_LIB_DIR}/
+      COMMENT "Packaging Frameworks in Jar"
+   )
+   add_dependencies( ${JAR_FILE} ${JAR_FILE}.framework ) 
+
+   add_custom_target( ${APP_FILE}.framework 
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${WIN32_LIBS} ${FRAMEWORKS_IN_APP_DIR}
+      COMMENT "Packaging Frameworks in App"
+   )
+   add_dependencies( ${APP_FILE} ${APP_FILE}.framework ) 
+
+   #libs
+
+   install(FILES ${jnilibs}
+           DESTINATION ${FRAMEWORKS_IN_APP_DIR})
+   FOREACH(F ${OPENCV_LIBS})
+      install(FILES ${OpenCV_DIR}/bin/${F}.dll
+              DESTINATION ${FRAMEWORKS_IN_APP_DIR})
+   ENDFOREACH()
+
+   FOREACH(F ${APP_FILES})
+      install(FILES ${BINARY_APP_DIR}/${F}
+              DESTINATION ${JAR_IN_APP_DIR})
+
+   ENDFOREACH()
+ENDIF(WIN32)
 
 IF(APPLE)
    add_custom_target( ${APP_FILE}.framework 

@@ -1,12 +1,33 @@
- = Build Sikuli Script =
+= How To Build Sikuli on Linux =
 
-1. apt-get install libcv-dev libcvaux-dev libhighgui-dev default-jdk g++
+Prerequisite: 
+   CMake 2.8+
+   OpenCV 2.1+
+   libtiff
+   Tesseract-OCR 2.04 + English language data (3.0 won't work), 
+   SWIG 1.3+
+   JDK 6
 
-2. cd sikuli/sikuli-script
-   make install-jar
+The path to these dependent libraries can be set in cmake_modules/common.cmake.
+You may need to add appropriate paths on your machine if cmake can not find 
+the libraries automatically.
+
+Note for Ubuntu Linux users: 
+   The Ubuntu package tesseract-ocr doesn't have headers and libraries 
+   for development. You need to compile and install tesseract-ocr from 
+   source. 
 
 
- = Build Sikuli IDE =
+Assume you are in the top directory of Sikuli's source tree. You can
+build Sikuli IDE and Sikuli Script with the following steps.
 
- 1. cd sikuli/sikuli-ide
-    make do_release
+1. make a "build" directory 
+  mkdir build
+
+2. generate makefiles with CMake
+  cd build
+  cmake ..
+
+3. generate a release package. The package will be generated in "build".
+  make package
+

@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>sikuli-ide.jar</jar>
-  <outfile>c:\sikuli\sikuli-ide\target\win32\Sikuli-IDE.exe</outfile>
+  <outfile>c:\sikuli-x\sikuli-ide\target\win32\Sikuli-IDE.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -12,8 +12,8 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>c:\sikuli\sikuli-ide\target\Sikuli-IDE\ide-icon.ico</icon>
-  <var>PATH=tmplib</var>
+  <icon>c:\sikuli-x\sikuli-ide\target\win32\ide-icon.ico</icon>
+  <var>PATH=libs</var>
   <classPath>
     <mainClass>edu.mit.csail.uid.SikuliIDE</mainClass>
     <cp>sikuli-ide.jar</cp>

@@ -7,7 +7,12 @@
 
 using namespace std;
 
-#include "tesseract/baseapi.h"
+#ifdef WIN32
+   #include "baseapi.h"
+#else
+   #include "tesseract/baseapi.h"
+#endif
+
 #define COMPUTE_IMAGE_XDIM(xsize,bpp) ((bpp)>8 ? ((xsize)*(bpp)+7)/8 :((xsize)+8/(bpp)-1)/(8/(bpp)))
 static char* mytesseract(const unsigned char* imagedata,
                          int width, int height, int bpp){
@@ -324,7 +329,8 @@ OCR::init(const char* datapath){
    char outputbase[] = "output";
    char lang[] = "eng";
    bool numeric_mode = false;
-   setenv("TESSDATA_PREFIX", datapath,1);
+   string env_datapath = string("TESSDATA_PREFIX") + string(datapath);
+   putenv(const_cast<char*>(env_datapath.c_str()));
    int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    cout << (ret==0?"done":"failed") << endl;
    isInitialized = true;   

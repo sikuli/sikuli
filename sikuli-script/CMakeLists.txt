@@ -1,4 +1,3 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT (sikuli-script Java)
 
 ENABLE_TESTING()
@@ -26,7 +25,8 @@ SET(PYTHON_SRC_DIR "${BASE_DIR}/src/main/python")
 SET(CMAKE_SWIG_OUTDIR ${CMAKE_BINARY_DIR}/${PACKAGE_DIR})
 
 SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
-SET(INCLUDE_LIB_DIR "${BASE_DIR}/lib")
+#SET(INCLUDE_LIB_DIR "${BASE_DIR}/lib")
+SET(INCLUDE_LIB_DIR "${COMMON_LIB_DIR}/mx-native-loader-1.2/target/classes")
 SET(BINARY_DIR "${BASE_DIR}/target")
 SET(BINARY_CLASS_DIR "${BINARY_DIR}/classes")
 SET(BINARY_LIB_DIR "${BINARY_DIR}/lib")
@@ -81,11 +81,13 @@ IF(NOT EXISTS ${LIB_IN_JAR_DIR}/glob.py)
 ENDIF()
 
 SET(TESSDATA_IN_JAR_DIR "${JAR_DIR}/tessdata")
+SET(TESSDATA_LIST_TXT "${BINARY_DIR}/tessdata-list.txt")
 IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
    add_custom_target( ${JAR_FILE}.tessdata-in-jar
       COMMAND ${CMAKE_COMMAND} -E make_directory ${TESSDATA_IN_JAR_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${TESSERACT_DATA_DIR} ${TESSDATA_IN_JAR_DIR}
-      COMMAND cd ${TESSDATA_IN_JAR_DIR} && (find . -type f > filelist.txt)
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TESSDATA_LIST_TXT} ${TESSDATA_IN_JAR_DIR}/filelist.txt
+      #      COMMAND cd ${TESSDATA_IN_JAR_DIR} && (find . -type f > filelist.txt)
       COMMENT "Copying Tesseract Data"
    )
 ENDIF()
