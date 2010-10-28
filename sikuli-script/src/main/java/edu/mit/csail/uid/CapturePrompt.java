@@ -154,7 +154,7 @@ class CapturePrompt extends JWindow implements Subject{
          drawSelection(bfG2);
          g2dWin.drawImage(bi, 0, 0, this);
          setVisible(true);
-         if(_aniWin.running()){
+         if(_aniWin!=null && _aniWin.running()){
             float a = _aniWin.step();
             getRootPane().putClientProperty("Window.alpha", new Float(a));
             repaint();
