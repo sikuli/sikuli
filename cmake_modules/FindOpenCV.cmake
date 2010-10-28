@@ -61,6 +61,10 @@ if(${OpenCV_PKGCONF_FOUND})
 	SET(OpenCV_FOUND 1)
 endif()
 
+if(WIN32)
+   SET(OpenCV_LIBRARY_DIR "${OpenCV_DIR}/lib")
+endif()
+
 ##====================================================
 ## Find OpenCV libraries
 ##----------------------------------------------------
