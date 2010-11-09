@@ -159,7 +159,7 @@ def initSikuli():
    dict = globals()
    dict['SCREEN'] = Screen()
    dict['SCREEN']._exposeAllMethods(__name__)
-   #print "Sikuli is initialized." 
+   #print "Sikuli is initialized. ", id(dict['SCREEN'])
 
 
 initSikuli()

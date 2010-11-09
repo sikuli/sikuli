@@ -1,5 +1,7 @@
 from __future__ import with_statement
 from sikuli.Sikuli import *
+import os
+from java.lang import System
 
 setThrowException(True)
 setAutoWaitTimeout(0.3)
@@ -11,4 +13,9 @@ except FindFailed,e:
 setBundlePath("test-res/")
 m = find("apple.png")
 print "(after setting bundle path) found: " + str(m) 
+assert( m != None )
+
+setBundlePath("/")
+System.setProperty("SIKULI_IMAGE_PATH", "test-res/")
+m = find("apple.png")
 assert( m != None )

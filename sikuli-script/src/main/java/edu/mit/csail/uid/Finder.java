@@ -38,7 +38,7 @@ public class Finder implements Iterator<Match>{
    }
 
    public Finder(String screenFilename, Region region) throws IOException{
-      String fname = findInBundle(screenFilename);
+      String fname = findImageFile(screenFilename);
       _findInput.setSource(fname);
       _region = region;
    }
@@ -60,7 +60,7 @@ public class Finder implements Iterator<Match>{
    protected <PSC> void setFindInput(PSC ptn) throws IOException{
       if( ptn instanceof Pattern ){
          _pattern = (Pattern)ptn;
-         _findInput.setTarget(findInBundle(_pattern.imgURL));
+         _findInput.setTarget(findImageFile(_pattern.imgURL));
          _findInput.setSimilarity(_pattern.similarity);
       }
       else if( ptn instanceof String){
@@ -72,7 +72,7 @@ public class Finder implements Iterator<Match>{
    protected void setTargetSmartly(FindInput fin, String target){
       try{
          //assume it's a file first
-         String filename = findInBundle(target);
+         String filename = findImageFile(target);
          fin.setTarget(filename, false);
       }
       catch(IOException e){
@@ -81,13 +81,35 @@ public class Finder implements Iterator<Match>{
       }
    }
 
-   protected String findInBundle(String filename) throws IOException{
+   // find the file in the following order:
+   // 1. absolute path > 2. the current bundle path >
+   // 3. ENV[SIKULI_IMAGE_PATH] > 4. System.getProperty("SIKULI_IMAGE_PATH")
+   protected String findImageFile(String filename) throws IOException{
       String ret = filename;
-      if( !(new File(filename)).exists() && Settings.BundlePath!=null)
-         ret = Settings.BundlePath + File.separator + filename;
-      if(!(new File(ret)).exists())
-         throw new FileNotFoundException("File " + ret + " not exists");
-      return ret;
+      File f = new File(filename);
+      if( f.isAbsolute() ){
+         if( f.exists() )
+            return filename;
+      }
+      else{
+         System.err.println("try bundle path " + Settings.BundlePath);
+         f = new File(Settings.BundlePath, filename);
+         if( f.exists() ) return f.getAbsolutePath();
+         String sikuli_img_path = System.getenv("SIKULI_IMAGE_PATH");
+         if(System.getProperty("SIKULI_IMAGE_PATH") != null){
+            if(!sikuli_img_path.endsWith(":") &&!sikuli_img_path.endsWith(";"))
+               sikuli_img_path += ":";
+            sikuli_img_path += System.getProperty("SIKULI_IMAGE_PATH");
+         }
+         if(sikuli_img_path != null){
+            for(String path : sikuli_img_path.split("[:;]")){
+               System.err.println("try " + path);
+               f = new File(path, filename);
+               if( f.exists() ) return f.getAbsolutePath();
+            }
+         }
+      }
+      throw new FileNotFoundException("File " + ret + " not exists");
    }
 
 
