@@ -92,10 +92,12 @@ public class Finder implements Iterator<Match>{
             return filename;
       }
       else{
-         System.err.println("try bundle path " + Settings.BundlePath);
+         Debug.log(5,"findImageFile: bundle path " + Settings.BundlePath);
          f = new File(Settings.BundlePath, filename);
          if( f.exists() ) return f.getAbsolutePath();
-         String sikuli_img_path = System.getenv("SIKULI_IMAGE_PATH");
+         String sikuli_img_path = "";
+         if(System.getenv("SIKULI_IMAGE_PATH") != null)
+            sikuli_img_path += System.getenv("SIKULI_IMAGE_PATH");
          if(System.getProperty("SIKULI_IMAGE_PATH") != null){
             if(!sikuli_img_path.endsWith(":") &&!sikuli_img_path.endsWith(";"))
                sikuli_img_path += ":";
@@ -103,7 +105,7 @@ public class Finder implements Iterator<Match>{
          }
          if(sikuli_img_path != null){
             for(String path : sikuli_img_path.split("[:;]")){
-               System.err.println("try " + path);
+               Debug.log(5, "findImageFile env+sys path" + path);
                f = new File(path, filename);
                if( f.exists() ) return f.getAbsolutePath();
             }

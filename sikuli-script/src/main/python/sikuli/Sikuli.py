@@ -27,6 +27,7 @@ from Region import *
 from Screen import *
 from VDict import *
 from Helper import *
+import SikuliImporter
 
 _si = SikuliScript()
 
