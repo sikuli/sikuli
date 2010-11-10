@@ -20,6 +20,7 @@ from edu.mit.csail.uid import Location
 from edu.mit.csail.uid import Settings
 from edu.mit.csail.uid import Env
 from edu.mit.csail.uid import OS
+from edu.mit.csail.uid import App
 from java.awt import Rectangle
 from Key import *
 from Button import *

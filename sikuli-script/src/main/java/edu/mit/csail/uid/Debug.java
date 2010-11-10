@@ -29,14 +29,18 @@ public class Debug {
   private static final int DEFAULT_LEVEL = 1;
 
   /** Log message if the log level >= level. Uses printf. */
-  public static void log(int level, String message, Object... args) {
+  public static void log(int level, String prefix, String message, Object... args) {
     if (isEnabled(level)) {
       if(args.length!=0)
-         System.out.printf("[sikuli] " + message, args);
+         System.out.printf(prefix + message, args);
       else
-         System.out.print("[sikuli] " + message);
+         System.out.print(prefix + message);
       System.out.println();
     }
+  }
+
+  public static void log(int level, String message, Object... args) {
+     log(level, "[debug] ", message, args);
   }
 
   /** @return true if level is being logged. */
@@ -54,11 +58,15 @@ public class Debug {
     log(DEFAULT_LEVEL, message, args);
   }
 
+  public static void history(String message, Object... args) {
+    log(-1, "[log] ", message, args);
+  }
+
   public static void info(String message, Object... args) {
-    log(-1, message, args);
+    log(-1, "[info] ", message, args);
   }
 
   public static void error(String message, Object... args) {
-    log(-1, message, args);
+    log(-1, "[error] ", message, args);
   }
 }

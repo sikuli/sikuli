@@ -13,11 +13,9 @@ import javax.swing.*;
 
 
 public class SikuliScript {
-   private OSUtil _osUtil;
    private boolean _showActions = false;
 
    public SikuliScript() throws AWTException{
-      _osUtil = Env.createOSUtil();
    }
 
    public void setShowActions(boolean flag){
@@ -29,15 +27,22 @@ public class SikuliScript {
    }
    
    public int switchApp(String appName){
-      return _osUtil.switchApp(appName);
+      return App.focus(appName);
    }
 
    public int openApp(String appName){
-      return _osUtil.openApp(appName);
+      try{
+         App.open(appName);
+      }
+      catch(AppNotFound e){
+         Debug.error("Can't find app: " + e.getMessage());
+         return -1;
+      }
+      return 0;
    }
 
    public int closeApp(String appName){
-      return _osUtil.closeApp(appName);
+      return App.close(appName);
    }
    
    public void popup(String message){

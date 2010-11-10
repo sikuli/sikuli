@@ -34,6 +34,11 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/VDictProxy.java
    edu/mit/csail/uid/VanishEvent.java
    edu/mit/csail/uid/Win32Util.java
+   edu/mit/csail/uid/App.java
+   edu/mit/csail/uid/ImageLocator.java
+   edu/mit/csail/uid/ResourceExtractor.java
+   edu/mit/csail/uid/SikuliException.java
+   edu/mit/csail/uid/AppNotFound.java
    ${CMAKE_SWIG_OUTDIR}/*.java
 )
 
