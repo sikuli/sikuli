@@ -113,7 +113,7 @@ SET(PYTHON_TESTS
    basic bundle capture click dragdrop env findAll 
    keys mouse multiscreen observe region 
    showActions sikuli type vdict wait with
-   ocr
+   ocr imageurl
 )
 
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")

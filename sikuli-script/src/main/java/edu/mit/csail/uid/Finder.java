@@ -57,6 +57,10 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
+   protected String findImageFile(String file) throws IOException{
+      return ImageLocator.getInstance().locate(file);
+   }
+
    protected <PSC> void setFindInput(PSC ptn) throws IOException{
       if( ptn instanceof Pattern ){
          _pattern = (Pattern)ptn;
@@ -81,38 +85,6 @@ public class Finder implements Iterator<Match>{
       }
    }
 
-   // find the file in the following order:
-   // 1. absolute path > 2. the current bundle path >
-   // 3. ENV[SIKULI_IMAGE_PATH] > 4. System.getProperty("SIKULI_IMAGE_PATH")
-   protected String findImageFile(String filename) throws IOException{
-      String ret = filename;
-      File f = new File(filename);
-      if( f.isAbsolute() ){
-         if( f.exists() )
-            return filename;
-      }
-      else{
-         Debug.log(5,"findImageFile: bundle path " + Settings.BundlePath);
-         f = new File(Settings.BundlePath, filename);
-         if( f.exists() ) return f.getAbsolutePath();
-         String sikuli_img_path = "";
-         if(System.getenv("SIKULI_IMAGE_PATH") != null)
-            sikuli_img_path += System.getenv("SIKULI_IMAGE_PATH");
-         if(System.getProperty("SIKULI_IMAGE_PATH") != null){
-            if(!sikuli_img_path.endsWith(":") &&!sikuli_img_path.endsWith(";"))
-               sikuli_img_path += ":";
-            sikuli_img_path += System.getProperty("SIKULI_IMAGE_PATH");
-         }
-         if(sikuli_img_path != null){
-            for(String path : sikuli_img_path.split("[:;]")){
-               Debug.log(5, "findImageFile env+sys path" + path);
-               f = new File(path, filename);
-               if( f.exists() ) return f.getAbsolutePath();
-            }
-         }
-      }
-      throw new FileNotFoundException("File " + ret + " not exists");
-   }
 
 
    /**
