@@ -11,6 +11,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
+   static Color _transparentColor = new Color(0F,0F,0F,0.0F);
    static int MARGIN = 20;
 
 
@@ -22,8 +23,11 @@ class OverlayWindow extends JWindow implements MouseListener {
    Location _lastTarget;
    boolean _borderOnly = false;
 
+   boolean _native_transparent = false;
+
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
+   BasicStroke _StrokeBorder = new BasicStroke(3);
 
    public void mousePressed(MouseEvent e) {
    }
@@ -81,12 +85,16 @@ class OverlayWindow extends JWindow implements MouseListener {
       if( _screen != null ){
          Graphics2D g2d = (Graphics2D)g;
          if(_borderOnly){
-            g2d.drawImage(_screen, 0, 0, this);
+            if(!_native_transparent)
+               g2d.drawImage(_screen, 0, 0, this);
             g2d.setColor(Color.red);
-            g2d.drawRect(0, 0, _screen.getWidth()-1, _screen.getHeight()-1);
+            g2d.setStroke(_StrokeBorder);
+            int w = (int)_StrokeBorder.getLineWidth();
+            g2d.drawRect(w/2, w/2, _screen.getWidth()-w, _screen.getHeight()-w);
          }
          else{
-            g2d.drawImage(_darker_screen,0,0,this);
+            if(!_native_transparent)
+               g2d.drawImage(_darker_screen,0,0,this);
             switch(_mode){
                case ONE_TARGET: drawTarget(g2d); break;
                case DRAG_DROP:  drawDragDrop(g2d); break;
@@ -100,11 +108,17 @@ class OverlayWindow extends JWindow implements MouseListener {
    }
 
    void init(){
+      if(Env.getOS() == OS.MAC)
+         _native_transparent = true;
       JPanel pan = new JPanel();
-      pan.setBorder(new LineBorder(Color.red));
+      //pan.setBorder(new LineBorder(Color.red));
+
+      if(_native_transparent){
+         pan.setBackground(_overlayColor);
+         getRootPane().putClientProperty("Window.alpha", new Float(0.6f));
+      }
+
       getContentPane().add(pan,"Center");
-      //pan.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.5f));
-      //getRootPane().putClientProperty("Window.alpha", new Float(0.5f));
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       addMouseListener(this);
    }
@@ -136,6 +150,7 @@ class OverlayWindow extends JWindow implements MouseListener {
       captureScreen(r.x, r.y, r.w, r.h);
       setLocation(r.x,r.y);
       setSize(r.w, r.h);
+      this.setBackground(_transparentColor);
       setVisible(true);
       toFront();
    }
@@ -173,6 +188,15 @@ class OverlayWindow extends JWindow implements MouseListener {
       init();
       setVisible(false);
       setAlwaysOnTop(true);
+   }
+
+   @Override
+   public void toFront(){
+      if(Env.getOS() == OS.MAC){
+         MacUtil.bringWindowToFront(this);
+      }
+      else
+         super.toFront();
    }
 
 }

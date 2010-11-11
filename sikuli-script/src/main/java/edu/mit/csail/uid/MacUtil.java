@@ -1,8 +1,20 @@
 package edu.mit.csail.uid;
 
 import java.io.*;
+import java.awt.Window;
+import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 public class MacUtil implements OSUtil {
+
+   static {
+      try{
+         NativeLoader.loadLibrary("MacUtil");
+         System.out.println("Mac OS X utilities loaded.");
+      }
+      catch(IOException e){
+         e.printStackTrace();
+      }
+   }
 
    public int switchApp(String appName){
       return openApp(appName);
@@ -46,5 +58,7 @@ public class MacUtil implements OSUtil {
          return -1;
       }
    }
+
+   public static native void bringWindowToFront(Window win);
 } 
 

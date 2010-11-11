@@ -8,7 +8,7 @@ public class Win32Util implements OSUtil {
    static {
       try{
          NativeLoader.loadLibrary("Win32Util");
-         System.out.println("Win32Util loaded.");
+         System.out.println("Windows utilities loaded.");
       }
       catch(IOException e){
          e.printStackTrace();

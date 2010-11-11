@@ -11,6 +11,7 @@ SET(JNI_HEADERS
    edu_mit_csail_uid_EventManager.h
    edu_mit_csail_uid_VDictProxy.h
    edu_mit_csail_uid_Win32Util.h
+   edu_mit_csail_uid_MacUtil.h
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
@@ -72,6 +73,21 @@ IF(WIN32)
       Win32Util.cc
       edu_mit_csail_uid_Win32Util.h
    )
+ENDIF()
+
+IF(APPLE)
+   LIST(APPEND BUILD_TARGETS MacUtil)
+   FIND_LIBRARY(JAVA_LIBRARY JavaVM)
+   FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+   FIND_LIBRARY(CARBON_LIBRARY Carbon)
+   FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation)
+   SET(EXTRA_LIBS ${JAVA_LIBRARY} ${COCOA_LIBRARY} ${CARBON_LIBRARY} ${COREFOUNDATION_LIBRARY})
+
+   ADD_LIBRARY(MacUtil SHARED
+      MacUtil.m
+      edu_mit_csail_uid_MacUtil.h
+   )
+   TARGET_LINK_LIBRARIES(MacUtil ${EXTRA_LIBS})
 ENDIF()
 
 SET(NATIVE_LIBS
