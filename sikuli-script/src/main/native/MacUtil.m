@@ -1,6 +1,7 @@
 #import "edu_mit_csail_uid_MacUtil.h"
 #import <Cocoa/Cocoa.h>
 #import <JavaVM/jawt_md.h>
+#import <AppKit/NSAccessibility.h>
 
 NSWindow * GetWindowFromComponent(jobject parent, JNIEnv *env) {
    JAWT awt;
@@ -53,7 +54,7 @@ NSWindow * GetWindowFromComponent(jobject parent, JNIEnv *env) {
 }
 
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
-  (JNIEnv *env, jobject jobj, jobject jwin){
+  (JNIEnv *env, jclass jobj, jobject jwin){
   
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -69,4 +70,112 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
    [win orderFront:nil];
 
    [pool release];
+}
+
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_MacUtil_getPID
+   (JNIEnv *env, jclass jobj, jstring jAppName){
+   long pid = 0;
+   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   const jchar *chars = (*env)->GetStringChars(env, jAppName, NULL);
+   NSString *appName = [NSString stringWithCharacters:(UniChar *)chars
+               length:(*env)->GetStringLength(env, jAppName)];
+   (*env)->ReleaseStringChars(env, jAppName, chars);
+   appName = [@"/" stringByAppendingPathComponent:appName];
+   NSArray* apps = [[NSWorkspace sharedWorkspace] runningApplications];
+   for(NSRunningApplication* app in apps){
+      NSURL *url = [app executableURL];  
+      NSString *path = [url path];
+      //NSLog(@"app: %@", path);
+      NSRange range = [path rangeOfString:appName];
+      if( range.location != NSNotFound ){
+         pid = [app processIdentifier];
+         //NSLog(@"%@ pid: %d", path, pid);
+         break;
+      }
+   }
+   [pool release];
+   return pid;
+}
+
+NSRect getBoundOfUIElement(AXUIElementRef elem){
+   NSRect rect;
+   AXValueRef value;
+
+   AXUIElementCopyAttributeValue(elem, kAXPositionAttribute,(CFTypeRef*)&value);
+   AXValueGetValue(value, kAXValueCGPointType, (void *) &rect.origin);
+   AXUIElementCopyAttributeValue(elem, kAXSizeAttribute, (CFTypeRef *)&value);
+   AXValueGetValue(value, kAXValueCGSizeType, (void *) &rect.size);
+   return rect;
+}
+
+#define CLASS_RECTANGLE "java/awt/Rectangle"
+
+jobject convertNSRectToJRectangle(JNIEnv *env, NSRect r){
+   jclass jClassRect = (*env)->FindClass(env, CLASS_RECTANGLE);
+   jmethodID initMethod = (*env)->GetMethodID(env, jClassRect, "setRect", "(DDDD)V");
+   jobject ret = NULL;
+   if(initMethod!=NULL){
+      ret = (*env)->AllocObject(env, jClassRect);
+      (*env)->CallVoidMethod(env, ret, initMethod, 
+                                      r.origin.x, r.origin.y, 
+                                      r.size.width, r.size.height);
+   }
+   (*env)->DeleteLocalRef(env, jClassRect);
+   return ret;
+}
+
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getFocusedRegion
+  (JNIEnv *env, jclass jobj){
+   AXUIElementRef sysElement = AXUIElementCreateSystemWide();
+   AXUIElementRef focusedApp;
+   AXUIElementRef focusedWindow;
+   AXUIElementCopyAttributeValue(sysElement,
+      (CFStringRef)kAXFocusedApplicationAttribute,
+      (CFTypeRef*)&focusedApp);
+   if(AXUIElementCopyAttributeValue((AXUIElementRef)focusedApp,
+      (CFStringRef)NSAccessibilityFocusedWindowAttribute,
+      (CFTypeRef*)&focusedWindow) == kAXErrorSuccess){
+      NSRect r = getBoundOfUIElement(focusedWindow);
+      return convertNSRectToJRectangle(env, r);
+   }
+   return NULL;
+}
+
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getRegion
+  (JNIEnv *env, jclass jobj, jlong pid, jint winNum){
+   AXUIElementRef ui = AXUIElementCreateApplication(pid);
+
+   NSArray       *proc_attrs;
+   CFStringRef    attribute  = CFSTR("AXWindows");
+   id             windows    = nil;
+
+   if (AXUIElementCopyAttributeNames(ui,(CFArrayRef *)&proc_attrs) == kAXErrorSuccess) { 
+      if (AXUIElementCopyAttributeValue(ui,attribute,(CFTypeRef *)&windows) ==kAXErrorSuccess)
+      { 
+         if (CFGetTypeID(windows) == CFArrayGetTypeID())
+         { 
+            NSArray       *window_attrs = (NSArray *)windows; 
+            if( winNum < [window_attrs count] ){
+               AXUIElementRef aref = [window_attrs objectAtIndex:winNum];
+               NSRect r = getBoundOfUIElement(aref);
+               //NSLog(@"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height);
+               return convertNSRectToJRectangle(env, r);
+            }
+         }
+       }
+
+   }
+   return NULL;
+}
+
+JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_MacUtil__1openApp
+  (JNIEnv *env, jclass jobj, jstring jAppName){
+   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   const jchar *chars = (*env)->GetStringChars(env, jAppName, NULL);
+   NSString *appName = [NSString stringWithCharacters:(UniChar *)chars
+               length:(*env)->GetStringLength(env, jAppName)];
+   (*env)->ReleaseStringChars(env, jAppName, chars);
+   BOOL ret = [[NSWorkspace sharedWorkspace] launchApplication:appName];
+   [pool release];
+   return ret;
 }

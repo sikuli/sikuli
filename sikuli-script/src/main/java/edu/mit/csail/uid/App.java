@@ -37,10 +37,16 @@ public class App {
    }
 
    public Region window(){
-      //FIXME
-      return null;
+      return _osUtil.getWindow(_appName);
    }
 
-   //public Region window(int winId){ }
+   public Region window(int winNum){
+      return _osUtil.getWindow(_appName, winNum);
+   }
+
+   public static Region focusedWindow(){
+      return _osUtil.getFocusedWindow();
+   }
+
 }
 

@@ -18,6 +18,19 @@ public class Win32Util implements OSUtil {
    public native int switchApp(String appName);
    public native int openApp(String appName);
    public native int closeApp(String appName);
+   public Region getWindow(String appName){
+      return getWindow(appName, 0);
+   }
+
+   public Region getWindow(String appName, int winNum){
+      //FIXME
+      return null;
+   }
+
+   public Region getFocusedWindow(){
+      //FIXME
+      return null;
+   }
 } 
 
 

@@ -42,6 +42,19 @@ public class LinuxUtil implements OSUtil {
          return -1;
       }
    }
+
+   public Region getFocusedWindow(){
+      //FIXME
+      return null;
+   }
+   public Region getWindow(String appName){
+      return getWindow(appName, 0);
+   }
+
+   public Region getWindow(String appName, int winNum){
+      //FIXME
+      return null;
+   }
 } 
 
 

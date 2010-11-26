@@ -9,11 +9,43 @@ extern "C" {
 #endif
 /*
  * Class:     edu_mit_csail_uid_MacUtil
+ * Method:    _openApp
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_MacUtil__1openApp
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     edu_mit_csail_uid_MacUtil
  * Method:    bringWindowToFront
  * Signature: (Ljava/awt/Window;)V
  */
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
   (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     edu_mit_csail_uid_MacUtil
+ * Method:    getPID
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_MacUtil_getPID
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     edu_mit_csail_uid_MacUtil
+ * Method:    getRegion
+ * Signature: (JI)Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getRegion
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     edu_mit_csail_uid_MacUtil
+ * Method:    getFocusedRegion
+ * Signature: ()Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getFocusedRegion
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
