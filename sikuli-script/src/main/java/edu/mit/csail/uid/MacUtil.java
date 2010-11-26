@@ -26,26 +26,6 @@ public class MacUtil implements OSUtil {
       if(_openApp(appName))
          return 0;
       return -1;
-//      return -1;
-/*
-      try{
-         String cmd[] = {"open","-a", appName};
-         Process p = Runtime.getRuntime().exec(cmd);
-         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-         String line;
-         while((line=br.readLine()) != null)
-            Debug.log(line);
-         br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-         while((line=br.readLine()) != null)
-            Debug.error(line);
-         p.waitFor();
-         return p.exitValue();
-      }
-      catch(Exception e){
-         Debug.error(e.getMessage());
-         return -1;
-      }
-*/
    }
 
 
