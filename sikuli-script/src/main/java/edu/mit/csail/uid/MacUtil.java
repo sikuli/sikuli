@@ -22,13 +22,13 @@ public class MacUtil implements OSUtil {
    }
 
    public int openApp(String appName){
+      Debug.history("openApp: \"" + appName + "\"");
       if(_openApp(appName))
          return 0;
-      return 0;
+      return -1;
 //      return -1;
-      /*
+/*
       try{
-         Debug.history("openApp: \"" + appName + "\"");
          String cmd[] = {"open","-a", appName};
          Process p = Runtime.getRuntime().exec(cmd);
          BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -45,7 +45,7 @@ public class MacUtil implements OSUtil {
          Debug.error(e.getMessage());
          return -1;
       }
-      */
+*/
    }
 
 
@@ -66,7 +66,10 @@ public class MacUtil implements OSUtil {
 
    public Region getWindow(String appName, int winNum){
       long pid = getPID(appName);
-      return new Region(getRegion(pid, winNum));
+      Rectangle rect = getRegion(pid, winNum);
+      if(rect != null)
+         return new Region(rect);
+      return null;
    }
 
    public Region getWindow(String appName){

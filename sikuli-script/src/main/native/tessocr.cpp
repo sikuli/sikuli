@@ -329,8 +329,14 @@ OCR::init(const char* datapath){
    char outputbase[] = "output";
    char lang[] = "eng";
    bool numeric_mode = false;
+#ifdef WIN32
    string env_datapath = string("TESSDATA_PREFIX=") + string(datapath);
    putenv(const_cast<char*>(env_datapath.c_str()));
+#else
+   //putenv on Mac breaks the "open" command somehow.
+   //we have to use setenv instead.
+   setenv("TESSDATA_PREFIX", datapath, 1);
+#endif
    int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    //cout << (ret==0?"done":"failed") << endl;
    isInitialized = true;   
