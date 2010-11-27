@@ -26,6 +26,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private boolean _dirty = false;
    private Class _historyBtnClass;
    private CurrentLineHighlighter _highlighter;
+   private ImageLocator _imgLocator;
 
    private String _tabString = "   ";
 
@@ -119,10 +120,15 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return column+1;
    }
 
+   void setSrcBundle(String newBundlePath){
+      _srcBundlePath = newBundlePath;
+      _imgLocator = new ImageLocator(_srcBundlePath);
+   } 
+
    public String getSrcBundle(){
       if( _srcBundlePath == null ){
          File tmp = Utils.createTempDir();
-         _srcBundlePath = Utils.slashify(tmp.getAbsolutePath(),true);
+         setSrcBundle(Utils.slashify(tmp.getAbsolutePath(),true));
       }
       return _srcBundlePath;
    }
@@ -263,13 +269,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    private void saveAsBundle(String bundlePath) throws IOException{
       bundlePath = Utils.slashify(bundlePath, true);
-      if(_srcBundlePath != null)
+      if(_srcBundlePath == null)
          Utils.xcopy( _srcBundlePath, bundlePath );
       else
          Utils.mkdir(bundlePath);
-      _srcBundlePath = bundlePath;
+      setSrcBundle(bundlePath);
       _editingFilename = getSourceFilename(bundlePath);
-      Debug.log(1, "save to bundle: " + _srcBundlePath);
+      Debug.log(1, "save to bundle: " + getSrcBundle());
       writeSrcFile(true);
    }
    
@@ -279,7 +285,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          File f = new File(filename);
          String dest = f.getName();
          dest = dest.replace(".sikuli", ".py");
-         return _srcBundlePath + dest;
+         return getSrcBundle() + dest;
       }
       return filename;
    }
@@ -287,7 +293,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    public void loadFile(String filename) throws IOException{
       if( filename.endsWith("/") )
          filename = filename.substring(0, filename.length()-1);
-      _srcBundlePath = filename + "/";
+      setSrcBundle(filename+"/");
       _editingFilename = getSourceFilename(filename);
       this.read( new BufferedReader(new InputStreamReader(
                   new FileInputStream(_editingFilename), "UTF8")), null);
@@ -506,6 +512,14 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
 
    public File getFileInBundle(String filename){
+      try{
+         String fullpath = _imgLocator.locate(filename);
+         return new File(fullpath);
+      }
+      catch(IOException e){
+         return null;
+      }
+/*
       File f = new File(filename);
       String bundlePath = getSrcBundle();
       if(f.exists()){
@@ -522,6 +536,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       f = new File(filename);
       if(f.exists()) return f;
       return null;
+*/
    }
    
    boolean replaceWithImage(int startOff, int endOff) 

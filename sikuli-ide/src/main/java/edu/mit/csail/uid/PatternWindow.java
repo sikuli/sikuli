@@ -17,7 +17,7 @@ public class PatternWindow extends JFrame implements Observer {
    private TargetOffsetPane _tarOffsetPane;
 
    private JTabbedPane tabPane;
-   private JPanel paneTarget, panePreview;
+   private JPanel paneTarget, panePreview, paneNaming;
 
    private JPanel glass;
    private ScreenImage _simg;
@@ -43,6 +43,8 @@ public class PatternWindow extends JFrame implements Observer {
       //tabPane.setPreferredSize(new Dimension(500,300));
       paneTarget = createTargetPanel();
       panePreview = createPrewviewPanel();
+      paneNaming = new NamingPane(_imgBtn);
+      tabPane.addTab(_I("tabNaming"), paneNaming);
       tabPane.addTab(_I("tabMatchingPreview"), panePreview);
       tabPane.addTab(_I("tabTargetOffset"), paneTarget);
       c.add(tabPane, BorderLayout.CENTER);

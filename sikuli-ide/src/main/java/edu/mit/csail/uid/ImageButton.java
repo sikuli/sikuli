@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.util.Locale;
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.imageio.*;
 
 class ImageButton extends JButton implements ActionListener, Serializable /*, MouseListener*/ {
    static final int DEFAULT_NUM_MATCHES = 10;
@@ -51,21 +52,41 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       setToolTipText( this.toString() );
    }
 
+   public BufferedImage createThumbnailImage(int maxHeight){
+      return createThumbnailImage(_imgFilename, maxHeight);
+   }
+
+   private BufferedImage createThumbnailImage(String imgFname, int maxHeight){
+      try{
+         BufferedImage img = ImageIO.read(new File(imgFname));
+         int w = img.getWidth(null), h = img.getHeight(null);
+         _imgW = w;
+         _imgH = h;
+         if(maxHeight >= h)  
+            return img;
+         _scale = (float)maxHeight/h;
+         w *= _scale;
+         h *= _scale;
+         BufferedImage thumb = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+         Graphics2D g2d = thumb.createGraphics();
+         g2d.drawImage(img, 0, 0,  w, h, null);
+         g2d.dispose();
+         return thumb;
+      }
+      catch(IOException e){
+         Debug.error("Can't read file: " + e.getMessage());
+         return null;
+      }
+   }
+
+   private String createThumbnail(String imgFname, int maxHeight){
+      BufferedImage thumb = createThumbnailImage(imgFname, maxHeight);
+      return Utils.saveTmpImage(thumb);
+   }
+
    private String createThumbnail(String imgFname){
       final int max_h = UserPreferences.getInstance().getDefaultThumbHeight();
-      Image img = new ImageIcon(imgFname).getImage();
-      int w = img.getWidth(null), h = img.getHeight(null);
-      _imgW = w;
-      _imgH = h;
-      if(max_h >= h)  return imgFname;
-      _scale = (float)max_h/h;
-      w *= _scale;
-      h *= _scale;
-      BufferedImage thumb = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-      Graphics2D g2d = thumb.createGraphics();
-      g2d.drawImage(img, 0, 0,  w, h, null);
-      g2d.dispose();
-      return Utils.saveTmpImage(thumb);
+      return createThumbnail(imgFname, max_h);
    }
    
    public ImageButton(JTextPane pane, String imgFilename){

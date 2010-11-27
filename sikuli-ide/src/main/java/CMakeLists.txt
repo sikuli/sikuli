@@ -51,6 +51,7 @@ SET(JAVA_SOURCE_FILES
          edu/mit/csail/uid/TargetOffsetPane.java
          edu/mit/csail/uid/UserPreferences.java
          edu/mit/csail/uid/Utils.java
+         edu/mit/csail/uid/NamingPane.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
