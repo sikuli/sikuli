@@ -39,6 +39,17 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    }
    */
 
+   public String getFilename(){
+      return _imgFilename;
+   }
+
+   public void setFilename(String newFilename){
+      _imgFilename = newFilename;
+      _thumbFname = createThumbnail(_imgFilename);
+      setIcon(new ImageIcon(_thumbFname));
+      setToolTipText( this.toString() );
+   }
+
    public void setTargetOffset(Location offset){
       Debug.log("setTargetOffset: " + offset);
       _offset = offset;
@@ -91,13 +102,11 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    
    public ImageButton(JTextPane pane, String imgFilename){
       _pane = pane;
-      _imgFilename = imgFilename;
+      setFilename(imgFilename);
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
       _numMatches = DEFAULT_NUM_MATCHES;
 
-      _thumbFname = createThumbnail(imgFilename);
-      setIcon(new ImageIcon(_thumbFname));
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
       addActionListener(this);

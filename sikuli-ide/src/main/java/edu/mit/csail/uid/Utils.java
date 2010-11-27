@@ -140,6 +140,11 @@ public class Utils {
       return null;
    }
 
+   public static boolean rename(String oldFile, String newFile){
+      File old = new File(oldFile);
+      return old.renameTo(new File(newFile));
+   }
+
    public static void mkdir(String path){
       File f = new File(path);
       if( !f.exists() )

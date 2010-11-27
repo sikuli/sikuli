@@ -15,9 +15,10 @@ public class PatternWindow extends JFrame implements Observer {
    private ImageButton _imgBtn;
    private ScreenshotPane _screenshot;
    private TargetOffsetPane _tarOffsetPane;
+   private NamingPane _namingPane;
 
    private JTabbedPane tabPane;
-   private JPanel paneTarget, panePreview, paneNaming;
+   private JPanel paneTarget, panePreview;
 
    private JPanel glass;
    private ScreenImage _simg;
@@ -43,8 +44,8 @@ public class PatternWindow extends JFrame implements Observer {
       //tabPane.setPreferredSize(new Dimension(500,300));
       paneTarget = createTargetPanel();
       panePreview = createPrewviewPanel();
-      paneNaming = new NamingPane(_imgBtn);
-      tabPane.addTab(_I("tabNaming"), paneNaming);
+      _namingPane = new NamingPane(_imgBtn);
+      tabPane.addTab(_I("tabNaming"), _namingPane);
       tabPane.addTab(_I("tabMatchingPreview"), panePreview);
       tabPane.addTab(_I("tabTargetOffset"), paneTarget);
       c.add(tabPane, BorderLayout.CENTER);
@@ -174,6 +175,13 @@ public class PatternWindow extends JFrame implements Observer {
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
          _imgBtn.setTargetOffset( _tarOffsetPane.getTargetOffset() );
+         if(_namingPane.isDirty()){
+            String filename = _namingPane.getAbsolutePath();
+            String oldFilename = _imgBtn.getFilename();
+            Debug.log("rename " + oldFilename + " " + filename);
+            Utils.rename(oldFilename, filename);
+            _imgBtn.setFilename(filename);
+         }
          Debug.info("update :" + _imgBtn.toString());
          _parent.dispose();
       }

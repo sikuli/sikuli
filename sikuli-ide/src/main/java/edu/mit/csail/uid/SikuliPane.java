@@ -269,7 +269,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    private void saveAsBundle(String bundlePath) throws IOException{
       bundlePath = Utils.slashify(bundlePath, true);
-      if(_srcBundlePath == null)
+      if(_srcBundlePath != null)
          Utils.xcopy( _srcBundlePath, bundlePath );
       else
          Utils.mkdir(bundlePath);
@@ -277,6 +277,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _editingFilename = getSourceFilename(bundlePath);
       Debug.log(1, "save to bundle: " + getSrcBundle());
       writeSrcFile(true);
+      //TODO: update all bundle references in ImageButtons
+      //BUG: if save and rename images, the images will be gone..
    }
    
    private String getSourceFilename(String filename){
