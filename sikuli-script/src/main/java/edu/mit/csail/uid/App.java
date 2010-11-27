@@ -4,15 +4,15 @@ public class App {
    protected static OSUtil _osUtil = Env.createOSUtil();
    protected String _appName;
 
-   public App(String appName) throws AppNotFound{
+   public App(String appName) {
       _appName = appName;
-      int ret = _osUtil.openApp(appName);
-      if(ret !=0)
-         throw new AppNotFound(appName);
    }
 
    public static App open(String appName) throws AppNotFound{
-      return new App(appName);
+      App app = new App(appName);
+      if(_osUtil.openApp(appName)!=0)
+         throw new AppNotFound(appName);
+      return app;
    }
 
    public static int close(String appName){
@@ -26,6 +26,10 @@ public class App {
    public App focus(){
       focus(_appName);
       return this;
+   }
+
+   public App open() throws AppNotFound{
+      return open(_appName);
    }
 
    public int close(){

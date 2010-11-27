@@ -30,7 +30,7 @@ public class MacUtil implements OSUtil {
 
 
    public int closeApp(String appName){
-      Debug.history("closeApp: " + appName);
+      Debug.history("closeApp: \"" + appName +"\"");
       try{
          String cmd[] = {"sh", "-c", 
             "ps aux |  grep " + appName + " | awk '{print $2}' | xargs kill"};
