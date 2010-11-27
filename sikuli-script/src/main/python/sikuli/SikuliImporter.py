@@ -4,7 +4,14 @@ import java.lang.System
 import imp
 from Screen import Screen
 
+def _stripPackagePrefix(module_name):
+   pdot = module_name.rfind('.')
+   if pdot >= 0:
+      return module_name[pdot+1:]
+   return module_name
+
 class SikuliImporter:
+
    class SikuliLoader:
       def __init__(self, path):
          self.path = path
@@ -21,6 +28,7 @@ class SikuliImporter:
 
       def load_module(self, module_name):
          #print "SikuliLoader.load_module", module_name
+         module_name = _stripPackagePrefix(module_name)
          sys.path.append(self.path)
          img_path = java.lang.System.getProperty("SIKULI_IMAGE_PATH")
          if not img_path:
@@ -31,15 +39,25 @@ class SikuliImporter:
          java.lang.System.setProperty("SIKULI_IMAGE_PATH", img_path)
          return self._load_module(module_name)
 
+   def _find_module(self, module_name, fullpath):
+      fullpath = fullpath + "/" + module_name + ".sikuli"
+      if os.path.exists(fullpath):
+         #print "SikuliImporter found", fullpath
+         return self.SikuliLoader(fullpath)
+      return None
+
    def find_module(self, module_name, package_path):
       #print "SikuliImporter.find_module", module_name, package_path
-      paths = sys.path
-      paths.append(".")
+      module_name = _stripPackagePrefix(module_name)
+      if package_path:
+         paths = package_path
+      else:
+         paths = sys.path
+         paths.append(".")
       for path in paths:
-         fullpath = path + "/" + module_name + ".sikuli"
-         if os.path.exists(fullpath):
-            #print "SikuliImporter found", fullpath
-            return self.SikuliLoader(fullpath)
+         mod = self._find_module(module_name, path)
+         if mod:
+            return mod
       return None
 
 
