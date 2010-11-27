@@ -12,6 +12,7 @@ public class Finder implements Iterator<Match>{
    private Pattern _pattern = null;
    private FindInput _findInput = new FindInput();
    private FindResults _results = null;
+   private ImageLocator _imgLocator = null;
    private int _cur_result_i = 0;
 
    static {
@@ -58,7 +59,9 @@ public class Finder implements Iterator<Match>{
    }
 
    protected String findImageFile(String file) throws IOException{
-      return ImageLocator.getInstance().locate(file);
+      if(_imgLocator == null)
+         _imgLocator = new ImageLocator();
+      return _imgLocator.locate(file);
    }
 
    protected <PSC> void setFindInput(PSC ptn) throws IOException{

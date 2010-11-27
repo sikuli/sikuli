@@ -9,22 +9,29 @@ import java.net.MalformedURLException;
 public class ImageLocator {
    final int DOWNLOAD_BUFFER_SIZE = 153600;
 
-   protected static ImageLocator _instance = null;
    Map<URL,String> _cache = new HashMap<URL, String>();
    String _cache_dir;
+   String _bundle_path;
 
-
-   public static ImageLocator getInstance(){
-      if(_instance == null)
-         _instance = new ImageLocator();
-      return _instance;
-   }
-
-   protected ImageLocator(){
-      _cache_dir = System.getProperty("java.io.tmpdir") + "/sikuli_cache/";
+   public ImageLocator(String bundlePath){
+      _bundle_path = bundlePath;
+      String name = "";
+      if(bundlePath != null){
+         File f = new File(bundlePath);
+         name = f.getName() + "/";
+      }
+      _cache_dir = System.getProperty("java.io.tmpdir")
+                   + "/sikuli_cache/" + name;
       File dir = new File(_cache_dir);
       if(!dir.exists())
          dir.mkdir();
+      else{
+         //TODO: init _cache from the content of the cache dir
+      }
+   }
+
+   public ImageLocator(){
+      this(Settings.BundlePath);
    }
 
    protected URL getURL(String s){
@@ -40,7 +47,7 @@ public class ImageLocator {
    protected String downloadURL(URL url) throws IOException{
       InputStream reader = url.openStream();
       String[] path = url.getPath().split("/");
-      String filename = "" + url.hashCode() + "-" + path[path.length-1];
+      String filename = path[path.length-1];
       String fullpath =  _cache_dir + filename;
       FileOutputStream writer = new FileOutputStream(fullpath);
       byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
@@ -102,8 +109,8 @@ public class ImageLocator {
    }
 
    protected String searchFile(String filename) throws IOException {
-      Debug.log(3,"ImageLocator: bundle path " + Settings.BundlePath);
-      File f = new File(Settings.BundlePath, filename);
+      Debug.log(3,"ImageLocator: bundle path " + _bundle_path);
+      File f = new File(_bundle_path, filename);
       if( f.exists() ) return f.getAbsolutePath();
       String[] sikuli_img_path = getImagePath();
       for(String path : sikuli_img_path){
