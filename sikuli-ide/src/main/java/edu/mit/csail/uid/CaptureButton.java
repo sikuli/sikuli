@@ -109,8 +109,8 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
    private String getFilenameFromUser(String hint){
       return (String)JOptionPane.showInputDialog(
             _codePane,
-            "Enter the screen shot's file name:",
-            "Name The Screen Shot",
+            I18N._I("msgEnterScreenshotFilename"),
+            I18N._I("dlgEnterScreenshotFilename"),
             JOptionPane.PLAIN_MESSAGE,
             null,
             null,
@@ -137,6 +137,11 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
          else{
             String hint = NamingPane.getFilenameFromImage(simg.getImage());
             filename = getFilenameFromUser(hint);
+            if(filename == null){
+               captureCompleted(null);
+               return;
+            }
+
          }
          String fullpath = 
             Utils.saveImage(simg.getImage(), filename, pane.getSrcBundle());

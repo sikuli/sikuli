@@ -81,7 +81,7 @@ add_custom_target( ${JAR_FILE}
 )
 
 add_custom_target( ${JAR_FILE}.resources
-   COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_DIR} ${BINARY_CLASS_DIR}
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_DIR} ${JAR_DIR}
    COMMENT "Copying IDE resources"
 )
 
