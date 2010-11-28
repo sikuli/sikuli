@@ -41,6 +41,10 @@ public class TextRecognizer {
 
    public String recognize(ScreenImage simg){
       BufferedImage img = simg.getImage();
+      return recognize(img);
+   }
+
+   public String recognize(BufferedImage img){
       Mat mat = OpenCV.convertBufferedImageToMat(img);
       return Vision.recognize(mat);
    }
