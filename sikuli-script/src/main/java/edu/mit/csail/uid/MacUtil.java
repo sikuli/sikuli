@@ -57,7 +57,10 @@ public class MacUtil implements OSUtil {
    }
 
    public Region getFocusedWindow(){
-      return new Region(getFocusedRegion());
+      Rectangle rect = getFocusedRegion();
+      if(rect != null)
+         return new Region(rect);
+      return null;
    }
 
    public static native boolean _openApp(String appName);
