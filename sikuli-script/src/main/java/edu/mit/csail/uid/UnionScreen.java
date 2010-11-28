@@ -57,6 +57,8 @@ public class UnionScreen extends Screen {
    }
 
    boolean useFullscreen(){
+      if( Env.getOS() == OS.MAC )
+         return false;
       if(getNumberScreens()==1)
          return true;
       return false;

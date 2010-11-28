@@ -193,7 +193,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    @Override
    public void toFront(){
       if(Env.getOS() == OS.MAC){
-         MacUtil.bringWindowToFront(this);
+         MacUtil.bringWindowToFront(this, true);
       }
       else
          super.toFront();

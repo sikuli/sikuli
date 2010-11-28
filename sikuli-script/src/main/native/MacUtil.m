@@ -54,13 +54,13 @@ NSWindow * GetWindowFromComponent(jobject parent, JNIEnv *env) {
 }
 
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
-  (JNIEnv *env, jclass jobj, jobject jwin){
+  (JNIEnv *env, jclass jobj, jobject jwin, jboolean ignoreMouse){
   
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
    NSWindow *win = GetWindowFromComponent(jwin, env);
    NSLog(@"bringWindowToFront: %@", win); 
-   [win setIgnoresMouseEvents:YES];
+   [win setIgnoresMouseEvents:ignoreMouse];
    /*
    [win setBackgroundColor:[NSColor blackColor]];
    [win setOpaque:NO];

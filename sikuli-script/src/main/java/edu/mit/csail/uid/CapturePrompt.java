@@ -27,6 +27,7 @@ class CapturePrompt extends JWindow implements Subject{
    boolean _canceled = false;
    long _msg_start;
    String _msg;
+   float _win_alpha;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -154,6 +155,12 @@ class CapturePrompt extends JWindow implements Subject{
          drawSelection(bfG2);
          g2dWin.drawImage(bi, 0, 0, this);
          setVisible(true);
+         if(_win_alpha<1f){
+            _win_alpha += 0.2f;
+            if(_win_alpha>1.0f)  _win_alpha = 1.0f;
+            getRootPane().putClientProperty("Window.alpha", new Float(_win_alpha));
+            repaint();
+         }
       }
       else
          setVisible(false);
@@ -271,12 +278,20 @@ class CapturePrompt extends JWindow implements Subject{
       setLocation(_scr.x, _scr.y);
       this.setSize(new Dimension(_scr.w, _scr.h));
       this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
-      this.setVisible(true);
       this.setAlwaysOnTop(true);
       _darker_factor = 1f;
       _msg = msg;
       _msg_start = -1;
 
+      if(Env.getOS() == OS.MAC){
+         _win_alpha = 0f;
+         getRootPane().putClientProperty("Window.alpha", new Float(_win_alpha));
+         getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
+         this.setVisible(true);
+         MacUtil.bringWindowToFront(this, false);
+      }
+      else
+         this.setVisible(true);
       if( _scr.useFullscreen() ){
          _gdev = _scr.getGraphicsDevice();
          if( _gdev.isFullScreenSupported() ){

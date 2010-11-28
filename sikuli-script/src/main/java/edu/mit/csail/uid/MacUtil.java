@@ -61,7 +61,7 @@ public class MacUtil implements OSUtil {
    }
 
    public static native boolean _openApp(String appName);
-   public static native void bringWindowToFront(Window win);
+   public static native void bringWindowToFront(Window win, boolean ignoreMouse);
    public static native long getPID(String appName);
    public static native Rectangle getRegion(long pid, int winNum);
    public static native Rectangle getFocusedRegion();

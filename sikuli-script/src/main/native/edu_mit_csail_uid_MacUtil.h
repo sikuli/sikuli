@@ -18,10 +18,10 @@ JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_MacUtil__1openApp
 /*
  * Class:     edu_mit_csail_uid_MacUtil
  * Method:    bringWindowToFront
- * Signature: (Ljava/awt/Window;)V
+ * Signature: (Ljava/awt/Window;Z)V
  */
 JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
-  (JNIEnv *, jclass, jobject);
+  (JNIEnv *, jclass, jobject, jboolean);
 
 /*
  * Class:     edu_mit_csail_uid_MacUtil
