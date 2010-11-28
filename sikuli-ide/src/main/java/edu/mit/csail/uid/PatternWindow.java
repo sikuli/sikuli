@@ -76,7 +76,7 @@ public class PatternWindow extends JFrame implements Observer {
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
       _tarOffsetPane = new TargetOffsetPane(
-            _simg, _imgBtn.getImageFilename(), _imgBtn.getTargetOffset());
+            _simg, _imgBtn.getFilename(), _imgBtn.getTargetOffset());
       //p.addObserver(this);
       createMarginBox(p, _tarOffsetPane);
       p.add(Box.createVerticalStrut(5));
@@ -98,7 +98,7 @@ public class PatternWindow extends JFrame implements Observer {
 
    private void init(boolean exact, float similarity, int numMatches){
       try{
-         _screenshot.setParameters( _imgBtn.getImageFilename(),
+         _screenshot.setParameters( _imgBtn.getFilename(),
                                    exact, similarity, numMatches);
       }
       catch(Exception e){
@@ -171,17 +171,33 @@ public class PatternWindow extends JFrame implements Observer {
       }
 
       public void actionPerformed(ActionEvent e) {
+         if(_namingPane.isDirty()){
+            String filename = _namingPane.getAbsolutePath();
+            String oldFilename = _imgBtn.getFilename();
+            if(Utils.exists(filename)){
+               String name = Utils.getName(filename);
+               int ret = JOptionPane.showConfirmDialog(
+                     _parent,
+                     I18N._I("msgFileExists", name),
+                     I18N._I("dlgFileExists"),
+                     JOptionPane.WARNING_MESSAGE,
+                     JOptionPane.YES_NO_OPTION);
+               if(ret != JOptionPane.YES_OPTION) 
+                  return;
+            }
+            try{
+               Utils.xcopy(oldFilename, filename);
+               _imgBtn.setFilename(filename);
+            }
+            catch(IOException ioe){
+               Debug.error("renaming failed: " + oldFilename + " " + filename);
+               Debug.error(ioe.getMessage());
+            }
+         }
          _imgBtn.setParameters(
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
          _imgBtn.setTargetOffset( _tarOffsetPane.getTargetOffset() );
-         if(_namingPane.isDirty()){
-            String filename = _namingPane.getAbsolutePath();
-            String oldFilename = _imgBtn.getFilename();
-            Debug.log("rename " + oldFilename + " " + filename);
-            Utils.rename(oldFilename, filename);
-            _imgBtn.setFilename(filename);
-         }
          Debug.info("update :" + _imgBtn.toString());
          _parent.dispose();
       }

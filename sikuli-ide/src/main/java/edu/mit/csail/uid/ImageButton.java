@@ -16,7 +16,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
 
    private String _imgFilename, _thumbFname;
-   private JTextPane _pane;
+   private SikuliPane _pane;
    private float _similarity;
    private int _numMatches = DEFAULT_NUM_MATCHES;
    private boolean _exact;
@@ -39,7 +39,15 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
    }
    */
 
+
    public String getFilename(){
+      File img = new File(_imgFilename);
+      String oldBundle = img.getParent();
+      String newBundle = _pane.getSrcBundle();
+      Debug.log("ImageButton.getFilename: " + oldBundle + " " + newBundle);
+      if(oldBundle == newBundle)
+         return _imgFilename;
+      setFilename(newBundle + File.separatorChar +  img.getName());
       return _imgFilename;
    }
 
@@ -100,7 +108,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       return createThumbnail(imgFname, max_h);
    }
    
-   public ImageButton(JTextPane pane, String imgFilename){
+   public ImageButton(SikuliPane pane, String imgFilename){
       _pane = pane;
       setFilename(imgFilename);
       _exact = false;
@@ -188,10 +196,6 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       Debug.log("open Pattern Settings");
       pwin = new PatternWindow(this, _exact, _similarity, _numMatches);
       pwin.setTargetOffset(_offset);
-   }
-
-   public String getImageFilename(){
-      return _imgFilename;
    }
 
    public Location getTargetOffset(){

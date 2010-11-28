@@ -55,7 +55,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
 
    public Element getSrcElement(){  return _line;  }
 
-   protected void insertAtCursor(JTextPane pane, String imgFilename){
+   protected void insertAtCursor(SikuliPane pane, String imgFilename){
       ImageButton icon = new ImageButton(pane, imgFilename);
       pane.insertComponent(icon);
       pane.requestFocus();

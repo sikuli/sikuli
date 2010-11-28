@@ -145,6 +145,16 @@ public class Utils {
       return old.renameTo(new File(newFile));
    }
 
+   public static String getName(String filename){
+      File f = new File(filename);
+      return f.getName();
+   }
+
+   public static boolean exists(String path){
+      File f = new File(path);
+      return f.exists();
+   }
+
    public static void mkdir(String path){
       File f = new File(path);
       if( !f.exists() )

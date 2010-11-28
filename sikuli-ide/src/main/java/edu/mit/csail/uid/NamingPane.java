@@ -57,7 +57,7 @@ public class NamingPane extends JPanel {
       JLabel lblPath = new JLabel(_I("lblPath"));
       JLabel lblFilename = new JLabel(_I("lblFilename"));
 
-      String filename = _imgBtn.getImageFilename();
+      String filename = _imgBtn.getFilename();
       File f = new File(filename);
       String fullpath = f.getParent();
       filename = getFilenameWithoutExt(f);
