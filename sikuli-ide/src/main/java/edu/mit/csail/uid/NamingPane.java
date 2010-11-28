@@ -44,7 +44,7 @@ public class NamingPane extends JPanel {
       return name.substring(pos);
    }
 
-   private String recognizeText(BufferedImage img){
+   public static String getFilenameFromImage(BufferedImage img){
       TextRecognizer tr = TextRecognizer.getInstance();
       String text = tr.recognize(img);
       text = text.replaceAll("\\W","");
@@ -73,7 +73,7 @@ public class NamingPane extends JPanel {
       _txtPath.setEnabled(false);
 
       String[] candidates = new String[] {filename};
-      String ocrText = recognizeText(thumb);
+      String ocrText = getFilenameFromImage(thumb);
       if(ocrText.length()>0)
          candidates = new String[] {filename, ocrText};
 

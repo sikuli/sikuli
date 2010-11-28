@@ -4,13 +4,20 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
+import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 // Singleton
 public class TextRecognizer {
    protected static TextRecognizer _instance = null;
 
    static {
-      TextRecognizer tr = getInstance();
+      try{
+         NativeLoader.loadLibrary("VisionProxy");
+         TextRecognizer tr = TextRecognizer.getInstance();
+      }
+      catch(IOException e){
+         e.printStackTrace();
+      }
    }
 
    protected TextRecognizer(){

@@ -5,6 +5,10 @@ import java.util.Date;
 import java.awt.Event;
 
 public class UserPreferences {
+   final static int AUTO_NAMING_TIMESTAMP = 0;
+   final static int AUTO_NAMING_OCR = 1;
+   final static int AUTO_NAMING_OFF = 2;
+
    static UserPreferences _instance = null;
    Preferences pref = Preferences.userNodeForPackage(SikuliIDE.class);
 
@@ -65,6 +69,14 @@ public class UserPreferences {
 
    public void setCaptureDelay(double v){
       pref.putDouble("CAPTURE_DELAY", v);
+   }
+
+   public void setAutoNamingMethod(int m){
+      pref.putInt("AUTO_NAMING", m);
+   }
+
+   public int getAutoNamingMethod(){
+      return pref.getInt("AUTO_NAMING", AUTO_NAMING_OCR);
    }
 
    public int getDefaultThumbHeight(){

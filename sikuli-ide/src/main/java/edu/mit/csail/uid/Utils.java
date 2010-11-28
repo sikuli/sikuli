@@ -150,15 +150,19 @@ public class Utils {
       if( !f.exists() )
          f.mkdir();
    }
+
+   public static String getTimestamp(){
+      return (new Date()).getTime() + "";
+   }
    
-   public static String saveImage(BufferedImage img, String bundlePath){
-      //String filename = System.getProperty("user.dir") + "/captureImages/";
+   public static String saveImage(BufferedImage img, String filename, String bundlePath){
       String fullpath = bundlePath;
       File f = new File(fullpath);
       if( !f.exists() ) f.mkdir();
-      String filename = (new Date()).getTime() + ".png";
-      fullpath += filename;
-	  fullpath = fullpath.replaceAll("\\\\","/");
+      if(!filename.endsWith(".png"))
+         filename += ".png";
+      fullpath = new File(f,filename).getAbsolutePath();
+      fullpath = fullpath.replaceAll("\\\\","/");
       try{
          ImageIO.write(img, "png", new File(fullpath));
       }
@@ -166,7 +170,7 @@ public class Utils {
          e.printStackTrace();
          return null;
       }
-      return filename;
+      return fullpath;
    }
 
 

@@ -106,6 +106,17 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       _codePane.requestFocus();
    }
 
+   private String getFilenameFromUser(String hint){
+      return (String)JOptionPane.showInputDialog(
+            _codePane,
+            "Enter the screen shot's file name:",
+            "Name The Screen Shot",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            hint);
+   }
+
    public void update(Subject s){
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
@@ -117,10 +128,20 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
          cp.close();
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliPane pane = ide.getCurrentCodePane();
-         String filename = 
-            Utils.saveImage(simg.getImage(), pane.getSrcBundle());
-         if(filename != null){
-            String fullpath = pane.getFileInBundle(filename).getAbsolutePath();
+         int naming = UserPreferences.getInstance().getAutoNamingMethod();
+         String filename;
+         if(naming == UserPreferences.AUTO_NAMING_TIMESTAMP)
+            filename = Utils.getTimestamp();
+         else if(naming == UserPreferences.AUTO_NAMING_OCR)
+            filename = NamingPane.getFilenameFromImage(simg.getImage());
+         else{
+            String hint = NamingPane.getFilenameFromImage(simg.getImage());
+            filename = getFilenameFromUser(hint);
+         }
+         String fullpath = 
+            Utils.saveImage(simg.getImage(), filename, pane.getSrcBundle());
+         if(fullpath != null){
+            //String fullpath = pane.getFileInBundle(filename).getAbsolutePath();
             captureCompleted(Utils.slashify(fullpath,false));
          }
       }

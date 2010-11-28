@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_17" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_22" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
+  <void method="setProperty"> 
+   <string>i18n.bundlePackage</string> 
+   <string>resources.i18n.IDE</string> 
+  </void> 
+  <void method="setProperty"> 
+   <string>i18n.bundleName</string> 
+   <string>PreferenecesWin</string> 
+  </void> 
+  <void method="setProperty"> 
+   <string>i18n.autoExternalize</string> 
+   <boolean>true</boolean> 
+  </void> 
+  <void method="setProperty"> 
+   <string>i18n.keyPrefix</string> 
+   <string>PreferencesWin</string> 
+  </void> 
   <void property="contentType"> 
    <string>form/swing</string> 
   </void> 
@@ -12,6 +28,10 @@
       <object class="com.jformdesigner.model.FormLayoutManager"> 
        <class>java.awt.BorderLayout</class> 
       </object> 
+      <void method="setProperty"> 
+       <string>$sizePolicy</string> 
+       <int>1</int> 
+      </void> 
       <void method="add"> 
        <object class="com.jformdesigner.model.FormContainer"> 
         <string>javax.swing.JTabbedPane</string> 
@@ -34,11 +54,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq l {space :p:26:p, par l {comp lblHotkey:::p::p, comp lblDelay:::p::p}, space :::p, par l:::p {seq {comp spnDelay:::p:74:p:1, space :::p, comp lblDelaySecs:::p::p}, comp txtHotkey:::::x:1}, space :p:50:p}}</string> 
+            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::61:x:1, space :::p, comp lblDelaySecs::::78:x}, comp txtHotkey::l::145:x:1}, space :p:69:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:34:p, par b {comp lblHotkey::b:p:22:p, comp txtHotkey::b:p::p}, space :::p, par l {comp lblDelaySecs::::28:x:1, comp spnDelay:::::x:1, comp lblDelay::l::28:x:1}, space :p:150:p}}</string> 
+            <string>par l {seq l {space :p:34:p, par b {comp lblHotkey::b:p:22:p, comp txtHotkey::b:p::p}, space :::p, par l {comp lblDelay::l:p:28:p:1, comp spnDelay:::p::p:1, comp lblDelaySecs:::p:28:p:1}, space :::p, par l:::p {seq {par b {comp lblNaming::b:p:22:p, comp radTimestamp::b:p::p}, space s:::p, comp radOff:::p::p, space :::p}, seq t:::1 {comp radOCR:::p::p, space :p:21:p}}, space :p:80:p}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 
@@ -83,7 +103,16 @@
             <string>javax.swing.JLabel</string> 
             <void method="setProperty"> 
              <string>text</string> 
-             <string>Quick Capture hotkey:</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefCaptureHotkey</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>labelFor</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>txtHotkey</string> 
+             </object> 
             </void> 
             <void property="name"> 
              <string>lblHotkey</string> 
@@ -105,7 +134,16 @@
             <string>javax.swing.JLabel</string> 
             <void method="setProperty"> 
              <string>text</string> 
-             <string>Capture delay:</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefCaptureDelay</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>labelFor</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>spnDelay</string> 
+             </object> 
             </void> 
             <void property="name"> 
              <string>lblDelay</string> 
@@ -149,7 +187,10 @@
             <string>javax.swing.JLabel</string> 
             <void method="setProperty"> 
              <string>text</string> 
-             <string>seconds</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefSeconds</string> 
+             </object> 
             </void> 
             <void property="name"> 
              <string>lblDelaySecs</string> 
@@ -166,12 +207,103 @@
             </void> 
            </object> 
           </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefAutoNaming</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>lblNaming</string> 
+            </void> 
+            <void method="auxiliary"> 
+             <void method="setProperty"> 
+              <string>JavaCodeGenerator.variableLocal</string> 
+              <boolean>true</boolean> 
+             </void> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JRadioButton</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefTimestamp</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>$buttonGroup</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>btngrpNaming</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>selected</string> 
+             <boolean>true</boolean> 
+            </void> 
+            <void property="name"> 
+             <string>radTimestamp</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JRadioButton</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefRecognizedText</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>$buttonGroup</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>btngrpNaming</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>radOCR</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JRadioButton</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefManualInput</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>$buttonGroup</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>btngrpNaming</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>radOff</string> 
+            </void> 
+           </object> 
+          </void> 
          </object> 
          <object class="com.jformdesigner.model.FormLayoutConstraints"> 
           <null/> 
           <void method="setProperty"> 
            <string>title</string> 
-           <string>Screen Capturing</string> 
+           <object class="com.jformdesigner.model.FormMessage"> 
+            <null/> 
+            <string>prefTabScreenCapturing</string> 
+           </object> 
           </void> 
          </object> 
         </void> 
@@ -182,11 +314,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq t {space :p:85:p, comp checkBox1:::::x, space :p:82:p}}</string> 
+            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::220:x, space :p:82:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:32:p, comp checkBox1:::p::p, space ::191:x}}</string> 
+            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::221:x}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 
@@ -203,10 +335,19 @@
             <string>javax.swing.JCheckBox</string> 
             <void method="setProperty"> 
              <string>text</string> 
-             <string>Check Update Automatically</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>prefGeneralAutoCheck</string> 
+             </object> 
             </void> 
             <void property="name"> 
-             <string>checkBox1</string> 
+             <string>chkAutoUpdate</string> 
+            </void> 
+            <void method="auxiliary"> 
+             <void method="setProperty"> 
+              <string>JavaCodeGenerator.variableName</string> 
+              <string>chkAutoUpdate</string> 
+             </void> 
             </void> 
            </object> 
           </void> 
@@ -215,7 +356,10 @@
           <null/> 
           <void method="setProperty"> 
            <string>title</string> 
-           <string>General Settings</string> 
+           <object class="com.jformdesigner.model.FormMessage"> 
+            <null/> 
+            <string>prefTabGeneralSettings</string> 
+           </object> 
           </void> 
          </object> 
         </void> 
@@ -234,6 +378,17 @@
         <object class="com.jformdesigner.model.FormLayoutManager"> 
          <class>javax.swing.BoxLayout</class> 
         </object> 
+        <void method="setProperty"> 
+         <string>border</string> 
+         <object class="javax.swing.border.EmptyBorder"> 
+          <object class="java.awt.Insets"> 
+           <int>5</int> 
+           <int>5</int> 
+           <int>5</int> 
+           <int>5</int> 
+          </object> 
+         </object> 
+        </void> 
         <void method="auxiliary"> 
          <void method="setProperty"> 
           <string>JavaCodeGenerator.variableLocal</string> 
@@ -266,7 +421,10 @@
           <string>javax.swing.JButton</string> 
           <void method="setProperty"> 
            <string>text</string> 
-           <string>OK</string> 
+           <object class="com.jformdesigner.model.FormMessage"> 
+            <null/> 
+            <string>ok</string> 
+           </object> 
           </void> 
           <void property="name"> 
            <string>btnOk</string> 
@@ -286,7 +444,10 @@
           <string>javax.swing.JButton</string> 
           <void method="setProperty"> 
            <string>text</string> 
-           <string>Cancel</string> 
+           <object class="com.jformdesigner.model.FormMessage"> 
+            <null/> 
+            <string>cancel</string> 
+           </object> 
           </void> 
           <void property="name"> 
            <string>btnCancel</string> 
@@ -326,8 +487,26 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>400</int> 
-        <int>345</int> 
+        <int>410</int> 
+        <int>375</int> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+    <void method="add"> 
+     <object class="com.jformdesigner.model.FormNonVisual"> 
+      <string>javax.swing.ButtonGroup</string> 
+      <void property="name"> 
+       <string>btngrpNaming</string> 
+      </void> 
+     </object> 
+     <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+      <null/> 
+      <void method="setProperty"> 
+       <string>location</string> 
+       <object class="java.awt.Point"> 
+        <int>0</int> 
+        <int>360</int> 
        </object> 
       </void> 
      </object> 
