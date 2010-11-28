@@ -12,6 +12,8 @@ class CapturePrompt extends JWindow implements Subject{
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    final static float MIN_DARKER_FACTOR = 0.6f;
    final static long MSG_DISPLAY_TIME = 2000;
+   final static long WIN_FADE_IN_TIME = 200;
+
    static GraphicsDevice _gdev = null;
 
    Observer _obs;
@@ -25,9 +27,8 @@ class CapturePrompt extends JWindow implements Subject{
    int srcScreenId=0;
    int srcx, srcy, destx, desty;
    boolean _canceled = false;
-   long _msg_start;
+   Animator _aniMsg, _aniWin;
    String _msg;
-   float _win_alpha;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -117,10 +118,8 @@ class CapturePrompt extends JWindow implements Subject{
    void drawMessage(Graphics2D g2d){
       if(_msg == null)
          return;
-      if(_msg_start == -1) _msg_start = (new Date()).getTime();
-      long now = (new Date()).getTime();
-      if(now - _msg_start <= MSG_DISPLAY_TIME){
-         float alpha = 1f - (float)(now-_msg_start)/MSG_DISPLAY_TIME;
+      if(_aniMsg.running()){
+         float alpha = _aniMsg.step();
          g2d.setFont(fontMsg);
          g2d.setColor(new Color(1f,1f,1f,alpha));
          int sw = g2d.getFontMetrics().stringWidth(_msg);
@@ -155,10 +154,9 @@ class CapturePrompt extends JWindow implements Subject{
          drawSelection(bfG2);
          g2dWin.drawImage(bi, 0, 0, this);
          setVisible(true);
-         if(_win_alpha<1f){
-            _win_alpha += 0.2f;
-            if(_win_alpha>1.0f)  _win_alpha = 1.0f;
-            getRootPane().putClientProperty("Window.alpha", new Float(_win_alpha));
+         if(_aniWin.running()){
+            float a = _aniWin.step();
+            getRootPane().putClientProperty("Window.alpha", new Float(a));
             repaint();
          }
       }
@@ -279,13 +277,12 @@ class CapturePrompt extends JWindow implements Subject{
       this.setSize(new Dimension(_scr.w, _scr.h));
       this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
       this.setAlwaysOnTop(true);
-      _darker_factor = 1f;
       _msg = msg;
-      _msg_start = -1;
+      _aniMsg = new Animator(1f, 0f, MSG_DISPLAY_TIME);
 
       if(Env.getOS() == OS.MAC){
-         _win_alpha = 0f;
-         getRootPane().putClientProperty("Window.alpha", new Float(_win_alpha));
+         _aniWin = new Animator(0f, 1f, WIN_FADE_IN_TIME);
+         getRootPane().putClientProperty("Window.alpha", new Float(0f));
          getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
          this.setVisible(true);
          MacUtil.bringWindowToFront(this, false);
