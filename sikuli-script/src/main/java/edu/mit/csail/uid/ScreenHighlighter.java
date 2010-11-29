@@ -12,7 +12,8 @@ class ScreenHighlighter extends JWindow implements MouseListener {
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    static Color _transparentColor = new Color(0F,0F,0F,0.0F);
-   final static int TARGET_SIZE = 50;
+   static Color _targetColor = new Color(1F,0F,0F,0.6F);
+   final static int TARGET_SIZE = 80;
    static int MARGIN = 20;
 
 
@@ -93,9 +94,12 @@ class ScreenHighlighter extends JWindow implements MouseListener {
       */
 
       if(_anim.running()){
-         g2d.setColor(Color.red);
+         g2d.setColor(_targetColor);
          g2d.setStroke(_StrokeBorder);
-         drawCircle( cx, cy, (int)_anim.step(), g2d);
+         int size = (int)_anim.step();
+         int size2 = size==0?0 : size - 5;
+         drawCircle( cx, cy, size, g2d);
+         drawCircle( cx, cy, size2, g2d);
          repaint();
       }
    }
@@ -115,44 +119,25 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    public void paint(Graphics g)
    {
       if( _screen != null ){
-         Graphics2D bfG2 = (Graphics2D)g;
-         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-         bfG2.fillRect(0,0,getWidth(),getHeight());
-         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-         /*
-         if ( _buf==null || _buf.getWidth(this) != getWidth() ||
-              _buf.getHeight(this) != getHeight() ) {
-            _buf = new BufferedImage( 
-                  getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB );
-         }
-         Graphics2D bfG2 = _buf.createGraphics();
-         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-         bfG2.setBackground(_transparentColor);
-         bfG2.setColor(_transparentColor);
-         bfG2.fillRect(0, 0, _buf.getWidth(), _buf.getHeight()); 
-         */
-         bfG2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-                               RenderingHints.VALUE_ANTIALIAS_ON);
-         if(_borderOnly){
-            if(!_native_transparent)
-               bfG2.drawImage(_screen, 0, 0, this);
-            drawBorder(bfG2);
-         }
-         else{
-            if(!_native_transparent)
-               bfG2.drawImage(_darker_screen,0,0,this);
-            switch(_mode){
-               case ONE_TARGET: drawTarget(bfG2); break;
-               case DRAG_DROP:  drawDragDrop(bfG2); break;
-            }
-         }
-         /*
          Graphics2D g2d = (Graphics2D)g;
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
          g2d.fillRect(0,0,getWidth(),getHeight());
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-         g2d.drawImage(_buf, 0, 0, this);
-         */
+         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+                               RenderingHints.VALUE_ANTIALIAS_ON);
+         if(_borderOnly){
+            if(!_native_transparent)
+               g2d.drawImage(_screen, 0, 0, this);
+            drawBorder(g2d);
+         }
+         else{
+            if(!_native_transparent)
+               g2d.drawImage(_darker_screen,0,0,this);
+            switch(_mode){
+               case ONE_TARGET: drawTarget(g2d); break;
+               case DRAG_DROP:  drawDragDrop(g2d); break;
+            }
+         }
          if(!isVisible())
             setVisible(true);
       }
@@ -222,7 +207,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
       Debug.log(1, "showTarget " + x + " " + y + " " + w + " " + h);
       srcx = 0; destx = w;
       srcy = 0; desty = h;
-      _anim = new Animator(TARGET_SIZE/2, 0, (long)(secs*1000));
+      _anim = new PulseAnimator(TARGET_SIZE/2-5, 0, 350, (long)(secs*1000));
       showWindow(x, y, w, h, secs);
    }
 

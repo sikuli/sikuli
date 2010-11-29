@@ -278,10 +278,10 @@ class CapturePrompt extends JWindow implements Subject{
       this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
       this.setAlwaysOnTop(true);
       _msg = msg;
-      _aniMsg = new Animator(1f, 0f, MSG_DISPLAY_TIME);
+      _aniMsg = new LinearAnimator(1f, 0f, MSG_DISPLAY_TIME);
 
       if(Env.getOS() == OS.MAC){
-         _aniWin = new Animator(0f, 1f, WIN_FADE_IN_TIME);
+         _aniWin = new LinearAnimator(0f, 1f, WIN_FADE_IN_TIME);
          getRootPane().putClientProperty("Window.alpha", new Float(0f));
          getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
          this.setVisible(true);
