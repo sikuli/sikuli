@@ -3,11 +3,13 @@ package edu.mit.csail.uid;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.util.Set;
+import java.util.HashSet;
 import javax.swing.*;
 import javax.swing.border.*;
 
 
-class ScreenHighlighter extends JWindow implements MouseListener {
+public class ScreenHighlighter extends JWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
@@ -18,6 +20,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    static int MARGIN = 20;
 
 
+   static Set<ScreenHighlighter> _opened = new HashSet<ScreenHighlighter>();
    Screen _scr;
    VizMode _mode = null;
    BufferedImage _screen = null;
@@ -148,6 +151,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    }
 
    void init(){
+      _opened.add(this);
       if(Env.getOS() == OS.MAC)
          _native_transparent = true;
 
@@ -162,7 +166,19 @@ class ScreenHighlighter extends JWindow implements MouseListener {
 
    public void close(){
       setVisible(false);
+      _opened.remove(this);
       dispose();
+   }
+
+   public static void closeAll(){
+      Debug.log(1, "close all ScreenHighlighter");
+      for(ScreenHighlighter s : _opened){
+         if(s.isVisible()){
+            s.setVisible(false);
+            s.dispose();
+         }
+      }
+      _opened.clear();
    }
 
 

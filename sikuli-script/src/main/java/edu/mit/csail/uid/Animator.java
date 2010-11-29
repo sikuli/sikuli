@@ -31,6 +31,8 @@ class LinearInterpolation extends TimeValueFunction {
    }
 
    public float getValue(long t){
+      if(t > _totalTime)
+         return _endVal;
       return _beginVal + _stepUnit * t;
    }
 }
@@ -40,6 +42,8 @@ class QuarticEase extends TimeValueFunction {
       super(beginVal, endVal, totalTime);
    }
    public float getValue(long t){
+      if(t>_totalTime)
+         return _endVal;
       double t1 = (double)t/_totalTime;
       return (float)(_beginVal + (_endVal-_beginVal)*t1*t1*t1*t1);
    }

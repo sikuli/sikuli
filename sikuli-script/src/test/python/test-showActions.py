@@ -18,3 +18,4 @@ with s:
 #   click("sound.png")
    thumb = find(Pattern("sound-thumb.png").similar(0.5))
    dragDrop(thumb, thumb.getCenter().left(100))
+exit(0)

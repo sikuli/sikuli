@@ -21,6 +21,7 @@ from edu.mit.csail.uid import Settings
 from edu.mit.csail.uid import Env
 from edu.mit.csail.uid import OS
 from edu.mit.csail.uid import App
+from edu.mit.csail.uid import ScreenHighlighter
 from java.awt import Rectangle
 from Key import *
 from Button import *
@@ -134,6 +135,7 @@ def popup(msg):
    _si.popup(msg)
 
 def exit(code=0):
+   ScreenHighlighter.closeAll()
    sys.exit(code)
 
 ##
