@@ -132,8 +132,11 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
          String filename;
          if(naming == UserPreferences.AUTO_NAMING_TIMESTAMP)
             filename = Utils.getTimestamp();
-         else if(naming == UserPreferences.AUTO_NAMING_OCR)
+         else if(naming == UserPreferences.AUTO_NAMING_OCR){
             filename = NamingPane.getFilenameFromImage(simg.getImage());
+            if(filename == null || filename.length() == 0)
+               filename = Utils.getTimestamp();
+         }
          else{
             String hint = NamingPane.getFilenameFromImage(simg.getImage());
             filename = getFilenameFromUser(hint);
