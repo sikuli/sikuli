@@ -7,6 +7,91 @@ public interface Animator {
    public boolean running();
 }
 
+abstract class TimeValueFunction {
+   protected float _beginVal, _endVal;
+   protected long _totalTime;
+   public TimeValueFunction(float beginVal, float endVal, long totalTime){
+      _beginVal = beginVal;
+      _endVal = endVal;
+      _totalTime = totalTime;
+   }
+   public boolean isEnd(long t){
+      return t >= _totalTime;
+   }
+
+   abstract public float getValue(long t);
+}
+
+class LinearInterpolation extends TimeValueFunction {
+   float _stepUnit;
+
+   public LinearInterpolation(float beginVal, float endVal, long totalTime){
+      super(beginVal, endVal, totalTime);
+      _stepUnit = (endVal-beginVal)/(float)totalTime;
+   }
+
+   public float getValue(long t){
+      return _beginVal + _stepUnit * t;
+   }
+}
+
+class QuarticEase extends TimeValueFunction {
+   public QuarticEase(float beginVal, float endVal, long totalTime){
+      super(beginVal, endVal, totalTime);
+   }
+   public float getValue(long t){
+      double t1 = (double)t/_totalTime;
+      return (float)(_beginVal + (_endVal-_beginVal)*t1*t1*t1*t1);
+   }
+}
+
+class StopExtention extends TimeValueFunction {
+   TimeValueFunction _func;
+   public StopExtention(TimeValueFunction func, long totalTime){
+      super(func._beginVal, func._endVal, totalTime);
+      _func = func;
+      _totalTime = totalTime;
+   }
+   public float getValue(long t){
+      return _func.getValue(t);
+   }
+   public boolean isEnd(long t){
+      return t >= _totalTime;
+   }
+}
+
+class TimeBasedAnimator implements Animator{
+   protected long _begin_time;
+   protected float _beginVal, _endVal, _stepUnit;
+   protected long _totalMS;
+   protected boolean _running;
+   protected TimeValueFunction _func;
+
+   public TimeBasedAnimator(TimeValueFunction func){
+      _begin_time = -1;
+      _running = true;
+      _func = func;
+   }
+
+   public float step(){
+      if(_begin_time == -1){
+         _begin_time = (new Date()).getTime();
+         return _func.getValue(0);
+      }
+
+      long now = (new Date()).getTime();
+      long delta = now - _begin_time;
+      float ret = _func.getValue(delta);
+      _running = !_func.isEnd(delta);
+      return ret;
+   }
+
+   public boolean running(){
+      return _running;
+   }
+
+}
+
 class PulseAnimator implements Animator {
    protected float _v1, _v2;
    protected long _interval, _totalMS;
@@ -43,47 +128,9 @@ class PulseAnimator implements Animator {
    }
 }
 
-class LinearAnimator implements Animator{
-   protected long _begin_time;
-   protected float _beginVal, _endVal, _stepUnit;
-   protected long _totalMS;
-   protected boolean _running;
-
+class LinearAnimator extends TimeBasedAnimator {
    public LinearAnimator(float beginVal, float endVal, long totalMS){
-      _begin_time = -1;
-      _beginVal = beginVal;
-      _endVal = endVal;
-      _totalMS = totalMS;
-      _stepUnit = (endVal-beginVal)/(float)totalMS;
-      _running = true;
-   }
-
-   // linear interpolation
-   public float step(){
-      if(_begin_time == -1){
-         _begin_time = (new Date()).getTime();
-         return _beginVal;
-      }
-
-      long now = (new Date()).getTime();
-      long delta = now - _begin_time;
-      float ret = _beginVal + _stepUnit * delta;
-      if(_endVal>_beginVal){
-         if(ret > _endVal){
-            _running = false;
-            ret = _endVal;
-         }
-      }
-      else{
-         if(ret < _endVal){
-            _running = false;
-            ret = _endVal;
-         }
-      }
-      return ret;
-   }
-
-   public boolean running(){
-      return _running;
+      super(new LinearInterpolation(beginVal, endVal, totalMS));
    }
 }
+

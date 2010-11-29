@@ -14,6 +14,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    static Color _transparentColor = new Color(0F,0F,0F,0.0F);
    static Color _targetColor = new Color(1F,0F,0F,0.6F);
    final static int TARGET_SIZE = 80;
+   final static int DRAGGING_TIME = 200;
    static int MARGIN = 20;
 
 
@@ -75,10 +76,14 @@ class ScreenHighlighter extends JWindow implements MouseListener {
 
    private void drawDragDrop(Graphics2D g2d){
 
-      g2d.setColor(Color.white);
-      g2d.setStroke(_StrokeCross);
-      g2d.drawLine(srcx, srcy, destx, desty);
-      drawCircle(srcx, srcy, 5, g2d);
+      if(_aniX.running()){
+         g2d.setColor(_targetColor);
+         g2d.setStroke(_StrokeBorder);
+         int x = (int)_aniX.step(), y = (int)_aniY.step();
+         g2d.drawLine(srcx, srcy, x, y);
+         drawCircle(srcx, srcy, 5, g2d);
+         repaint();
+      }
 
    }
 
@@ -166,6 +171,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    }
 
 
+   Animator _aniX, _aniY;
    public void showDragDrop(int _srcx, int _srcy, int _destx, int _desty, float secs){
       _mode = VizMode.DRAG_DROP;
       int x1 = (_srcx < _destx) ? _srcx : _destx;
@@ -174,6 +180,16 @@ class ScreenHighlighter extends JWindow implements MouseListener {
       int y2 = (_srcy > _desty) ? _srcy : _desty;
       srcx = _srcx-x1+MARGIN;     srcy = _srcy-y1+MARGIN;
       destx = _destx-x1+MARGIN;   desty = _desty-y1+MARGIN;
+      _aniX = new TimeBasedAnimator(
+                 new StopExtention( 
+                    new QuarticEase(
+                       (float)srcx, (float)destx, DRAGGING_TIME),
+                    (long)(1000*secs)));
+      _aniY = new TimeBasedAnimator(
+                 new StopExtention( 
+                    new QuarticEase(
+                       (float)srcy, (float)desty, DRAGGING_TIME),
+                    (long)(1000*secs)));
       showWindow(x1-MARGIN, y1-MARGIN, x2-x1+2*MARGIN, y2-y1+2*MARGIN, secs);
    }
 
