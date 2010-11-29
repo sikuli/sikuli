@@ -9,7 +9,7 @@ public class Screen extends Region implements Observer {
 
    protected boolean _waitPrompt;
    protected CapturePrompt _prompt;
-   protected OverlayWindow _overlay;
+   protected ScreenHighlighter _overlay;
 
    static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
@@ -78,7 +78,7 @@ public class Screen extends Region implements Observer {
       Rectangle bounds = getBounds();
       init((int)bounds.getX(), (int)bounds.getY(),
             (int)bounds.getWidth(), (int)bounds.getHeight());
-      _overlay = new OverlayWindow(this);
+      _overlay = new ScreenHighlighter(this);
    }
 
    private void initGD(){
@@ -169,14 +169,18 @@ public class Screen extends Region implements Observer {
    }
 
    public void showTarget(Location loc){
+      showTarget(loc, Settings.ShowActionDelay);
+   }
+
+   public void showTarget(Location loc, double secs){
       if(Settings.ShowActions){
-         _overlay.showTarget(loc);
+         _overlay.showTarget(loc, (float)secs);
       }
    }
 
    public void showDropTarget(Location loc){
       if(Settings.ShowActions){
-         _overlay.showDropTarget(loc);
+         _overlay.showDropTarget(loc, (float)Settings.ShowActionDelay);
       }
    }
 

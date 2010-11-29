@@ -12,7 +12,7 @@ public class Region {
    final static float DEFAULT_HIGHLIGHT_TIME = 2f;
    private Robot _robot;
    private Screen _scr;
-   private OverlayWindow _overlay = null;
+   private ScreenHighlighter _overlay = null;
 
    public int x, y, w, h;
 
@@ -114,7 +114,7 @@ public class Region {
    protected void highlight(boolean toEnable){
       Debug.history("toggle highlight " + toString() + ": " + toEnable); 
       if(toEnable){
-         _overlay = new OverlayWindow(getScreen());
+         _overlay = new ScreenHighlighter(getScreen());
          _overlay.highlight(this);
       }
       else{
@@ -127,7 +127,7 @@ public class Region {
 
    public void highlight(float secs){
       Debug.history("highlight " + toString() + " for " + secs + " secs"); 
-      OverlayWindow overlay = new OverlayWindow(getScreen());
+      ScreenHighlighter overlay = new ScreenHighlighter(getScreen());
       overlay.highlight(this, secs);
    }
 

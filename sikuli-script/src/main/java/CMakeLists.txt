@@ -18,7 +18,7 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/OSUtil.java
    edu/mit/csail/uid/Observer.java
    edu/mit/csail/uid/OpenCV.java
-   edu/mit/csail/uid/OverlayWindow.java
+   edu/mit/csail/uid/ScreenHighlighter.java
    edu/mit/csail/uid/Pattern.java
    edu/mit/csail/uid/Region.java
    edu/mit/csail/uid/Screen.java

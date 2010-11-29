@@ -7,11 +7,12 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 
-class OverlayWindow extends JWindow implements MouseListener {
+class ScreenHighlighter extends JWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    static Color _transparentColor = new Color(0F,0F,0F,0.0F);
+   final static int TARGET_SIZE = 50;
    static int MARGIN = 20;
 
 
@@ -24,6 +25,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    boolean _borderOnly = false;
 
    boolean _native_transparent = false;
+   Animator _anim;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
 
@@ -83,53 +85,92 @@ class OverlayWindow extends JWindow implements MouseListener {
       int cx = (srcx+destx)/2;
       int cy = (srcy+desty)/2;
 
+      /*
       g2d.setColor(Color.white);
       g2d.setStroke(_StrokeCross);
       g2d.drawLine(cx, srcy, cx, desty);
       g2d.drawLine(srcx, cy, destx, cy);
+      */
 
-      drawCircle( cx, cy, 5, g2d);
+      if(_anim.running()){
+         g2d.setColor(Color.red);
+         g2d.setStroke(_StrokeBorder);
+         drawCircle( cx, cy, (int)_anim.step(), g2d);
+         repaint();
+      }
    }
 
+   private void drawBorder(Graphics2D g2d){
+      g2d.setColor(Color.red);
+      g2d.setStroke(_StrokeBorder);
+      int w = (int)_StrokeBorder.getLineWidth();
+      g2d.drawRect(w/2, w/2, _screen.getWidth()-w, _screen.getHeight()-w);
+   }
+
+   public boolean isDoubleBuffered() {
+      return false;
+   }
+
+   BufferedImage _buf = null;
    public void paint(Graphics g)
    {
       if( _screen != null ){
-         Graphics2D g2d = (Graphics2D)g;
+         Graphics2D bfG2 = (Graphics2D)g;
+         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+         bfG2.fillRect(0,0,getWidth(),getHeight());
+         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+         /*
+         if ( _buf==null || _buf.getWidth(this) != getWidth() ||
+              _buf.getHeight(this) != getHeight() ) {
+            _buf = new BufferedImage( 
+                  getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB );
+         }
+         Graphics2D bfG2 = _buf.createGraphics();
+         bfG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+         bfG2.setBackground(_transparentColor);
+         bfG2.setColor(_transparentColor);
+         bfG2.fillRect(0, 0, _buf.getWidth(), _buf.getHeight()); 
+         */
+         bfG2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+                               RenderingHints.VALUE_ANTIALIAS_ON);
          if(_borderOnly){
             if(!_native_transparent)
-               g2d.drawImage(_screen, 0, 0, this);
-            g2d.setColor(Color.red);
-            g2d.setStroke(_StrokeBorder);
-            int w = (int)_StrokeBorder.getLineWidth();
-            g2d.drawRect(w/2, w/2, _screen.getWidth()-w, _screen.getHeight()-w);
+               bfG2.drawImage(_screen, 0, 0, this);
+            drawBorder(bfG2);
          }
          else{
             if(!_native_transparent)
-               g2d.drawImage(_darker_screen,0,0,this);
+               bfG2.drawImage(_darker_screen,0,0,this);
             switch(_mode){
-               case ONE_TARGET: drawTarget(g2d); break;
-               case DRAG_DROP:  drawDragDrop(g2d); break;
+               case ONE_TARGET: drawTarget(bfG2); break;
+               case DRAG_DROP:  drawDragDrop(bfG2); break;
             }
          }
-         setVisible(true);
+         /*
+         Graphics2D g2d = (Graphics2D)g;
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+         g2d.fillRect(0,0,getWidth(),getHeight());
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+         g2d.drawImage(_buf, 0, 0, this);
+         */
+         if(!isVisible())
+            setVisible(true);
       }
       else{
-         setVisible(false);
+         if(isVisible())
+            setVisible(false);
       }
    }
 
    void init(){
       if(Env.getOS() == OS.MAC)
          _native_transparent = true;
-      JPanel pan = new JPanel();
-      //pan.setBorder(new LineBorder(Color.red));
 
       if(_native_transparent){
-         pan.setBackground(_overlayColor);
-         getRootPane().putClientProperty("Window.alpha", new Float(0.6f));
+         this.setBackground(_transparentColor);
+         getRootPane().putClientProperty("Window.alpha", new Float(0.8f));
       }
 
-      getContentPane().add(pan,"Center");
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       addMouseListener(this);
    }
@@ -140,7 +181,7 @@ class OverlayWindow extends JWindow implements MouseListener {
    }
 
 
-   public void showDragDrop(int _srcx, int _srcy, int _destx, int _desty){
+   public void showDragDrop(int _srcx, int _srcy, int _destx, int _desty, float secs){
       _mode = VizMode.DRAG_DROP;
       int x1 = (_srcx < _destx) ? _srcx : _destx;
       int y1 = (_srcy < _desty) ? _srcy : _desty;
@@ -148,11 +189,11 @@ class OverlayWindow extends JWindow implements MouseListener {
       int y2 = (_srcy > _desty) ? _srcy : _desty;
       srcx = _srcx-x1+MARGIN;     srcy = _srcy-y1+MARGIN;
       destx = _destx-x1+MARGIN;   desty = _desty-y1+MARGIN;
-      showWindow(x1-MARGIN, y1-MARGIN, x2-x1+2*MARGIN, y2-y1+2*MARGIN);
+      showWindow(x1-MARGIN, y1-MARGIN, x2-x1+2*MARGIN, y2-y1+2*MARGIN, secs);
    }
 
-   public void showDropTarget(Location loc){
-      showDragDrop(_lastTarget.x, _lastTarget.y, loc.x, loc.y);
+   public void showDropTarget(Location loc, float secs){
+      showDragDrop(_lastTarget.x, _lastTarget.y, loc.x, loc.y, secs);
    }
 
    public void highlight(Region r_){
@@ -172,35 +213,29 @@ class OverlayWindow extends JWindow implements MouseListener {
       closeAfter(secs);
    }
 
-   public void showTarget(Location loc){
+   public void showTarget(Location loc, float secs){
       _mode = VizMode.ONE_TARGET;
-      final int w = 50, h = 50;
+      final int w = TARGET_SIZE, h = TARGET_SIZE;
       int x = loc.x-w/2, y = loc.y-w/2;
       _lastTarget = loc;
 
       Debug.log(1, "showTarget " + x + " " + y + " " + w + " " + h);
       srcx = 0; destx = w;
       srcy = 0; desty = h;
-      showWindow(x, y, w, h);
+      _anim = new Animator(TARGET_SIZE/2, 0, (long)(secs*1000));
+      showWindow(x, y, w, h, secs);
    }
 
-   private void showWindow(int x, int y, int w, int h){
+   private void showWindow(int x, int y, int w, int h, float secs){
       captureScreen(x, y, w, h);
       setLocation(x,y);
       setSize(w, h);
       setVisible(true);
       toFront();
-      try{
-         Thread.sleep((int)Settings.ShowActionDelay*1000);
-      }
-      catch(InterruptedException e){
-         close();
-         e.printStackTrace();
-      }
-      close();
+      closeAfter(secs);
    }
 
-   public OverlayWindow(Screen scr){
+   public ScreenHighlighter(Screen scr){
       _scr = scr;
       init();
       setVisible(false);
