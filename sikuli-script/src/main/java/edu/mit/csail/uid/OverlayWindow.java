@@ -45,6 +45,17 @@ class OverlayWindow extends JWindow implements MouseListener {
       dispose(); 
    }
 
+   private void closeAfter(float secs){
+      try{
+         Thread.sleep((int)secs*1000);
+      }
+      catch(InterruptedException e){
+         close();
+         e.printStackTrace();
+      }
+      close();
+   }
+
    private void captureScreen(int x, int y, int w, int h) {
       ScreenImage img = _scr.capture(x, y, w, h);
       _screen = img.getImage();
@@ -123,7 +134,8 @@ class OverlayWindow extends JWindow implements MouseListener {
       addMouseListener(this);
    }
 
-   private void close(){
+   public void close(){
+      setVisible(false);
       dispose();
    }
 
@@ -143,16 +155,21 @@ class OverlayWindow extends JWindow implements MouseListener {
       showDragDrop(_lastTarget.x, _lastTarget.y, loc.x, loc.y);
    }
 
-   public void showRegion(Region r_){
+   public void highlight(Region r_){
       _borderOnly = true;
       Region r = new Region(r_);
-      r.setROI(new Rectangle(r_.x-5, r_.y-5, r_.w+10, r_.h+10));
+      r.setROI(new Rectangle(r_.x-3, r_.y-3, r_.w+6, r_.h+6));
       captureScreen(r.x, r.y, r.w, r.h);
       setLocation(r.x,r.y);
       setSize(r.w, r.h);
       this.setBackground(_transparentColor);
       setVisible(true);
       toFront();
+   }
+
+   public void highlight(Region r_, float secs){
+      highlight(r_);
+      closeAfter(secs);
    }
 
    public void showTarget(Location loc){

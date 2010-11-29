@@ -160,10 +160,6 @@ public class Screen extends Region implements Observer {
                         (int)r.getWidth(), (int)r.getHeight());
    }
 
-   public void showRegion(Region region){
-      _overlay.showRegion(region);
-   }
-
    public void showMove(Location loc){
       showTarget(loc);
    }

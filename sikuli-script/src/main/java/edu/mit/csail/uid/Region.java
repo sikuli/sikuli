@@ -9,8 +9,10 @@ import javax.imageio.ImageIO;
 
 
 public class Region {
+   final static float DEFAULT_HIGHLIGHT_TIME = 2f;
    private Robot _robot;
    private Screen _scr;
+   private OverlayWindow _overlay = null;
 
    public int x, y, w, h;
 
@@ -100,6 +102,33 @@ public class Region {
       y = (int)roi.getY();
       w = (int)roi.getWidth();
       h = (int)roi.getHeight();
+   }
+
+   public void highlight(){
+      if(_overlay==null)
+         highlight(true);
+      else
+         highlight(false);
+   }
+
+   protected void highlight(boolean toEnable){
+      Debug.log("highlight: " + toEnable + " " + _overlay);
+      if(toEnable){
+         _overlay = new OverlayWindow(getScreen());
+         _overlay.highlight(this);
+      }
+      else{
+         if(_overlay != null){
+            _overlay.close();
+            _overlay = null;
+         }
+      }
+   }
+
+   public void highlight(float secs){
+      Debug.log("highlight: " + secs + " secs");
+      OverlayWindow overlay = new OverlayWindow(getScreen());
+      overlay.highlight(this, secs);
    }
 
    public Rectangle getRect(){ return getROI(); }

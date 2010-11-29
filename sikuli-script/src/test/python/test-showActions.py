@@ -9,8 +9,12 @@ else:
 with s:
    setShowActions(True)
    setBundlePath("test-res")
-   switchApp("System Preferences.app")
+   app = App("System Preferences.app")
+   app.open()
+   win = app.window()
+   win.highlight()
    click("show-all.png")
+   win.highlight()
    click("sound.png")
    thumb = find(Pattern("sound-thumb.png").similar(0.5))
    dragDrop(thumb, thumb.getCenter().left(100))
