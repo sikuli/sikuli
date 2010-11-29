@@ -12,7 +12,7 @@ class ScreenHighlighter extends JWindow implements MouseListener {
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    static Color _transparentColor = new Color(0F,0F,0F,0.0F);
-   static Color _targetColor = new Color(1F,0F,0F,0.6F);
+   static Color _targetColor = new Color(1F,0F,0F,0.7F);
    final static int TARGET_SIZE = 80;
    final static int DRAGGING_TIME = 200;
    static int MARGIN = 20;
@@ -110,20 +110,15 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    }
 
    private void drawBorder(Graphics2D g2d){
-      g2d.setColor(Color.red);
+      g2d.setColor(_targetColor);
       g2d.setStroke(_StrokeBorder);
       int w = (int)_StrokeBorder.getLineWidth();
-      g2d.drawRect(w/2, w/2, _screen.getWidth()-w, _screen.getHeight()-w);
+      g2d.drawRect(w/2, w/2, getWidth()-w, getHeight()-w);
    }
 
-   public boolean isDoubleBuffered() {
-      return false;
-   }
-
-   BufferedImage _buf = null;
    public void paint(Graphics g)
    {
-      if( _screen != null ){
+      if( _native_transparent || _screen != null ){
          Graphics2D g2d = (Graphics2D)g;
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
          g2d.fillRect(0,0,getWidth(),getHeight());
@@ -199,9 +194,14 @@ class ScreenHighlighter extends JWindow implements MouseListener {
 
    public void highlight(Region r_){
       _borderOnly = true;
-      Region r = new Region(r_);
-      r.setROI(new Rectangle(r_.x-3, r_.y-3, r_.w+6, r_.h+6));
-      captureScreen(r.x, r.y, r.w, r.h);
+      Region r;
+      if(_native_transparent)
+         r = r_;
+      else{
+         r = new Region(r_);
+         r.setROI(new Rectangle(r_.x-3, r_.y-3, r_.w+6, r_.h+6));
+         captureScreen(r.x, r.y, r.w, r.h);
+      }
       setLocation(r.x,r.y);
       setSize(r.w, r.h);
       this.setBackground(_transparentColor);
@@ -228,7 +228,8 @@ class ScreenHighlighter extends JWindow implements MouseListener {
    }
 
    private void showWindow(int x, int y, int w, int h, float secs){
-      captureScreen(x, y, w, h);
+      if(!_native_transparent)
+         captureScreen(x, y, w, h);
       setLocation(x,y);
       setSize(w, h);
       setVisible(true);
