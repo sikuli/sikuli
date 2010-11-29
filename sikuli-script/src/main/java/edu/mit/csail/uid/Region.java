@@ -112,7 +112,7 @@ public class Region {
    }
 
    protected void highlight(boolean toEnable){
-      Debug.log("highlight: " + toEnable + " " + _overlay);
+      Debug.history("toggle highlight " + toString() + ": " + toEnable); 
       if(toEnable){
          _overlay = new OverlayWindow(getScreen());
          _overlay.highlight(this);
@@ -126,7 +126,7 @@ public class Region {
    }
 
    public void highlight(float secs){
-      Debug.log("highlight: " + secs + " secs");
+      Debug.history("highlight " + toString() + " for " + secs + " secs"); 
       OverlayWindow overlay = new OverlayWindow(getScreen());
       overlay.highlight(this, secs);
    }
