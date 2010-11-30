@@ -193,12 +193,12 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
       destx = _destx-x1+MARGIN;   desty = _desty-y1+MARGIN;
       _aniX = new TimeBasedAnimator(
                  new StopExtention( 
-                    new QuarticEase(
+                    new OutQuarticEase(
                        (float)srcx, (float)destx, DRAGGING_TIME),
                     (long)(1000*secs)));
       _aniY = new TimeBasedAnimator(
                  new StopExtention( 
-                    new QuarticEase(
+                    new OutQuarticEase(
                        (float)srcy, (float)desty, DRAGGING_TIME),
                     (long)(1000*secs)));
       showWindow(x1-MARGIN, y1-MARGIN, x2-x1+2*MARGIN, y2-y1+2*MARGIN, secs);

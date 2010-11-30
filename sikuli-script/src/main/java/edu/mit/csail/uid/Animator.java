@@ -49,6 +49,20 @@ class QuarticEase extends TimeValueFunction {
    }
 }
 
+class OutQuarticEase extends TimeValueFunction {
+   public OutQuarticEase(float beginVal, float endVal, long totalTime){
+      super(beginVal, endVal, totalTime);
+   }
+   public float getValue(long t){
+      if(t>_totalTime)
+         return _endVal;
+      double t1 = (double)t/_totalTime;
+      double t2 = t1*t1;
+      return (float)(_beginVal + 
+             (_endVal-_beginVal)*(-1*t2*t2+4*t1*t2-6*t2+4*t1));
+   }
+}
+
 class StopExtention extends TimeValueFunction {
    TimeValueFunction _func;
    public StopExtention(TimeValueFunction func, long totalTime){

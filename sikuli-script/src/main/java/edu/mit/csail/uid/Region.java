@@ -75,6 +75,26 @@ public class Region {
       return new Screen();
    }
 
+   void smoothMove(Location dest){
+      long delay = (long)(Settings.MoveMouseDelay * 1000);
+      if(delay == 0){
+         _robot.mouseMove(dest.x, dest.y);
+         return;
+      }
+
+      Location src = Env.getMouseLocation();
+      Animator aniX = new TimeBasedAnimator(
+                        new OutQuarticEase((float)src.x, (float)dest.x, delay));
+      Animator aniY = new TimeBasedAnimator(
+                        new OutQuarticEase((float)src.y, (float)dest.y, delay));
+      while(aniX.running()){
+         float x = aniX.step();
+         float y = aniY.step();
+         _robot.mouseMove((int)x, (int)y);
+         _robot.delay(50);
+      }
+   }
+
    public Screen getScreen(){ return _scr;   }
 
    public int getX(){ return x; }
@@ -343,7 +363,7 @@ public class Region {
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
          _scr.showMove(loc);
-         _robot.mouseMove(loc.x, loc.y);
+         smoothMove(loc);
          _robot.waitForIdle();
          return 1;
       }
@@ -370,8 +390,8 @@ public class Region {
    public <PSRML> int drag(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
+         smoothMove(loc);
          _scr.showTarget(loc);
-         _robot.mouseMove(loc.x, loc.y);
          _robot.mousePress(InputEvent.BUTTON1_MASK);
          _robot.waitForIdle();
          return 1;
@@ -383,7 +403,7 @@ public class Region {
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
          _scr.showDropTarget(loc);
-         _robot.mouseMove(loc.x, loc.y);
+         smoothMove(loc);
          _robot.delay((int)(delay*1000));
          _robot.mouseRelease(InputEvent.BUTTON1_MASK);
          _robot.waitForIdle();
@@ -644,7 +664,7 @@ public class Region {
          return 0;
       Debug.info( getClickMsg(loc, buttons, modifiers, dblClick) );
       pressModifiers(modifiers);
-      _robot.mouseMove(loc.x, loc.y);
+      smoothMove(loc);
       _scr.showClick(loc);
       _robot.mousePress(buttons);
       _robot.mouseRelease(buttons);
