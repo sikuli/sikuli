@@ -13,13 +13,16 @@ import javax.swing.*;
 
 
 public class SikuliScript {
-   private boolean _showActions = false;
 
    public SikuliScript() throws AWTException{
    }
 
    public void setShowActions(boolean flag){
-      _showActions = flag;
+      Settings.ShowActions = flag;
+      if(flag){
+         if(Settings.MoveMouseDelay < 1f)
+            Settings.MoveMouseDelay = 1f;
+      }
    }
 
    public String input(String msg){

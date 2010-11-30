@@ -52,7 +52,7 @@ def getBundlePath():
 # The default setting is <i>False</i>.
 #
 def setShowActions(flag):
-   Settings.ShowActions = flag
+   _si.setShowActions(flag)
 
 
 ##

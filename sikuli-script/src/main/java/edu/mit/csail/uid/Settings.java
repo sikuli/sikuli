@@ -10,6 +10,6 @@ public class Settings {
    public static String BundlePath = null;
    public static boolean ShowActions = false;
    public static double ShowActionDelay = 2.0; // in seconds
-   public static float MoveMouseDelay = 1.0f; // in seconds
+   public static float MoveMouseDelay = 0.5f; // in seconds
    public static String OcrDataPath = null;
 }
