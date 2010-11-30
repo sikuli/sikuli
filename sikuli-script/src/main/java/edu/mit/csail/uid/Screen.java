@@ -169,7 +169,7 @@ public class Screen extends Region implements Observer {
    }
 
    public void showTarget(Location loc){
-      showTarget(loc, Settings.ShowActionDelay);
+      showTarget(loc, Settings.SlowMotionDelay);
    }
 
    public void showTarget(Location loc, double secs){
@@ -180,7 +180,7 @@ public class Screen extends Region implements Observer {
 
    public void showDropTarget(Location loc){
       if(Settings.ShowActions){
-         _overlay.showDropTarget(loc, (float)Settings.ShowActionDelay);
+         _overlay.showDropTarget(loc, Settings.SlowMotionDelay);
       }
    }
 
