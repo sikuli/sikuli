@@ -1,9 +1,9 @@
-#. extracted from resources/i18n/IDE_en_US.properties
+#. extracted from /Users/vgod/MIT/projects/sikuli-svn/public-bzr/branches/X1/sikuli-ide/resources/i18n/IDE_en_US.properties
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,6 +13,7 @@ msgstr ""
 "X-Generator: Translate Toolkit 1.6.1-pre\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
 msgstr ""
 
@@ -91,7 +92,7 @@ msgid "Run"
 msgstr ""
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
+msgid "Run in slow motion"
 msgstr ""
 
 #: menuRunStop
@@ -238,6 +239,22 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr ""
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr ""
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr ""
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr ""
+
 #: prefTabGeneralSettings
 msgid "General Settings"
 msgstr ""
@@ -262,12 +279,25 @@ msgstr ""
 msgid "Pattern Settings"
 msgstr ""
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr ""
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr ""
 
 #: tabTargetOffset
 msgid "Target Offset"
+msgstr ""
+
+#: lblPath
+msgid "Path:"
+msgstr ""
+
+#: lblFilename
+msgid "Filename:"
 msgstr ""
 
 #: lblSimilarity
@@ -300,6 +330,22 @@ msgstr ""
 
 #: no
 msgid "No"
+msgstr ""
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr ""
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr ""
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr ""
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
 msgstr ""
 
 #: cmdFind

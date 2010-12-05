@@ -1,4 +1,4 @@
-# Korean translation for sikuli
+# Bulgarian translation for sikuli
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the sikuli package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-24 18:19+0000\n"
-"Last-Translator: Sikuli Developers <Unknown>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"PO-Revision-Date: 2010-06-08 12:04+0000\n"
+"Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,111 +19,111 @@ msgstr ""
 
 #: menuFile
 msgid "File"
-msgstr "파일"
+msgstr "Файл"
 
 #: menuEdit
 msgid "Edit"
-msgstr ""
+msgstr "Редактиране"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr "실행"
+msgstr "Изпълнение"
 
 #: menuView
 msgid "View"
-msgstr "보기"
+msgstr "Изглед"
 
 #: menuFileNew
 msgid "New"
-msgstr "새로 만들기"
+msgstr "Ново"
 
 #: menuFileOpen
 msgid "Open..."
-msgstr "열기"
+msgstr "Отваряне..."
 
 #: menuFileSave
 msgid "Save"
-msgstr "저장"
+msgstr "Запазване"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr "다른 이름으로 저장"
+msgstr "Запазване като…"
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr ""
+msgstr "Изнасяне на изпълним файл..."
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr "환경설정"
+msgstr "Настройки..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
-msgstr "탭 닫기"
+msgstr "Затваряне на подпрозореца"
 
 #: menuFileQuit
 msgid "Quit"
-msgstr "종료"
+msgstr "Изход"
 
 #: menuEditCut
 msgid "Cut"
-msgstr ""
+msgstr "Изрязване"
 
 #: menuEditCopy
 msgid "Copy"
-msgstr ""
+msgstr "Копиране"
 
 #: menuEditPaste
 msgid "Paste"
-msgstr ""
+msgstr "Поставяне"
 
 #: menuEditSelectAll
 msgid "Select All"
-msgstr ""
+msgstr "Избиране на всичко"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr ""
+msgstr "Отстъп"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
-msgstr ""
+msgstr "Махане на отстъп"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr "실행"
+msgstr "Изпълнение"
 
 #: menuRunRunAndShowActions
 msgid "Run and show actions"
-msgstr ""
+msgstr "Изпълнение и показване на действията"
 
 #: menuRunStop
 msgid "Stop"
-msgstr "중지"
+msgstr "Спиране"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr "단위 테스트"
+msgstr ""
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "명령어 목록"
+msgstr "Списък с команди"
 
 #: menuHelp
 msgid "Help"
-msgstr "도움말"
+msgstr "Помощ"
 
 #: menuHelpCheckUpdate
 msgid "Check Update..."
-msgstr "업데이트 확인"
+msgstr "Проверка за обновление..."
 
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
-msgstr ""
+msgstr "Пълно ръководство за Sikuli Script"
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
@@ -131,36 +131,36 @@ msgstr ""
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
-msgstr "질문하기 & 답변 찾기"
+msgstr "Задайте въпроси и отрийте отговори"
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr "버그 제출"
+msgstr "Докладване за грешка"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
-msgstr "Sikuli 홈페이지"
+msgstr "Домашната страница на Sikuli"
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
-msgstr "Sikuli {0} 가 사용 가능 합니다"
+msgstr "Налична е Sikuli версия {0}!"
 
 #: msgNoUpdate
 msgid "No update is available."
-msgstr "사용 가능한 업데이트가 없습니다"
+msgstr "Няма налично обновление."
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr "자동 캡쳐"
+msgstr "Автоматично прихващане"
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
 msgid "Command List"
-msgstr "명령어 목록"
+msgstr "Списък с команди"
 
 #: paneMessage
 msgid "Message"
-msgstr "메시지"
+msgstr "Съобщение"
 
 #: paneTestTrace
 msgid "Test Trace"
@@ -168,128 +168,128 @@ msgstr ""
 
 #: tabUntitled
 msgid "Untitled"
-msgstr "제목 없음"
+msgstr "Без име"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr "단위 테스트"
+msgstr ""
 
 #: btnRun
 msgid "Run ({0})"
-msgstr "실행 ({0})"
+msgstr "Изпълнение ({0})"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr "{0} 를 눌러 중단"
+msgstr "Натиснете {0} за спиране"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr "매칭을 제한하기 위한 범위 설정"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "스크린샷 찍기 ({0})"
+msgstr "Снимка на екрана ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr "디스크에 있는 이미지 삽입"
+msgstr "Вмъкване на изображение от дисковете"
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
-"{0}를 실행하는 동안 런타임 오류 발생\n"
+"Грешка при изпълнение на {0}\n"
 "{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr "종료 에러코드 : {0}"
+msgstr "Изход с код {0}"
 
 #: msgStopped
 msgid "Stopped"
-msgstr "중지됨"
+msgstr "Спряно"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr "{0} 번째 라인에서 오류 발생"
+msgstr "Получава се грешка на ред {0}"
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
-"에러 메시지:\n"
+"Съобщение на грешката:\n"
 "{0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
-msgstr "화면에서 지역을 선택하세요"
+msgstr "Изберете участък от екрана"
 
 #: winPreferences
 msgid "Preferences"
-msgstr "환경 설정"
+msgstr "Настройки"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "화면 캡쳐"
+msgstr "Прихващане на екрана"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr "빠른 캡쳐 단축키"
+msgstr "Бърз клавиш за прихващане:"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr "지연 후 캡쳐"
+msgstr "Забяване преди прихващане:"
 
 #: prefSeconds
 msgid "seconds"
-msgstr "초"
+msgstr "секунди"
 
 #: prefTabGeneralSettings
 msgid "General Settings"
-msgstr ""
+msgstr "Общи настройки"
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
-msgstr ""
+msgstr "Автоматична проверка за обновление"
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
-msgstr "이 탭을 닫으시겠습니까?"
+msgstr "Да се затвори ли този подпрозорец?"
 
 #: msgAskSaveChanges
 msgid "{0} has been modified. Save changes?"
-msgstr "{0} 가 변경되었습니다. 변경 사항을 저장하시겠습니까?"
+msgstr "{0} беше промемен. Запазване на промените?"
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
-msgstr "행: {0,number,integer}, 열: {1,number,integer}"
+msgstr "Ред: {0,number,integer}, Колона: {1,number,integer}"
 
 #: winPatternSettings
 msgid "Pattern Settings"
-msgstr "패턴 설정"
+msgstr "Настройка на шаблон"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr "매칭 미리보기"
+msgstr "Преглед на съвпадението"
 
 #: tabTargetOffset
 msgid "Target Offset"
-msgstr "대상 위치"
+msgstr "Изместване на целта"
 
 #: lblSimilarity
 msgid "Similarity:"
-msgstr "유사도"
+msgstr "Сходство:"
 
 #: lblNumberOfMatches
 msgid "Number of matches:"
-msgstr "일치 갯수"
+msgstr "Брой съвпадения:"
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
-msgstr "대상 위치 X:"
+msgstr "ИЗместване на целта по Х:"
 
 #: lblTargetOffsetY
 msgid ", Y:"
@@ -297,40 +297,44 @@ msgstr ", Y:"
 
 #: ok
 msgid "OK"
-msgstr "확인"
+msgstr "Добре"
 
 #: cancel
 msgid "Cancel"
-msgstr "취소"
+msgstr "Отказ"
 
 #: yes
 msgid "Yes"
-msgstr "예"
+msgstr "Да"
 
 #: no
 msgid "No"
-msgstr "아니요"
+msgstr "Не"
 
 #: cmdFind
 msgid ""
 "Looks for the best matched GUI component on the screen or in the Region."
-msgstr "화면 전체 또는 특정 부분에서 가장 일치하는 GUI 구성요소 찾기"
+msgstr "Търси най-пълно съвпадащия елемент на ГПИ на екрана или в участъка."
 
 #: cmdFindAll
 msgid "Looks for all matched GUI component on the screen or in the Region."
-msgstr "화면 전체 또는 특정 부분에서 일치하는 모든 GUI 구성요소 찾기"
+msgstr "Търси всички съвпадащи елементи на ГПИ на екрана или в участъка."
 
 #: cmdWait
 msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
-msgstr "화면 전체 또는 일부분에서 주어진 GUI가 나타나기를 최대 <i>timeout</i?> 초 기다린다"
+msgstr ""
+"В продължение на <i>timeout</i> секунди изчаква даден елемент на ГПИ да се "
+"появи на екрана или в участък."
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
-msgstr "화면 전체 또는 일부분에서 주어진 GUI가 사라지기를 최대 <i>timeout</i?> 초 기다린다"
+msgstr ""
+"В продължение на <i>timeout</i> секунди изчаква даден елемент на ГПИ да се "
+"изчезне от екрана или участък."
 
 #: cmdExists
 msgid ""
@@ -343,40 +347,47 @@ msgstr ""
 msgid ""
 "Clicks on the best matched GUI component on the screen or in the Region."
 msgstr ""
+"Цъкане на най-пълно съвпадащият елемент на ГПИ на екрана или в участък."
 
 #: cmdDoubleClick
 msgid ""
 "Double clicks on the best matched GUI component on the screen or in the "
 "Region."
 msgstr ""
+"Двойно цъкане на най-пълно съвпадащият елемент на ГПИ на екрана или в "
+"участък."
 
 #: cmdRightClick
 msgid ""
 "Right clicks on the best matched GUI component on the screen or in the "
 "Region."
 msgstr ""
+"Дясно цъкане на най-пълно съвпадащия елемент на ГПИ на екрана или в участък."
 
 #: cmdHover
 msgid "Moves the mouse cursor on the best matched GUI component."
 msgstr ""
+"Премества показалеца на мишка на най-пълно съвпадащия компонент на ГПИ."
 
 #: cmdDragDrop
 msgid "Drags the first component, and drops at the second component."
-msgstr ""
+msgstr "Влачи първият компонент и го пуска върху втория."
 
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."
-msgstr ""
+msgstr "Изписва посоченото <i>text</i> в текущо фокусирания прозорец."
 
 #: cmdType2
 msgid ""
 "Clicks on the given component to gain the focus and then types the given "
 "<i>text</i>."
 msgstr ""
+"Цъка върху указания компонент за да го фокусира, след което изписва "
+"<i>text</i>."
 
 #: cmdPaste
 msgid "Pastes the given <i>text</i> to the current focused window."
-msgstr ""
+msgstr "Поставя <i>text</i> в текущо фокусирания прозорец"
 
 #: cmdPaste2
 msgid ""

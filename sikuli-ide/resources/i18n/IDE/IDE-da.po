@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-10 00:55+0000\n"
+"PO-Revision-Date: 2010-05-27 09:35+0000\n"
 "Last-Translator: jesperfjoelner@hotmail.com <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-22 18:36+0000\n"
+"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: menuFile
@@ -23,7 +23,7 @@ msgstr "Fil"
 
 #: menuEdit
 msgid "Edit"
-msgstr ""
+msgstr "Rediger"
 
 #: menuRun
 msgctxt "menuRun"
@@ -52,7 +52,7 @@ msgstr "Gem som..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr ""
+msgstr "Eksporter eksekverbar fil"
 
 #: menuFilePreferences
 msgid "Preferences..."
@@ -68,27 +68,27 @@ msgstr "Luk"
 
 #: menuEditCut
 msgid "Cut"
-msgstr ""
+msgstr "Klip"
 
 #: menuEditCopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopier"
 
 #: menuEditPaste
 msgid "Paste"
-msgstr ""
+msgstr "Indsæt"
 
 #: menuEditSelectAll
 msgid "Select All"
-msgstr ""
+msgstr "Markér alt"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr ""
+msgstr "Indryk"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
-msgstr ""
+msgstr "Fjern indrykninger"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -127,7 +127,7 @@ msgstr "Komplet guide til Sikuli Script"
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
-msgstr ""
+msgstr "Tutorials, eksempler, vejledninger"
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
@@ -139,7 +139,7 @@ msgstr "Rapportér en fejl"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
-msgstr ""
+msgstr "Sikulis hjemmeside"
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
@@ -151,7 +151,7 @@ msgstr "Der er ingen tilgængelige opdateringer"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr ""
+msgstr "Auto-indfang"
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
@@ -164,7 +164,7 @@ msgstr "Meddelelse"
 
 #: paneTestTrace
 msgid "Test Trace"
-msgstr ""
+msgstr "Test Trace"
 
 #: tabUntitled
 msgid "Untitled"
@@ -173,45 +173,47 @@ msgstr "Uden titel"
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Enhedstest"
 
 #: btnRun
 msgid "Run ({0})"
-msgstr ""
+msgstr "Kør{0}"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr ""
+msgstr "Tryk {0} for at stoppe"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr ""
+msgstr "Marker en region for at indskrænke skærm-matching"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr ""
+msgstr "Tag et skærmbillede ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr ""
+msgstr "Indsæt et billede fra disk"
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
+"Kørselsfejl under kørsel {0}\n"
+"{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr ""
+msgstr "Afsluttede med kode {0}"
 
 #: msgStopped
 msgid "Stopped"
-msgstr ""
+msgstr "Stoppet"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr ""
+msgstr "Der skete en fejl på linje {0}"
 
 #: msgErrorMsg
 msgid ""
@@ -229,15 +231,15 @@ msgstr "Præferencer"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr ""
+msgstr "Skærm capture"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr ""
+msgstr "Quick capture tast"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr ""
+msgstr "Forsink før capture"
 
 #: prefSeconds
 msgid "seconds"
@@ -245,11 +247,11 @@ msgstr "sekunder"
 
 #: prefTabGeneralSettings
 msgid "General Settings"
-msgstr ""
+msgstr "Generelle indstillinger"
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
-msgstr ""
+msgstr "Check for opdatering automatisk"
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
@@ -261,7 +263,7 @@ msgstr "{0} er ændret. Vil du gemme ændringer?"
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
-msgstr ""
+msgstr "Linje: {0,number,integer}, Column: {1,number,integer}"
 
 #: winPatternSettings
 msgid "Pattern Settings"
@@ -269,11 +271,11 @@ msgstr "Mønster indstillinger"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr ""
+msgstr "Matchende forhåndsvisning"
 
 #: tabTargetOffset
 msgid "Target Offset"
-msgstr ""
+msgstr "Målområde forskydning"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -281,15 +283,15 @@ msgstr "Lighed:"
 
 #: lblNumberOfMatches
 msgid "Number of matches:"
-msgstr ""
+msgstr "Antal matches:"
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
-msgstr ""
+msgstr "Målområde forskydning X"
 
 #: lblTargetOffsetY
 msgid ", Y:"
-msgstr ""
+msgstr ", Y:"
 
 #: ok
 msgid "OK"
@@ -305,28 +307,33 @@ msgstr "Ja"
 
 #: no
 msgid "No"
-msgstr ""
+msgstr "Nej"
 
 #: cmdFind
 msgid ""
 "Looks for the best matched GUI component on the screen or in the Region."
-msgstr ""
+msgstr "Find det bedst matchende grafiske element på skærmen eller i området"
 
 #: cmdFindAll
 msgid "Looks for all matched GUI component on the screen or in the Region."
 msgstr ""
+"Find alle de bedst matchende grafiske elementer på skærmen eller i området"
 
 #: cmdWait
 msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
 msgstr ""
+"Venter på det at det givne grafiske element fremkommer på skærmen eller i "
+"området i op til <i> timeout </i> sekunder."
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
 msgstr ""
+"Venter på det at det givne grafiske element fremkommer på skærmen eller i "
+"området i op til <i> timeout </i> sekunder."
 
 #: cmdExists
 msgid ""
@@ -334,6 +341,9 @@ msgid ""
 "Region.<br>If it can not be found, None is returned without throwing an "
 "exception."
 msgstr ""
+"Checker om det givne grafiske element findes på skærmen eller i "
+"området.<br>Hvis det ikke kan findes, returneres None uden at der opstår en "
+"fejl."
 
 #: cmdClick
 msgid ""

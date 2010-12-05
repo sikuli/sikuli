@@ -1,4 +1,4 @@
-# Korean translation for sikuli
+# Polish translation for sikuli
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the sikuli package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-24 18:19+0000\n"
-"Last-Translator: Sikuli Developers <Unknown>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"PO-Revision-Date: 2010-12-02 22:04+0000\n"
+"Last-Translator: Filip Stepien <Unknown>\n"
+"Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,36 +19,36 @@ msgstr ""
 
 #: menuFile
 msgid "File"
-msgstr "파일"
+msgstr "Plik"
 
 #: menuEdit
 msgid "Edit"
-msgstr ""
+msgstr "Edycja"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr "실행"
+msgstr "Uruchom"
 
 #: menuView
 msgid "View"
-msgstr "보기"
+msgstr "Widok"
 
 #: menuFileNew
 msgid "New"
-msgstr "새로 만들기"
+msgstr "Nowy"
 
 #: menuFileOpen
 msgid "Open..."
-msgstr "열기"
+msgstr "Otwórz..."
 
 #: menuFileSave
 msgid "Save"
-msgstr "저장"
+msgstr "Zapisz"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr "다른 이름으로 저장"
+msgstr "Zapisz jako..."
 
 #: menuFileExport
 msgid "Export excutable..."
@@ -56,44 +56,44 @@ msgstr ""
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr "환경설정"
+msgstr "Preferencje..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
-msgstr "탭 닫기"
+msgstr "Zamknij kartę"
 
 #: menuFileQuit
 msgid "Quit"
-msgstr "종료"
+msgstr "Wyjdź"
 
 #: menuEditCut
 msgid "Cut"
-msgstr ""
+msgstr "Wytnij"
 
 #: menuEditCopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopiuj"
 
 #: menuEditPaste
 msgid "Paste"
-msgstr ""
+msgstr "Wklej"
 
 #: menuEditSelectAll
 msgid "Select All"
-msgstr ""
+msgstr "Zaznacz wszystko"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr ""
+msgstr "Wcięcie"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
-msgstr ""
+msgstr "Cofnij wcięcie"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr "실행"
+msgstr "Uruchom"
 
 #: menuRunRunAndShowActions
 msgid "Run and show actions"
@@ -101,25 +101,25 @@ msgstr ""
 
 #: menuRunStop
 msgid "Stop"
-msgstr "중지"
+msgstr "Zatrzymaj"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr "단위 테스트"
+msgstr "Test jednostkowy (Unit Test)"
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "명령어 목록"
+msgstr "Lista poleceń"
 
 #: menuHelp
 msgid "Help"
-msgstr "도움말"
+msgstr "Pomoc"
 
 #: menuHelpCheckUpdate
 msgid "Check Update..."
-msgstr "업데이트 확인"
+msgstr ""
 
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
@@ -131,36 +131,36 @@ msgstr ""
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
-msgstr "질문하기 & 답변 찾기"
+msgstr ""
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr "버그 제출"
+msgstr "Zgłoś błąd"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
-msgstr "Sikuli 홈페이지"
+msgstr "Strona domowa projektu Sikuli"
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
-msgstr "Sikuli {0} 가 사용 가능 합니다"
+msgstr "Dostępna jest nowa wersja ({0}) Sikuli!"
 
 #: msgNoUpdate
 msgid "No update is available."
-msgstr "사용 가능한 업데이트가 없습니다"
+msgstr "Brak dostępnych uaktualnień"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr "자동 캡쳐"
+msgstr ""
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
 msgid "Command List"
-msgstr "명령어 목록"
+msgstr "Lista poleceń"
 
 #: paneMessage
 msgid "Message"
-msgstr "메시지"
+msgstr "Komunikat"
 
 #: paneTestTrace
 msgid "Test Trace"
@@ -168,84 +168,80 @@ msgstr ""
 
 #: tabUntitled
 msgid "Untitled"
-msgstr "제목 없음"
+msgstr "Bez tytułu"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr "단위 테스트"
+msgstr ""
 
 #: btnRun
 msgid "Run ({0})"
-msgstr "실행 ({0})"
+msgstr ""
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
-msgstr "{0} 를 눌러 중단"
+msgstr ""
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
-msgstr "매칭을 제한하기 위한 범위 설정"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "스크린샷 찍기 ({0})"
+msgstr ""
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
-msgstr "디스크에 있는 이미지 삽입"
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
-"{0}를 실행하는 동안 런타임 오류 발생\n"
-"{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr "종료 에러코드 : {0}"
+msgstr ""
 
 #: msgStopped
 msgid "Stopped"
-msgstr "중지됨"
+msgstr ""
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr "{0} 번째 라인에서 오류 발생"
+msgstr ""
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
-"에러 메시지:\n"
-"{0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
-msgstr "화면에서 지역을 선택하세요"
+msgstr ""
 
 #: winPreferences
 msgid "Preferences"
-msgstr "환경 설정"
+msgstr ""
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "화면 캡쳐"
+msgstr ""
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr "빠른 캡쳐 단축키"
+msgstr ""
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr "지연 후 캡쳐"
+msgstr ""
 
 #: prefSeconds
 msgid "seconds"
-msgstr "초"
+msgstr ""
 
 #: prefTabGeneralSettings
 msgid "General Settings"
@@ -257,80 +253,80 @@ msgstr ""
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
-msgstr "이 탭을 닫으시겠습니까?"
+msgstr ""
 
 #: msgAskSaveChanges
 msgid "{0} has been modified. Save changes?"
-msgstr "{0} 가 변경되었습니다. 변경 사항을 저장하시겠습니까?"
+msgstr ""
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
-msgstr "행: {0,number,integer}, 열: {1,number,integer}"
+msgstr ""
 
 #: winPatternSettings
 msgid "Pattern Settings"
-msgstr "패턴 설정"
+msgstr ""
 
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr "매칭 미리보기"
+msgstr ""
 
 #: tabTargetOffset
 msgid "Target Offset"
-msgstr "대상 위치"
+msgstr ""
 
 #: lblSimilarity
 msgid "Similarity:"
-msgstr "유사도"
+msgstr ""
 
 #: lblNumberOfMatches
 msgid "Number of matches:"
-msgstr "일치 갯수"
+msgstr ""
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
-msgstr "대상 위치 X:"
+msgstr ""
 
 #: lblTargetOffsetY
 msgid ", Y:"
-msgstr ", Y:"
+msgstr ""
 
 #: ok
 msgid "OK"
-msgstr "확인"
+msgstr ""
 
 #: cancel
 msgid "Cancel"
-msgstr "취소"
+msgstr ""
 
 #: yes
 msgid "Yes"
-msgstr "예"
+msgstr ""
 
 #: no
 msgid "No"
-msgstr "아니요"
+msgstr ""
 
 #: cmdFind
 msgid ""
 "Looks for the best matched GUI component on the screen or in the Region."
-msgstr "화면 전체 또는 특정 부분에서 가장 일치하는 GUI 구성요소 찾기"
+msgstr ""
 
 #: cmdFindAll
 msgid "Looks for all matched GUI component on the screen or in the Region."
-msgstr "화면 전체 또는 특정 부분에서 일치하는 모든 GUI 구성요소 찾기"
+msgstr ""
 
 #: cmdWait
 msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
-msgstr "화면 전체 또는 일부분에서 주어진 GUI가 나타나기를 최대 <i>timeout</i?> 초 기다린다"
+msgstr ""
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
-msgstr "화면 전체 또는 일부분에서 주어진 GUI가 사라지기를 최대 <i>timeout</i?> 초 기다린다"
+msgstr ""
 
 #: cmdExists
 msgid ""

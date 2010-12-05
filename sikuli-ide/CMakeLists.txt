@@ -278,6 +278,20 @@ ENDFOREACH(JAR ${INCLUDE_JARS})
 
 #add_dependencies( app ${APP_FILE})
 
+## Language files
+
+add_custom_target( update-po
+   COMMAND prop2po ${RESOURCE_DIR}/i18n/IDE_en_US.properties > ${RESOURCE_DIR}/i18n/IDE/IDE.pot
+               
+   COMMENT "Update the IDE.pot file"
+)
+
+add_custom_target( update-prop
+   COMMAND ${BASE_DIR}/../utils/update-prop.sh ${RESOURCE_DIR}
+   COMMENT "Update the IDE language properties."
+)
+
+
 ## Packaging
 
 if(APPLE)
