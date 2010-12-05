@@ -21,13 +21,23 @@ Note for Ubuntu Linux users:
 Assume you are in the top directory of Sikuli's source tree. You can
 build Sikuli IDE and Sikuli Script with the following steps.
 
-1. make a "build" directory 
-  mkdir build
+1. make a "build" directory in sikuli-script/
+  mkdir sikuli-script/build
 
 2. generate makefiles with CMake
-  cd build
+  cd sikuli-script/build
   cmake ..
 
-3. generate a release package. The package will be generated in "build".
-  make package
+3. build sikuli-script
+  make
 
+4. make a "build" directory in sikuli-ide/
+  cd ../.. # go back to the top directory 
+  mkdir sikuli-ide/build
+
+5. generate makefiles of Sikuli-IDE with CMake
+  cd sikuli-ide/build
+  cmake ..
+
+6. generate a release package of sikuli-ide.
+  make package
