@@ -30,7 +30,7 @@ build Sikuli IDE and Sikuli Script with the following steps.
   cmake -G "NMake Makefiles" -D CMAKE_BUILD_TYPE=Release ..
 
 3. build sikuli-script
-  make
+  nmake
 
 4. make a "build" directory in sikuli-ide/
   cd ../.. # go back to the top directory 
@@ -41,4 +41,4 @@ build Sikuli IDE and Sikuli Script with the following steps.
   cmake -G "NMake Makefiles" -D CMAKE_BUILD_TYPE=Release ..
 
 6. generate a release package of sikuli-ide.
-  make package
+  nmake package
