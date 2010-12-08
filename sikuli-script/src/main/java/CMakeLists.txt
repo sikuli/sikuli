@@ -40,6 +40,7 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/SikuliException.java
    edu/mit/csail/uid/AppNotFound.java
    edu/mit/csail/uid/Animator.java
+   edu/mit/csail/uid/TransparentWindow.java
    ${CMAKE_SWIG_OUTDIR}/*.java
 )
 

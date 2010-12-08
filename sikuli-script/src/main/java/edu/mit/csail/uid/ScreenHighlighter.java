@@ -10,7 +10,7 @@ import javax.swing.border.*;
 import com.sun.awt.AWTUtilities;
 
 
-public class ScreenHighlighter extends JWindow implements MouseListener {
+public class ScreenHighlighter extends TransparentWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
@@ -178,7 +178,7 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
 
       if(_native_transparent){
          this.setBackground(_transparentColor);
-         getRootPane().putClientProperty("Window.alpha", new Float(0.8f));
+         setOpacity(0.8f);
       }
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
