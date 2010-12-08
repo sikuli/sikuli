@@ -54,6 +54,14 @@ class CapturePrompt extends JWindow implements Subject{
    private Color screenFrameColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
    BasicStroke strokeScreenFrame = new BasicStroke(5);
 
+   private void setOpacity(float alpha){
+      if( Env.getOS() == OS.MAC )
+         getRootPane().putClientProperty("Window.alpha", new Float(alpha));
+      else if( Env.getOS() == OS.WINDOWS )
+         Win32Util.setWindowOpacity(this, alpha);
+
+   }
+
    private void drawScreenFrame(Graphics2D g2d, int scrId){
       Rectangle rect = Screen.getBounds(scrId);
       Rectangle ubound = (new UnionScreen()).getBounds();
@@ -156,7 +164,7 @@ class CapturePrompt extends JWindow implements Subject{
          setVisible(true);
          if(_aniWin!=null && _aniWin.running()){
             float a = _aniWin.step();
-            getRootPane().putClientProperty("Window.alpha", new Float(a));
+            setOpacity(a);
             repaint();
          }
       }
@@ -280,12 +288,13 @@ class CapturePrompt extends JWindow implements Subject{
       _msg = msg;
       _aniMsg = new LinearAnimator(1f, 0f, MSG_DISPLAY_TIME);
 
-      if(Env.getOS() == OS.MAC){
+      if(Env.getOS() == OS.MAC || Env.getOS() == OS.WINDOWS){
          _aniWin = new LinearAnimator(0f, 1f, WIN_FADE_IN_TIME);
-         getRootPane().putClientProperty("Window.alpha", new Float(0f));
+         setOpacity(0);
          getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
          this.setVisible(true);
-         MacUtil.bringWindowToFront(this, false);
+         if(Env.getOS() == OS.MAC)
+            MacUtil.bringWindowToFront(this, false);
       }
       else
          this.setVisible(true);

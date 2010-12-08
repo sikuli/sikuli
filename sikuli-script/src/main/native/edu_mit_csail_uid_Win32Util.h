@@ -31,6 +31,14 @@ JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_openApp
 JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_closeApp
   (JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    bringWindowToFront
+ * Signature: (Ljava/awt/Window;Z)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
+  (JNIEnv *, jclass, jobject, jboolean);
+
 #ifdef __cplusplus
 }
 #endif

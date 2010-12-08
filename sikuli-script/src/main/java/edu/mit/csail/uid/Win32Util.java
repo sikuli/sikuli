@@ -1,7 +1,9 @@
 package edu.mit.csail.uid;
 
 import java.io.*;
+import java.awt.Window;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
+import com.sun.awt.AWTUtilities;
 
 public class Win32Util implements OSUtil {
 
@@ -31,7 +33,14 @@ public class Win32Util implements OSUtil {
       //FIXME
       return null;
    }
+
+   public static native void bringWindowToFront(Window win, boolean ignoreMouse);
+
+   public static void setWindowOpacity(Window win, float alpha){
+      AWTUtilities.setWindowOpacity(win, alpha);
+   }
+
+
+
+
 } 
-
-
-

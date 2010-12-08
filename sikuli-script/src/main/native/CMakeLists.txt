@@ -73,6 +73,7 @@ IF(WIN32)
       Win32Util.cc
       edu_mit_csail_uid_Win32Util.h
    )
+   TARGET_LINK_LIBRARIES(Win32Util ${JAVA_AWT_LIBRARY})
 ENDIF()
 
 IF(APPLE)

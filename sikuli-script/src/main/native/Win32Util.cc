@@ -1,5 +1,7 @@
 #include "edu_mit_csail_uid_Win32Util.h"
 #include "windows.h"
+#include <jawt.h>
+#include <jawt_md.h>
 #include <cstring>
 #include <iostream>
 
@@ -88,4 +90,118 @@ JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_closeApp(JNIEnv *env, jo
    BOOL result = EnumWindows((WNDENUMPROC)killWindow, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    return result;
+}
+
+
+HWND getHwndFromComponent(jobject parent, JNIEnv *env) {
+   JAWT awt;
+   JAWT_DrawingSurface* ds;
+   JAWT_DrawingSurfaceInfo* dsi;
+   JAWT_Win32DrawingSurfaceInfo* dsi_win;
+   jboolean result;
+   jint lock;
+   HWND hwnd;
+   
+   // Get the AWT
+   awt.version = JAWT_VERSION_1_4;
+   if( (result = JAWT_GetAWT(env, &awt)) == JNI_FALSE){
+      fprintf(stderr, "AWT not found\n");
+   }
+
+   // Get the drawing surface
+   ds = awt.GetDrawingSurface(env, parent);
+   if(ds == NULL)
+      fprintf(stderr, "no drawing surface\n");
+
+   // Lock the drawing surface
+   lock = ds->Lock(ds);
+   if((lock & JAWT_LOCK_ERROR) != 0) {
+      fprintf(stderr, "error locking surface\n");
+      awt.FreeDrawingSurface(ds);
+      return NULL;
+   }
+
+   // Get the drawing surface info
+   dsi = ds->GetDrawingSurfaceInfo(ds);
+   //NSLog(@"drawing info %x", dsi);
+
+   // Get the platform-specific drawing info
+   dsi_win = (JAWT_Win32DrawingSurfaceInfo*)dsi->platformInfo;
+
+   hwnd = dsi_win->hwnd;
+
+   // Free the drawing surface info
+   ds->FreeDrawingSurfaceInfo(dsi);
+   // Unlock the drawing surface
+   ds->Unlock(ds);
+
+   // Free the drawing surface
+   awt.FreeDrawingSurface(ds);
+
+   return hwnd;
+}
+
+void setLayeredAndTransparent( HWND windowHandle )
+{
+HWND hwnd = ( HWND )windowHandle;
+LONG_PTR winLong = GetWindowLongPtr( hwnd, GWL_EXSTYLE );
+// Set layered and transparent
+winLong = winLong | WS_EX_LAYERED | WS_EX_TRANSPARENT;
+
+LONG_PTR previousValue = SetWindowLongPtr( hwnd, GWL_EXSTYLE, winLong );
+
+if ( previousValue == 0 ){
+   DWORD ErrorCode = GetLastError();
+   char ErrorBuff[200];
+
+   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL,
+     ErrorCode, 0, ErrorBuff, 200, NULL);
+   printf("\t !!!! In setLayeredAndTransparentAndTakeOffTaskbar: \n\t SetWindowLong failed. Returned value == %d \n", previousValue );
+   printf("\t GetLastErrpr == %s \n", ErrorBuff);
+   fflush( stdout );
+}
+}
+
+void takeWindowOffTaskbar( HWND windowHandle ){
+   LONG_PTR winLong = GetWindowLongPtr( (HWND) windowHandle, GWL_EXSTYLE );
+   winLong = winLong & (~WS_EX_APPWINDOW);
+   winLong = winLong | WS_EX_TOOLWINDOW;
+   LONG_PTR previousValue = SetWindowLongPtr( (HWND) windowHandle, GWL_EXSTYLE, winLong );
+}
+
+void setTopMost( HWND windowHandle ){
+   RECT rect;
+   GetWindowRect( (HWND) windowHandle, &rect );
+   SetWindowPos(
+     (HWND) windowHandle,
+     HWND_TOPMOST,
+     rect.left,
+     rect.top,
+     rect.right - rect.left,
+     rect.bottom - rect.top,
+     SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE );
+}
+
+
+void makeClickThrough( HWND windowHandle ){
+   setTopMost( windowHandle );
+   HRESULT hr = SetLayeredWindowAttributes(
+     (HWND) windowHandle,
+     RGB(0,0,0),
+     // RGB(255,255,255),
+     100, // full transparency
+     //255, // no transparency
+//     LWA_ALPHA );
+     LWA_COLORKEY );
+}
+
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
+  (JNIEnv *env, jclass jobj, jobject jwin, jboolean jIgnoreMouse){
+   
+   HWND hwnd = getHwndFromComponent(jwin, env);
+   setLayeredAndTransparent(hwnd);
+   //takeWindowOffTaskbar(hwnd);
+   if(jIgnoreMouse)
+      makeClickThrough(hwnd);
+
 }
