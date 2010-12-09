@@ -661,6 +661,7 @@ public class SikuliIDE extends JFrame {
       return pargs; 
    }
 
+   //FIXME: supports args
    private static void runUnitTest(String filename){
       TextUnitTestRunner tester = new TextUnitTestRunner();
       File file = new File(filename);

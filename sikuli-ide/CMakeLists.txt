@@ -98,6 +98,11 @@ add_custom_target( run
 file(READ ${BASE_DIR}/latest-ver VERSION)
 STRING(STRIP ${VERSION} VERSION)
 
+add_custom_target( update-version
+   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/edu/mit/csail/uid/IDESettings.java "${VERSION}"
+   COMMENT "Update version number in Sikuli-IDE"
+)
+
 SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR} 
                  ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
                  ${BINARY_DIR}/${JAR_FILE}
