@@ -59,6 +59,18 @@ static BOOL CALLBACK findWindow(HWND handle, long lParam){
    return TRUE;
 }
 
+
+static HWND gFoundHandle;
+static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
+   char buf[BUF_SIZE];
+   GetWindowText(handle, buf, BUF_SIZE);
+   if( strstr_i(buf, gAppName) != NULL ){
+      gFoundHandle = handle;
+      return FALSE;
+   }
+   return TRUE;
+}
+
 JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_switchApp(JNIEnv *env, jobject jobj, jstring jAppName){
 
    gAppName = env->GetStringUTFChars(jAppName, NULL);
@@ -205,3 +217,64 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
       makeClickThrough(hwnd);
 
 }
+
+
+
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Win32Util_getPID
+  (JNIEnv *env, jclass jobj, jstring jAppName){
+   gAppName = env->GetStringUTFChars(jAppName, NULL);
+   BOOL result = EnumWindows((WNDENUMPROC)findWindowHandle, 0);
+   env->ReleaseStringUTFChars(jAppName, gAppName);
+   if( result != 0){ // failed
+      return 0;
+   }
+   //fprintf(stderr, "getPID: %d\n", (long)gFoundHandle);
+   return (jlong)gFoundHandle;
+  }
+
+
+#define CLASS_RECTANGLE "java/awt/Rectangle"
+
+//FIXME
+jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
+   jclass jClassRect = env->FindClass(CLASS_RECTANGLE);
+   jmethodID initMethod = (env)->GetMethodID(jClassRect, "setRect", "(DDDD)V");
+   jobject ret = NULL;
+   if(initMethod!=NULL){
+      ret = (env)->AllocObject(jClassRect);
+      (env)->CallVoidMethod(ret, initMethod, 
+                                      (double)r.left, (double)r.top,
+                                      (double)r.right-r.left, 
+                                      (double)r.bottom-r.top);
+   }
+   (env)->DeleteLocalRef(jClassRect);
+   return ret;
+}
+
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    getRegion
+ * Signature: (JI)Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getRegion
+  (JNIEnv *env, jclass jobj, jlong jHwnd, jint jWinNum){
+     RECT rect;
+     HWND hwnd = (HWND)jHwnd;
+     if(GetWindowRect(hwnd, &rect)){
+        //fprintf(stderr, "rect: %d %d %d %d\n", rect.left, rect.top, rect.right, rect.bottom);
+        return convertRectToJRectangle(env, rect);
+     }
+     return NULL;
+  }
+
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    getFocusedRegion
+ * Signature: ()Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getFocusedRegion
+  (JNIEnv *env, jclass jobj){
+  
+     return NULL;
+  }
+
