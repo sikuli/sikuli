@@ -171,7 +171,8 @@ class HighlightLabelView extends LabelView {
 
    private static String[] keywordsSikuliClass = {
       "Region", "Screen", "Match", "Pattern",
-      "Location", "VDict", "Env", "Key", "Button", "Finder"
+      "Location", "VDict", "Env", "Key", "Button", "Finder",
+      "App"
    };
 
    private static String[] keywordsSikuli = {
@@ -187,19 +188,27 @@ class HighlightLabelView extends LabelView {
       "assertExist", "assertNotExist",
       "selectRegion",
       "getOS", "getMouseLocation", "exit",
+      //Region
       "right", "left", "above", "below", "nearby", "inside",
       "getScreen", "getCenter", 
       "setX", "setY", "setW", "setH", "setRect", "setROI",
       "getX", "getY", "getW", "getH", "getRect", "getROI",
+      "highlight",
       "getNumberScreens", "getBounds",
+      //Pattern
       "similar", "targetOffset", "getLastMatch", "getLastMatches",
       "getTargetOffset", "getFilename",
+      //global
       "setAutoWaitTimeout", "setBundlePath", "setShowActions",
       "setThrowException",
       "hasNext", "next", "destroy", "exact", "offset",
       "getOSVersion", "getScore", "getTarget",
       "getBundlePath", "getAutoWaitTimeout", "getThrowException",
-      "getClipboard"
+      "getClipboard",
+      "addImagePath", "removeImagePath", "getImagePath",
+      //App class
+      "open", "close", "focus", "window", "focusedWindow",
+
    };
 
    private static String[] constantsSikuli = {

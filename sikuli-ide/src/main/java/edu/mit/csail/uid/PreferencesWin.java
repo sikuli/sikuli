@@ -260,7 +260,7 @@ public class PreferencesWin extends JFrame {
          paneOkCancel.add(_btnCancel);
       }
       contentPane.add(paneOkCancel, BorderLayout.SOUTH);
-      setSize(410, 375);
+      setSize(550, 400);
       setLocationRelativeTo(getOwner());
 
       //---- btngrpNaming ----
