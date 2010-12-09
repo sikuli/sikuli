@@ -74,7 +74,7 @@ public class NamingPane extends JPanel {
 
       String[] candidates = new String[] {filename};
       String ocrText = getFilenameFromImage(thumb);
-      if(ocrText.length()>0)
+      if(ocrText.length()>0 && !ocrText.equals(filename))
          candidates = new String[] {filename, ocrText};
 
       _txtFilename = new AutoCompleteCombo(candidates);
