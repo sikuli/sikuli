@@ -35,7 +35,9 @@ public class Win32Util implements OSUtil {
    }
 
    public Region getFocusedWindow(){
-      //FIXME
+      Rectangle rect = getFocusedRegion();
+      if(rect != null)
+         return new Region(rect);
       return null;
    }
 

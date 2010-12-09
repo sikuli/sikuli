@@ -274,7 +274,11 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getRegion
  */
 JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getFocusedRegion
   (JNIEnv *env, jclass jobj){
-  
+     RECT rect;
+     HWND hwnd = GetForegroundWindow();
+     if(GetWindowRect(hwnd, &rect)){
+        return convertRectToJRectangle(env, rect);
+     }
      return NULL;
   }
 
