@@ -1,7 +1,10 @@
 package edu.mit.csail.uid;
 
 import java.io.*;
+import java.awt.Window;
+import java.awt.Rectangle;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
+import com.sun.awt.AWTUtilities;
 
 public class Win32Util implements OSUtil {
 
@@ -23,15 +26,31 @@ public class Win32Util implements OSUtil {
    }
 
    public Region getWindow(String appName, int winNum){
-      //FIXME
+      long pid = getPID(appName);
+      Rectangle rect = getRegion(pid, winNum);
+      Debug.log("getWindow: " + rect);
+      if(rect != null)
+         return new Region(rect);
       return null;
    }
 
    public Region getFocusedWindow(){
-      //FIXME
+      Rectangle rect = getFocusedRegion();
+      if(rect != null)
+         return new Region(rect);
       return null;
    }
+
+   public static native void bringWindowToFront(Window win, boolean ignoreMouse);
+   public static native long getPID(String appName);
+   public static native Rectangle getRegion(long pid, int winNum);
+   public static native Rectangle getFocusedRegion();
+
+   public static void setWindowOpacity(Window win, float alpha){
+      AWTUtilities.setWindowOpacity(win, alpha);
+   }
+
+
+
+
 } 
-
-
-

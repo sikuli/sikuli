@@ -31,6 +31,38 @@ JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_openApp
 JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_closeApp
   (JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    bringWindowToFront
+ * Signature: (Ljava/awt/Window;Z)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
+  (JNIEnv *, jclass, jobject, jboolean);
+
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    getPID
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Win32Util_getPID
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    getRegion
+ * Signature: (JI)Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getRegion
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     edu_mit_csail_uid_Win32Util
+ * Method:    getFocusedRegion
+ * Signature: ()Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getFocusedRegion
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

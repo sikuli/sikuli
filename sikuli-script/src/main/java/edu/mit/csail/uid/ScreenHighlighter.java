@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.HashSet;
 import javax.swing.*;
 import javax.swing.border.*;
+import com.sun.awt.AWTUtilities;
 
 
-public class ScreenHighlighter extends JWindow implements MouseListener {
+public class ScreenHighlighter extends TransparentWindow implements MouseListener {
    enum VizMode { ONE_TARGET, DRAG_DROP };
 
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
@@ -30,6 +31,7 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
    boolean _borderOnly = false;
 
    boolean _native_transparent = false;
+   boolean _double_buffered = false;
    Animator _anim;
 
    BasicStroke _StrokeCross = new BasicStroke (1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float [] { 2f }, 0);
@@ -119,10 +121,21 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
       g2d.drawRect(w/2, w/2, getWidth()-w, getHeight()-w);
    }
 
+   BufferedImage bi = null;
    public void paint(Graphics g)
    {
       if( _native_transparent || _screen != null ){
-         Graphics2D g2d = (Graphics2D)g;
+         if ( bi==null || bi.getWidth(this) != getWidth() ||
+              bi.getHeight(this) != getHeight() ) {
+            bi = new BufferedImage( 
+                  getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB );
+         }
+         Graphics2D bfG2 = bi.createGraphics();
+         Graphics2D g2d;
+         if(_double_buffered)
+            g2d = bfG2;
+         else
+            g2d = (Graphics2D)g;
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
          g2d.fillRect(0,0,getWidth(),getHeight());
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -135,12 +148,14 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
          }
          else{
             if(!_native_transparent)
-               g2d.drawImage(_darker_screen,0,0,this);
+               g2d.drawImage(_screen,0,0,this);
             switch(_mode){
                case ONE_TARGET: drawTarget(g2d); break;
                case DRAG_DROP:  drawDragDrop(g2d); break;
             }
          }
+         if(_double_buffered)
+            ((Graphics2D)g).drawImage(bi, 0, 0, this);
          if(!isVisible())
             setVisible(true);
       }
@@ -152,15 +167,22 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
 
    void init(){
       _opened.add(this);
-      if(Env.getOS() == OS.MAC)
+      if(Env.getOS() == OS.MAC) 
          _native_transparent = true;
+      if(Env.getOS() == OS.WINDOWS){
+//         _double_buffered = true;
+         _native_transparent = true;
+         AWTUtilities.setWindowOpaque(this, false);
+
+      }
 
       if(_native_transparent){
          this.setBackground(_transparentColor);
-         getRootPane().putClientProperty("Window.alpha", new Float(0.8f));
+         setOpacity(0.8f);
       }
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
+      ((JPanel)getContentPane()).setDoubleBuffered(true);
       addMouseListener(this);
    }
 
@@ -265,7 +287,12 @@ public class ScreenHighlighter extends JWindow implements MouseListener {
       if(Env.getOS() == OS.MAC){
          MacUtil.bringWindowToFront(this, true);
       }
+      /*
+      else if(Env.getOS() == OS.WINDOWS){
+         Win32Util.bringWindowToFront(this, true);
+      }
       else
+      */
          super.toFront();
    }
 
