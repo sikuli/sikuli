@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.HashSet;
 import javax.swing.*;
 import javax.swing.border.*;
-import com.sun.awt.AWTUtilities;
 
 
 public class ScreenHighlighter extends TransparentWindow implements MouseListener {
@@ -172,8 +171,7 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
       if(Env.getOS() == OS.WINDOWS){
 //         _double_buffered = true;
          _native_transparent = true;
-         AWTUtilities.setWindowOpaque(this, false);
-
+         Env.getOSUtil().setWindowOpaque(this, false);
       }
 
       if(_native_transparent){
@@ -285,7 +283,8 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
    @Override
    public void toFront(){
       if(Env.getOS() == OS.MAC){
-         MacUtil.bringWindowToFront(this, true);
+         Env.getOSUtil().bringWindowToFront(this, true);
+         //FIXME: windows?
       }
       /*
       else if(Env.getOS() == OS.WINDOWS){

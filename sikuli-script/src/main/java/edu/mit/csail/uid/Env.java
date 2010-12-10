@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.MouseInfo;
+import java.lang.reflect.Constructor;
+
 
 
 public class Env {
@@ -42,16 +44,32 @@ public class Env {
       }
       return "";
    }
-
-   static OSUtil createOSUtil(){
+   
+   static String getOSUtilClass(){
+      String pkg = "edu.mit.csail.uid.";
       switch(getOS()){
-         case MAC:       return new MacUtil();
-         case WINDOWS:   return new Win32Util();
-         case LINUX:     return new LinuxUtil();
+         case MAC:       return pkg+"MacUtil";
+         case WINDOWS:   return pkg+"Win32Util";
+         case LINUX:     return pkg+"LinuxUtil";
          default:
-            System.err.println("Warning: Sikuli doesn't fully support your OS");
-            return new DummyOSUtil();
+            System.err.println("Warning: Sikuli doesn't fully support your OS.");
+            return pkg+"DummyUtil";
       }
+   }
+
+   static OSUtil _osUtil = null;
+   static OSUtil getOSUtil(){
+      if(_osUtil == null){
+         try{
+            Class c = Class.forName(getOSUtilClass());
+            Constructor constr = c.getConstructor();
+            _osUtil = (OSUtil)constr.newInstance();
+         }
+         catch(Exception e){
+            Debug.error("Can't create OS Util: " + e.getMessage());
+         }
+      }
+      return _osUtil;
    }
 
    static int getHotkeyModifier(){

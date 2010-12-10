@@ -286,8 +286,9 @@ class CapturePrompt extends TransparentWindow implements Subject{
          setOpacity(0);
          getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
          this.setVisible(true);
-         if(Env.getOS() == OS.MAC)
-            MacUtil.bringWindowToFront(this, false);
+         if(Env.getOS() == OS.MAC){
+            Env.getOSUtil().bringWindowToFront(this, false);
+         }
       }
       else
          this.setVisible(true);

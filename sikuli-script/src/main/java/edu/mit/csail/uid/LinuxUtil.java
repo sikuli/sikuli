@@ -1,6 +1,7 @@
 package edu.mit.csail.uid;
 
 import java.io.*;
+import javax.swing.JWindow;
 
 public class LinuxUtil implements OSUtil {
 
@@ -55,6 +56,12 @@ public class LinuxUtil implements OSUtil {
       //FIXME
       return null;
    }
+
+   public void setWindowOpacity(JWindow win, float alpha){
+   }
+   public void setWindowOpaque(JWindow win, boolean opaque){
+   }
+   public void bringWindowToFront(JWindow win, boolean ignoreMouse){}
 } 
 
 

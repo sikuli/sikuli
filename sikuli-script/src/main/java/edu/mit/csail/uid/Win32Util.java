@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.io.*;
 import java.awt.Window;
+import javax.swing.JWindow;
 import java.awt.Rectangle;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 import com.sun.awt.AWTUtilities;
@@ -41,16 +42,18 @@ public class Win32Util implements OSUtil {
       return null;
    }
 
-   public static native void bringWindowToFront(Window win, boolean ignoreMouse);
+   public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
    public static native long getPID(String appName);
    public static native Rectangle getRegion(long pid, int winNum);
    public static native Rectangle getFocusedRegion();
 
-   public static void setWindowOpacity(Window win, float alpha){
+   public void setWindowOpacity(JWindow win, float alpha){
       AWTUtilities.setWindowOpacity(win, alpha);
    }
 
-
+   public void setWindowOpaque(JWindow win, boolean opaque){
+      AWTUtilities.setWindowOpaque(win, opaque);
+   }
 
 
 } 

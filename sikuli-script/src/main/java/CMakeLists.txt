@@ -1,4 +1,14 @@
+IF(APPLE)
+   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/MacUtil.java)
+ELSEIF(LINUX)
+   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/LinuxUtil.java)
+ELSEIF(WIN32)
+   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/Win32Util.java)
+ENDIF()
+
+
 SET(JAVA_SOURCE_FILES 
+   ${OS_EXTRA_SOURCE_FILES}
    edu/mit/csail/uid/AppearEvent.java
    edu/mit/csail/uid/CapturePrompt.java
    edu/mit/csail/uid/ChangeEvent.java
@@ -10,9 +20,7 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/FindFailed.java
    edu/mit/csail/uid/Finder.java
    edu/mit/csail/uid/KeyCodeConverter.java
-   edu/mit/csail/uid/LinuxUtil.java
    edu/mit/csail/uid/Location.java
-   edu/mit/csail/uid/MacUtil.java
    edu/mit/csail/uid/Match.java
    edu/mit/csail/uid/OS.java
    edu/mit/csail/uid/OSUtil.java
@@ -33,7 +41,6 @@ SET(JAVA_SOURCE_FILES
    edu/mit/csail/uid/UnionScreen.java
    edu/mit/csail/uid/VDictProxy.java
    edu/mit/csail/uid/VanishEvent.java
-   edu/mit/csail/uid/Win32Util.java
    edu/mit/csail/uid/App.java
    edu/mit/csail/uid/ImageLocator.java
    edu/mit/csail/uid/ResourceExtractor.java

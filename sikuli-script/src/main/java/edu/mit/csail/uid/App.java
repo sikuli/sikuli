@@ -1,7 +1,7 @@
 package edu.mit.csail.uid;
 
 public class App {
-   protected static OSUtil _osUtil = Env.createOSUtil();
+   protected static OSUtil _osUtil = Env.getOSUtil();
    protected String _appName;
 
    public App(String appName) {

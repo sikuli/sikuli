@@ -2,8 +2,10 @@ package edu.mit.csail.uid;
 
 import java.io.*;
 import java.awt.Window;
+import javax.swing.JWindow;
 import java.awt.Rectangle;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
+import com.sun.awt.AWTUtilities;
 
 public class MacUtil implements OSUtil {
 
@@ -63,10 +65,20 @@ public class MacUtil implements OSUtil {
       return null;
    }
 
+   public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
    public static native boolean _openApp(String appName);
-   public static native void bringWindowToFront(Window win, boolean ignoreMouse);
    public static native long getPID(String appName);
    public static native Rectangle getRegion(long pid, int winNum);
    public static native Rectangle getFocusedRegion();
+
+   public void setWindowOpacity(JWindow win, float alpha){
+      win.getRootPane().putClientProperty("Window.alpha", new Float(alpha));
+   }
+
+   public void setWindowOpaque(JWindow win, boolean opaque){
+      AWTUtilities.setWindowOpaque(win, opaque);
+   }
+
+
 } 
 

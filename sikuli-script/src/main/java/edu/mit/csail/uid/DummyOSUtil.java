@@ -1,6 +1,7 @@
 package edu.mit.csail.uid;
 
 import java.io.*;
+import javax.swing.JWindow;
 
 public class DummyOSUtil implements OSUtil {
 
@@ -33,6 +34,11 @@ public class DummyOSUtil implements OSUtil {
       System.err.println("Your OS doesn't support getFocusedWindow");
       return null;
    }
+   public void setWindowOpacity(JWindow win, float alpha){
+   }
+   public void setWindowOpaque(JWindow win, boolean opaque){
+   }
+   public void bringWindowToFront(JWindow win, boolean ignoreMouse){}
 } 
 
 
