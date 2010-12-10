@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
@@ -21,6 +23,7 @@ public class DefaultJniExtractor implements JniExtractor {
      * this is where JNI libraries are extracted to.
      */
     private File jniDir = null;
+    private static Map _cache;
 
     
     static {
@@ -28,6 +31,8 @@ public class DefaultJniExtractor implements JniExtractor {
         String s = System.getProperty("java.library.debug");
         if(s != null && (s.toLowerCase().startsWith("y") || s.startsWith("1")))
             debug = true;
+        _cache = new HashMap();
+        if(debug) System.err.println("cache " + _cache);
     }
     
     /**
@@ -84,7 +89,16 @@ public class DefaultJniExtractor implements JniExtractor {
                 mappedlib = mappedlib.substring(0, mappedlib.length()-7)+".dylib";
         }
         
-        return extractResource("META-INF/lib/"+mappedlib,mappedlib);
+        if(_cache.containsKey(mappedlib)){
+           if(debug) System.err.println("in cache " + mappedlib);
+           return (File)_cache.get(mappedlib);
+        }
+        else{
+           if(debug) System.err.println("not in cache " + mappedlib);
+           File ret = extractResource("META-INF/lib/"+mappedlib,mappedlib);
+           _cache.put(mappedlib, ret);
+           return ret;
+        }
     }
     
     /**
