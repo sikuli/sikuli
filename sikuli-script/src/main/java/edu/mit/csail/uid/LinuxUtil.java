@@ -2,6 +2,7 @@ package edu.mit.csail.uid;
 
 import java.io.*;
 import javax.swing.JWindow;
+import com.sun.awt.AWTUtilities;
 
 public class LinuxUtil implements OSUtil {
 
@@ -58,9 +59,14 @@ public class LinuxUtil implements OSUtil {
    }
 
    public void setWindowOpacity(JWindow win, float alpha){
+      //AWTUtilities.setWindowOpacity(win, alpha);
    }
+
    public void setWindowOpaque(JWindow win, boolean opaque){
+      //AWTUtilities.setWindowOpaque(win, opaque);
    }
+
+
    public void bringWindowToFront(JWindow win, boolean ignoreMouse){}
 } 
 

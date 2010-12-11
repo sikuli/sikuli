@@ -1,5 +1,10 @@
 ENABLE_LANGUAGE(CXX)
 
+IF(LINUX)
+   # -O2/O3 seems incorrectly optimizes some SWIG generated code
+   SET(CMAKE_CXX_FLAGS_RELEASE "-O1")
+ENDIF(LINUX)
+
 SET(CMAKE_VERBOSE_MAKEFILE 1)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake_modules/")

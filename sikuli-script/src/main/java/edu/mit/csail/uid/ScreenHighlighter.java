@@ -173,6 +173,10 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
          _native_transparent = true;
          Env.getOSUtil().setWindowOpaque(this, false);
       }
+      if(Env.getOS() == OS.LINUX){
+         _native_transparent = true;
+         Env.getOSUtil().setWindowOpaque(this, false);
+      }
 
       if(_native_transparent){
          this.setBackground(_transparentColor);
