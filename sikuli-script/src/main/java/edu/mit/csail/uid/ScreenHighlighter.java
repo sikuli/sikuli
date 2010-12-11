@@ -174,8 +174,9 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
          Env.getOSUtil().setWindowOpaque(this, false);
       }
       if(Env.getOS() == OS.LINUX){
-         _native_transparent = true;
-         Env.getOSUtil().setWindowOpaque(this, false);
+         //_native_transparent = true;
+         _double_buffered = true;
+         //Env.getOSUtil().setWindowOpaque(this, false);
       }
 
       if(_native_transparent){
@@ -233,6 +234,10 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
    }
 
    public void highlight(Region r_){
+      if(Env.getOS() == OS.LINUX){
+         Debug.error("highlight does not work on Linux.");
+         return;
+      }
       _borderOnly = true;
       Region r;
       if(_native_transparent)
