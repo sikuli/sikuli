@@ -27,7 +27,7 @@ public class Win32Util implements OSUtil {
    }
 
    public Region getWindow(String appName, int winNum){
-      long pid = getPID(appName);
+      long pid = getPID(appName, winNum);
       Rectangle rect = getRegion(pid, winNum);
       Debug.log("getWindow: " + rect);
       if(rect != null)
@@ -43,7 +43,7 @@ public class Win32Util implements OSUtil {
    }
 
    public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
-   public static native long getPID(String appName);
+   public static native long getPID(String appName, int winNum);
    public static native Rectangle getRegion(long pid, int winNum);
    public static native Rectangle getFocusedRegion();
 

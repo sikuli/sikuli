@@ -1,7 +1,7 @@
 JIntellitype Read Me
 http://www.melloware.com/
 
-Copyright 1999-2008 Emil A. Lefkof III
+Copyright 1999-2010 Emil A. Lefkof III
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ Contents
    -> Copy the following files into your classpath 
         -> jintellitype.jar
         -> JIntellitype.dll (or put in Windows/System32)
+		-> JIntellitype64.dll (rename to JIntellitype.dll and put in path)
         
    FOR DEVELOPERS:
    -> To build you need Maven 2.0.7 or higher installed from Apache.  Just run "mvn package" from the
@@ -117,15 +118,7 @@ See demo at test/com/melloware/jintellitype/JIntellitypeTester.java for more inf
    JIntellitype is distributed with a small number of libraries on which it depends.
    Those libraries are:
    
-   -> Jakarta Commons Logging (http://jakarta.apache.org/commons/logging/)
-      Commons logging is used to provide Stripes with a logging mechanism that
-      does not tie it to a specific logging implementation. In reality, most
-      users will probably be using Log4J, and so will need to configure commons
-      logging to point at Log4J.  A sample configuration file is included in
-      the example application at: examples/src/commons-logging.properties
-      Commons Logging is licensed under the Apache License Version 2.0, a copy
-      of which is included in lib/commons-logging.license
-      
+	-> None currently
       
 6. Feedback
    --------

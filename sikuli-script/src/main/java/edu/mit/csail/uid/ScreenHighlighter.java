@@ -181,7 +181,7 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
 
       if(_native_transparent){
          this.setBackground(_transparentColor);
-         setOpacity(0.8f);
+         //setOpacity(0.8f);
       }
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );

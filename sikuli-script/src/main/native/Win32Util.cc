@@ -61,12 +61,17 @@ static BOOL CALLBACK findWindow(HWND handle, long lParam){
 
 
 static HWND gFoundHandle;
+static int gWinNum, gWinCount;
 static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
+   //fprintf(stderr,"win: %s\n", buf);
    if( strstr_i(buf, gAppName) != NULL ){
-      gFoundHandle = handle;
-      return FALSE;
+      if(gWinCount == gWinNum){
+         gFoundHandle = handle;
+         return FALSE;
+      }
+      gWinCount++;
    }
    return TRUE;
 }
@@ -221,8 +226,10 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
 
 
 JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Win32Util_getPID
-  (JNIEnv *env, jclass jobj, jstring jAppName){
+  (JNIEnv *env, jclass jobj, jstring jAppName, jint jWinNum){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
+   gWinNum = jWinNum;
+   gWinCount = 0;
    BOOL result = EnumWindows((WNDENUMPROC)findWindowHandle, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    if( result != 0){ // failed

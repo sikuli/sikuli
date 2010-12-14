@@ -39,8 +39,9 @@ public class NativeLayerForWindows implements NativeLayer {
          _idCallbackMap.put(id, callbackMethod);
       }
 
-      itype.registerHotKey(id, txtMod + "+" + txtCode);
-      Debug.log(1, "[WIN] " + callbackMethod + " " + id);
+      //itype.registerHotKey(id, txtMod + "+" + txtCode);
+      itype.registerSwingHotKey(id, mod, key);
+      //Debug.log(1, "[WIN] " + callbackMethod + " " + id);
       if(_callbackIdMap.size()==1){
          itype.addHotKeyListener(new HotkeyListener(){
             public void onHotKey(int id){
