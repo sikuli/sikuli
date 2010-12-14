@@ -6,6 +6,7 @@ import java.awt.image.*;
 public class Screen extends Region implements Observer {
    protected GraphicsDevice _curGD;
    protected int _curID = 0;
+   protected static int _primaryScreen = -1;
 
    protected boolean _waitPrompt;
    protected CapturePrompt _prompt;
@@ -42,6 +43,20 @@ public class Screen extends Region implements Observer {
 
    public static Robot getRobot(int id){
       return _robots[id];
+   }
+
+   public static int getPrimaryId(){
+      if(_primaryScreen < 0){
+         _primaryScreen = 0;
+         for(int i=0;i<getNumberScreens();i++){
+            Rectangle bound = getBounds(i);
+            if(bound.x == 0 && bound.y == 0){
+               _primaryScreen = i;
+               break;
+            }
+         }
+      }
+      return _primaryScreen;
    }
    
    public Robot getRobot(){

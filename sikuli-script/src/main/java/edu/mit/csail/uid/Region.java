@@ -53,7 +53,7 @@ public class Region {
       h = h_;
       _scr = initScreen();
       //_robot = _scr.getRobot();
-      _robot = Screen.getRobot(0); // mouseMove only works on the primary robot
+      _robot = Screen.getRobot(Screen.getPrimaryId()); // mouseMove only works on the primary robot
    }
 
    protected EventManager getEventManager(){
