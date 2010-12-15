@@ -26,7 +26,7 @@ public class Screen extends Region implements Observer {
       try{
          _robots = new Robot[_gdev.length];
          for(int i=0;i<_gdev.length;i++){
-            _robots[i] = new Robot(_gdev[i]);
+            _robots[i] = new SikuliRobot(_gdev[i]);
             _robots[i].setAutoWaitForIdle(false);
             _robots[i].setAutoDelay(10);
          }
