@@ -9,6 +9,7 @@ import javax.swing.event.*;
 
 public class AutoUpdater {
    static String ServerList[] = {
+      "http://sikuli.org/latest-update",
       "http://groups.csail.mit.edu/uid/sikuli/latest-update",
       "http://sikuli.csail.mit.edu/latest-update"
    };
@@ -19,11 +20,16 @@ public class AutoUpdater {
    public AutoUpdater(){
    }
 
+   // is v1 newer than v2?
+   private boolean isNewer(String v1, String v2){
+      return v1.compareTo(v2) > 0;
+   }
+
    public boolean checkUpdate(){
       for(String s : ServerList){
          try{
             if(checkUpdate(s)){
-               if(!version.equals(IDESettings.SikuliVersion))
+               if(isNewer(version, IDESettings.SikuliVersion))
                   return true;
             }
          }
