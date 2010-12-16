@@ -865,6 +865,7 @@ public class Region {
          case '\ue021': doType(mode,KeyEvent.VK_CONTROL); break;
          case '\ue022': doType(mode,KeyEvent.VK_ALT); break;
          case '\ue023': doType(mode,KeyEvent.VK_META); break;
+         case '\ue024': doType(mode,KeyEvent.VK_PRINTSCREEN); break;
          default:
             throw new IllegalArgumentException("Cannot type character " + character);
       }

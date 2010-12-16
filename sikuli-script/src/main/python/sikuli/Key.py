@@ -133,4 +133,8 @@ class Key:
    ##
    # META
    WIN         = u"\ue023"
+   ##
+   # PRINTSCREEN
+   PRINTSCREEN = u"\ue024"
+
 

@@ -9,19 +9,19 @@ extern "C" {
 #endif
 /*
  * Class:     edu_mit_csail_uid_MacUtil
+ * Method:    bringWindowToFront
+ * Signature: (Ljavax/swing/JWindow;Z)V
+ */
+JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
+  (JNIEnv *, jobject, jobject, jboolean);
+
+/*
+ * Class:     edu_mit_csail_uid_MacUtil
  * Method:    _openApp
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_MacUtil__1openApp
   (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     edu_mit_csail_uid_MacUtil
- * Method:    bringWindowToFront
- * Signature: (Ljava/awt/Window;Z)V
- */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
-  (JNIEnv *, jclass, jobject, jboolean);
 
 /*
  * Class:     edu_mit_csail_uid_MacUtil
