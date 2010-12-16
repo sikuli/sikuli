@@ -133,8 +133,68 @@ class Key:
    ##
    # META
    WIN         = u"\ue023"
+
    ##
    # PRINTSCREEN
    PRINTSCREEN = u"\ue024"
+   ##
+   # SCROLL_LOCK
+   SCROLL_LOCK	= u"\ue025"
+   ##
+   # PAUSE
+   PAUSE	= u"\ue026"
+   ##
+   # CAPS_LOCK
+   CAPS_LOCK	= u"\ue027"
+
+   ##
+   # NUM0	
+   NUM0		= u"\ue030"
+   ##
+   # NUM1	
+   NUM1		= u"\ue031"
+   ##
+   # NUM2	
+   NUM2		= u"\ue032"
+   ##
+   # NUM3	
+   NUM3		= u"\ue033"
+   ##
+   # NUM4	
+   NUM4		= u"\ue034"
+   ##
+   # NUM5	
+   NUM5		= u"\ue035"
+   ##
+   # NUM6	
+   NUM6		= u"\ue036"
+   ##
+   # NUM7	
+   NUM7		= u"\ue037"
+   ##
+   # NUM8	
+   NUM8		= u"\ue038"
+   ##
+   # NUM9	
+   NUM9		= u"\ue039"
+   ##
+   # SEPARATOR (numpad)
+   SEPARATOR	= u"\ue03A"
+   ##
+   # NUM_LOCK
+   NUM_LOCK	= u"\ue03B"
+   ##
+   # ADD (numpad)
+   ADD		= u"\ue03C"
+   ##
+   # MINUS (numpad)
+   MINUS	= u"\ue03D"
+   ##
+   # MULTIPLY (numpad)
+   MULTIPLY	= u"\ue03E"
+   ##
+   # DIVIDE (numpad)
+   DIVIDE	= u"\ue03F"
+
 
 

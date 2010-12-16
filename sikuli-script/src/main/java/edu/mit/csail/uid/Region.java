@@ -881,6 +881,25 @@ public class Region {
          case '\ue022': doType(mode,KeyEvent.VK_ALT); break;
          case '\ue023': doType(mode,KeyEvent.VK_META); break;
          case '\ue024': doType(mode,KeyEvent.VK_PRINTSCREEN); break;
+         case '\ue025': doType(mode,KeyEvent.VK_SCROLL_LOCK); break;
+         case '\ue026': doType(mode,KeyEvent.VK_PAUSE); break;
+         case '\ue027': doType(mode,KeyEvent.VK_CAPS_LOCK); break;
+         case '\ue030': doType(mode,KeyEvent.VK_NUMPAD0); break;
+         case '\ue031': doType(mode,KeyEvent.VK_NUMPAD1); break;
+         case '\ue032': doType(mode,KeyEvent.VK_NUMPAD2); break;
+         case '\ue033': doType(mode,KeyEvent.VK_NUMPAD3); break;
+         case '\ue034': doType(mode,KeyEvent.VK_NUMPAD4); break;
+         case '\ue035': doType(mode,KeyEvent.VK_NUMPAD5); break;
+         case '\ue036': doType(mode,KeyEvent.VK_NUMPAD6); break;
+         case '\ue037': doType(mode,KeyEvent.VK_NUMPAD7); break;
+         case '\ue038': doType(mode,KeyEvent.VK_NUMPAD8); break;
+         case '\ue039': doType(mode,KeyEvent.VK_NUMPAD9); break;
+         case '\ue03A': doType(mode,KeyEvent.VK_SEPARATOR); break;
+         case '\ue03B': doType(mode,KeyEvent.VK_NUM_LOCK); break;
+         case '\ue03C': doType(mode,KeyEvent.VK_ADD); break;
+         case '\ue03D': doType(mode,KeyEvent.VK_MINUS); break;
+         case '\ue03E': doType(mode,KeyEvent.VK_MULTIPLY); break;
+         case '\ue03F': doType(mode,KeyEvent.VK_DIVIDE); break;
          default:
             throw new IllegalArgumentException("Cannot type character " + character);
       }
