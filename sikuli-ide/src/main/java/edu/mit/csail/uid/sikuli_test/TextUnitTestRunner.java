@@ -19,7 +19,8 @@ import org.python.core.*;
 public class TextUnitTestRunner extends junit.textui.TestRunner {
 
 
-   public TextUnitTestRunner(){
+   public TextUnitTestRunner(String[] args){
+      PythonInterpreter.initialize(System.getProperties(),null, args);
    }
 
    public boolean testSikuli(String bundle) throws Exception{
@@ -44,6 +45,8 @@ public class TextUnitTestRunner extends junit.textui.TestRunner {
       TestSuite ret = new TestSuite(className);
       PythonInterpreter interp = new PythonInterpreter();
       String testCode = 
+         "# coding=utf-8\n"+
+         "from __future__ import with_statement\n"+
          "import junit\n"+
          "from junit.framework.Assert import *\n"+
          "from sikuli.Sikuli import *\n"+

@@ -47,12 +47,14 @@ FILE(MAKE_DIRECTORY ${JAR_DIR})
 
 SET(MAIN_CLASS edu.mit.csail.uid.SikuliIDE)
 SET(RUN_ARGS -Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
-             -Xms64m -Xmx512m
-             #-Duser.language=zh -Duser.region=TW
+             -Xms64m -Xmx512m 
+             #-Duser.language=zh -Duser.region=TW 
 )
 IF(APPLE)
    SET(RUN_ARGS ${RUN_ARGS} -Xdock:name='Sikuli IDE') 
 ENDIF()
+
+SET(ARGS "")
 
 SET(CLASSPATH 
    ${SIKULI_SCRIPT_JAR}${SEP}${JUNIT_JAR}${SEP}${SWING_LAYOUT_JAR}${SEP}${COMMONS_CLI_JAR}

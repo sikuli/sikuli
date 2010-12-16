@@ -662,8 +662,8 @@ public class SikuliIDE extends JFrame {
    }
 
    //FIXME: supports args
-   private static void runUnitTest(String filename){
-      TextUnitTestRunner tester = new TextUnitTestRunner();
+   private static void runUnitTest(String filename, String[] args){
+      TextUnitTestRunner tester = new TextUnitTestRunner(args);
       File file = new File(filename);
       filename = file.getAbsolutePath();
       if(filename.endsWith(".sikuli")){
@@ -696,7 +696,7 @@ public class SikuliIDE extends JFrame {
       }
       
       if( _cmdLine.hasOption("test") ){
-         runUnitTest(_cmdLine.getOptionValue("test"));
+         runUnitTest(_cmdLine.getOptionValue("test"), getPyArgs());
       }
          
       if(args!=null && args.length>=1){

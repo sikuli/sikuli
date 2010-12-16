@@ -471,6 +471,8 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       TestSuite ret = new TestSuite(className);
       PythonInterpreter interp = new PythonInterpreter();
       String testCode = 
+         "# coding=utf-8\n"+
+         "from __future__ import with_statement\n"+
          "import junit\n"+
          "from junit.framework.Assert import *\n"+
          "from sikuli.Sikuli import *\n"+
