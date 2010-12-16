@@ -22,7 +22,8 @@ public class LinuxUtil implements OSUtil {
    public int openApp(String appName){
       try{
          System.out.println("openApp: " + appName);
-         Process p = Runtime.getRuntime().exec(appName);
+         String cmd[] = {"sh", "-c", appName + " &"};
+         Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
          return p.exitValue();
       }
