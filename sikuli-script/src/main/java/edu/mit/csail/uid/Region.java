@@ -359,6 +359,21 @@ public class Region {
       return _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
    }
 
+   public int wheel(int direction, int steps) throws FindFailed{
+      for(int i=0;i<steps;i++){
+         _robot.mouseWheel(direction);
+         _robot.delay(50);
+      }
+      return 1;
+   }
+
+   public <PSRML> int wheel(PSRML target, int direction, int steps) throws FindFailed{
+      if( target == null || hover(target) != 0){
+         return wheel(direction, steps);
+      }
+      return 0;
+   }
+
    public <PSRML> int hover(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
