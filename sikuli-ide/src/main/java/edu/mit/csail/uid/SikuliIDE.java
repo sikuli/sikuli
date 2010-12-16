@@ -1325,6 +1325,7 @@ public class SikuliIDE extends JFrame {
                File tmpFile;
                try{
                   tmpFile = File.createTempFile("sikuli-tmp",".py");
+                  tmpFile.deleteOnExit();
                   try{
                      BufferedWriter bw = new BufferedWriter(
                                            new OutputStreamWriter( 
