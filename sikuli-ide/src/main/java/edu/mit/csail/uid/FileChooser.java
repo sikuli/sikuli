@@ -27,19 +27,22 @@ public class FileChooser {
    }
 
    protected File openWithSwingDialog(String msg, int mode, GeneralFileFilter[] filters){
-      JFileChooser fcLoad = new JFileChooser();
+      JFileChooser fchooser = new JFileChooser();
+      if(mode==FileDialog.SAVE) {
+         fchooser.setDialogType(JFileChooser.SAVE_DIALOG);
+      }
       UserPreferences pref = UserPreferences.getInstance();
       String last_dir = pref.get("LAST_OPEN_DIR", "");
       if(!last_dir.equals(""))
-         fcLoad.setCurrentDirectory(new File(last_dir));
-      fcLoad.setAcceptAllFileFilterUsed(false);
+         fchooser.setCurrentDirectory(new File(last_dir));
+      fchooser.setAcceptAllFileFilterUsed(false);
       for(GeneralFileFilter filter: filters)
-         fcLoad.setFileFilter(filter);
-      fcLoad.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
-      fcLoad.setSelectedFile(null);
-      if(fcLoad.showDialog(_parent, null) != JFileChooser.APPROVE_OPTION)
+         fchooser.setFileFilter(filter);
+      fchooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
+      fchooser.setSelectedFile(null);
+      if(fchooser.showDialog(_parent, null) != JFileChooser.APPROVE_OPTION)
          return null;
-      File ret = fcLoad.getSelectedFile();
+      File ret = fchooser.getSelectedFile();
       String dir = ret.getParent();
       UserPreferences.getInstance().put("LAST_OPEN_DIR",dir);
       return ret;

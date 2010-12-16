@@ -244,7 +244,15 @@ public class SikuliPane extends JTextPane implements KeyListener,
       String bundlePath = file.getAbsolutePath();
       if( !file.getAbsolutePath().endsWith(".sikuli") )
          bundlePath += ".sikuli";
+      if(Utils.exists(bundlePath)){
+         int res = JOptionPane.showConfirmDialog(
+               null, I18N._I("msgFileExists", bundlePath), 
+               I18N._I("dlgFileExists"), JOptionPane.YES_NO_OPTION);
+         if(res != JOptionPane.YES_OPTION)
+            return null;
+      }
       saveAsBundle(bundlePath);
+
       return getCurrentShortFilename();
    }
 
