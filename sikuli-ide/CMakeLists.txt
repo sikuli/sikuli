@@ -45,7 +45,7 @@ FILE(MAKE_DIRECTORY ${JAR_DIR})
 
 ## Sikuli IDE
 
-SET(MAIN_CLASS edu.mit.csail.uid.SikuliIDE)
+SET(MAIN_CLASS org.sikuli.ide.SikuliIDE)
 SET(RUN_ARGS -Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
@@ -101,7 +101,7 @@ file(READ ${BASE_DIR}/latest-ver VERSION)
 STRING(STRIP ${VERSION} VERSION)
 
 add_custom_target( update-version
-   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/edu/mit/csail/uid/IDESettings.java "${VERSION}"
+   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/org/sikuli/ide/IDESettings.java "${VERSION}"
    COMMENT "Update version number in Sikuli-IDE"
 )
 

@@ -5,7 +5,7 @@ INCLUDE("${CMAKE_MODULE_PATH}/common.cmake")
 
 FIND_PROGRAM ( JAVA_JAVA_H javah PATHS ${JAVA_BIN_PATH} )
 SET(JNI_HEADERS
-   edu_mit_csail_uid_NativeLayerForMac.h
+   org_sikuli_ide_NativeLayerForMac.h
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
@@ -27,7 +27,7 @@ IF(APPLE)
 
    ADD_LIBRARY(NativeLayerForMac SHARED
       NativeLayerForMac.cc
-      edu_mit_csail_uid_NativeLayerForMac.h
+      org_sikuli_ide_NativeLayerForMac.h
    )
 
 ENDIF(APPLE)

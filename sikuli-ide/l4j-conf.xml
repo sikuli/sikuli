@@ -15,7 +15,7 @@
   <icon>c:\sikuli-x\sikuli-ide\target\win32\ide-icon.ico</icon>
   <var>PATH=libs</var>
   <classPath>
-    <mainClass>edu.mit.csail.uid.SikuliIDE</mainClass>
+    <mainClass>org.sikuli.ide.SikuliIDE</mainClass>
     <cp>sikuli-ide.jar</cp>
     <cp>sikuli-script.jar</cp>
     <cp>commons-cli-1.2.jar</cp>

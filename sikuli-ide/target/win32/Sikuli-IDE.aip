@@ -200,7 +200,7 @@
     <ROW IniFile="Class_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#jintellitype_1.3.2.jar];[#junit_3.8.1.jar];[#sikuli_ide.jar];[#sikuli_script.jar];[#swing_layout_1.0.1.jar];[#commons_cli_1.2.jar];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Failure_Check" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Failure Check" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Library_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Library Path" Value="[tmplib_DIR];" Action="0" Component_="Sikuli_IDE.exe"/>
-    <ROW IniFile="Main_Class" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="edu.mit.csail.uid.SikuliIDE" Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="Main_Class" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="org.sikuli.ide.SikuliIDE" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Maximum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Maximum Version" Value="any" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Minimum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Minimum Version" Value="1.6" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Override_WorkingDir" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Override WorkingDir" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>

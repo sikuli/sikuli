@@ -8,7 +8,7 @@ import java.util.Date;
 import javax.swing.*;
 import javax.imageio.*;
 
-class CapturePrompt extends TransparentWindow implements Subject{
+public class CapturePrompt extends TransparentWindow implements Subject{
    static Color _overlayColor = new Color(0F,0F,0F,0.6F);
    final static float MIN_DARKER_FACTOR = 0.6f;
    final static long MSG_DISPLAY_TIME = 2000;

@@ -1,4 +1,4 @@
-#include "edu_mit_csail_uid_NativeLayerForMac.h"
+#include "org_sikuli_ide_NativeLayerForMac.h"
 
 #include <Carbon/Carbon.h>
 #include <CoreFoundation/CoreFoundation.h>
@@ -93,7 +93,7 @@ void installShortcutHandler( CallbackData *data ){
       callbackRefMap[data->func] = myHotKeyRef;
 }
 
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_NativeLayerForMac_installGlobalHotkey (JNIEnv *env, jobject jobj, jint hotkey, jint modifiers, jobject jIde, 
+JNIEXPORT void JNICALL Java_org_sikuli_ide_NativeLayerForMac_installGlobalHotkey (JNIEnv *env, jobject jobj, jint hotkey, jint modifiers, jobject jIde, 
        jstring jCallbackName, jstring jCallbackType){
 
    cout << "[JNI] install global hotkey: " << hotkey << endl;
