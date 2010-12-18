@@ -13,10 +13,10 @@ INCLUDE("${CMAKE_MODULE_PATH}/common.cmake")
 
 FIND_PROGRAM ( JAVA_JAVA_H javah PATHS ${JAVA_BIN_PATH} )
 SET(JNI_HEADERS
-   edu_mit_csail_uid_EventManager.h
-   edu_mit_csail_uid_VDictProxy.h
-   edu_mit_csail_uid_Win32Util.h
-   edu_mit_csail_uid_MacUtil.h
+   org_sikuli_script_EventManager.h
+   org_sikuli_script_VDictProxy.h
+   org_sikuli_script_Win32Util.h
+   org_sikuli_script_MacUtil.h
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
@@ -76,7 +76,7 @@ IF(WIN32)
 
    ADD_LIBRARY(Win32Util SHARED
       Win32Util.cc
-      edu_mit_csail_uid_Win32Util.h
+      org_sikuli_script_Win32Util.h
    )
    TARGET_LINK_LIBRARIES(Win32Util ${JAVA_AWT_LIBRARY})
 ENDIF()
@@ -91,7 +91,7 @@ IF(APPLE)
 
    ADD_LIBRARY(MacUtil SHARED
       MacUtil.m
-      edu_mit_csail_uid_MacUtil.h
+      org_sikuli_script_MacUtil.h
    )
    TARGET_LINK_LIBRARIES(MacUtil ${EXTRA_LIBS})
 ENDIF()
@@ -103,7 +103,7 @@ SET(NATIVE_LIBS
 
 ADD_LIBRARY(VDictProxy SHARED
    VDictProxy.cc
-   edu_mit_csail_uid_VDictProxy.h
+   org_sikuli_script_VDictProxy.h
 )
 
 
@@ -120,7 +120,7 @@ SWIG_ADD_MODULE(VisionProxy java vision.i
    EventManagerProxy.cc
    event-manager.cc
    sikuli-debug.cpp
-   edu_mit_csail_uid_EventManager.h
+   org_sikuli_script_EventManager.h
    ${TESSERACT_SOURCES}
 ) 
 SWIG_LINK_LIBRARIES(VisionProxy ${Tesseract_LIBRARY} ${OpenCV_LIBS})  

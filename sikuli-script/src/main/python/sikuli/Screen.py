@@ -1,4 +1,4 @@
-from edu.mit.csail.uid import Screen as JScreen
+from org.sikuli.script import Screen as JScreen
 import inspect
 import __main__
 import sys
@@ -44,7 +44,7 @@ class Screen(Region):
    # the screen if no arguments are given.
    # If any arguments are specified, capture() automatically captures the given
    # region of the screen.
-   # @param *args The args can be 4 integers: x, y, w, and h, a <a href="edu/mit/csail/uid/Match.html">Match</a> object or a {@link #Region} object.
+   # @param *args The args can be 4 integers: x, y, w, and h, a <a href="org/sikuli/script/Match.html">Match</a> object or a {@link #Region} object.
    # @return The path to the captured image.
    #
    def capture(self, *args):

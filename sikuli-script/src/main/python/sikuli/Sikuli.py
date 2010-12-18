@@ -4,24 +4,24 @@
 ##
 import java.io.File
 import time
-from edu.mit.csail.uid import SikuliScript
-from edu.mit.csail.uid import Match
-from edu.mit.csail.uid import Pattern
-from edu.mit.csail.uid import FindFailed
+from org.sikuli.script import SikuliScript
+from org.sikuli.script import Match
+from org.sikuli.script import Pattern
+from org.sikuli.script import FindFailed
 import __builtin__
 import __main__
 import types
 import sys
 
-from edu.mit.csail.uid import Region as JRegion
-from edu.mit.csail.uid import UnionScreen
-from edu.mit.csail.uid import Finder
-from edu.mit.csail.uid import Location
-from edu.mit.csail.uid import Settings
-from edu.mit.csail.uid import Env
-from edu.mit.csail.uid import OS
-from edu.mit.csail.uid import App
-from edu.mit.csail.uid import ScreenHighlighter
+from org.sikuli.script import Region as JRegion
+from org.sikuli.script import UnionScreen
+from org.sikuli.script import Finder
+from org.sikuli.script import Location
+from org.sikuli.script import Settings
+from org.sikuli.script import Env
+from org.sikuli.script import OS
+from org.sikuli.script import App
+from org.sikuli.script import ScreenHighlighter
 from java.awt import Rectangle
 from Key import *
 from Button import *

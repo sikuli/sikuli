@@ -1,53 +1,53 @@
 IF(APPLE)
-   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/MacUtil.java)
+   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/MacUtil.java)
 ELSEIF(LINUX)
-   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/LinuxUtil.java)
+   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/LinuxUtil.java)
 ELSEIF(WIN32)
-   SET(OS_EXTRA_SOURCE_FILES edu/mit/csail/uid/Win32Util.java)
+   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/Win32Util.java)
 ENDIF()
 
 
 SET(JAVA_SOURCE_FILES 
    ${OS_EXTRA_SOURCE_FILES}
-   edu/mit/csail/uid/AppearEvent.java
-   edu/mit/csail/uid/CapturePrompt.java
-   edu/mit/csail/uid/ChangeEvent.java
-   edu/mit/csail/uid/Clipboard.java
-   edu/mit/csail/uid/Debug.java
-   edu/mit/csail/uid/DummyOSUtil.java
-   edu/mit/csail/uid/Env.java
-   edu/mit/csail/uid/EventManager.java
-   edu/mit/csail/uid/FindFailed.java
-   edu/mit/csail/uid/Finder.java
-   edu/mit/csail/uid/KeyCodeConverter.java
-   edu/mit/csail/uid/Location.java
-   edu/mit/csail/uid/Match.java
-   edu/mit/csail/uid/OS.java
-   edu/mit/csail/uid/OSUtil.java
-   edu/mit/csail/uid/Observer.java
-   edu/mit/csail/uid/OpenCV.java
-   edu/mit/csail/uid/ScreenHighlighter.java
-   edu/mit/csail/uid/Pattern.java
-   edu/mit/csail/uid/Region.java
-   edu/mit/csail/uid/Screen.java
-   edu/mit/csail/uid/ScreenImage.java
-   edu/mit/csail/uid/ScriptRunner.java
-   edu/mit/csail/uid/Settings.java
-   edu/mit/csail/uid/SikuliEvent.java
-   edu/mit/csail/uid/SikuliEventAdapter.java
-   edu/mit/csail/uid/SikuliEventObserver.java
-   edu/mit/csail/uid/SikuliScript.java
-   edu/mit/csail/uid/Subject.java
-   edu/mit/csail/uid/UnionScreen.java
-   edu/mit/csail/uid/VDictProxy.java
-   edu/mit/csail/uid/VanishEvent.java
-   edu/mit/csail/uid/App.java
-   edu/mit/csail/uid/ImageLocator.java
-   edu/mit/csail/uid/ResourceExtractor.java
-   edu/mit/csail/uid/SikuliException.java
-   edu/mit/csail/uid/AppNotFound.java
-   edu/mit/csail/uid/Animator.java
-   edu/mit/csail/uid/TransparentWindow.java
+   org/sikuli/script/AppearEvent.java
+   org/sikuli/script/CapturePrompt.java
+   org/sikuli/script/ChangeEvent.java
+   org/sikuli/script/Clipboard.java
+   org/sikuli/script/Debug.java
+   org/sikuli/script/DummyOSUtil.java
+   org/sikuli/script/Env.java
+   org/sikuli/script/EventManager.java
+   org/sikuli/script/FindFailed.java
+   org/sikuli/script/Finder.java
+   org/sikuli/script/KeyCodeConverter.java
+   org/sikuli/script/Location.java
+   org/sikuli/script/Match.java
+   org/sikuli/script/OS.java
+   org/sikuli/script/OSUtil.java
+   org/sikuli/script/Observer.java
+   org/sikuli/script/OpenCV.java
+   org/sikuli/script/ScreenHighlighter.java
+   org/sikuli/script/Pattern.java
+   org/sikuli/script/Region.java
+   org/sikuli/script/Screen.java
+   org/sikuli/script/ScreenImage.java
+   org/sikuli/script/ScriptRunner.java
+   org/sikuli/script/Settings.java
+   org/sikuli/script/SikuliEvent.java
+   org/sikuli/script/SikuliEventAdapter.java
+   org/sikuli/script/SikuliEventObserver.java
+   org/sikuli/script/SikuliScript.java
+   org/sikuli/script/Subject.java
+   org/sikuli/script/UnionScreen.java
+   org/sikuli/script/VDictProxy.java
+   org/sikuli/script/VanishEvent.java
+   org/sikuli/script/App.java
+   org/sikuli/script/ImageLocator.java
+   org/sikuli/script/ResourceExtractor.java
+   org/sikuli/script/SikuliException.java
+   org/sikuli/script/AppNotFound.java
+   org/sikuli/script/Animator.java
+   org/sikuli/script/TransparentWindow.java
    ${CMAKE_SWIG_OUTDIR}/*.java
 )
 

@@ -15,7 +15,7 @@ ELSE()
    SET(SEP ";")
 ENDIF()
 
-SET(PACKAGE edu.mit.csail.uid)
+SET(PACKAGE org.sikuli.script)
 STRING(REPLACE . / PACKAGE_DIR ${PACKAGE})
 
 SET(BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")

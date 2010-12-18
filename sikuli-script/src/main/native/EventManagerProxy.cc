@@ -1,11 +1,11 @@
-#include "edu_mit_csail_uid_EventManager.h"
+#include "org_sikuli_script_EventManager.h"
 #include "event-manager.h"
 
 #include<iostream>
 
 using namespace std;
 
-#define CLASS_SIKULI_EVENT "edu/mit/csail/uid/SikuliEvent"
+#define CLASS_SIKULI_EVENT "org/sikuli/script/SikuliEvent"
 
 jobjectArray& convertToJavaEvents(JNIEnv *env, const vector<Event> &events, jobjectArray &ret){
 
@@ -36,11 +36,11 @@ jobjectArray& convertToJavaEvents(JNIEnv *env, const vector<Event> &events, jobj
 }
 
 /*
- * Class:     edu_mit_csail_uid_EventManager
+ * Class:     org_sikuli_script_EventManager
  * Method:    createEventManager
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_EventManager_createEventManager
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_EventManager_createEventManager
   (JNIEnv *env, jobject jobj){
    SikuliEventManager *sem = new SikuliEventManager();
    return reinterpret_cast<jlong>(sem);
@@ -48,11 +48,11 @@ JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_EventManager_createEventManager
 
 
 /*
- * Class:     edu_mit_csail_uid_EventManager
+ * Class:     org_sikuli_script_EventManager
  * Method:    addObserver
  * Signature: (JILjava/lang/String;FIIIII)V
  */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_addObserver
+JNIEXPORT void JNICALL Java_org_sikuli_script_EventManager_addObserver
 
   (JNIEnv *env, jobject jobj, jlong jSemInstance, 
    jint evt_type, jstring jTargetImgFilename, jfloat jSimilarity,
@@ -69,11 +69,11 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_addObserver
 }
 
 /*
- * Class:     edu_mit_csail_uid_EventManager
+ * Class:     org_sikuli_script_EventManager
  * Method:    _update
  * Signature: (J[BII)[Ljava/util/EventObject;
  */
-JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
+JNIEXPORT jobjectArray JNICALL Java_org_sikuli_script_EventManager__1update
   (JNIEnv *env, jobject jobj, jlong jSemInstance,
    jbyteArray screenImg, jint w, jint h){
 
@@ -109,11 +109,11 @@ JNIEXPORT jobjectArray JNICALL Java_edu_mit_csail_uid_EventManager__1update
 }
 
 /*
- * Class:     edu_mit_csail_uid_EventManager
+ * Class:     org_sikuli_script_EventManager
  * Method:    destroy
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_EventManager_destroy
+JNIEXPORT void JNICALL Java_org_sikuli_script_EventManager_destroy
   (JNIEnv *env, jobject jobj, jlong jSemInstance){
   
    SikuliEventManager *sem=reinterpret_cast<SikuliEventManager*>(jSemInstance); 

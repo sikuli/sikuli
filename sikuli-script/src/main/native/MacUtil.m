@@ -1,4 +1,4 @@
-#import "edu_mit_csail_uid_MacUtil.h"
+#import "org_sikuli_script_MacUtil.h"
 #import <Cocoa/Cocoa.h>
 #import <JavaVM/jawt_md.h>
 #import <AppKit/NSAccessibility.h>
@@ -53,7 +53,7 @@ NSWindow * GetWindowFromComponent(jobject parent, JNIEnv *env) {
    return [view window];
 }
 
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
+JNIEXPORT void JNICALL Java_org_sikuli_script_MacUtil_bringWindowToFront
   (JNIEnv *env, jclass jobj, jobject jwin, jboolean ignoreMouse){
   
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -72,7 +72,7 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_MacUtil_bringWindowToFront
    [pool release];
 }
 
-JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_MacUtil_getPID
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_MacUtil_getPID
    (JNIEnv *env, jclass jobj, jstring jAppName){
    long pid = 0;
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -124,7 +124,7 @@ jobject convertNSRectToJRectangle(JNIEnv *env, NSRect r){
    return ret;
 }
 
-JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getFocusedRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getFocusedRegion
   (JNIEnv *env, jclass jobj){
    AXUIElementRef sysElement = AXUIElementCreateSystemWide();
    AXUIElementRef focusedApp;
@@ -141,7 +141,7 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getFocusedRegion
    return NULL;
 }
 
-JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getRegion
   (JNIEnv *env, jclass jobj, jlong pid, jint winNum){
    AXUIElementRef ui = AXUIElementCreateApplication(pid);
 
@@ -168,7 +168,7 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_MacUtil_getRegion
    return NULL;
 }
 
-JNIEXPORT jboolean JNICALL Java_edu_mit_csail_uid_MacUtil__1openApp
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_MacUtil__1openApp
   (JNIEnv *env, jclass jobj, jstring jAppName){
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
    const jchar *chars = (*env)->GetStringChars(env, jAppName, NULL);

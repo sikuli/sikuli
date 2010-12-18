@@ -1,4 +1,4 @@
-from edu.mit.csail.uid import VDictProxy
+from org.sikuli.script import VDictProxy
 import java.io.File
 
 ## 

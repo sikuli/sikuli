@@ -1,4 +1,4 @@
-#include "edu_mit_csail_uid_Win32Util.h"
+#include "org_sikuli_script_Win32Util.h"
 #include "windows.h"
 #include <jawt.h>
 #include <jawt_md.h>
@@ -76,18 +76,18 @@ static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
    return TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_switchApp(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp(JNIEnv *env, jobject jobj, jstring jAppName){
 
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    BOOL result = EnumWindows((WNDENUMPROC)findWindow, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    if( result != 0){ // switch failed. open it
-		return Java_edu_mit_csail_uid_Win32Util_openApp(env, jobj, jAppName);
+		return Java_org_sikuli_script_Win32Util_openApp(env, jobj, jAppName);
    }
    return result;
 }
 
-JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
    const char *appName = env->GetStringUTFChars(jAppName, NULL);
    int n = strlen(appName);
    char *buf = new char[n+3];
@@ -102,7 +102,7 @@ JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_openApp(JNIEnv *env, job
    return -1;
 }
 
-JNIEXPORT jint JNICALL Java_edu_mit_csail_uid_Win32Util_closeApp(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp(JNIEnv *env, jobject jobj, jstring jAppName){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    BOOL result = EnumWindows((WNDENUMPROC)killWindow, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
@@ -212,7 +212,7 @@ void makeClickThrough( HWND windowHandle ){
      LWA_COLORKEY );
 }
 
-JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
+JNIEXPORT void JNICALL Java_org_sikuli_script_Win32Util_bringWindowToFront
   (JNIEnv *env, jclass jobj, jobject jwin, jboolean jIgnoreMouse){
    
    HWND hwnd = getHwndFromComponent(jwin, env);
@@ -225,7 +225,7 @@ JNIEXPORT void JNICALL Java_edu_mit_csail_uid_Win32Util_bringWindowToFront
 
 
 
-JNIEXPORT jlong JNICALL Java_edu_mit_csail_uid_Win32Util_getPID
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getPID
   (JNIEnv *env, jclass jobj, jstring jAppName, jint jWinNum){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
@@ -259,11 +259,11 @@ jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
 }
 
 /*
- * Class:     edu_mit_csail_uid_Win32Util
+ * Class:     org_sikuli_script_Win32Util
  * Method:    getRegion
  * Signature: (JI)Ljava/awt/Rectangle;
  */
-JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_script_Win32Util_getRegion
   (JNIEnv *env, jclass jobj, jlong jHwnd, jint jWinNum){
      RECT rect;
      HWND hwnd = (HWND)jHwnd;
@@ -275,11 +275,11 @@ JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getRegion
   }
 
 /*
- * Class:     edu_mit_csail_uid_Win32Util
+ * Class:     org_sikuli_script_Win32Util
  * Method:    getFocusedRegion
  * Signature: ()Ljava/awt/Rectangle;
  */
-JNIEXPORT jobject JNICALL Java_edu_mit_csail_uid_Win32Util_getFocusedRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_script_Win32Util_getFocusedRegion
   (JNIEnv *env, jclass jobj){
      RECT rect;
      HWND hwnd = GetForegroundWindow();

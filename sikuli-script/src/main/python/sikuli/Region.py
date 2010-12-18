@@ -1,8 +1,8 @@
-from edu.mit.csail.uid import Region as JRegion
-from edu.mit.csail.uid import Location
-from edu.mit.csail.uid import Settings
-from edu.mit.csail.uid import SikuliEventAdapter
-from edu.mit.csail.uid import SikuliEventObserver
+from org.sikuli.script import Region as JRegion
+from org.sikuli.script import Location
+from org.sikuli.script import Settings
+from org.sikuli.script import SikuliEventAdapter
+from org.sikuli.script import SikuliEventObserver
 from Constants import *
 import inspect
 import types
@@ -52,8 +52,8 @@ class Region(JRegion):
    # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to 
    # a non-zero
    # value, all find() just act as the {@link #wait} method.
-   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-   # @return a <a href="edu/mit/csail/uid/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
+   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="org/sikuli/script/Pattern.html">Pattern</a> object.
+   # @return a <a href="org/sikuli/script/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
    #
    def find(self, target):
       ret = JRegion.find(self, target)
@@ -69,8 +69,8 @@ class Region(JRegion):
    # regions in find.regions and the best matched region in find.region. <br/>
    # If the auto waiting timeout ({@link #setAutoWaitTimeout}) is set to a non-zero
    # value, all findAll() just act as the {@link #wait} method.
-   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object.
-   # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if nothing is found.
+   # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="org/sikuli/script/Pattern.html">Pattern</a> object.
+   # @return a <a href="org/sikuli/script/Matches.html">Matches</a> object that contains a list of <a href="org/sikuli/script/Match.html">Match</a> objects, or None if nothing is found.
    #
    def findAll(self, target):
       ret = JRegion.findAll(self, target)
@@ -81,7 +81,7 @@ class Region(JRegion):
    # the specified amount of time has elapsed.
    # @param img The file name of an image, which can be an absolute path or a relative path to the file in the source bundle (.sikuli).
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
-   # @return a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object that contains a list of <a href="edu/mit/csail/uid/Match.html">Match</a> objects, or None if timeout occurs.
+   # @return a <a href="org/sikuli/script/Matches.html">Matches</a> object that contains a list of <a href="org/sikuli/script/Match.html">Match</a> objects, or None if timeout occurs.
    # FIXME: default timeout should be autoWaitTimeout
    def wait(self, target, timeout=None):
       ttype = __builtin__.type(target)
@@ -111,8 +111,8 @@ class Region(JRegion):
    ##
    # Performs a mouse clicking on the best matched position of the 
    # given image pattern. It calls
-   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # find() to locate the pattern if a file name or a <a href="org/sikuli/script/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
    def click(self, target, modifiers=0):
@@ -121,8 +121,8 @@ class Region(JRegion):
    ##
    # Performs a double clicking on the best matched position of the given 
    # image pattern. It calls
-   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # find() to locate the pattern if a file name or a <a href="org/sikuli/script/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
    def doubleClick(self, target, modifiers=0):
@@ -131,8 +131,8 @@ class Region(JRegion):
    ##
    # Performs a right clicking on the best matched position of the given 
    # image pattern. It calls
-   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # find() to locate the pattern if a file name or a <a href="org/sikuli/script/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
    def rightClick(self, target, modifiers=0):
@@ -141,8 +141,8 @@ class Region(JRegion):
    ##
    # Move the mouse cursor to the best matched position of the 
    # given image pattern. It calls
-   # find() to locate the pattern if a file name or a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object is given.
-   # @param img The file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a>  object; a <a href="edu/mit/csail/uid/Match.html">Match</a> object; or a <a href="edu/mit/csail/uid/Matches.html">Matches</a> object.
+   # find() to locate the pattern if a file name or a <a href="org/sikuli/script/Pattern.html">Pattern</a> object is given.
+   # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a>  object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @return 0 <br/> Returns -1 if find() fails.
    def hover(self, target):
       return JRegion.hover(self, target)
@@ -185,8 +185,8 @@ class Region(JRegion):
    ##
    # Drags from the position of <i>src</i>, 
    # and drops on the position of <i>dest</i>.
-   # @param src This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object.
-   # @param dest This can be a file name of an image; a <a href="edu/mit/csail/uid/Pattern.html">Pattern</a> object; or a <a href="edu/mit/csail/uid/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
+   # @param src This can be a file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; or a <a href="org/sikuli/script/Match.html">Match</a> object.
+   # @param dest This can be a file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; or a <a href="org/sikuli/script/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
    # @return Returns 1 if both src and dest can be found, otherwise returns 0.
    def dragDrop(self, src, dest, modifiers=0):
       if isinstance(dest, list) or isinstance(dest, tuple):
