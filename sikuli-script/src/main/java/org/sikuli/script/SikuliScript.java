@@ -30,18 +30,15 @@ public class SikuliScript {
    }
    
    public int switchApp(String appName){
-      return App.focus(appName);
+      if(App.focus(appName) != null)
+         return 0;
+      return -1;
    }
 
    public int openApp(String appName){
-      try{
-         App.open(appName);
-      }
-      catch(AppNotFound e){
-         Debug.error("Can't find app: " + e.getMessage());
-         return -1;
-      }
-      return 0;
+      if(App.open(appName) != null)
+         return 0;
+      return -1;
    }
 
    public int closeApp(String appName){

@@ -11,6 +11,7 @@ with s:
    setBundlePath("test-res")
    app = App("System Preferences.app")
    app.open()
+   sleep(2)
    win = app.window()
    win.highlight()
    click("show-all.png")

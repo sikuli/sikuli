@@ -8,10 +8,12 @@ public class App {
       _appName = appName;
    }
 
-   public static App open(String appName) throws AppNotFound{
+   public static App open(String appName) {
+      if(_osUtil.openApp(appName)!=0){
+         Debug.error("App.open failed: " + appName + " not found");
+         return null;
+      }
       App app = new App(appName);
-      if(_osUtil.openApp(appName)!=0)
-         throw new AppNotFound(appName);
       return app;
    }
 
@@ -19,8 +21,13 @@ public class App {
       return _osUtil.closeApp(appName);
    }
 
-   public static int focus(String appName){
-      return _osUtil.switchApp(appName);
+   public static App focus(String appName){
+      if(_osUtil.switchApp(appName)!=0){
+         Debug.error("App.focus failed: " + appName + " not found");
+         return null;
+      }
+      App app = new App(appName);
+      return app;
    }
 
    public App focus(){
@@ -28,7 +35,7 @@ public class App {
       return this;
    }
 
-   public App open() throws AppNotFound{
+   public App open() {
       return open(_appName);
    }
 
