@@ -3,11 +3,14 @@ package org.sikuli.script;
 import java.io.*;
 import java.awt.Window;
 import javax.swing.JWindow;
+import javax.swing.JOptionPane;
 import java.awt.Rectangle;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 import com.sun.awt.AWTUtilities;
 
 public class MacUtil implements OSUtil {
+
+   private static boolean _askedToEnableAX = false;
 
    static {
       try{
@@ -46,7 +49,29 @@ public class MacUtil implements OSUtil {
       }
    }
 
+   private void checkAxEnabled(String name){
+      if(!isAxEnabled()){
+         Debug.error(name + " requires Accessibility API to be enabled!");
+         if(_askedToEnableAX)
+            return;
+         int ret = JOptionPane.showConfirmDialog(null,
+               "You need to enable Accessibility API to use the function \"" +
+               name + "\".\n"+
+               "Should I open te System Preferences for you?",
+               "Accessibility API not enabled",
+               JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+         if(ret == JOptionPane.YES_OPTION){
+            openAxSetting();
+            JOptionPane.showMessageDialog(null, 
+                  "Check \"Enable access for assistant devices\""+
+                  "in the System Preferences\n and then close this dialog.", 
+                  "Enable Accessibility API", JOptionPane.INFORMATION_MESSAGE);
+         }
+         _askedToEnableAX = true;
+      }
+   }
    public Region getWindow(String appName, int winNum){
+      checkAxEnabled("getWindow");
       long pid = getPID(appName);
       Rectangle rect = getRegion(pid, winNum);
       if(rect != null)
@@ -59,6 +84,7 @@ public class MacUtil implements OSUtil {
    }
 
    public Region getFocusedWindow(){
+      checkAxEnabled("getFocusedWindow");
       Rectangle rect = getFocusedRegion();
       if(rect != null)
          return new Region(rect);
@@ -70,6 +96,8 @@ public class MacUtil implements OSUtil {
    public static native long getPID(String appName);
    public static native Rectangle getRegion(long pid, int winNum);
    public static native Rectangle getFocusedRegion();
+   public static native boolean isAxEnabled();
+   public static native void openAxSetting();
 
    public void setWindowOpacity(JWindow win, float alpha){
       win.getRootPane().putClientProperty("Window.alpha", new Float(alpha));

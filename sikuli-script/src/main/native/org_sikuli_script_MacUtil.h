@@ -47,6 +47,22 @@ JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getRegion
 JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getFocusedRegion
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_sikuli_script_MacUtil
+ * Method:    isAxEnabled
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_MacUtil_isAxEnabled
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_sikuli_script_MacUtil
+ * Method:    openAxSetting
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_sikuli_script_MacUtil_openAxSetting
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

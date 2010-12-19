@@ -179,3 +179,17 @@ JNIEXPORT jboolean JNICALL Java_org_sikuli_script_MacUtil__1openApp
    [pool release];
    return ret;
 }
+
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_MacUtil_isAxEnabled
+  (JNIEnv *env, jclass jobj){
+     return AXAPIEnabled();
+}
+
+JNIEXPORT void JNICALL Java_org_sikuli_script_MacUtil_openAxSetting
+  (JNIEnv *env, jclass jobj){
+     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+     NSAppleScript *a = [[NSAppleScript alloc] initWithSource:@"tell application \"System Preferences\"\nactivate\nset current pane to pane \"com.apple.preference.universalaccess\"\nend tell"];
+     [a executeAndReturnError:nil];
+     [a release];
+     [pool release];
+}
