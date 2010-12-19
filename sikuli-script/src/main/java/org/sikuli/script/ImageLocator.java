@@ -79,8 +79,50 @@ public class ImageLocator {
       }
    }
 
+   public static void addImagePath(String path){
+      String imgPath = System.getProperty("SIKULI_IMAGE_PATH");
+      if(imgPath != null)
+         imgPath += ":" + path;
+      else
+         imgPath = path;
+      System.setProperty("SIKULI_IMAGE_PATH", imgPath);
+   }
 
-   protected String[] getImagePath(){
+   protected static String[] splitImagePath(String path){
+      path = path.replaceAll("[Hh][Tt][Tt][Pp]://","__http__//");
+      path = path.replaceAll("[Hh][Tt][Tt][Pp][Ss]://","__https__//");
+      String[] ret = path.split("[:;]");
+      for(int i=0;i<ret.length;i++){
+         if(ret[i].indexOf("__http__")>=0)
+            ret[i] = ret[i].replaceAll("__http__//", "http://");
+         else if(ret[i].indexOf("__https__")>=0)
+            ret[i] = ret[i].replaceAll("__https__//", "https://");
+         if(!ret[i].endsWith("/"))
+            ret[i] += "/";
+      }
+      return ret;
+   }
+
+   public static void removeImagePath(String path){
+      String imgPath = System.getProperty("SIKULI_IMAGE_PATH");
+      if(imgPath != null){
+         String[] paths = splitImagePath(imgPath);
+         StringBuilder filteredPath = new StringBuilder();
+         boolean first = true;
+         for(String p : paths){
+            if(!p.equals(path) && !p.equals(path+"/")){
+               if(first)
+                  first = false;
+               else
+                  filteredPath.append(":");
+               filteredPath.append(p);
+            }
+         }
+         System.setProperty("SIKULI_IMAGE_PATH", filteredPath.toString());
+      }
+   }
+
+   public static String[] getImagePath(){
       String sikuli_img_path = "";
       if(System.getenv("SIKULI_IMAGE_PATH") != null)
          sikuli_img_path += System.getenv("SIKULI_IMAGE_PATH");
@@ -90,22 +132,10 @@ public class ImageLocator {
             sikuli_img_path += ":";
          sikuli_img_path += System.getProperty("SIKULI_IMAGE_PATH");
       }
-      if(sikuli_img_path!=null){
-         sikuli_img_path = sikuli_img_path.replaceAll("[Hh][Tt][Tt][Pp]://","__http__//");
-         sikuli_img_path = sikuli_img_path.replaceAll("[Hh][Tt][Tt][Pp][Ss]://","__https__//");
-         Debug.log(3, "SIKULI_IMAGE_PATH: " + sikuli_img_path);
-         String[] ret = sikuli_img_path.split("[:;]");
-         for(int i=0;i<ret.length;i++){
-            if(ret[i].indexOf("__http__")>=0)
-               ret[i] = ret[i].replaceAll("__http__//", "http://");
-            else if(ret[i].indexOf("__https__")>=0)
-               ret[i] = ret[i].replaceAll("__https__//", "https://");
-            if(!ret[i].endsWith("/"))
-               ret[i] += "/";
-         }
-         return ret;
+      if(sikuli_img_path.length() > 0){
+         return splitImagePath(sikuli_img_path);
       }
-      return null;
+      return new String[]{};
    }
 
    protected String searchFile(String filename) throws IOException {

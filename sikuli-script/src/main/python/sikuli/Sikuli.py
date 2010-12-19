@@ -22,6 +22,7 @@ from org.sikuli.script import Env
 from org.sikuli.script import OS
 from org.sikuli.script import App
 from org.sikuli.script import ScreenHighlighter
+from org.sikuli.script import ImageLocator
 from java.awt import Rectangle
 from Key import *
 from Button import *
@@ -32,6 +33,15 @@ from Helper import *
 import SikuliImporter
 
 _si = SikuliScript()
+
+def addImagePath(path):
+   ImageLocator.addImagePath(path)
+
+def getImagePath():
+   return ImageLocator.getImagePath()
+
+def removeImagePath(path):
+   ImageLocator.removeImagePath(path)
 
 ##
 # Sets the path for searching images in all Sikuli Script methods. <br/>
