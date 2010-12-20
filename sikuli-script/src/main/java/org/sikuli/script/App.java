@@ -36,8 +36,9 @@ public class App {
    }
 
    public App focus(int num){
-      if(Env.isWindows() && _pid != 0){
-         if(((Win32Util)_osUtil).switchApp(_pid, num)<0){
+      Debug.history("App.focus " + this.toString() + " #" + num);
+      if(_pid != 0){
+         if(_osUtil.switchApp(_pid, num)==0){
             Debug.error("App.focus failed: " + _appName + 
                         "(" + _pid +") not found");
             return null;
@@ -56,14 +57,15 @@ public class App {
    public App open() {
       if(Env.isWindows()){
          int pid = _osUtil.openApp(_appName);
-         Debug.log("open " + _appName + " PID: " + pid);
+         _pid = pid;
+         Debug.history("App.open " + this.toString());
          if(pid == 0){
             Debug.error("App.open failed: " + _appName + " not found");
             return null;
          }
-         _pid = pid;
       }
       else{
+         Debug.history("App.open " + this.toString());
          if(_osUtil.openApp(_appName)<0){
             Debug.error("App.open failed: " + _appName + " not found");
             return null;
@@ -73,8 +75,9 @@ public class App {
    }
 
    public int close(){
-      if(Env.isWindows() && _pid != 0)
-         return ((Win32Util)_osUtil).closeApp(_pid);
+      Debug.history("App.close " + this.toString());
+      if(_pid != 0)
+         return _osUtil.closeApp(_pid);
       return close(_appName);
    }
 
@@ -83,15 +86,23 @@ public class App {
    }
 
    public Region window(){
+      if(_pid != 0)
+         return _osUtil.getWindow(_pid);
       return _osUtil.getWindow(_appName);
    }
 
    public Region window(int winNum){
+      if(_pid != 0)
+         return _osUtil.getWindow(_pid, winNum);
       return _osUtil.getWindow(_appName, winNum);
    }
 
    public static Region focusedWindow(){
       return _osUtil.getFocusedWindow();
+   }
+
+   public String toString(){
+      return _appName + "(" + _pid + ")";
    }
 
 }

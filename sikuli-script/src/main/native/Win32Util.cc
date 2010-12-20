@@ -76,10 +76,9 @@ static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
       if(gWinCount == gWinNum){
          SetForegroundWindow(handle);
          GetWindowThreadProcessId(handle, &gPid);
+         return FALSE;
       }
-      else
-         gWinCount++;
-      return FALSE;
+      gWinCount++;
    }
    return TRUE;
 }
@@ -88,11 +87,11 @@ static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
    DWORD pid;
    GetWindowThreadProcessId(handle, &pid);
    if( pid == gPid){
-      if(gWinCount == gWinNum)
+      if(gWinCount == gWinNum){
          SetForegroundWindow(handle);
-      else
-         gWinCount++;
-      return FALSE;
+         return FALSE;
+      }
+      gWinCount++;
    }
    return TRUE;
 }

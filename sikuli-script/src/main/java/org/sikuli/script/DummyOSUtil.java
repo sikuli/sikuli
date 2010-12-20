@@ -15,6 +15,11 @@ public class DummyOSUtil implements OSUtil {
       return -1;
    }
 
+   public int switchApp(int pid, int num){
+      System.err.println("Your OS doesn't support switchApp");
+      return -1;
+   }
+
    public int openApp(String appName){
       System.err.println("Your OS doesn't support openApp");
       return -1;
@@ -24,6 +29,12 @@ public class DummyOSUtil implements OSUtil {
    public int closeApp(String appName){
       System.err.println("Your OS doesn't support closeApp");
       return -1;
+   }
+
+   public int closeApp(int pid){
+      System.err.println("Your OS doesn't support closeApp");
+      return -1;
+   
    }
 
    public Region getWindow(String appName){
