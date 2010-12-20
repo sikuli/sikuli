@@ -50,7 +50,7 @@ static BOOL CALLBACK killWindowByPid(HWND handle, long lParam){
 }
 
 // pre-req: gAppName is set
-static BOOL CALLBACK killWindow(HWND handle, long lParam){
+static BOOL CALLBACK killWindowByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
    if( strstr_i(buf, gAppName) != NULL ){
@@ -99,7 +99,7 @@ static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
 
 
 static HWND gFoundHandle;
-static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
+static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
    //fprintf(stderr,"win: %s\n", buf);
@@ -160,7 +160,6 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_openApp(JNIEnv *env, job
    buf[0] = '"';
    buf[n+1] = '"';
    buf[n+2] = 0;
-//   int result = WinExec(buf, SW_SHOWNORMAL);
    ZeroMemory(&si, sizeof(si));
    ZeroMemory(&pi, sizeof(pi));
    si.cb = sizeof(si);
@@ -188,7 +187,7 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__I
 
 JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__Ljava_lang_String_2(JNIEnv *env, jobject jobj, jstring jAppName){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
-   BOOL result = EnumWindows((WNDENUMPROC)killWindow, 0);
+   BOOL result = EnumWindows((WNDENUMPROC)killWindowByAppName, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    if(result!=0)
       return -1;
@@ -329,7 +328,7 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__Ljava_lang_Str
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
    gWinCount = 0;
-   BOOL result = EnumWindows((WNDENUMPROC)findWindowHandle, 0);
+   BOOL result = EnumWindows((WNDENUMPROC)findWindowHandleByAppName, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    if( result != 0){ // failed
       return 0;

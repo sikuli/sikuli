@@ -3,14 +3,17 @@ package org.sikuli.script;
 import javax.swing.JWindow;
 
 public interface OSUtil {
+   // returns PID, 0 if fails
    public int openApp(String appName);
 
+   // returns PID, 0 if fails
    public int switchApp(String appName);
    public int switchApp(String appName, int winNum);
 
    //internal use
    public int switchApp(int pid, int num);
 
+   // returns 0 if succeeds, -1 if fails
    public int closeApp(String appName);
 
    //internal use
