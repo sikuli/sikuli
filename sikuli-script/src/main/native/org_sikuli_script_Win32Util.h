@@ -10,10 +10,18 @@ extern "C" {
 /*
  * Class:     org_sikuli_script_Win32Util
  * Method:    switchApp
- * Signature: (Ljava/lang/String;)I
+ * Signature: (Ljava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp__Ljava_lang_String_2I
+  (JNIEnv *, jobject, jstring, jint);
+
+/*
+ * Class:     org_sikuli_script_Win32Util
+ * Method:    switchApp
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp__II
+  (JNIEnv *, jobject, jint, jint);
 
 /*
  * Class:     org_sikuli_script_Win32Util
@@ -28,8 +36,16 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_openApp
  * Method:    closeApp
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__Ljava_lang_String_2
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_sikuli_script_Win32Util
+ * Method:    closeApp
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__I
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     org_sikuli_script_Win32Util
@@ -41,11 +57,19 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_Win32Util_bringWindowToFront
 
 /*
  * Class:     org_sikuli_script_Win32Util
- * Method:    getPID
+ * Method:    getHwnd
  * Signature: (Ljava/lang/String;I)J
  */
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getPID
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__Ljava_lang_String_2I
   (JNIEnv *, jclass, jstring, jint);
+
+/*
+ * Class:     org_sikuli_script_Win32Util
+ * Method:    getHwnd
+ * Signature: (II)J
+ */
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__II
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     org_sikuli_script_Win32Util

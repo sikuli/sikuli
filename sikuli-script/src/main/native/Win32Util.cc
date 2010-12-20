@@ -35,6 +35,21 @@ static bool strstr_i(char const *haystack, const char *pneedle){
 
 
 static const char *gAppName = NULL;
+static DWORD gPid;
+
+static BOOL CALLBACK killWindowByPid(HWND handle, long lParam){
+   DWORD pid;
+   GetWindowThreadProcessId(handle, &pid);
+   if(pid == gPid){
+      HANDLE proc = OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE, FALSE, pid);
+      TerminateProcess(proc, 0);
+      CloseHandle(proc);
+      return FALSE;
+   }
+   return TRUE;
+}
+
+// pre-req: gAppName is set
 static BOOL CALLBACK killWindow(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
@@ -49,19 +64,42 @@ static BOOL CALLBACK killWindow(HWND handle, long lParam){
    return TRUE;
 }
 
-static BOOL CALLBACK findWindow(HWND handle, long lParam){
-   char buf[BUF_SIZE];
-   GetWindowText(handle, buf, BUF_SIZE);
-   if( strstr_i(buf, gAppName) != NULL ){
-      SetForegroundWindow(handle);
+static int gWinNum, gWinCount;
+
+// pre-req: gAppName, gWinNum, gWinCount = 0 
+// output: gPid of the found window
+static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
+   char filename[BUF_SIZE], title[BUF_SIZE] ;
+   GetWindowModuleFileName(handle, filename, BUF_SIZE);
+   GetWindowText(handle, title, BUF_SIZE);
+   if( strstr_i(filename, gAppName) != NULL || strstr_i(title, gAppName) != NULL){
+      if(gWinCount == gWinNum){
+         SetForegroundWindow(handle);
+         GetWindowThreadProcessId(handle, &gPid);
+      }
+      else
+         gWinCount++;
+      return FALSE;
+   }
+   return TRUE;
+}
+
+static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
+   DWORD pid;
+   GetWindowThreadProcessId(handle, &pid);
+   if( pid == gPid){
+      if(gWinCount == gWinNum)
+         SetForegroundWindow(handle);
+      else
+         gWinCount++;
       return FALSE;
    }
    return TRUE;
 }
 
 
+
 static HWND gFoundHandle;
-static int gWinNum, gWinCount;
 static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
@@ -76,37 +114,86 @@ static BOOL CALLBACK findWindowHandle(HWND handle, long lParam){
    return TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp(JNIEnv *env, jobject jobj, jstring jAppName){
-
-   gAppName = env->GetStringUTFChars(jAppName, NULL);
-   BOOL result = EnumWindows((WNDENUMPROC)findWindow, 0);
-   env->ReleaseStringUTFChars(jAppName, gAppName);
-   if( result != 0){ // switch failed. open it
-		return Java_org_sikuli_script_Win32Util_openApp(env, jobj, jAppName);
+static BOOL CALLBACK findWindowHandleByPid(HWND handle, long lParam){
+   DWORD pid;
+   GetWindowThreadProcessId(handle, &pid);
+   if( pid == gPid ){
+      if(gWinCount == gWinNum){
+         gFoundHandle = handle;
+         return FALSE;
+      }
+      gWinCount++;
    }
-   return result;
+   return TRUE;
 }
 
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp__Ljava_lang_String_2I (JNIEnv *env, jobject jobj, jstring jAppName, jint jWinNum){
+
+   gAppName = env->GetStringUTFChars(jAppName, NULL);
+   gWinNum = jWinNum;
+   gWinCount = 0;
+   BOOL result = EnumWindows((WNDENUMPROC)focusWinByAppName, 0);
+   env->ReleaseStringUTFChars(jAppName, gAppName);
+   if(result != 0){ // switch failed. open it
+      return Java_org_sikuli_script_Win32Util_openApp(env, jobj, jAppName);
+   }
+   return gPid;
+}
+
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp__II(JNIEnv *env, jobject jobj, jint jPid, jint jWinNum){
+   gPid = jPid;
+   gWinNum = jWinNum;
+   gWinCount = 0;
+   BOOL result = EnumWindows((WNDENUMPROC)focusWinByPid, 0);
+   if(result != 0)
+      return 0;
+   return jPid;
+}
+
+//returns PID, or 0 if failed.
 JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
    const char *appName = env->GetStringUTFChars(jAppName, NULL);
    int n = strlen(appName);
    char *buf = new char[n+3];
+   STARTUPINFO si;
+   PROCESS_INFORMATION pi;
    strncpy(buf+1, appName, n);
    buf[0] = '"';
    buf[n+1] = '"';
    buf[n+2] = 0;
-   int result = WinExec(buf, SW_SHOWNORMAL);
+//   int result = WinExec(buf, SW_SHOWNORMAL);
+   ZeroMemory(&si, sizeof(si));
+   ZeroMemory(&pi, sizeof(pi));
+   si.cb = sizeof(si);
+   int result = CreateProcess( NULL,
+     buf, NULL, NULL, FALSE, 0, 
+     NULL, NULL, &si, &pi);
+
    delete [] buf;
    env->ReleaseStringUTFChars(jAppName, appName);
-   if( result > 31 ) return 0;
-   return -1;
+
+   if(!result) // CreateProcess failed
+      return 0;
+   return pi.dwProcessId;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__I
+  (JNIEnv *env, jobject jobj, jint jPid){
+  
+   gPid = jPid;
+   BOOL result = EnumWindows((WNDENUMPROC)killWindowByPid, 0);
+   if(result!=0)
+      return -1;
+   return 0;
+}
+
+JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__Ljava_lang_String_2(JNIEnv *env, jobject jobj, jstring jAppName){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    BOOL result = EnumWindows((WNDENUMPROC)killWindow, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
-   return result;
+   if(result!=0)
+      return -1;
+   return 0;
 }
 
 
@@ -224,8 +311,21 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_Win32Util_bringWindowToFront
 }
 
 
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__II
+  (JNIEnv *env, jclass jobj, jint jPid, jint jWinNum){
+   gPid = jPid;
+   gWinNum = jWinNum;
+   gWinCount = 0;
+   BOOL result = EnumWindows((WNDENUMPROC)findWindowHandleByPid, 0);
+   if( result != 0){ // failed
+      return 0;
+   }
+   return (jlong)gFoundHandle;
+  
+}
 
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getPID
+
+JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__Ljava_lang_String_2I
   (JNIEnv *env, jclass jobj, jstring jAppName, jint jWinNum){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
@@ -235,7 +335,7 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getPID
    if( result != 0){ // failed
       return 0;
    }
-   //fprintf(stderr, "getPID: %d\n", (long)gFoundHandle);
+   //fprintf(stderr, "getHwnd: %d\n", (long)gFoundHandle);
    return (jlong)gFoundHandle;
   }
 

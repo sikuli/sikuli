@@ -30,6 +30,18 @@ public class Env {
       return OS.NOT_SUPPORTED;
    }
 
+   public static boolean isWindows(){
+      return getOS() == OS.WINDOWS;
+   }
+
+   public static boolean isLinux(){
+      return getOS() == OS.LINUX;
+   }
+
+   public static boolean isMac(){
+      return getOS() == OS.MAC;
+   }
+
    public static String getClipboard(){
       Transferable content = Clipboard.getSystemClipboard().getContents(null);
       try{
