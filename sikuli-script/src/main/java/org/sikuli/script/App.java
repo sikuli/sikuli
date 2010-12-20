@@ -45,8 +45,17 @@ public class App {
          }
       }
       else{
-         _pid = _osUtil.switchApp(_appName, num);
-         if(_pid == 0){
+         boolean failed = false;
+         if(Env.isWindows()){
+            _pid = _osUtil.switchApp(_appName, num);
+            if(_pid == 0)
+               failed = true;
+         }
+         else{
+            if(_osUtil.switchApp(_appName, num)<0)
+               failed = true;
+         }
+         if(failed){
             Debug.error("App.focus failed: " + _appName + " not found");
             return null;
          }

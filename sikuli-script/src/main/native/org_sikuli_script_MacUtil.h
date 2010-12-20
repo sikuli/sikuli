@@ -26,18 +26,18 @@ JNIEXPORT jboolean JNICALL Java_org_sikuli_script_MacUtil__1openApp
 /*
  * Class:     org_sikuli_script_MacUtil
  * Method:    getPID
- * Signature: (Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_MacUtil_getPID
+JNIEXPORT jint JNICALL Java_org_sikuli_script_MacUtil_getPID
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     org_sikuli_script_MacUtil
  * Method:    getRegion
- * Signature: (JI)Ljava/awt/Rectangle;
+ * Signature: (II)Ljava/awt/Rectangle;
  */
 JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getRegion
-  (JNIEnv *, jclass, jlong, jint);
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     org_sikuli_script_MacUtil

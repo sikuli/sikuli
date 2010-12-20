@@ -72,9 +72,9 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_MacUtil_bringWindowToFront
    [pool release];
 }
 
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_MacUtil_getPID
+JNIEXPORT jint JNICALL Java_org_sikuli_script_MacUtil_getPID
    (JNIEnv *env, jclass jobj, jstring jAppName){
-   long pid = 0;
+   int pid = 0;
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
    const jchar *chars = (*env)->GetStringChars(env, jAppName, NULL);
    NSString *appName = [NSString stringWithCharacters:(UniChar *)chars
@@ -142,7 +142,7 @@ JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getFocusedRegion
 }
 
 JNIEXPORT jobject JNICALL Java_org_sikuli_script_MacUtil_getRegion
-  (JNIEnv *env, jclass jobj, jlong pid, jint winNum){
+  (JNIEnv *env, jclass jobj, jint pid, jint winNum){
    AXUIElementRef ui = AXUIElementCreateApplication(pid);
 
    NSArray       *proc_attrs;

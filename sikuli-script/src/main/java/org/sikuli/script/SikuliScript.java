@@ -13,6 +13,7 @@ import javax.swing.*;
 
 
 public class SikuliScript {
+   public final static int DEFAULT_SERVER_PORT = 7458;
 
    public SikuliScript() throws AWTException{
    }
@@ -70,18 +71,30 @@ public class SikuliScript {
 
    }
 
+   private static void startServerMode(int port){
+      /*
+      SikuliServer serv = new SikuliServer(port);
+      serv.start();
+      */
+   }
+
    public static void main(String[] args){
       if(args.length == 0 ){
-         System.out.println("Usage: sikuli-script [file.sikuli]");
+         System.out.println("Usage: sikuli-script [-s] [file.sikuli]");
          return;
       }
       for (int i = 0; i < args.length; i++) {
-         try {
-            ScriptRunner runner = new ScriptRunner(args);
-            runner.runPython(args[i]);
+         if(args[i].equals("-s")){
+            startServerMode(DEFAULT_SERVER_PORT);
          }
-         catch(IOException e) {
-            e.printStackTrace();
+         else{
+            try {
+               ScriptRunner runner = new ScriptRunner(args);
+               runner.runPython(args[i]);
+            }
+            catch(IOException e) {
+               e.printStackTrace();
+            }
          }
       }
    }

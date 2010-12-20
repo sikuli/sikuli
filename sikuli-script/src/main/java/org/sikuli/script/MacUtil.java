@@ -26,6 +26,15 @@ public class MacUtil implements OSUtil {
       return openApp(appName);
    }
 
+   public int switchApp(int pid, int num){
+      return -1;
+   }
+
+   // ignore winNum on Mac
+   public int switchApp(String appName, int winNum){
+      return openApp(appName);
+   }
+
    public int openApp(String appName){
       Debug.history("openApp: \"" + appName + "\"");
       if(_openApp(appName))
@@ -47,6 +56,10 @@ public class MacUtil implements OSUtil {
       catch(Exception e){
          return -1;
       }
+   }
+
+   public int closeApp(int pid){
+      return -1;
    }
 
    private void checkAxEnabled(String name){
@@ -72,15 +85,24 @@ public class MacUtil implements OSUtil {
    }
    public Region getWindow(String appName, int winNum){
       checkAxEnabled("getWindow");
-      long pid = getPID(appName);
-      Rectangle rect = getRegion(pid, winNum);
-      if(rect != null)
-         return new Region(rect);
-      return null;
+      int pid = getPID(appName);
+      return getWindow(pid, winNum);
    }
 
    public Region getWindow(String appName){
       return getWindow(appName, 0);
+   }
+
+   public Region getWindow(int pid){
+      return getWindow(pid, 0);
+   }
+
+   public Region getWindow(int pid, int winNum){
+      Rectangle rect = getRegion(pid, winNum);
+      if(rect != null)
+         return new Region(rect);
+      return null;
+   
    }
 
    public Region getFocusedWindow(){
@@ -93,8 +115,8 @@ public class MacUtil implements OSUtil {
 
    public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
    public static native boolean _openApp(String appName);
-   public static native long getPID(String appName);
-   public static native Rectangle getRegion(long pid, int winNum);
+   public static native int getPID(String appName);
+   public static native Rectangle getRegion(int pid, int winNum);
    public static native Rectangle getFocusedRegion();
    public static native boolean isAxEnabled();
    public static native void openAxSetting();
