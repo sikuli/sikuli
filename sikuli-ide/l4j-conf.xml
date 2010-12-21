@@ -19,7 +19,7 @@
     <cp>sikuli-ide.jar</cp>
     <cp>sikuli-script.jar</cp>
     <cp>commons-cli-1.2.jar</cp>
-    <cp>jintellitype-1.3.2.jar</cp>
+    <cp>jintellitype-1.3.6.jar</cp>
     <cp>junit-3.8.1.jar</cp>
   </classPath>
   <jre>
