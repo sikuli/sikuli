@@ -163,7 +163,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
             public void run(){
                try{
                   Finder f = new Finder(_simg, _match_region);
-                  f.find(new Pattern(patFilename).similar(0f));
+                  f.findAll(new Pattern(patFilename).similar(0.00001f));
                   _fullMatches = new TreeSet<Match>(new Comparator(){
                      public int compare(Object o1, Object o2){
                         return -1 * ((Comparable)o1).compareTo(o2);
