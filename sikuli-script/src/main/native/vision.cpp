@@ -44,7 +44,7 @@ FindInput::init(){
    bFindingText = false;
    bFindingAll = false;
    similarity = 0.8;
-   limit = 10;
+   limit = 100;
 }
 
 void
@@ -155,7 +155,7 @@ find_helper(FindInput& input){
       f.find(input.getTargetText().c_str(), input.getSimilarity());
       
       if (input.isFindingAll()){
-         while (f.hasNext()){
+         while (f.hasNext() && (results.size() < input.getLimit())){
             results.push_back(f.next());
          }
       }
@@ -176,7 +176,7 @@ find_helper(FindInput& input){
       
       if (input.isFindingAll()){
          f.find_all(image, input.getSimilarity());
-         while (f.hasNext()){
+         while (f.hasNext() && (results.size() < input.getLimit())){
             results.push_back(f.next());
          }
       }
