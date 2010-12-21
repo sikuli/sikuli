@@ -179,7 +179,7 @@ class HighlightLabelView extends LabelView {
 
    private static String[] keywordsSikuli = {
       "find", "wait", "findAll", "waitVanish", "exists",
-      "click", "doubleClick", "rightClick", "hover", 
+      "click", "doubleClick", "rightClick", "hover", "wheel",
       "type", "paste",
       "dragDrop", "drag", "dropAt",
       "mouseMove", "mouseDown", "mouseUp",
@@ -220,7 +220,11 @@ class HighlightLabelView extends LabelView {
       "PAGE_UP", "PAGE_DOWN", "DELETE", "END", "HOME", "INSERT", "F1",
       "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
       "F13", "F14", "F15", "SHIFT", "CTRL", "ALT", "META", "CMD", "WIN",
-      "SCREEN", "MIDDLE"
+      "SCREEN", "MIDDLE",
+      "WHEEL_UP", "WHEEL_DOWN",
+      "PRINTSCREEN", "SCROLL_LOCK", "PAUSE", "CAPS_LOCK", "NUM0",
+      "NUM1", "NUM2", "NUM3", "NUM4", "NUM5", "NUM6", "NUM7", "NUM8", "NUM9",
+      "SEPARATOR", "NUM_LOCK", "ADD", "MINUS", "MULTIPLY", "DIVIDE"
    };
 
    static {

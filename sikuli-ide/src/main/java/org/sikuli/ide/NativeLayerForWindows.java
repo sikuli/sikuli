@@ -8,6 +8,8 @@ import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
 
+import org.sikuli.script.Debug;
+
 public class NativeLayerForWindows implements NativeLayer {
    private Map<String, Integer> _callbackIdMap = new HashMap<String,Integer>();
    private Map<Integer, String> _idCallbackMap = new HashMap<Integer,String>();
