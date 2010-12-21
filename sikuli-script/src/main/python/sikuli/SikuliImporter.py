@@ -53,7 +53,8 @@ class SikuliImporter:
          paths = package_path
       else:
          paths = sys.path
-         paths.append(".")
+         if not "." in paths:
+            paths.append(".")
       for path in paths:
          mod = self._find_module(module_name, path)
          if mod:
