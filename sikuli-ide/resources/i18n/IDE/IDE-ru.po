@@ -7,17 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-22 19:18+0000\n"
-"Last-Translator: Nick <nickzam@gmail.com>\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-07 04:09+0000\n"
+"Last-Translator: Sukochev Roman (Leolik) <leolikua@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
 msgstr "Файл"
 
@@ -96,8 +97,8 @@ msgid "Run"
 msgstr "Выполнить"
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "Выполнить и показать действия"
+msgid "Run in slow motion"
+msgstr "Запустить в замедленном действии"
 
 #: menuRunStop
 msgid "Stop"
@@ -247,6 +248,22 @@ msgstr "Задержка перед захватом:"
 msgid "seconds"
 msgstr "секунд(ы)"
 
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr ""
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr ""
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr "Текст на картинке"
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr "Выкл (ручной ввод)"
+
 #: prefTabGeneralSettings
 msgid "General Settings"
 msgstr "Общие настройки"
@@ -271,6 +288,11 @@ msgstr "Строка: {0,number,integer}, Столбец: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "Настройки шаблонов"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "Файл"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr "Предпросмотр совпадений"
@@ -278,6 +300,14 @@ msgstr "Предпросмотр совпадений"
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "Смещение цели"
+
+#: lblPath
+msgid "Path:"
+msgstr "Путь"
+
+#: lblFilename
+msgid "Filename:"
+msgstr "Имя файла"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -310,6 +340,22 @@ msgstr "Да"
 #: no
 msgid "No"
 msgstr "Нет"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr "Файл существует"
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr "Вы уверены, что хотите переписать этот файл \"{0}\"?"
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr ""
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr ""
 
 #: cmdFind
 msgid ""

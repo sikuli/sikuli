@@ -2,17 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-18 03:18+0000\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-05 23:27+0000\n"
 "Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
 msgstr "檔案"
 
@@ -91,8 +92,8 @@ msgid "Run"
 msgstr "執行"
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "執行並顯示動作"
+msgid "Run in slow motion"
+msgstr "慢動作執行"
 
 #: menuRunStop
 msgid "Stop"
@@ -242,6 +243,22 @@ msgstr "截圖前延遲:"
 msgid "seconds"
 msgstr "秒"
 
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr "自動命名:"
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr "時間戳記"
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr "圖中文字"
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr "關閉 (手動輸入)"
+
 #: prefTabGeneralSettings
 msgid "General Settings"
 msgstr "一般設定"
@@ -266,6 +283,11 @@ msgstr "行: {0,number,integer}, 列: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "圖片樣式設定"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "命名"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr "圖片比對預覽"
@@ -273,6 +295,14 @@ msgstr "圖片比對預覽"
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "目標位置偏移"
+
+#: lblPath
+msgid "Path:"
+msgstr "路徑:"
+
+#: lblFilename
+msgid "Filename:"
+msgstr "檔名:"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -305,6 +335,22 @@ msgstr "是"
 #: no
 msgid "No"
 msgstr "否"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr "檔案已經存在"
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr "你確定要覆寫檔案 \"{0}\" 嗎?"
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr "螢幕截圖命名"
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr "輸入螢幕截圖的檔名"
 
 #: cmdFind
 msgid ""

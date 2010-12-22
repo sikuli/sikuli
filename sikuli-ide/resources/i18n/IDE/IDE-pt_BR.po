@@ -7,17 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-22 19:19+0000\n"
-"Last-Translator: Sikuli Developers <Unknown>\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-17 15:32+0000\n"
+"Last-Translator: Luiz Carlos <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
 msgstr "Arquivo"
 
@@ -96,8 +97,8 @@ msgid "Run"
 msgstr "Executar"
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "Executar e visualizar as ações"
+msgid "Run in slow motion"
+msgstr "Executar em câmera lenta"
 
 #: menuRunStop
 msgid "Stop"
@@ -247,6 +248,22 @@ msgstr "Espera antes de capturar"
 msgid "seconds"
 msgstr "segundos"
 
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr "Nomeação automática"
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr "timestamp"
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr "texto na imagem"
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr "desligado (entrada manual)"
+
 #: prefTabGeneralSettings
 msgid "General Settings"
 msgstr "Configurações gerais"
@@ -271,6 +288,11 @@ msgstr "Linha: {0,number,integer}, Coluna: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "Configurações de padrão"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "Arquivo"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr "Pré-visualização da comparação"
@@ -278,6 +300,14 @@ msgstr "Pré-visualização da comparação"
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "Desvio do alvo"
+
+#: lblPath
+msgid "Path:"
+msgstr "Caminho:"
+
+#: lblFilename
+msgid "Filename:"
+msgstr "Nome do arquivo"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -310,6 +340,22 @@ msgstr "Sim"
 #: no
 msgid "No"
 msgstr "Não"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr "O arquivo existe"
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr "Tem certeza que quer substituir este arquivo \"{0}\"?"
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr ""
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr "Entre com o nome do arquivo da imagem capturada"
 
 #: cmdFind
 msgid ""
