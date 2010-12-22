@@ -9,14 +9,28 @@ else:
    assert(len(img_path) > 0)
 
 prev_len = len(getImagePath())
-addImagePath("/tmp")
+if Env.getOS() == OS.WINDOWS:
+   addImagePath("c:\\temp")
+else:
+   addImagePath("/tmp")
 assert( len(getImagePath()) == prev_len + 1)
-assert('/tmp/' in set(getImagePath()))
+
+if Env.getOS() == OS.WINDOWS:
+   assert( "c:\\temp\\" in set(getImagePath()))
+else:
+   assert('/tmp/' in set(getImagePath()))
+
 addImagePath("/path/to/image")
 addImagePath("http://sikuli.org/path-image/")
 assert( len(getImagePath()) == prev_len + 3)
 
-removeImagePath("/tmp")
+if Env.getOS() == OS.WINDOWS:
+   removeImagePath("c:\\temp")
+else:
+   removeImagePath("/tmp")
 assert( len(getImagePath()) == prev_len + 2)
-removeImagePath("/tmp")
+if Env.getOS() == OS.WINDOWS:
+   removeImagePath("c:\\temp")
+else:
+   removeImagePath("/tmp")
 assert( len(getImagePath()) == prev_len + 2)

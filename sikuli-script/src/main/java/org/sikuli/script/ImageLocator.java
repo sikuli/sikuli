@@ -82,7 +82,7 @@ public class ImageLocator {
    public static void addImagePath(String path){
       String imgPath = System.getProperty("SIKULI_IMAGE_PATH");
       if(imgPath != null)
-         imgPath += ":" + path;
+         imgPath += Env.getSeparator() + path;
       else
          imgPath = path;
       System.setProperty("SIKULI_IMAGE_PATH", imgPath);
@@ -91,14 +91,14 @@ public class ImageLocator {
    protected static String[] splitImagePath(String path){
       path = path.replaceAll("[Hh][Tt][Tt][Pp]://","__http__//");
       path = path.replaceAll("[Hh][Tt][Tt][Pp][Ss]://","__https__//");
-      String[] ret = path.split("[:;]");
+      String[] ret = path.split(Env.getSeparator());
       for(int i=0;i<ret.length;i++){
          if(ret[i].indexOf("__http__")>=0)
             ret[i] = ret[i].replaceAll("__http__//", "http://");
          else if(ret[i].indexOf("__https__")>=0)
             ret[i] = ret[i].replaceAll("__https__//", "https://");
-         if(!ret[i].endsWith("/"))
-            ret[i] += "/";
+         if(!ret[i].endsWith(File.separator))
+            ret[i] += File.separator;
       }
       return ret;
    }
@@ -110,11 +110,11 @@ public class ImageLocator {
          StringBuilder filteredPath = new StringBuilder();
          boolean first = true;
          for(String p : paths){
-            if(!p.equals(path) && !p.equals(path+"/")){
+            if(!p.equals(path) && !p.equals(path+File.separator)){
                if(first)
                   first = false;
                else
-                  filteredPath.append(":");
+                  filteredPath.append(Env.getSeparator());
                filteredPath.append(p);
             }
          }
@@ -128,8 +128,8 @@ public class ImageLocator {
          sikuli_img_path += System.getenv("SIKULI_IMAGE_PATH");
       if(System.getProperty("SIKULI_IMAGE_PATH") != null){
          if(sikuli_img_path.length()>0 && 
-            !sikuli_img_path.endsWith(":") &&!sikuli_img_path.endsWith(";"))
-            sikuli_img_path += ":";
+           !sikuli_img_path.endsWith(Env.getSeparator()) )
+            sikuli_img_path += Env.getSeparator();
          sikuli_img_path += System.getProperty("SIKULI_IMAGE_PATH");
       }
       if(sikuli_img_path.length() > 0){

@@ -42,6 +42,12 @@ public class Env {
       return getOS() == OS.MAC;
    }
 
+   public static String getSeparator(){
+      if(isWindows())
+         return ";";
+      return ":";
+   }
+
    public static String getClipboard(){
       Transferable content = Clipboard.getSystemClipboard().getContents(null);
       try{
