@@ -12,7 +12,6 @@
 #include "opencv.hpp"
 #include <iostream>
 #include "tessocr.h"
-#include "sikuli-debug.h"
 
 using namespace cv;
 
@@ -23,24 +22,41 @@ private:
    static int image_i;
    static int step_i;
    static char* prefix;
+   static bool enabled;
    
 public:
-   
-//   VisualLogger(){
-//   }
-   
+      
    static void newImage(){
+      if (!enabled)
+         return;
+      
       image_i++;
       step_i = 0;
    }
    
-   static void log(const char* name, const Mat& image){
-      char buf[200];
-      if(sikuli::OCR_DEBUG_LEVEL<=0)
+   static void next(){
+      if (!enabled)
          return;
       
+      image_i++;
+      step_i = 0;
+   }
+   
+   
+   static void setEnabled(bool enabled_){
+      enabled = enabled_;
+   }
+   
+   static void log(const char* name, const Mat& image){
+      if (!enabled)
+         return;
+      
+      char buf[200];
+      
       if (prefix){
+         
          sprintf(buf, "%s-%02d-%s.vlog.png", prefix, step_i, name);
+         
       }else{
          sprintf(buf, "%03d-%02d-%s.vlog.png",image_i,step_i,name);           
       }
@@ -111,6 +127,14 @@ public:
    vector<LineBlob> lineblobs;
 };
 
+class Color{
+public:   
+   static Scalar RED;
+   static Scalar WHITE;
+   
+   static Scalar RANDOM();
+
+};
 
 class Painter {
 
@@ -119,16 +143,18 @@ public:
    static void drawRect(Mat& image, Rect r, Scalar color);
    static void drawRects(Mat& image, vector<Rect>& rects, Scalar color);
    static void drawRects(Mat& image, vector<Rect>& rects);
-  
+
+   static void drawBlobs(Mat& image, vector<Blob>& blobs);
    static void drawBlobs(Mat& image, vector<Blob>& blobs, Scalar color);
+   
    static void drawLineBlobs(Mat& image, vector<LineBlob>& lineblobs, Scalar color);
    static void drawParagraphBlobs(Mat& image, vector<ParagraphBlob> blobs, Scalar color);
   
    
-   static void drawOCRWord(Mat& image, OCRWord& ocrword);
-   static void drawOCRLine(Mat& image, OCRLine& ocrline);
-   static void drawOCRParagraph(Mat& image, OCRParagraph& ocrparagraph);
-   static void drawOCRText(Mat& image, OCRText& ocrtext);
+   static void drawOCRWord(Mat& image, OCRWord ocrword);
+   static void drawOCRLine(Mat& image, OCRLine ocrline);
+   static void drawOCRParagraph(Mat& image, OCRParagraph ocrparagraph);
+   static void drawOCRText(Mat& image, OCRText ocrtext);
    
 };
 
@@ -150,6 +176,10 @@ public:
    static void getLineBlobsAsIndividualWords(const Mat& screen, vector<LineBlob>& lineblobs);
    static void getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& parablobs);
    
+   static void findBoxes(const Mat& screen, vector<Blob>& output_blobs);
+   static Mat findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs);
+
+   
 private:
    
    static void computeUnitBlobs(const Mat& input, Mat& output);
@@ -157,8 +187,8 @@ private:
    static Mat removeGrayBackground(const Mat& input);
    static Mat obtainGrayBackgroundMask(const Mat& input);
 
-   static void findLongLines(const Mat& binary, Mat& dest);
-   static void findLongLines_Horizontal(const Mat& binary, Mat& dest);
+   static void findLongLines(const Mat& binary, Mat& dest, int min_length = 100, int extension = 0);
+   static void findLongLines_Horizontal(const Mat& binary, Mat& dest, int min_length = 100, int extension = 0);
    
    static void extractRects(const Mat& src, vector<Rect>& rects);
    static void extractBlobs(const Mat& src, vector<Blob>& blobs);
@@ -170,6 +200,8 @@ private:
    
    static bool hasMoreThanNUniqueColors(const Mat& src, int n);
    static bool areHorizontallyAligned(const vector<Rect>& rects);
+   
+   
    
    
    // linking
