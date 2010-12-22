@@ -7,23 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-09-15 14:00+0000\n"
-"Last-Translator: Berty <Unknown>\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-14 16:14+0000\n"
+"Last-Translator: Nadesj <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
-msgstr "Bestand"
+msgstr "File"
 
 #: menuEdit
 msgid "Edit"
-msgstr "Bewerken"
+msgstr "Bewerk"
 
 #: menuRun
 msgctxt "menuRun"
@@ -84,11 +85,11 @@ msgstr "Alles selecteren"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr "Insprong"
+msgstr "Inspringen"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
-msgstr "Uitsprong"
+msgstr "Uitspringen"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -96,8 +97,8 @@ msgid "Run"
 msgstr "Uitvoeren"
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "Uitvoeren en acties tonen"
+msgid "Run in slow motion"
+msgstr "Uitvoeren in slow-motion"
 
 #: menuRunStop
 msgid "Stop"
@@ -106,7 +107,7 @@ msgstr "Beëindigen"
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Unit test"
 
 #: menuViewCommandList
 msgctxt "menuViewCommandList"
@@ -135,7 +136,7 @@ msgstr "Stel vragen & vind antwoorden"
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr "Meld een Bug"
+msgstr "Meld een bug"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
@@ -151,7 +152,7 @@ msgstr "Er is geen update beschikbaar"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
-msgstr ""
+msgstr "Automatisch opnemen"
 
 #: cmdListCommandList
 msgctxt "cmdListCommandList"
@@ -173,7 +174,7 @@ msgstr "Naamloos"
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr "Unit Test"
+msgstr "Unit test"
 
 #: btnRun
 msgid "Run ({0})"
@@ -199,7 +200,7 @@ msgstr "Voeg een afbeelding van de hardeschijf in"
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
-msgstr ""
+msgstr "Kritieke fout tijdens het uitvoeren van {0}"
 
 #: msgExit
 msgid "Exited with code {0}"
@@ -235,7 +236,7 @@ msgstr "Scherm Opname"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr ""
+msgstr "Sneltoets snel opnemen"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
@@ -244,6 +245,22 @@ msgstr "Vertraging voor opname"
 #: prefSeconds
 msgid "seconds"
 msgstr "seconden"
+
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr "Automatische naamgeving"
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr ""
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr ""
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr ""
 
 #: prefTabGeneralSettings
 msgid "General Settings"
@@ -269,13 +286,26 @@ msgstr "Regel: {0,number,integer}, Kolom: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "Patroon Instellingen"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "Bestand"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr "Overeenkomsten voorbeeld"
+msgstr "Overeenkomend Voorbeeld"
 
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "Doel compensatie"
+
+#: lblPath
+msgid "Path:"
+msgstr "Pad:"
+
+#: lblFilename
+msgid "Filename:"
+msgstr "Bestandsnaam:"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -308,6 +338,22 @@ msgstr "Ja"
 #: no
 msgid "No"
 msgstr "Nee"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr "Bestand bestaat reeds"
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr "Weet u zeker dat u bestand \"{0}\" wilt overschrijven?"
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr "Naam van de screenshot"
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr "Geef de bestandsnaam op voor de screenshot"
 
 #: cmdFind
 msgid ""
@@ -375,7 +421,7 @@ msgstr "Beweegt de muis cursor op de best overeenkomende GUI-component."
 
 #: cmdDragDrop
 msgid "Drags the first component, and drops at the second component."
-msgstr "Sleept de eerste component, en laad het los op de tweede component."
+msgstr "sleept het eerste stukl, en laat vallen op het tweede stuk."
 
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."

@@ -7,17 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-11-15 20:33+0000\n"
-"Last-Translator: Fitoschido <Unknown>\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-05 23:29+0000\n"
+"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
 #: menuFile
+msgctxt "menuFile"
 msgid "File"
 msgstr "Archivo"
 
@@ -96,8 +97,8 @@ msgid "Run"
 msgstr "Ejecutar"
 
 #: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "Ejecutar y mostrar acciones"
+msgid "Run in slow motion"
+msgstr ""
 
 #: menuRunStop
 msgid "Stop"
@@ -247,6 +248,22 @@ msgstr "Retardo antes de la captura:"
 msgid "seconds"
 msgstr "segundos"
 
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr ""
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr ""
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr ""
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr ""
+
 #: prefTabGeneralSettings
 msgid "General Settings"
 msgstr "Preferencias generales"
@@ -271,6 +288,11 @@ msgstr "Línea: {0,number,integer}, Columna: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "Configuración de patrones"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "Archivo"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr "Previsualización de coincidencias"
@@ -278,6 +300,14 @@ msgstr "Previsualización de coincidencias"
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "Desplazamiento del objetivo"
+
+#: lblPath
+msgid "Path:"
+msgstr ""
+
+#: lblFilename
+msgid "Filename:"
+msgstr ""
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -310,6 +340,22 @@ msgstr "Sí"
 #: no
 msgid "No"
 msgstr "No"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr ""
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr ""
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr ""
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr ""
 
 #: cmdFind
 msgid ""

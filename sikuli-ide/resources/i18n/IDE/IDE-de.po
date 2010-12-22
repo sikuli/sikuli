@@ -7,19 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-17 21:46-0400\n"
-"PO-Revision-Date: 2010-05-22 19:19+0000\n"
+"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"PO-Revision-Date: 2010-12-20 09:50+0000\n"
 "Last-Translator: RaiMan <rmhdevelop@me.com>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-05 21:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
+"X-Generator: Launchpad (build 12093)\n"
 
-#: menuRunRunAndShowActions
-msgid "Run and show actions"
-msgstr "Ausführen und Aktionen zeigen"
+#: menuFile
+msgctxt "menuFile"
+msgid "File"
+msgstr "Datei"
+
+#: menuEdit
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: menuRun
+msgctxt "menuRun"
+msgid "Run"
+msgstr "Ausführen"
+
+#: menuView
+msgid "View"
+msgstr "Ansicht"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
@@ -30,6 +44,111 @@ msgstr "Unit Test"
 msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr "Kommandoliste"
+
+#: menuHelp
+msgid "Help"
+msgstr "Hilfe"
+
+#: menuHelpCheckUpdate
+msgid "Check Update..."
+msgstr "Prüfe auf neue Version..."
+
+#: menuHelpGuide
+msgid "The Complete Guide to Sikuli Script"
+msgstr "Der umfassende Leitfaden zu Sikuli Script"
+
+#: menuFileNew
+msgid "New"
+msgstr "Neu"
+
+#: menuFileOpen
+msgid "Open..."
+msgstr "Öffnen..."
+
+#: menuFileSave
+msgid "Save"
+msgstr "Sichern"
+
+#: menuFileSaveAs
+msgid "Save as..."
+msgstr "Sichern unter..."
+
+#: menuFileExport
+msgid "Export excutable..."
+msgstr "Speichern als ausführbar"
+
+#: menuFilePreferences
+msgid "Preferences..."
+msgstr "Einstellungen..."
+
+#: menuFileCloseTab
+msgid "Close Tab"
+msgstr "Tab schließen"
+
+#: menuFileQuit
+msgid "Quit"
+msgstr "Beenden"
+
+#: menuEditCut
+msgid "Cut"
+msgstr "Ausschneiden"
+
+#: menuEditCopy
+msgid "Copy"
+msgstr "Kopieren"
+
+#: menuEditPaste
+msgid "Paste"
+msgstr "Einfügen"
+
+#: menuEditSelectAll
+msgid "Select All"
+msgstr "Alles Auswählen"
+
+#: menuEditIndent
+msgid "Indent"
+msgstr "Einrücken"
+
+#: menuEditUnIndent
+msgid "Un-Indent"
+msgstr "Ausrücken"
+
+#: menuRunRun
+msgctxt "menuRunRun"
+msgid "Run"
+msgstr "Ausführen"
+
+#: menuRunRunAndShowActions
+msgid "Run in slow motion"
+msgstr "Ausführen in Zeitlupe"
+
+#: menuRunStop
+msgid "Stop"
+msgstr "Abbrechen"
+
+#: menuHelpDocumentations
+msgid "Tutorials, Examples, How-To's"
+msgstr "Tutorials, Beispiele, How-To's"
+
+#: menuHelpAsk
+msgid "Ask Questions & Find Answers"
+msgstr "Fragen stellen & Antworten finden"
+
+#: menuHelpBugReport
+msgid "Report a Bug"
+msgstr "Einen Fehler (Bug) melden"
+
+#: menuHelpHomepage
+msgid "Sikuli's Homepage"
+msgstr "Sikuli's Homepage"
+
+#: dlgUpdateAvailable
+msgid "Sikuli {0} is available!"
+msgstr "Sikuli {0} ist verfügbar!"
+
+#: msgNoUpdate
+msgid "No update is available."
+msgstr "Es gibt keine neuere Version."
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -48,6 +167,10 @@ msgstr "Meldungen"
 msgid "Test Trace"
 msgstr "Test Verlauf"
 
+#: tabUntitled
+msgid "Untitled"
+msgstr "Unbenannt"
+
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
@@ -60,6 +183,14 @@ msgstr "Ausführen ({0})"
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Drücke {0} zum Abbrechen"
+
+#: btnRegionHint
+msgid "Create a region to restrict screen matching"
+msgstr "Einen Ausschnitt erzeugen um die Suche einzuschränken"
+
+#: btnCaptureHint
+msgid "Take a screenshot ({0})"
+msgstr "Ein Bildschirmfoto machen ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -77,6 +208,10 @@ msgstr ""
 msgid "Exited with code {0}"
 msgstr "Beendet mit {0}"
 
+#: msgStopped
+msgid "Stopped"
+msgstr "Abgebrochen"
+
 #: msgErrorLine
 msgid "An error occurs at line {0}"
 msgstr "Ein Fehler in Zeile {0}"
@@ -89,9 +224,53 @@ msgstr ""
 "Fehlermeldung:\n"
 "{0}"
 
+#: msgCapturePrompt
+msgid "Select a region on the screen"
+msgstr "Wähle einen Ausschnitt auf dem Bildschirm"
+
+#: winPreferences
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: prefTabScreenCapturing
+msgid "Screen Capturing"
+msgstr "Bildschirmfoto"
+
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
 msgstr "Sofort Bildschirmfoto Tastenkombination:"
+
+#: prefCaptureDelay
+msgid "Delay before capture:"
+msgstr "Verzögerung vor Bildschirmfoto:"
+
+#: prefSeconds
+msgid "seconds"
+msgstr "Sekunden"
+
+#: prefAutoNaming
+msgid "Automatic Naming:"
+msgstr "Automatische Dateinamensvergabe"
+
+#: prefTimestamp
+msgid "time stamp"
+msgstr "Zeitstempel"
+
+#: prefRecognizedText
+msgid "text in the image"
+msgstr "Text im Bild"
+
+#: prefManualInput
+msgid "off (manual input)"
+msgstr "Aus (manuelle Benennung)"
+
+#: prefTabGeneralSettings
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: prefGeneralAutoCheck
+msgid "Check Update Automatically"
+msgstr "Automatisch nach Updates suchen"
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
@@ -109,6 +288,11 @@ msgstr "Zeile: {0,number,integer}, Spalte: {1,number,integer}"
 msgid "Pattern Settings"
 msgstr "Pattern Einstellungen"
 
+#: tabNaming
+msgctxt "tabNaming"
+msgid "File"
+msgstr "Datei"
+
 #: tabMatchingPreview
 msgid "Matching Preview"
 msgstr "Vorschau Übereinstimmungen (Matches)"
@@ -116,6 +300,14 @@ msgstr "Vorschau Übereinstimmungen (Matches)"
 #: tabTargetOffset
 msgid "Target Offset"
 msgstr "Clickpunkt Verschiebung"
+
+#: lblPath
+msgid "Path:"
+msgstr "Pfad:"
+
+#: lblFilename
+msgid "Filename:"
+msgstr "Dateiname:"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -132,6 +324,38 @@ msgstr "Clickpunkt Verschiebung X:"
 #: lblTargetOffsetY
 msgid ", Y:"
 msgstr ", Y:"
+
+#: ok
+msgid "OK"
+msgstr "OK"
+
+#: cancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: yes
+msgid "Yes"
+msgstr "Ja"
+
+#: no
+msgid "No"
+msgstr "Nein"
+
+#: dlgFileExists
+msgid "File Exists"
+msgstr "Datei bereits vorhanden"
+
+#: msgFileExists
+msgid "Are you sure to overwrite this file \"{0}\"?"
+msgstr "Soll die Datei \"{0}\" ersetzt werden?"
+
+#: dlgEnterScreenshotFilename
+msgid "Name The Screen Shot"
+msgstr "Bitte Bildschirmfoto benennen"
+
+#: msgEnterScreenshotFilename
+msgid "Enter the screen shot's file name:"
+msgstr "Bitte den Dateinamen für das Bildschirmfoto eingeben:"
 
 #: cmdFind
 msgid ""
@@ -261,181 +485,3 @@ msgstr ""
 "Startet die Überwachung des Bildschirms oder des Ausschnitts für maximal "
 "<i>Dauer</i> Sekunden,<br>Die Überwachung läuft im Hintergrund, wenn "
 "<i>background</i> auf True gesetzt ist."
-
-#: menuFile
-msgid "File"
-msgstr "Datei"
-
-#: menuEdit
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: menuRun
-msgctxt "menuRun"
-msgid "Run"
-msgstr "Ausführen"
-
-#: menuView
-msgid "View"
-msgstr "Ansicht"
-
-#: menuFileNew
-msgid "New"
-msgstr "Neu"
-
-#: menuFileOpen
-msgid "Open..."
-msgstr "Öffnen..."
-
-#: menuFileSave
-msgid "Save"
-msgstr "Sichern"
-
-#: menuFileSaveAs
-msgid "Save as..."
-msgstr "Sichern unter..."
-
-#: menuFileExport
-msgid "Export excutable..."
-msgstr "Speichern als ausführbar"
-
-#: menuFilePreferences
-msgid "Preferences..."
-msgstr "Einstellungen..."
-
-#: menuFileCloseTab
-msgid "Close Tab"
-msgstr "Tab schließen"
-
-#: menuFileQuit
-msgid "Quit"
-msgstr "Beenden"
-
-#: menuEditCut
-msgid "Cut"
-msgstr "Ausschneiden"
-
-#: menuEditCopy
-msgid "Copy"
-msgstr "Kopieren"
-
-#: menuEditPaste
-msgid "Paste"
-msgstr "Einfügen"
-
-#: menuEditSelectAll
-msgid "Select All"
-msgstr "Alles Auswählen"
-
-#: menuEditIndent
-msgid "Indent"
-msgstr "Einrücken"
-
-#: menuEditUnIndent
-msgid "Un-Indent"
-msgstr "Ausrücken"
-
-#: menuRunRun
-msgctxt "menuRunRun"
-msgid "Run"
-msgstr "Ausführen"
-
-#: menuRunStop
-msgid "Stop"
-msgstr "Abbrechen"
-
-#: menuHelp
-msgid "Help"
-msgstr "Hilfe"
-
-#: menuHelpCheckUpdate
-msgid "Check Update..."
-msgstr "Prüfe auf neue Version..."
-
-#: menuHelpGuide
-msgid "The Complete Guide to Sikuli Script"
-msgstr "Der umfassende Leitfaden zu Sikuli Script"
-
-#: menuHelpDocumentations
-msgid "Tutorials, Examples, How-To's"
-msgstr "Tutorials, Beispiele, How-To's"
-
-#: menuHelpAsk
-msgid "Ask Questions & Find Answers"
-msgstr "Fragen stellen & Antworten finden"
-
-#: menuHelpBugReport
-msgid "Report a Bug"
-msgstr "Einen Fehler (Bug) melden"
-
-#: menuHelpHomepage
-msgid "Sikuli's Homepage"
-msgstr "Sikuli's Homepage"
-
-#: dlgUpdateAvailable
-msgid "Sikuli {0} is available!"
-msgstr "Sikuli {0} ist verfügbar!"
-
-#: msgNoUpdate
-msgid "No update is available."
-msgstr "Es gibt keine neuere Version."
-
-#: tabUntitled
-msgid "Untitled"
-msgstr "Unbenannt"
-
-#: btnRegionHint
-msgid "Create a region to restrict screen matching"
-msgstr "Einen Ausschnitt erzeugen um die Suche einzuschränken"
-
-#: btnCaptureHint
-msgid "Take a screenshot ({0})"
-msgstr "Ein Bildschirmfoto machen ({0})"
-
-#: msgStopped
-msgid "Stopped"
-msgstr "Abgebrochen"
-
-#: msgCapturePrompt
-msgid "Select a region on the screen"
-msgstr "Wähle einen Ausschnitt auf dem Bildschirm"
-
-#: winPreferences
-msgid "Preferences"
-msgstr "Einstelliungen"
-
-#: prefTabScreenCapturing
-msgid "Screen Capturing"
-msgstr "Bildschirmfoto"
-
-#: prefCaptureDelay
-msgid "Delay before capture:"
-msgstr "Verzögerung vor Bildschirmfoto:"
-
-#: prefSeconds
-msgid "seconds"
-msgstr "Sekunden"
-
-#: prefTabGeneralSettings
-msgid "General Settings"
-msgstr "Allgemeine Einstellungen"
-
-#: prefGeneralAutoCheck
-msgid "Check Update Automatically"
-msgstr "Automatisch nach Updates suchen"
-
-#: ok
-msgid "OK"
-msgstr "OK"
-
-#: cancel
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: yes
-msgid "Yes"
-msgstr "Ja"
-
-#: no
-msgid "No"
-msgstr "Nein"

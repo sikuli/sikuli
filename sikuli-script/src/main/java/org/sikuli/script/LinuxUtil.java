@@ -2,11 +2,11 @@ package org.sikuli.script;
 
 import java.io.*;
 import javax.swing.JWindow;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class LinuxUtil implements OSUtil {
 
-   public int switchApp(String appName){
+   public int switchApp(String appName, int winNum){
       try{
          String cmd[] = {"wmctrl", "-a", appName};
          System.out.println("switchApp: " + appName);
@@ -17,6 +17,10 @@ public class LinuxUtil implements OSUtil {
       catch(Exception e){
          return -1;
       }
+   }
+
+   public int switchApp(String appName){
+      return switchApp(appName, 0);
    }
 
    public int openApp(String appName){
@@ -57,6 +61,22 @@ public class LinuxUtil implements OSUtil {
    public Region getWindow(String appName, int winNum){
       //FIXME
       return null;
+   }
+
+   public Region getWindow(int pid){
+      return null;
+   }
+
+   public Region getWindow(int pid, int winNum){
+      return null;
+   }
+
+   public int closeApp(int pid){
+      return -1;
+   }
+
+   public int switchApp(int pid, int num){
+      return -1;
    }
 
    public void setWindowOpacity(JWindow win, float alpha){

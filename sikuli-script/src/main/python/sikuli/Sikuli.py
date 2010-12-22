@@ -34,6 +34,10 @@ import SikuliImporter
 
 _si = SikuliScript()
 
+def load(jar):
+   if not jar in sys.path:
+      sys.path.append(jar)
+
 def addImagePath(path):
    ImageLocator.addImagePath(path)
 

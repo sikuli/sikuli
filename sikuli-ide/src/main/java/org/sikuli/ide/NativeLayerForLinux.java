@@ -11,6 +11,8 @@ import jxgrabkey.HotkeyListener;
 import jxgrabkey.JXGrabKey;
 
 
+import org.sikuli.script.Debug;
+
 public class NativeLayerForLinux implements NativeLayer {
    private Map<String, Integer> _callbackIdMap = new HashMap<String,Integer>();
    private Map<Integer, String> _idCallbackMap = new HashMap<Integer,String>();
