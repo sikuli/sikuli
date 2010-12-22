@@ -139,22 +139,22 @@ public class ImageLocator {
    }
 
    protected String searchFile(String filename) throws IOException {
-      Debug.log(3,"ImageLocator: bundle path " + _bundle_path);
+      Debug.log(4,"ImageLocator.searchFile: " + filename + " bundle path: " + _bundle_path);
       File f = new File(_bundle_path, filename);
       if( f.exists() ) return f.getAbsolutePath();
       String[] sikuli_img_path = getImagePath();
       for(String path : sikuli_img_path){
-         Debug.log(3, "ImageLocator: env+sys path: " + path);
+         Debug.log(4, "ImageLocator: env+sys path: " + path);
          f = new File(path, filename);
          if( f.exists() ){
-            Debug.log(3, "ImageLocator found " + filename + " in " + path);
+            Debug.log(4, "ImageLocator found " + filename + " in " + path);
             return f.getAbsolutePath();
          }
          URL url = getURL(path);
          if(url != null){
             try{
                String ret = locateURL(new URL(url,filename));
-               Debug.log(3, "ImageLocator found " + filename + " in " + path);
+               Debug.log(4, "ImageLocator found " + filename + " in " + path);
                return ret;
             }
             catch(IOException e){

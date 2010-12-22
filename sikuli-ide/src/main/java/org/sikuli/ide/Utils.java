@@ -7,6 +7,7 @@ import java.awt.image.*;
 import java.awt.event.KeyEvent;
 import javax.imageio.*;
 
+import org.sikuli.script.Debug;
 
 
 public class Utils {
@@ -164,14 +165,40 @@ public class Utils {
    public static String getTimestamp(){
       return (new Date()).getTime() + "";
    }
+
+   protected static String getAltFilename(String filename){
+      int pDot = filename.lastIndexOf('.');
+      int pDash = filename.lastIndexOf('-');
+      int ver = 1;
+      String postfix = filename.substring(pDot);
+      String name;
+      if(pDash >= 0){
+         name = filename.substring(0, pDash);
+         ver = Integer.parseInt(filename.substring(pDash+1, pDot));
+         ver++;
+      }
+      else
+         name = filename.substring(0, pDot);
+      return name + "-" + ver + postfix;
+   }
    
    public static String saveImage(BufferedImage img, String filename, String bundlePath){
+      final int MAX_ALT_NUM = 100;
       String fullpath = bundlePath;
-      File f = new File(fullpath);
-      if( !f.exists() ) f.mkdir();
+      File path = new File(fullpath);
+      if( !path.exists() ) path.mkdir();
       if(!filename.endsWith(".png"))
          filename += ".png";
-      fullpath = new File(f,filename).getAbsolutePath();
+      File f = new File(path, filename);
+      int count = 0;
+      while( f.exists() && count < MAX_ALT_NUM){
+         Debug.log( f.getName() + " exists");
+         f = new File(path, getAltFilename(f.getName()));
+         count++;
+      }
+      if(count >= MAX_ALT_NUM)
+         f = new File(path, getTimestamp() + ".png");
+      fullpath = f.getAbsolutePath();
       fullpath = fullpath.replaceAll("\\\\","/");
       try{
          ImageIO.write(img, "png", new File(fullpath));
