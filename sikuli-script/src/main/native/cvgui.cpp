@@ -73,7 +73,7 @@ static bool sort_blob_by_y(Blob a, Blob b){
 
 int VisualLogger::image_i = 0;
 int VisualLogger::step_i = 0;
-bool VisualLogger::enabled = true;
+bool VisualLogger::enabled = false;
 char* VisualLogger::prefix = 0;
 
 //#define VLOG(x,y) 
