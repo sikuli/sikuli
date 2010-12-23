@@ -46,7 +46,7 @@ FILE(MAKE_DIRECTORY ${JAR_DIR})
 ## Sikuli IDE
 
 SET(MAIN_CLASS org.sikuli.ide.SikuliIDE)
-SET(RUN_ARGS -Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
+SET(RUN_ARGS -Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
 )
