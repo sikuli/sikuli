@@ -231,6 +231,8 @@ public class SikuliIDE extends JFrame {
                null, new HelpAction(HelpAction.OPEN_ASK)));
       _helpMenu.add( createMenuItem(_I("menuHelpBugReport"), 
                null, new HelpAction(HelpAction.OPEN_BUG_REPORT)));
+      _helpMenu.add( createMenuItem(_I("menuHelpTranslation"), 
+               null, new HelpAction(HelpAction.OPEN_TRANSLATION)));
       _helpMenu.addSeparator();
       _helpMenu.add( createMenuItem(_I("menuHelpHomepage"), 
                null, new HelpAction(HelpAction.OPEN_HOMEPAGE)));
@@ -926,6 +928,7 @@ public class SikuliIDE extends JFrame {
       static final String OPEN_GUIDE = "openGuide";
       static final String OPEN_ASK = "openAsk";
       static final String OPEN_BUG_REPORT = "openBugReport";
+      static final String OPEN_TRANSLATION = "openTranslation";
       static final String OPEN_HOMEPAGE = "openHomepage";
 
       public HelpAction(){
@@ -943,7 +946,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void openGuide(ActionEvent ae){
-         openURL("http://sikuli.org/trac/wiki/reference-0.10");
+         openURL("http://sikuli.org/guide-x");
       }
 
       public void openAsk(ActionEvent ae){
@@ -952,6 +955,10 @@ public class SikuliIDE extends JFrame {
 
       public void openBugReport(ActionEvent ae){
          openURL("https://bugs.launchpad.net/sikuli/+filebug");
+      }
+
+      public void openTranslation(ActionEvent ae){
+         openURL("https://translations.launchpad.net/sikuli/sikuli-x/+translations");
       }
 
       public void openHomepage(ActionEvent ae){
