@@ -644,6 +644,7 @@ public class SikuliIDE extends JFrame {
             errorMsg( _I("msgRunningSklError", filename, e) );
          }
       }
+      srunner.close();
       return exitCode;
    }
 
@@ -1216,12 +1217,19 @@ public class SikuliIDE extends JFrame {
          setToolTipText(_I("menuRunRunAndShowActions"));
       }
 
-      protected void runPython(File f) throws IOException{
+      protected void runPython(File f) throws Exception{
          ScriptRunner srunner = new ScriptRunner(getPyArgs());
-         String path = SikuliIDE.getInstance().getCurrentBundlePath();
-         srunner.addTempHeader("initSikuli()");
-         srunner.addTempHeader("setShowActions(True)");
-         srunner.runPython(path, f);
+         try{
+            String path = SikuliIDE.getInstance().getCurrentBundlePath();
+            srunner.addTempHeader("initSikuli()");
+            srunner.addTempHeader("setShowActions(True)");
+            srunner.runPython(path, f);
+            srunner.close();
+         }
+         catch(Exception e){
+            srunner.close();
+            throw e;
+         }
       }
    }
 
@@ -1239,11 +1247,18 @@ public class SikuliIDE extends JFrame {
          addActionListener(this);
       }
 
-      protected void runPython(File f) throws IOException{
+      protected void runPython(File f) throws Exception{
          ScriptRunner srunner = new ScriptRunner(getPyArgs());
-         String path= SikuliIDE.getInstance().getCurrentBundlePath();
-         srunner.addTempHeader("initSikuli()");
-         srunner.runPython(path, f);
+         try{
+            String path= SikuliIDE.getInstance().getCurrentBundlePath();
+            srunner.addTempHeader("initSikuli()");
+            srunner.runPython(path, f);
+            srunner.close();
+         }
+         catch(Exception e){
+            srunner.close();
+            throw e;
+         }
       }
 
       private void initTooltip(){

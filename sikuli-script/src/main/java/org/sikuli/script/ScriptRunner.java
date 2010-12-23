@@ -61,7 +61,11 @@ public class ScriptRunner {
       py.execfile(pyFile.getAbsolutePath());
       _tmp_headers.clear();
       py.exec("exit(0)");
-      //py.cleanup();
+      py.cleanup();
+   }
+
+   public void close(){
+      ScreenHighlighter.closeAll();
    }
 
    public void runPythonAsync(final String bundlePath) throws IOException {
