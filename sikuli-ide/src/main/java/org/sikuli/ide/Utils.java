@@ -230,6 +230,8 @@ public class Utils {
    public static void xcopy(String src, String dest) throws IOException{
       File fSrc = new File(src);
       File fDest = new File(dest);
+      if(fSrc.getAbsolutePath().equals(fDest.getAbsolutePath()))
+         return;
       if(fSrc.isDirectory()){
          if(!fDest.exists()) fDest.mkdir();
          String[] children = fSrc.list();
