@@ -127,19 +127,37 @@ TemplateFinder::find_all(Mat target, double min_similarity){
       levels++;
    }
    
-   Mat roiSourceGray;
-   Mat targetGray;
    
-   // convert image from RGB to grayscale
-   cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-   cvtColor(target, targetGray, CV_RGB2GRAY);
+   Mat sourceMat;
+   Mat targetMat;
    
-   create_matcher(roiSourceGray, targetGray, levels, factor);
+   if (min_similarity < 0.99){
+      // if fuzzy matching, we use gray-scale image to boost speed
+      
+      Mat roiSourceGray;
+      Mat targetGray;
+      
+      // convert image from RGB to grayscale
+      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
+      cvtColor(target, targetGray, CV_RGB2GRAY);
+      
+      sourceMat = roiSourceGray;
+      targetMat = targetGray;      
+      
+   } else{
+      // otherwise, we use color image to boost precision
+      
+      sourceMat = roiSource;
+      targetMat = target;   
+   }
+   
+   
+   
+   create_matcher(sourceMat, targetMat, levels, factor);
    add_matches_to_buffer(5);     
    
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
       return;
-   
    
    dout << "[find_all] matching (original resolution: color) ... " << endl;
    create_matcher(roiSource, target, 0, 1);
@@ -189,45 +207,64 @@ TemplateFinder::find(Mat target, double min_similarity){
    ratio = min(target.rows * 1.0 / PYRAMID_MIM_TARGET_DIMENSION, 
                target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
    
-   Mat roiSourceGray;
-   Mat targetGray;
    
-   // convert image from RGB to grayscale
-   cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-   cvtColor(target, targetGray, CV_RGB2GRAY);
+   Mat sourceMat;
+   Mat targetMat;
+   
+   if (min_similarity < 0.99){
+      // if fuzzy matching, we use gray-scale image to boost speed
+      
+      Mat roiSourceGray;
+      Mat targetGray;
+      
+      // convert image from RGB to grayscale
+      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
+      cvtColor(target, targetGray, CV_RGB2GRAY);
+      
+      
+      sourceMat = roiSourceGray;
+      targetMat = targetGray;
+      
+   } else{
+      // otherwise, we use color image to boost precision
+      
+      sourceMat = roiSource;
+      targetMat = target;   
+   }
+   
    
    TimingBlock tb("NEW METHOD");
    
    dout << "matching (center) ... " << endl;            
-   Mat roiSourceGrayCenter = Mat(roiSourceGray, 
-                                 Range(roiSourceGray.rows*BORDER_MARGIN,
-                                       roiSourceGray.rows*(1-BORDER_MARGIN)),
-                                 Range(roiSourceGray.cols*BORDER_MARGIN,
-                                       roiSourceGray.cols*(1-BORDER_MARGIN)));
-   create_matcher(roiSourceGrayCenter, targetGray, 1, ratio);
+   Mat sourceMat_center = Mat(sourceMat, 
+                                 Range(sourceMat.rows*BORDER_MARGIN,
+                                       sourceMat.rows*(1-BORDER_MARGIN)),
+                                 Range(sourceMat.cols*BORDER_MARGIN,
+                                       sourceMat.cols*(1-BORDER_MARGIN)));
+   create_matcher(sourceMat_center, targetMat, 1, ratio);
    add_matches_to_buffer(5); 
    if (top_score_in_buffer() >= max(min_similarity,CENTER_REMATCH_THRESHOLD)){
-      roi.x += roiSourceGray.cols*BORDER_MARGIN;
-      roi.y += roiSourceGray.rows*BORDER_MARGIN;   
+      roi.x += sourceMat.cols*BORDER_MARGIN;
+      roi.y += sourceMat.rows*BORDER_MARGIN;   
       return;
    }
    
    dout << "matching (whole) ... " << endl;
-   create_matcher(roiSourceGray, targetGray, 1, ratio);
+   create_matcher(sourceMat, targetMat, 1, ratio);
    add_matches_to_buffer(5);
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){
       return;
    }  
    
    dout << "matching (0.75) ..." << endl;
-   create_matcher(roiSourceGray, targetGray, 1, ratio*0.75);
+   create_matcher(sourceMat, targetMat, 1, ratio*0.75);
    add_matches_to_buffer(5);
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
       return;
    
    if (ratio > 2){
       dout << "matching (0.5) ..." << endl;
-      create_matcher(roiSourceGray, targetGray, 1, ratio*0.5);
+      create_matcher(sourceMat, targetMat, 1, ratio*0.5);
       add_matches_to_buffer(5);
       if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
          return;
@@ -235,21 +272,28 @@ TemplateFinder::find(Mat target, double min_similarity){
    
    if (ratio > 4){      
       dout << "matching (0.25) ..." << endl;
-      create_matcher(roiSourceGray, targetGray, 1, ratio*0.25);
+      create_matcher(sourceMat, targetMat, 1, ratio*0.25);
       add_matches_to_buffer(5);
       if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
          return;
    }
    
-   dout << "matching (original resolution) ... " << endl;
-   create_matcher(roiSourceGray, targetGray, 0, 1);
-   add_matches_to_buffer(5);
-   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
-      return;
+   if (min_similarity < 0.99){
+      // only do this for fuzzy matching when the input images were
+      // converted to gray-scale
+      
+      dout << "matching (original resolution: gray) ... " << endl;
+      create_matcher(sourceMat, targetMat, 0, 1);
+      add_matches_to_buffer(5);
+      if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
+         return;
+   }
    
+
    dout << "matching (original resolution: color) ... " << endl;
    create_matcher(roiSource, target, 0, 1);
    add_matches_to_buffer(5);
+ 
    
 }
 
@@ -532,6 +576,14 @@ TextFinder::find(const char* text, double _min_similarity){
 }
 
 void
+TextFinder::find_all(const char* text, double _min_similarity){
+   vector<string> words;
+   Tokenize(text, words, " ");
+   return find_all(words, _min_similarity);
+}
+
+
+void
 TextFinder::find(vector<string> words, double _min_similarity){
    this->min_similarity = _min_similarity;
    BaseFinder::find();
@@ -539,6 +591,16 @@ TextFinder::find(vector<string> words, double _min_similarity){
 	matches = OCR::find_phrase(roiSource, words);
    matches_iterator = matches.begin();   
 }
+
+void
+TextFinder::find_all(vector<string> words, double _min_similarity){
+   this->min_similarity = _min_similarity;
+   BaseFinder::find();
+	TimingBlock tb("TextFinder::find_all");
+	matches = OCR::find_phrase(roiSource, words, false);
+   matches_iterator = matches.begin();   
+}
+
 
 bool      
 TextFinder::hasNext(){

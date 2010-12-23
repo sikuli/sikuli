@@ -44,6 +44,10 @@ public:
    
    void find(const char* word, double min_similarity);   
    void find(vector<string> words, double min_similarity);
+
+   void find_all(const char* word, double min_similarity);   
+   void find_all(vector<string> words, double min_similarity);
+
    
    bool hasNext();
    FindResult next();

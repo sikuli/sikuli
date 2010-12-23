@@ -67,11 +67,16 @@ OCRWord::add(const OCRChar& ocr_char){
 
 string
 OCRWord::str(){
-   string ret;
+   string ret = "";
    for (vector<OCRChar>::iterator it = ocr_chars_.begin(); it != ocr_chars_.end(); ++it){
       ret = ret + it->ch;    
    }
    return ret;
+}
+
+vector<OCRChar>
+OCRWord::getChars(){
+   return ocr_chars_;
 }
 
 string
@@ -96,6 +101,11 @@ OCRLine::addWord(OCRWord& ocr_word){
    ocr_words_.push_back(ocr_word);
 }
 
+vector<OCRWord>
+OCRLine::getWords(){
+   return ocr_words_;
+}
+
 string
 OCRLine::getString(){   
    if (ocr_words_.empty())
@@ -117,29 +127,36 @@ OCRParagraph::addLine(OCRLine& ocr_line){
    ocr_lines_.push_back(ocr_line);
 }
 
-void
-OCRText::add(OCRWord& ocr_word){
-   ocr_words_.push_back(ocr_word);
+vector<OCRLine>
+OCRParagraph::getLines(){
+   return ocr_lines_;
 }
 
-void
-OCRText::addLine(OCRLine& ocr_line){
-   ocr_lines_.push_back(ocr_line);
-}
+//void
+//OCRText::add(OCRWord& ocr_word){
+//   ocr_words_.push_back(ocr_word);
+//}
+//
+//void
+//OCRText::addLine(OCRLine& ocr_line){
+//   ocr_lines_.push_back(ocr_line);
+//}
 
 
 void
 OCRText::save(const char* filename){
+// TODO: reimplement
    
-   ofstream of(filename);
-   
-   for (iterator it = begin();
-        it != end(); ++it){
-      
-      of << it->str() << " ";
-   }
-   
-   of.close();
+//   
+//   ofstream of(filename);
+//   
+//   for (iterator it = begin();
+//        it != end(); ++it){
+//      
+//      of << it->str() << " ";
+//   }
+//   
+//   of.close();
 }
 
 void
@@ -178,8 +195,8 @@ OCRText::getLineStrings(){
 
       OCRParagraph& para = *it;
       
-      for (vector<OCRLine>::iterator it1 = para.ocr_lines_.begin(); 
-           it1 != para.ocr_lines_.end(); ++it1){
+      for (vector<OCRLine>::iterator it1 = para.getLines().begin(); 
+           it1 != para.getLines().end(); ++it1){
 
          OCRLine& line = *it1;
          
@@ -196,28 +213,33 @@ OCRText::getLineStrings(){
 
 vector<OCRWord> 
 OCRText::getWords(){
-   vector<OCRWord> words;
+   vector<OCRWord> ret_words;
    
    for (vector<OCRParagraph>::iterator it = ocr_paragraphs_.begin(); 
         it != ocr_paragraphs_.end(); ++it){
       
-      OCRParagraph& para = *it;
+      vector<OCRLine> lines = it->getLines();
       
-      for (vector<OCRLine>::iterator it1 = para.ocr_lines_.begin(); 
-           it1 != para.ocr_lines_.end(); ++it1){
+      for (vector<OCRLine>::iterator it1 = lines.begin(); 
+           it1 != lines.end(); ++it1){
          
-         OCRLine& line = *it1;
+         vector<OCRWord> words = it1->getWords();
          
-         for (vector<OCRWord>::iterator it2 = line.ocr_words_.begin();
-              it2 != line.ocr_words_.end(); ++it2){
+         for (vector<OCRWord>::iterator it2 = words.begin();
+              it2 != words.end(); ++it2){
             
-            OCRWord& word = *it2;
-            words.push_back(word);
+            OCRWord word = *it2;
+            ret_words.push_back(word);
          }
       }
    }
    
-   return words;
+   return ret_words;
+}
+
+vector<OCRParagraph>
+OCRText::getParagraphs(){
+   return ocr_paragraphs_;
 }
 
 vector<string> 
@@ -227,19 +249,22 @@ OCRText::getWordStrings(){
    for (vector<OCRParagraph>::iterator it = ocr_paragraphs_.begin(); 
         it != ocr_paragraphs_.end(); ++it){
       
-      OCRParagraph& para = *it;
+      vector<OCRLine> lines = it->getLines();
       
-      for (vector<OCRLine>::iterator it1 = para.ocr_lines_.begin(); 
-           it1 != para.ocr_lines_.end(); ++it1){
+      for (vector<OCRLine>::iterator it1 = lines.begin(); 
+           it1 != lines.end(); ++it1){
          
-         OCRLine& line = *it1;
+         vector<OCRWord> words = it1->getWords();
          
-         for (vector<OCRWord>::iterator it2 = line.ocr_words_.begin();
-              it2 != line.ocr_words_.end(); ++it2){
-          
+         for (vector<OCRWord>::iterator it2 = words.begin();
+              it2 != words.end(); ++it2){
+            
             OCRWord& word = *it2;
             word_strings.push_back(word.getString());
          }
+         
+         // add new line
+         word_strings.push_back("\n");
       }
    }
    
@@ -260,7 +285,7 @@ OCRText::getString(){
    for (vector<string>::iterator it = word_strings.begin() + 1;
         it != word_strings.end(); ++it){
     
-      ret = ret + " " + *it;
+      ret = ret + *it + " ";
    }
    
    return ret;
@@ -339,6 +364,7 @@ OCR::init(const char* datapath){
 #endif
    int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    //cout << (ret==0?"done":"failed") << endl;
+
    isInitialized = true;   
 }
 
@@ -365,7 +391,8 @@ static int findMin(int d1, int d2, int d3) {
       return d3;
 }
 
-static int findEditDistanceLessThanK(const char *s1, const char *s2, 
+static int 
+findEditDistanceLessThanK(const char *s1, const char *s2, 
                                     int k){
    /*
     * returns edit distance between s1 and s2.
@@ -410,7 +437,6 @@ static int findEditDistance(const char *s1, const char *s2) {
 
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
  
-   
    Mat blobImage(screen,blob);
    
    Mat ocrImage;  // the image passed to tesseract      
@@ -470,7 +496,7 @@ ostream& dhead(const char* name){
 
 void
 find_phrase_helper(const Mat& screen_gray, vector<string> words, vector<LineBlob> lineblobs,
-                   LineBlob resultblob, vector<FindResult>& results){
+                   LineBlob resultblob, vector<FindResult>& results, bool is_find_one = true){
    
    string word = words[0];
    
@@ -481,112 +507,137 @@ find_phrase_helper(const Mat& screen_gray, vector<string> words, vector<LineBlob
    
    dhead("find_phrase") << "<" << word << ">" << endl;
    
-   
-   for (vector<LineBlob>::iterator it = lineblobs.begin();
-        it != lineblobs.end(); ++it){
-      
-      LineBlob& lineblob = *it;
-
-      
-      if (abs((int)lineblob.blobs.size() - (int)word.size()) > 2)
-         continue;
-      
-      vector<OCRChar> ocr_chars = run_ocr(screen_gray, lineblob);
+   vector<LineBlob> lineblobs_thisround = lineblobs;
+   for (int r = 0; r < 3; ++r){
       
       
-      dhead("find_phrase") << word << "<->";
+      for (int tolerance = 0; tolerance < 3; ++tolerance){
       
-      string ocrword = "";
-      for (vector<OCRChar>::iterator iter = ocr_chars.begin(); 
-           iter != ocr_chars.end(); iter++){
+         vector<LineBlob> lineblobs_nextround;
          
-         OCRChar& ocrchar = *iter;
-         cout << ocrchar.ch;
-         
-         ocrword = ocrword + ocrchar.ch;
-      }
-      
-      if (ocr_chars.size() < 1){
-         dout("find_phrase") << endl;
-         continue;
-      }
-      
-      
-      //int d = findEditDistance(word.c_str(), ocrword.c_str());
-      int d = findEditDistanceLessThanK(word.c_str(), ocrword.c_str(),3);
-   
-      
-      dout("find_phrase") << '[' << d << ']';      
+         for (vector<LineBlob>::iterator it = lineblobs_thisround.begin();
+              it != lineblobs_thisround.end(); ++it){
             
-      if (d > 2){
-         dout("find_phrase") << endl;
-         continue;
-      }
-         
-         
-      if (rest.empty()){
-         dout("find_phrase") << " ... match!" << endl;
-         
-         Blob b = resultblob;
-         cout << b.x << "," << b.y << endl;
-         b = lineblob;
-         cout << b.x << "," << b.y << endl;
-         
-         
-         
-         resultblob.merge(lineblob);
-         
-         FindResult result(resultblob.x,resultblob.y,
-                           resultblob.width,resultblob.height, 1.0);
-
-         results.push_back(result);
-         return;
-         
-      }
-      else 
-         dout("find_phrase") << endl;
-         
+            LineBlob lineblob = *it;
+            
+            
+            if (abs((int)lineblob.blobs.size() - (int)word.size()) > tolerance){
+               lineblobs_nextround.push_back(lineblob);
+               continue;
+            }
+            
+            dhead("find_phrase") << lineblob.x << "," << lineblob.y << "," << lineblob.width << "," << lineblob.height << endl;
+            
+            vector<OCRChar> ocr_chars = run_ocr(screen_gray, lineblob);         
+            dhead("find_phrase") << word << "<->";
+            
+            string ocrword = "";
+            for (vector<OCRChar>::iterator iter = ocr_chars.begin(); 
+                 iter != ocr_chars.end(); iter++){
+               
+               OCRChar& ocrchar = *iter;
+               dout("find_phrase") << ocrchar.ch;
+               
+               ocrword = ocrword + ocrchar.ch;
+            }
+            
+            if (ocr_chars.size() < 1){
+               dout("find_phrase") << endl;
+               continue;
+            }
+            
+            int d = findEditDistanceLessThanK(word.c_str(), ocrword.c_str(),3);
+            
+            
+            dout("find_phrase") << '[' << d << ']';      
+            
+            if (d > 2){
+               dout("find_phrase") << endl;
+               lineblobs_nextround.push_back(lineblob);
+               continue;
+            }
+            
+            
+            if (rest.empty()){
+               dout("find_phrase") << " ... match!" << endl;
+               
+               //Blob b = resultblob;
+               //dout("find_phrase") << b.x << "," << b.y << endl;
+               //b = lineblob;
+               //dout("find_phrase") << b.x << "," << b.y << endl;
+               
+               resultblob.merge(lineblob);
+               
+               FindResult result(resultblob.x,resultblob.y,
+                                 resultblob.width,resultblob.height, 1.0);
+               
+               results.push_back(result);
+               return;
+               
+            }
+            else 
+               dout("find_phrase") << endl;
+            
+            
+            
+            
+            vector<LineBlob> nextblobs;
+            for (vector<LineBlob>::iterator it2 = lineblobs.begin();
+                 it2 != lineblobs.end(); ++it2){
+               
+               LineBlob& b1 = lineblob;
+               LineBlob& b2 = *it2;
+               
+               bool similar_baseline = abs((b1.y + b1.height) - (b2.y + b2.height)) < 5;
+               bool close_right = (b2.x > b1.x) && (b2.x - (b1.x+b1.width)) < 20;
+               bool close_below = (b2.y > b1.y) && (b2.y - b1.y) < 20;
+               
+               if (close_right && similar_baseline)
+                  nextblobs.push_back(b2);
+               
+            }
+            
+            
+            
+            if (!rest.empty() && !nextblobs.empty()){
+               
+               LineBlob next_resultblob = resultblob;
+               next_resultblob.merge(lineblob);
+               
+               find_phrase_helper(screen_gray, rest, nextblobs, next_resultblob, results, is_find_one);
+            }
+            
+            
+            
+            dout("find_phrase") << endl;
+            
+            // check if we have already found one match
+            if (is_find_one && results.size() >= 1)
+               // if so, we return the reuslts right away
+               return;
+            
+         }
+    
       
-
-      
-      vector<LineBlob> nextblobs;
-      for (vector<LineBlob>::iterator it2 = lineblobs.begin();
-           it2 != lineblobs.end(); ++it2){
-         
-         LineBlob& b1 = lineblob;
-         LineBlob& b2 = *it2;
-         
-         bool similar_baseline = abs((b1.y + b1.height) - (b2.y + b2.height)) < 5;
-         //            int horizontal_spacing = b2.x - (b1.x + b1.width);
-         //            bool small_horizontal_spacing = horizontal_spacing < 10 && horizontal_spacing > -2;
-         
-         bool close_right = (b2.x > b1.x) && (b2.x - (b1.x+b1.width)) < 20;
-         bool close_below = (b2.y > b1.y) && (b2.y - b1.y) < 20;
-         
-         if (close_right && similar_baseline)
-            nextblobs.push_back(b2);
+         lineblobs_thisround = lineblobs_nextround;
          
       }
       
-
       
-      if (!rest.empty() && !nextblobs.empty()){
-         
-         LineBlob next_resultblob = resultblob;
-         next_resultblob.merge(lineblob);
-         
-         find_phrase_helper(screen_gray, rest, nextblobs, next_resultblob, results);
-      }
-         
-         
-         
-      dout("find_phrase") << endl;
       
    }
 }
 
+
+int 
+OCR::findEditDistance(const char *s1, const char *s2, 
+                      int k){
+   
+   return findEditDistanceLessThanK(s1,s2,k);
+}
+
 vector<FindResult>
-OCR::find_phrase(const Mat& screen, vector<string> words){
+OCR::find_phrase(const Mat& screen, vector<string> words, bool is_find_one){
    
    vector<LineBlob> lineblobs;
    cvgui::getLineBlobsAsIndividualWords(screen, lineblobs);
@@ -597,19 +648,18 @@ OCR::find_phrase(const Mat& screen, vector<string> words){
    vector<FindResult> results;
    
    LineBlob empty;
-   find_phrase_helper(screen_gray, words, lineblobs, empty, results);
+   find_phrase_helper(screen_gray, words, lineblobs, empty, results, is_find_one);
       
-
    return results;   
 }
 
 vector<FindResult>
-OCR::find_word(const Mat& screenshot, string word){
+OCR::find_word(const Mat& screenshot, string word, bool is_find_one){
    
    vector<string> words;
    words.push_back(word);
    
-   return find_phrase(screenshot, words);
+   return find_phrase(screenshot, words, is_find_one);
 }
 
 OCRText
@@ -678,7 +728,11 @@ linkOCRCharsToOCRLine(const vector<OCRChar>& ocrchars){
 
 OCRLine
 recognize_line(const cv::Mat& screen_gray, const LineBlob& lineblob){
-   vector<OCRChar> ocrchars = run_ocr(screen_gray, lineblob);
+   
+   Blob b(lineblob);
+   //Util::growRect(b, 2, 2, screen_gray);
+   
+   vector<OCRChar> ocrchars = run_ocr(screen_gray, b);
    OCRLine ocrline = linkOCRCharsToOCRLine(ocrchars);
    return ocrline;
 }
@@ -696,7 +750,7 @@ recognize_paragraph(const cv::Mat& screen_gray, const ParagraphBlob& parablob){
       OCRLine ocrline = recognize_line(screen_gray, lineblob);
       
       
-      if (!ocrline.ocr_words_.empty())
+      if (!ocrline.getWords().empty())
          ocrparagraph.addLine(ocrline);      
    }
    

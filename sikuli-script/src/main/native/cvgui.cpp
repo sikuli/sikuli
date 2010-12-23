@@ -12,6 +12,14 @@
 #include <iostream>
 using namespace std;
 
+
+Scalar Color::RED(0,0,255);
+Scalar Color::WHITE(255,255,255);
+
+Scalar Color::RANDOM() { 
+   return Scalar(rand()&255, rand()&255, rand()&255);
+};
+
 static bool sort_by_x (Rect a, Rect b){ 
 	return (a.x < b.x); 
 }
@@ -65,6 +73,7 @@ static bool sort_blob_by_y(Blob a, Blob b){
 
 int VisualLogger::image_i = 0;
 int VisualLogger::step_i = 0;
+bool VisualLogger::enabled = true;
 char* VisualLogger::prefix = 0;
 
 //#define VLOG(x,y) 
@@ -105,6 +114,7 @@ Util::growRect(Rect& rect, int xd, int yd, cv::Mat image){
 }
 
 
+
 void 
 Painter::drawRect(Mat& image, Rect r, Scalar color){
    rectangle(image, 
@@ -131,7 +141,7 @@ Painter::drawRects(Mat& image, vector<Rect>& rects){
 }
 
 void 
-Painter::drawBlobs(Mat& image, vector<Blob>& blobs, Scalar color){
+Painter::drawBlobs(Mat& image, vector<Blob>& blobs){
    for (vector<Blob>::iterator it = blobs.begin();
         it != blobs.end(); ++it){
       
@@ -142,6 +152,19 @@ Painter::drawBlobs(Mat& image, vector<Blob>& blobs, Scalar color){
       rs.push_back(blob);
       drawRects(image, rs, color);
    }
+}
+
+void 
+Painter::drawBlobs(Mat& image, vector<Blob>& blobs, Scalar color){
+   vector<Rect> rs;
+
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){
+      
+      Blob& blob = *it;
+      rs.push_back(blob);
+   }
+   drawRects(image, rs, color);
 }
 
 void 
@@ -189,11 +212,13 @@ Painter::drawParagraphBlobs(Mat& image, vector<ParagraphBlob> blobs, Scalar colo
 }
 
 void 
-Painter::drawOCRWord(Mat& ocr_result_image, OCRWord& ocrword){
+Painter::drawOCRWord(Mat& ocr_result_image, OCRWord ocrword){
    
+//   cout << ocrword.x << " " << ocrword.y <<  " " << ocrword.width <<  " " << ocrword.height << ":";
    
-   for (vector<OCRChar>::iterator it = ocrword.ocr_chars_.begin(); 
-        it != ocrword.ocr_chars_.end(); ++it){
+   vector<OCRChar> chars = ocrword.getChars();
+   for (vector<OCRChar>::iterator it = chars.begin(); 
+        it != chars.end(); ++it){
       
       OCRChar& ocrchar = *it;
       char ch = ocrchar.ch;
@@ -201,23 +226,24 @@ Painter::drawOCRWord(Mat& ocr_result_image, OCRWord& ocrword){
       char buf[2];
       buf[0] = ch;
       buf[1] = 0;
-     
-      Point pt(ocrchar.x, ocrword.y + ocrword.height);      
-//      //Point pt(ocr_rect.x,ocr_rect.y + ocr_rect.height);
       
-      Scalar white(255,255,255);
-      Scalar black(0,0,0);
-      Scalar red(0,0,255);
+//      cout << buf;
+      
+     
+      Point pt(ocrchar.x, ocrword.y + ocrword.height - 10);      
+      
       putText(ocr_result_image, buf, pt,  
-              FONT_HERSHEY_SIMPLEX, 0.3, red);
+                        FONT_HERSHEY_SIMPLEX, 0.4, Color::RED);
+   //           FONT_HERSHEY_PLAIN, 0.8, Color::RED);
       
    }
-   
+//   cout << "|" << ocrword.getString() << endl;
+
 }
 
 void 
-Painter::drawOCRLine(Mat& ocr_result_image, OCRLine& ocrline){
-   vector<OCRWord>& ocrwords = ocrline.ocr_words_;
+Painter::drawOCRLine(Mat& ocr_result_image, OCRLine ocrline){
+   vector<OCRWord> ocrwords = ocrline.getWords();
    for (vector<OCRWord>::iterator it = ocrwords.begin(); it != ocrwords.end(); ++it){
       OCRWord& ocrword = *it;
       drawOCRWord(ocr_result_image, ocrword);
@@ -225,8 +251,8 @@ Painter::drawOCRLine(Mat& ocr_result_image, OCRLine& ocrline){
 }
 
 void 
-Painter::drawOCRParagraph(Mat& ocr_result_image, OCRParagraph& ocrpara){
-   vector<OCRLine>& ocrlines = ocrpara.ocr_lines_;
+Painter::drawOCRParagraph(Mat& ocr_result_image, OCRParagraph ocrpara){
+   vector<OCRLine> ocrlines = ocrpara.getLines();
    for (vector<OCRLine>::iterator it = ocrlines.begin(); it != ocrlines.end(); ++it){
       OCRLine& ocrline = *it;
       drawOCRLine(ocr_result_image, ocrline);
@@ -234,8 +260,8 @@ Painter::drawOCRParagraph(Mat& ocr_result_image, OCRParagraph& ocrpara){
 }
 
 void 
-Painter::drawOCRText(Mat& ocr_result_image, OCRText& ocrtext){
-   vector<OCRParagraph>& ocrparas = ocrtext.ocr_paragraphs_;
+Painter::drawOCRText(Mat& ocr_result_image, OCRText ocrtext){
+   vector<OCRParagraph> ocrparas = ocrtext.getParagraphs();
    for (vector<OCRParagraph>::iterator it = ocrparas.begin(); it != ocrparas.end(); ++it){
       OCRParagraph& ocrpara = *it;
       drawOCRParagraph(ocr_result_image, ocrpara);
@@ -668,6 +694,334 @@ cvgui::run_ocr_on_lineblobs(vector<LineBlob>& ocr_input_lineblobs,
    }
 }
 
+void getLeafBlobs(vector<Blob>& blobs, vector<Blob>& leaf_blobs){
+   
+   leaf_blobs.clear();
+   
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){
+      
+      Blob& a = *it;
+      
+      // check if blob 'a' contains any other blob
+      vector<Blob>::iterator it1;
+      for (it1 = blobs.begin(); 
+           it1 != blobs.end(); ++it1){
+         
+         Blob& b = *it1;
+         
+         if (it != it1 && b.isContainedBy(a))
+            break;
+      }
+      
+      // if not, it is a leave blob
+      if (it1 == blobs.end())
+         leaf_blobs.push_back(a);
+         
+   }
+}
+
+Mat
+cvgui::findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs){
+   Mat dark;
+   Util::rgb2grayC3(screen,dark);
+   dark = dark * 0.5;
+   
+   
+   VLOG("Input", screen);
+   
+   Mat gray;
+   cvtColor(screen,gray,CV_RGB2GRAY);
+   
+   //medianBlur(gray, gray, 3);
+   //VLOG("Blurred", gray); 
+   
+   Mat edges;
+   
+   // Code for experimenting differenty parameters for Canny
+   //   for (int c=10;c<=100;c=c+10){
+   //      char buf[50];
+   //      Mat test;
+   //      sprintf(buf,"Canny%d",c);
+   //      Canny(gray,test,0.66*c,1.33*c,3,true);  
+   //      VLOG(buf, test);       
+   //   }
+   
+   int s = 100;
+   Canny(gray,edges,0.66*s,1.33*s,3,true);  
+   VLOG("Canny", edges); 
+   
+   
+   Mat v = Mat::ones(2,2,CV_8UC1);
+
+   dilate(edges, edges, v);
+   erode(edges, edges, v);
+
+   VLOG("Dilated", edges); 
+
+   Mat lines;
+   findLongLines(edges, lines, 15);
+   
+   Mat w = Mat::ones(5,5,CV_8UC1);
+   dilate(lines, lines, w);
+   erode(lines, lines, w);
+   
+   VLOG("Lines", lines); 
+
+   
+   Mat lines2;
+   Mat z = Mat::ones(2,2,CV_8UC1);   
+
+   dilate(lines, lines, z);
+   
+   findLongLines(lines, lines2, 30, 15);
+
+   //dilate(lines2, lines2, z);
+   //erode(lines2, lines2, z);
+   
+   VLOG("Lines2", lines2); 
+
+
+   
+   Mat result = dark.clone();
+   //Mat copy = edges.clone();
+   //Mat copy = lines.clone();
+   
+   Mat copy = lines2.clone();
+   
+   
+   vector<vector<Point> > contours;
+   vector<Vec4i> hierarchy;
+   
+   findContours( copy, contours, hierarchy,
+                CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+  
+   vector<Blob> blobs;
+   
+   Mat blank = dark.clone();
+   blank = 0.0;
+   
+   Mat contour_shading = blank;//dark.clone();
+   
+   for (vector<vector<Point> >::iterator it = contours.begin();
+        it != contours.end(); ++it){
+      
+      vector<Point>& contour = *it;
+      
+      Rect r = boundingRect(Mat(contour));
+      
+      double a1 = contourArea(Mat(contour));
+      double a2 = r.height * r.width;
+      
+      
+      if (a2 < 100)
+         continue;
+         
+      
+      if (abs(r.width - 65) > 5)
+         continue;
+      
+      //if ( min(a1,a2)/max(a1,a2) > 0.80){
+         
+         vector<vector<Point> > cs;
+         cs.push_back(contour);
+         drawContours(contour_shading, cs, -1, Color::RANDOM(), CV_FILLED);
+         
+         
+         Blob blob(r);
+         blobs.push_back(blob);
+      //}
+      
+   }
+   
+   Mat contours_image = contour_shading*0.7 + dark*0.5;
+
+   Painter::drawBlobs(contours_image, blobs, Color::WHITE);
+
+   VLOG("ColoredSelectedContours", contours_image); 
+   
+   
+   Mat blobs_result = dark.clone();
+   Painter::drawBlobs(blobs_result, blobs, Color::RED);
+   
+   VLOG("OutputBlobs", blobs_result);
+   
+   // print output to stdout
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){
+      
+      Blob& b = *it;
+      
+      cout << b.x << " " << b.y << " " << b.width << " " << b.height << endl;
+   }
+      
+   return contours_image;
+         
+}
+
+void
+cvgui::findBoxes(const Mat& screen, vector<Blob>& output_blobs){
+
+   Mat dark;
+   Util::rgb2grayC3(screen,dark);
+   dark = dark * 0.5;
+   
+   
+   VLOG("Input", screen);
+   
+   Mat gray;
+   cvtColor(screen,gray,CV_RGB2GRAY);
+   
+   //medianBlur(gray, gray, 3);
+   //VLOG("Blurred", gray); 
+   
+   Mat edges;
+
+// Code for experimenting differenty parameters for Canny
+//   for (int c=10;c<=100;c=c+10){
+//      char buf[50];
+//      Mat test;
+//      sprintf(buf,"Canny%d",c);
+//      Canny(gray,test,0.66*c,1.33*c,3,true);  
+//      VLOG(buf, test);       
+//   }
+
+   int s = 100;
+   Canny(gray,edges,0.66*s,1.33*s,3,true);  
+   VLOG("Canny", edges); 
+
+
+   dilate(edges, edges, Mat::ones(2,2,CV_8UC1));
+   VLOG("Dilated", edges); 
+
+   
+   Mat result = dark.clone();
+   Mat copy = edges.clone();
+   
+   
+   vector<vector<Point> > contours;
+   vector<Vec4i> hierarchy;
+   
+   findContours( copy, contours, hierarchy,
+                CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+
+//   findContours(edges, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
+   //findContours( copy, contours, hierarchy,
+    //            CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+   
+//   cout << contours.size() << " " << hierarchy.size() << endl;
+   // iterate through all the top-level contours,
+   // draw each connected component with its own random color
+//   int idx = 0;
+//   for( ; idx >= 0; idx = hierarchy[idx][0]){
+//      
+//      vector<Point>& contour = contours[idx];
+//      
+//      
+//      //Scalar color( rand()&255, rand()&255, rand()&255 );
+//      Scalar cyan(255,255,0);
+//      vector<vector<Point> > cs;
+//      cs.push_back(contour);
+//      drawContours( result, cs, -1, cyan, 2);//, CV_FILLED);
+//      
+// //     drawContours( result, contours, idx, color, CV_FILLED, 8, hierarchy );
+//
+//   }
+   
+   vector<Blob> blobs;
+   
+   
+   Mat box_contour_image = dark.clone();
+   
+   for (vector<vector<Point> >::iterator it = contours.begin();
+        it != contours.end(); ++it){
+      
+      vector<Point>& contour = *it;
+    
+      Rect r = boundingRect(Mat(contour));
+      
+      double a1 = contourArea(Mat(contour));
+      double a2 = r.height * r.width;
+      
+      
+      
+      
+      if ( min(a1,a2)/max(a1,a2) > 0.80){
+
+         vector<vector<Point> > cs;
+         cs.push_back(contour);
+         drawContours(box_contour_image, cs, -1, Color::RANDOM(), 2);//, CV_FILLED);
+         
+         
+         Blob blob(r);
+         blobs.push_back(blob);
+      }
+      
+   }
+   
+        
+   VLOG("Box-shaped contours", box_contour_image); 
+   
+   
+   Mat blobs_result = dark.clone();
+   Painter::drawBlobs(blobs_result, blobs, Color::RED);
+   
+   VLOG("Blobs", blobs_result);
+   
+   
+   vector<Blob> unique_blobs;
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){
+      
+      Blob& a = *it;
+
+      
+      vector<Blob>::iterator it1;
+      for (it1 = unique_blobs.begin(); 
+           it1 != unique_blobs.end(); ++it1){
+         
+         Blob& b = *it1;
+         
+         int d = 5;
+         bool similar_bounding_box = 
+            abs(a.x-b.x) < d && abs(a.y-b.y) < d &&
+         abs(a.height-b.height) < 2*d &&
+         abs(a.width-b.width) < 2*d;
+         
+         
+         if (similar_bounding_box)
+            break;
+            
+      }
+      
+      // if no blob whose bounding box is similar
+      if (it1 == unique_blobs.end()){
+       
+         // add this blob to the list of unique blobs
+         unique_blobs.push_back(a);
+      }
+   }
+   
+   Mat unique_blobs_result = dark.clone();
+   Painter::drawBlobs(unique_blobs_result, unique_blobs, Color::RED);
+   
+   VLOG("UniqueBlobs", unique_blobs_result);
+   
+   
+   vector<Blob> leaf_blobs;
+   getLeafBlobs(unique_blobs, leaf_blobs);
+   
+      
+   Mat leaf_blobs_result = dark.clone();
+   Painter::drawBlobs(leaf_blobs_result, leaf_blobs, Color::RED);
+   VLOG("LeafBlobs", leaf_blobs_result);
+   
+   output_blobs = leaf_blobs;
+}
+
+
+
 
 void
 cvgui::computeUnitBlobs(const Mat& screen, Mat& output){
@@ -681,6 +1035,18 @@ cvgui::computeUnitBlobs(const Mat& screen, Mat& output){
    Mat edges;
    Canny(gray,edges,0.66*50,1.33*50,3,true);  
    VLOG("Canny", edges); 
+   
+//   Mat corners;
+//   cornerHarris(gray,corners,10,5,1.0);
+
+//   Mat corners_result = screen.clone();
+//   vector<Point2f> corners;
+//   goodFeaturesToTrack(gray, corners, 50, 0.5, 10);
+//   for (vector<Point2f>::iterator it = corners.begin(); it != corners.end(); ++it){
+//      Point2f& p = *it;
+//      circle(corners_result, p, 3, Scalar(0,0,255));
+//   }
+//   VLOG("Corners", corners_result); 
    
    
    adaptiveThreshold(gray, gray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 5, 1);
@@ -715,9 +1081,7 @@ cvgui::computeUnitBlobs(const Mat& screen, Mat& output){
 
 void 
 cvgui::getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& output_parablobs){
-   
-   VNEW();
-   
+      
    Mat screen_gray;
    cvtColor(screen,screen_gray,CV_RGB2GRAY);
    
@@ -842,8 +1206,7 @@ cvgui::getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& output_parabl
 
 void
 cvgui::getLineBlobsAsIndividualWords(const Mat& screen, vector<LineBlob>& output_lineblobs){
-   VNEW();
-   
+
    Mat screen_gray;
    cvtColor(screen,screen_gray,CV_RGB2GRAY);
    
@@ -964,8 +1327,6 @@ cvgui::getLineBlobsAsIndividualWords(const Mat& screen, vector<LineBlob>& output
 
 void 
 cvgui::segmentScreenshot(const Mat& screen, vector<Blob>& text_blobs, vector<Blob>& image_blobs){
-   
-   VNEW();
    
    VLOG("Input", screen);
    
@@ -1279,47 +1640,6 @@ cvgui::segmentScreenshot(const Mat& screen, vector<Blob>& text_blobs, vector<Blo
 
 
 
-
-#ifdef TEST_CVGUI
-int main(){
-   
-   
-   index_screenshot_file("research/test/amazon.png",1);
-   
-   
-   //   index_screenshot_file("research/test/amazon1.png",1);
-   //   index_screenshot_file("research/test/amazon2.png",2);
-   //   index_screenshot_file("research/test/amazon3.png",3);
-   //   index_screenshot_file("research/test/amazon4.png",4);
-   //   index_screenshot_file("research/test/amazon5.png",5);
-   //   index_screenshot_file("research/test/amazon6.png",6);
-   
-   vector<Blob> text_blobs;
-   vector<Blob> image_blobs;
-   vector<ImageRecord> records;
-   
-   char query_file[] = "research/test/amazon_logo.png";
-   Mat query = imread(query_file, 1);
-   
-   cvgui::segmentScreenshot(query, text_blobs, image_blobs);  
-   records = create_image_records(query, image_blobs);   
-   
-   for (vector<ImageRecord>::iterator r = records.begin();
-        r != records.end(); ++r){
-      
-      cout << endl << r->area << " : ";
-      vector<ImageRecord> matches = db.find(*r);
-      for (vector<ImageRecord>::iterator m = matches.begin();
-           m != matches.end(); ++m){
-         
-         cout << "(" << m->screenshot_id << ":" << m->id << ")";
-      }
-   }
-   
-   
-}   
-#endif
-
 static int L1dist(Vec3b p1, Vec3b p2){
 	return max(p1[0],p2[0])-min(p1[0],p2[0])+	
    max(p1[1],p2[1])-min(p1[1],p2[1])+
@@ -1545,18 +1865,16 @@ cvgui::extractRects(const Mat& src,
 
 
 void
-cvgui::findLongLines(const Mat& src, Mat& dest){
+cvgui::findLongLines(const Mat& src, Mat& dest, int min_length, int extension){
    
    dest = src.clone();
-   //   adaptiveThreshold(src, dest, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-   //   Canny(dest, dest, 10, 0);  
    
    Mat mask;
-   cvgui::findLongLines_Horizontal(dest,mask);
+   cvgui::findLongLines_Horizontal(dest,mask, min_length, extension);
    
    Mat maskT, destT;
    transpose(dest,destT);
-   cvgui::findLongLines_Horizontal(destT,maskT);
+   cvgui::findLongLines_Horizontal(destT,maskT,min_length, extension);
    
    Mat maskTT;
    transpose(maskT,maskTT);
@@ -1566,9 +1884,9 @@ cvgui::findLongLines(const Mat& src, Mat& dest){
 }
 
 
-#define LONGLINE_THRESHOLD 100
 void
-cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest){
+cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest,
+                                int min_length, int extension){
    
    typedef uchar T;
    
@@ -1599,7 +1917,7 @@ cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest){
             
 				// check for the condition of a baseline hypothesis
 				// the length of the baseline must be > 15
-				if ((j - current_baseline_startpoint) > LONGLINE_THRESHOLD){// || j == size.width - 1){
+				if ((j - current_baseline_startpoint) > min_length){// || j == size.width - 1){
 					
                //					int closeness_threshold = 1; 					
                //					if (has_previous_baseline && 
@@ -1621,6 +1939,11 @@ cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest){
 					for (int k=current_baseline_startpoint; k < j; ++k){
                   ptr2[k] = 255;
 					}	
+
+               for (int k=j; k < min(j+extension,size.width-1); ++k){
+                  ptr2[k] = 255;
+					}	
+               
 					
 				}
 				

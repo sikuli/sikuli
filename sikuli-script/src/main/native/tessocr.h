@@ -46,6 +46,7 @@ class OCRChar : public OCRRect{
    
 public:
    
+   OCRChar() : ch(0), OCRRect(0,0,0,0){};
    OCRChar(char ch_, int x_, int y_, int width_, int height_)
    : ch(ch_), OCRRect(x_,y_,width_,height_){};
    
@@ -66,10 +67,10 @@ public:
    bool isValidWord();
    
    string getString();
+   
+   vector<OCRChar> getChars();
 
-   
-//private:
-   
+private:   
    vector<OCRChar> ocr_chars_;
 };
 
@@ -77,10 +78,11 @@ class OCRLine : public OCRRect{
 public:
    
    void addWord(OCRWord& word);
-   
-   
+
    string getString();
-//private:   
+   vector<OCRWord> getWords();
+
+private:   
    
    vector<OCRWord> ocr_words_;
 };
@@ -89,8 +91,9 @@ class OCRParagraph : public OCRRect{
 public:  
    
    void addLine(OCRLine& line);
+   vector<OCRLine> getLines();
    
-//private:
+private:
    
    vector<OCRLine> ocr_lines_;
    
@@ -99,26 +102,23 @@ public:
 class OCRText : public OCRRect{
 
 public:   
-   void add(OCRWord& ocr_word);
-   void addLine(OCRLine& ocr_line);
    void addParagraph(OCRParagraph& ocr_paragraph);
    
    typedef vector<OCRWord>::iterator iterator;
-   iterator begin() { return ocr_words_.begin();};
-   iterator end() { return ocr_words_.end();};
    
    void save(const char* filename);
    void save_with_location(const char* filename);
    
    vector<string> getLineStrings();
    vector<string> getWordStrings();
+
    string getString();
    
    vector<OCRWord> getWords();
+   vector<OCRParagraph> getParagraphs();
+
+private:
    
-//private:
-   vector<OCRLine> ocr_lines_;
-   vector<OCRWord> ocr_words_;
    vector<OCRParagraph> ocr_paragraphs_;
    
 };
@@ -131,16 +131,19 @@ public:
    
    static OCRText recognize(cv::Mat mat);
    
-   static vector<FindResult> find_word(const cv::Mat& mat, string word);
-   static vector<FindResult> find_phrase(const cv::Mat& mat, vector<string> words);
+   static vector<FindResult> find_word(const cv::Mat& mat, string word, bool is_find_one = true);
    
+   static vector<FindResult> find_phrase(const cv::Mat& mat, vector<string> words, bool is_find_one = true);   
    
    static OCRText recognize_screenshot(const char* screenshot_filename);
-                                         
    
+      
    static void init();
    static void init(const char* datapath);
    
+   
+   static int findEditDistance(const char *s1, const char *s2, 
+                                 int max_distance=100);
    
 private:
    
