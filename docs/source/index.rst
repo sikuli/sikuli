@@ -53,6 +53,7 @@ the beginning of its chapter).
 .. toctree::
    :maxdepth: 2
 
+   examples/index
    globals
    region
    screen

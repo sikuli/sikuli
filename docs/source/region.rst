@@ -587,6 +587,7 @@ string containing the file name (path to an image file).
 		invoked. For example, to stop observation within a handler function, simply
 		call ``event.region.stopObserver()`` inside the handler function.
 
+.. _ActingonaRegion:
 
 Acting on a Region
 ------------------
@@ -921,4 +922,199 @@ application for accepting the action.
 		If needed, you have to split your complete text into two or more paste()'s
 		and use type() for typing the special keys inbetween. Characters like \n
 		(enter/new line) and \t (tab) should work as expected with paste(). 
+
+Extracting Text from a Region
+-----------------------------
+
+.. py:class:: Region
+
+	.. py:method:: text()
+
+		Extract the text contained in the region using OCR.
+
+		:return: the text as a string. Multiple lines of text are separated by '\n'.
+
+Low-level Mouse and Keyboard Actions
+------------------------------------
+
+.. py:class:: Region
+
+	.. py:method:: mouseDown(button)
+
+		Press the mouse *button* down.
+
+		:param button: one or a combination of the button constants Button.LEFT,
+			Button.MIDDLE, Button.RIGHT. 
+
+		:return: the number 1 if the operation is performed successfully, and zero if
+			otherwise.
+
+		The mouse button or buttons specified by *button* are pressed until another
+		mouse action is performed.
+
+	.. py:method:: mouseUp([button])
+
+		Release the mouse button previously pressed.
+
+		:param button: one or a combination of the button constants Button.LEFT,
+			Button.MIDDLE, Button.RIGHT. 
+
+		:return: the number 1 if the operation is performed successfully, and zero if
+			otherwise.
+
+		The button specified by *button* is released. If *button* is omitted, all
+		currently pressed buttons are released.
+
+	.. py:method:: mouseMove(PSRML)
+
+		Move the mouse pointer to a location indicated by PSRML.
+
+		:param PSMRL: a pattern, a string, a match, a region or a location that
+			evaluates to a click point.
+
+		:return: the number 1 if the operation could be performed. If using *PS*
+			(which invokes an implicity find operation), find fails and you have
+			switched off FindFailed exception, a 0 (integer null) is returned.
+			Otherwise, the script is stopped with a FindFailed exception.
+
+		**Sideeffects**: when using *PS*, the match can be accessed using
+		:py:meth:`Region.getLastMatch` afterwards
+
+	.. py:method:: wheel(PSRML, WHEEL_DOWN | WHEEL_UP, steps)
+
+		Move the mouse pointer to a location indicated by PSRML and turn the mouse
+		wheel in the specified direction by the specified number of steps.
+
+		:param PSMRL: a pattern, a string, a match, a region or a location that
+			evaluates to a click point.
+
+		:param WHEEL_DOWN|WHEEL_UP: one of the two constants denoting the wheeling
+			direction.
+
+		:param steps: an integer indicating the amoung of wheeling.
+
+		**Sideeffects**: when using *PS*, the match can be accessed using
+		:py:meth:`Region.getLastMatch` afterwards
+
+	.. py:method:: keyDown(key | list-of-keys)
+	
+		Press and hold the specified key(s) until released by a later call to
+		:py:meth:`Region.keyUp`.
+
+		:param key|list-of-keys: one or more keys (use the consts of class Key). A
+			list of keys is a concatenation of several key constants using "+".
+
+		:return: the number 1 if the operation could be performed and 0 if
+			otherwise.
+
+	.. py:method:: keyUp([key | list-of-keys])
+
+		Release given keys. If no key is given, all currently pressed keys are
+		released.
+
+		:param key|list-of-keys: one or more keys (use the consts of class Key). A
+			list of keys is a concatenation of several key constants using "+".
+
+		:return: the number 1 if the operation could be performed and 0 if
+			otherwise.
+
+Exception FindFailed
+--------------------
+
+As a default, find operations (:ref:`explicit
+<FindinginsideaRegionandWaitingforaVisualEvent>` and :ref:`implicit
+<ActingonaRegion>`) when not successful raise an exception FindFailed, that will
+stop the script immediately. This is of great help, when developing a script, to
+step by step adjust timing and similarity. When the script runs perfectly, then an
+exception FindFailed signals, that something is not as it should be.
+
+To implement some checkpoints, where you want to asure your workflow, use
+:py:meth:`Region.exists`, that reports a not found situation without raising
+FindFailed (returns False instead).
+
+To run all or only parts of your script without FindFailed exceptions to be raised,
+use :py:meth:`Region.setThrowException` to switch it on and off as needed.
+
+For more sophisticated concepts, you can implement your own exception handling using
+the standard Python construct ``try: except:``.
+
+Example: 3 solutions for a case, where you want to decide how to proceed in a
+workflow based on the fact that a specific image can be found. (pass is the python
+statement, that does nothing, but maintains indentation to form the blocks)::
+
+	# --- nice and easy
+	if exists("path-to-image"): # no exception, returns None when not found
+		pass # it is there
+	else:
+		pass # we miss it
+
+	# --- using exception handling
+	# every not found in the try block will switch to the except block
+	try:
+		find("path-to-image")
+		pass # it is there
+	except FindFailed:
+		pass # we miss it
+
+	# --- using setThrowException
+	setThrowException(False) # no exception raised, not found returns None
+	if find("path-to-image"):
+		setThrowException(True) # reset to default
+		pass # it is there
+	else:
+		setThrowException(True)
+		# reset to default
+		pass # we miss it
+
+
+.. py:class:: Region
+
+	.. py:method:: setThrowException(False | True)
+	
+		By using this method you control, how Sikuli should handle not found
+		situations. If used without specifying a region, the default/primary screen
+		(default region SCREEN) is used. 
+
+		If set to *True*, all subsequent failed find operations (explicit or
+		implicit) will raise exception FindFailed (which is the default when a
+		script is started).
+
+		If set to *False*, all subsequent failed find operations will not raise
+		exception FindFailed. Instead, explicit find operations such as
+		:py:meth:`Region.find` will return *None*. Implicit find operations as
+		byproduct of action functions such as :py:meth:`Region.click` will do
+		nothing and return 0.
+
+	.. py:method:: getThrowException()
+
+		Get the current setting as True or False (after start of script, this is True by
+		default). If used without specifying a region, the default/primary screen
+		(default region SCREEN) is used. 
+
+.. _GroupingMethodCallsWithRegion:
+
+Grouping Method Class (with Region)
+-----------------------------------
+
+Instead of::
+
+	# reg is a region object
+	if not reg.exists(image1):
+		reg.click(image2)
+		reg.wait(image3, 10)
+		reg.doubleClick(image4)
+
+you can group methods applied to the same region using Python's ``with`` syntax::
+
+
+	# reg is a region object
+	with reg:
+		if not exists(image1):
+			click(image2)
+		wait(image3, 10)
+		doubleClick(image4)
+
+All methods inside the *with* block that have the region omitted are redirected to the
+region object specified at the with statement.
+
 

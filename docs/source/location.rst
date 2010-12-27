@@ -5,6 +5,16 @@ This class is there as a convenience, to handle single points on the screen dire
 by its position (x, y). It is mainly used in the actions on a region, to directly
 denote the click point. It contains methods, to *move* a point around on the screen. 
 
+.. sikulicode::
+
+	click("apple.png")
+	def fun():
+		click("apple.png")
+	type("this is a test")
+	if True:
+		click("apple.png")
+			click("apple.png")
+
 .. py:class:: Location
 
 	.. py:method:: Location(x,y)
