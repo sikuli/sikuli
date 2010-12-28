@@ -1,7 +1,7 @@
 @import url("sphinxdoc.css");
 
 .sikuli-code {
-   font-size: 14px;
+   font-size: 1.2em; 
    font-family: "Osaka-mono", Monospace;
    line-height: 1.5em;
    display:table-cell;
@@ -38,7 +38,7 @@
 }
 
 .cmt {
-   color: rgb(200, 0, 200);
+   color: #408090;
 }
 
 .info {
@@ -52,3 +52,13 @@ div.related ul li a, a {
    color: #9D2900;
 }
 
+a tt {
+   font-size: 1em;
+   color: #9D2900;
+}
+
+div.sphinxsidebar {
+   width: 216px;
+   padding-right: 12px;
+   padding-left: 12px;
+}
