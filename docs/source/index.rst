@@ -54,6 +54,10 @@ Table of Contents
    new-in-sikulix
    tutorials/index
    sikuli-script-index
+
+.. toctree::
+   :maxdepth: 2
+
    devs/index
    FAQ
    changes
