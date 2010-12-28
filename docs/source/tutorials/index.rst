@@ -6,4 +6,5 @@ Tutorials
 
    helloworld/helloworld-mac
    helloworld/helloworld-win
- 
+   goodbyetrash/goodbyetrash 
+   uncheckall/uncheckall
