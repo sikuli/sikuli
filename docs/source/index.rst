@@ -54,7 +54,7 @@ Table of Contents
    new-in-sikulix
    tutorials/index
    sikuli-script-index
-   for-developers
+   devs/index
    FAQ
    changes
 
