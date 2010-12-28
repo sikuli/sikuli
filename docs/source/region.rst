@@ -682,6 +682,23 @@ application for accepting the action.
 		**Sideeffects**: when using *PS*, the match can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards.
 
+		Example:
+
+		.. sikulicode::
+
+			# Windows XP
+			click("xpstart.png")
+
+			# Windows Vista
+			click("vistastart.png")
+
+			# Windows 7
+			click("w7start.png")
+
+			# Mac
+			click("apple.png")
+
+
 
 	.. py:method:: doubleClick(PSMRL, [modifiers])
 
@@ -933,6 +950,8 @@ Extracting Text from a Region
 		Extract the text contained in the region using OCR.
 
 		:return: the text as a string. Multiple lines of text are separated by '\n'.
+
+.. _LowLevelMouseAndKeyboardActions:
 
 Low-level Mouse and Keyboard Actions
 ------------------------------------

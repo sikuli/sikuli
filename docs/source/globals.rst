@@ -13,14 +13,15 @@ Python/Jython features of module support - for your scripts too.
 This is possible with Sikuli X:
 
 * import other .sikuli in a way that is fully compatible with Python import
-* automatically access images contained in the imported .sikuli (no need to use setBundlePath()) 
+* automatically access images contained in the imported .sikuli (no need to use
+  :py:func:`setBundlePath`) 
 
 **Note**: Currently a .skl cannot be imported. As a circumvention it is up to you to unzip the .skl on the fly (e.g. with gzip on the command line) to a place of your choice as .sikuli (e.g. temp directory) and import it from there.
 
 The prerequisites:
 
 * the directories/folders containing your .sikuli's you want to import have to
-  be in sys.path (see below Usage)
+  be in ``sys.path`` (see below Usage)
 
 * your imported script must contain (recommendation: as first line) the
   following statement: ``from sikuli.Sikuli import *`` (this is necessary for the
@@ -94,6 +95,7 @@ distributed as a zipped file::
 	# now you can import every .sikuli in the same directory
 	import myLib
 
+.. _ControllingSikuliScriptsandtheirBehavior:
 
 Controlling Sikuli Scripts and their Behavior
 ---------------------------------------------
@@ -541,4 +543,191 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 Interacting with the User
 -------------------------
 
+.. py:function:: popup(text)
+
+	Display a dialog box with an *OK* button and *text* as the message. The script
+	then waits for the user to click the *OK* button.
+
+	Example::
+
+		popup("Hello World!\nHave fun with Sikuli!")
+	
+	A dialog box that looks like below will popup (Note: `\n` can break a line).
+
+	.. image:: popup.png
+
+.. py:function:: input([text])
+
+	Display a dialog box with an input field, a Cancel button, and an OK button. The
+	optional *text* can be displayed as a caption. The script then waits for the
+	user to click either the Cancel or the OK button.
+
+	Example::
+
+		name = input("Please enter your name to log in:")
+
+	.. image:: input.png
+	
+	A dialog box that looks like above will appear to allow the user to
+	interactively enter some text. This text is then assigned to the variable
+	*name*, which can be used in other parts of the script, such as ``paste(name)``
+	to paste the text to a login box.
+
+
+
+General Settings and Access to Environment Information
+------------------------------------------------------
+
+
+**Sikuli Level**
+
+Sikuli internally uses the class :py:class:`Settings` to store globally used
+settings. Publicly available attributes may be accessed by using
+``Settings.[name-of-an-attribute]`` to get it's value and Settings.attribute = value
+to set it. It is highly recommended to only modify attributes, that are described in
+this document or when you really know, what you are doing.
+
+Actually all attributes of some value for scripting are described in the topic
+:ref:`Controlling Sikuli Scripts and their Behavior
+<ControllingSikuliScriptsandtheirBehavior>`
+
+**Jython/Python Level**
+
+You may use all settings, that are defined in standard Python/Jython and that are
+available in your system environment. The modules sys and time are already imported,
+so you can use their methods without the need for an import statement.
+
+``sys.path`` may be one of the most valuable settings, since it is used by
+Python/Jython to locate modules, that are referenced using ``import module``. It is
+a list of path's, that is e.g. maintained by Sikuli to implement :ref:`Importing
+other Sikuli Scripts <ImportingOtherSikuliScripts>` (reuse code) as a standard
+compliant feature.
+
+If you want to use ``sys.path``, it is recommended to do it as shown in the following
+example, to avoid appending the same entry again::
+
+	myPath = "some-absolute-path"
+	if not myPath in sys.path:
+		sys.path.append(myPath)
+
+**Java Level**
+
+va maintains a global storage for settings (key/value pairs), that can be accessed
+by the program/script. Sikuli uses it too for some of it's settings. Normally it is
+not necessary to access these settings at the Java level from a Sikuli script, since
+Sikuli provides getter and setter methods for accessing values, that make sense for
+scripting. One example is the list of paths, that Sikuli maintains to specify
+additional places to search for images (please refer to :ref:`Importing
+other Sikuli Scripts <ImportingOtherSikuliScripts>` for more information).
+
+If needed, you may access the java settings storage as shown in the following
+example::
+
+	import java
+	
+	# get a value
+	val = java.lang.System.getProperty("key-of-property")
+	
+	# set a property's value
+	java.lang.System.getProperty("key-of-property", value)
+
+**Image Search Path**
+
+Sikuli maintains a list of locations to search for images when they are not found in
+the current .sikuli folder (a.k.a. bundle path). This list is maintained internally
+but can be inspected and/or modified using the following functions:
+
+.. py:function: getImagePath()
+
+	Get a list of paths where Sikuli will use to search for images
+
+.. py:function: addImagePath(a-new-path)
+
+	Add a new path to the list of image search paths
+
+.. py:function: removeImagePath(a-path-already-in-the-list)
+
+	Remove a path from the list of image search paths
+
+Note that paths must be specified using the correct path separators (slash on Mac
+and Unix and double blackslashes on Windows).
+
+It is automatically extended by Sikuli with script folders, that are imported (see:
+Reuse of Code and Images), so their contained images can be accessed. If you want to
+be sure of the results of your manipulations, you can use ``getImagePath`` and check
+the content of the returned list.  When searching images, the path's are scanned in
+the order of the list. The first image file with a matching image name is used.
+
+Note: Behind the scenes this list is maintained in the java property store with the
+key SIKULI_IMAGE_PATH. This can be preset when starting the JVM using the
+environment variable SIKULI_IMAGE_PATH and can be accessed at runtime using the
+approach as mentioned under Accessing Settings - Java level. Be aware, that this is
+one string, where the different entries are separated with a colon ( : ).
+
+The default bundle path can also be accessed and modified by the two functions
+below:
+
+.. py:function:: setBundlePath(path-to-a-folder)
+
+	Set the path for searching images in all Sikuli Script methods. Sikuli IDE sets
+	this automatically to the path of the folder where it saves the script
+	(.sikuli). Therefore, you should use this function only if you really know what
+	you are doing. Using it generally means that you would like to take care of your
+	captured images by yourself.
+
+	Additionally images are searched for in the SIKULI_IMAGE_PATH, that is a global
+	list of other places to look for images. It is implicitly extended by script
+	folders, that are imported (see: Reuse of Code and Images).
+
+.. py:function:: getBundlePath()
+
+	Get a string containing a fully qualified path to a folder containing your images
+	used for finding patterns. Note: Sikuli IDE sets this automatically to the path
+	of the folder where it saves the script (.sikuli). You may use this function if,
+	for example, to package your private files together with the script or to access
+	the picture files in the .sikuli bundles for other purposes. Sikuli only gives
+	you to access to the path name, so you may need other python modules for I/O or
+	other purposes.
+
+	Other places, where Sikuli looks for images, might be in the SIKULI_IMAGE_PATH.
+
+**Other Environment Information**
+
+.. py:staticmethod:: Env.getOS()
+		Env.getOSVersion()
+		
+	Get the type (getOS) and version (getOSVersion) of the operating system your
+	script is running on.
+	
+	An example using these methods on a Macis shown below::
+
+		# on a Mac
+		myOS = Env.getOS()
+		myVer = Env.getOSVersion()
+
+		if myOS == OS.MAC:
+			print "Mac " + myVer # e.g., Mac 10.6.3
+		else:
+			print "Sorry, not a Mac"
+
+		myOS = str(Env.getOS()) 
+		if myOS == "MAC" or myOS.startswith("M"):
+			print "Mac " + myVer # e.g., Mac 10.6.3
+		else:
+			print "Sorry, not a Mac"
+
+.. py:staticmethod:: Env.getClipboard()
+
+	Get the content of the clipboard if it is text, otherwise an empty string.
+
+	Note: Be careful, when using ``Env.getClipboard()`` together with ``paste()``,
+	since paste internally uses the clipboard to transfer text to other
+	applications, the clipboard will contain what you just pasted. Therefore, if you
+	need the content of the clipboard, you should call ``Env.getClipboard()`` before
+	using ``paste()``.
+
+	Tip: When the clipboard content was copied from a web page that mixes images and
+	text, you should be aware, that there may be whitespace characters around and
+	inside your text, that you did not expect. In this case, you can use
+	``Env.getClipboard().strip()`` to get rid of surrounding whitespaces.
 
