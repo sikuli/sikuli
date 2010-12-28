@@ -49,18 +49,14 @@ Table of Contents
 -----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    new-in-sikulix
    tutorials/index
-   globals
-   region
-   screen
-   location
-   match
-   pattern
-   finder
-   keys
+   sikuli-script-index
+   for-devlopers
+   FAQ
+   changes
 
 Indices and tables
 ==================
