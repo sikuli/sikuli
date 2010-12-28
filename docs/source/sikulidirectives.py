@@ -171,7 +171,7 @@ class SikuliCodeDirective(Directive):
 		#print destdir
 
 		if not os.path.exists(destdir):
-			os.mkdir(destdir)
+			os.makedirs(destdir)
 
 		dir = os.path.dirname(src)
 		#print os.path.basename(src)
