@@ -39,7 +39,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>X-1.0a5</string>
+	<string>X-1.0rc1</string>
 	<key>Java</key>
 	<dict>
 		<key>ClassPath</key>
@@ -53,7 +53,7 @@
 		<key>JVMVersion</key>
 		<string>1.5+</string>
 		<key>MainClass</key>
-		<string>edu.mit.csail.uid.SikuliIDE</string>
+		<string>org.sikuli.ide.SikuliIDE</string>
 		<key>Properties</key>
 		<dict>
 			<key>apple.laf.useScreenMenuBar</key>
