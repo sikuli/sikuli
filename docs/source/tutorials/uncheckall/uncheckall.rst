@@ -1,5 +1,5 @@
-Uncheck All (Mac)
-=================
+Uncheck All Checkboxes
+======================
 
 In this tutorial, we will demonstrate how to use a ``for`` loop to interact with
 multiple instances of a GUI component. Suppose we want to uncheck all the check
