@@ -9,3 +9,4 @@ Tutorials
    goodbyetrash/goodbyetrash 
    uncheckall/uncheckall
    sliders/sliders
+   surveillance/surveillance
