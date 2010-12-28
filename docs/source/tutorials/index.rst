@@ -10,3 +10,4 @@ Tutorials
    uncheckall/uncheckall
    sliders/sliders
    surveillance/surveillance
+   resize/resize
