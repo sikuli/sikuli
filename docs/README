@@ -4,7 +4,3 @@ To build the documentation, run the following in docs/
 
 $ make html
 
-After the output directories are automatically created, manually create the
-following symbolic link to allow images accessible by sikulicode directives
-
-$ ln -s _static/sikuliimages build/html/images

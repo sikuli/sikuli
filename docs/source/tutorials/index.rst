@@ -8,3 +8,4 @@ Tutorials
    helloworld/helloworld-win
    goodbyetrash/goodbyetrash 
    uncheckall/uncheckall
+   sliders/sliders

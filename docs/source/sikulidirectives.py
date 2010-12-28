@@ -42,8 +42,12 @@ class Parser:
 		self.raw = string.strip(raw.expandtabs(4))
 		self.out = out
 
-	def format(self, filename):
+	def format(self, srcdir, destdir):
 		global HEADER
+		
+		self.srcdir = srcdir
+		self.destdir = destdir
+		
 		# store line offsets in self.lines
 		self.lines = [0, 0]
 		pos = 0
@@ -56,10 +60,11 @@ class Parser:
 		# parse the source and write it
 		self.pos = 0
 		text = StringIO.StringIO(self.raw)
-		HEADER = HEADER.replace("$FILE", filename)
-		if LOCAL_CONVERT:
-		   HEADER = HEADER.replace("$HIDE_INFO", "display: none;")
+		#HEADER = HEADER.replace("$FILE", filename)
+		#if LOCAL_CONVERT:
+		#   HEADER = HEADER.replace("$HIDE_INFO", "display: none;")
 		self.out.write(HEADER)
+		
 		try:
 		   tokenize.tokenize(text.readline, self)
 		except tokenize.TokenError, ex:
@@ -72,7 +77,7 @@ class Parser:
 		self.out.write(FOOTER)
 
 	def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
-		if 1:
+		if 0:
 		   print "type", toktype, token.tok_name[toktype], "text", toktext,
 		   print "start", srow,scol, "end", erow,ecol, "<br>"
 
@@ -81,7 +86,7 @@ class Parser:
 		newpos = self.lines[srow] + scol
 		self.pos = newpos + len(toktext)
 
-		print "%d-%d" % (oldpos, newpos)
+		#print "%d-%d" % (oldpos, newpos)
 		# handle newlines
 		if toktype in [token.NEWLINE, tokenize.NL]:
 		   self.out.write('\n')
@@ -93,7 +98,7 @@ class Parser:
 		   #newpos = newpos/2
 		   newpos = self.pos - len(toktext)/2
 		   self.out.write(self.raw[oldpos:newpos])
-		   print "[I]%d-%d" % (oldpos, newpos)
+		   #print "[I]%d-%d" % (oldpos, newpos)
 		   return
 
 	   # send the original whitespace, if needed
@@ -113,8 +118,14 @@ class Parser:
 
 		if toktype == token.STRING and toktext.endswith(".png\""):
 		   m = re.search('[\'\"](.*)[\'\"]',toktext)
-		   filename = m.group(1) 
-		   self.out.write('<img src="images/' + filename + '"/>')
+		   filename = m.group(1)
+
+		   src = "%s/%s" % (self.srcdir, filename)
+		   print "copy image %s to %s" % (src, self.destdir)
+		   import shutil
+		   shutil.copy(src,self.destdir) 
+		   
+		   self.out.write('<img src="' + filename + '"/>')
 		   return
 
 		if color:
@@ -127,6 +138,8 @@ class Parser:
 
 from sphinx.util.compat import Directive
 from docutils import nodes
+import os.path
+import os
 
 class SikuliCodeDirective(Directive):
 	required_arguments = 0 
@@ -141,12 +154,34 @@ class SikuliCodeDirective(Directive):
 		#print ' '.join(self.content)
 		#x = self.content[0]
 		#x = x.encode('ascii'
+		#print self.state.document.__dict__
+		#print self.state.document.settings.env.__dict__
+		env = self.state.document.settings.env
+		root = env.srcdir
+		
+		src = self.state.document.settings._source
+	 	srcdir = os.path.dirname(src)
+		
+		#print env.__dict__
+		relpath = os.path.relpath(src, root)
+		#print relpath
+		
+		dest = os.path.join(root, "../build/html", relpath)
+		destdir = os.path.dirname(dest)
+		#print destdir
+
+		if not os.path.exists(destdir):
+			os.mkdir(destdir)
+
+		dir = os.path.dirname(src)
+		#print os.path.basename(src)
+		#print os.path.join(dir, "../build/html")
 		txtout = StringIO.StringIO()
 		txtin = '\n'.join(self.content)
 		p = Parser(txtin,txtout)
-		p.format('test')
+		p.format(srcdir, destdir)
 		#print txti
-		print txtout.getvalue()
+		#print txtout.getvalue()
 		txt = txtout.getvalue()
 		return [nodes.raw('', txt, format='html')]
 
