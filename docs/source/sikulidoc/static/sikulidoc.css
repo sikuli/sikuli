@@ -47,3 +47,8 @@
    margin-bottom: 20px;
    $HIDE_INFO
 }
+
+div.related ul li a, a {
+   color: #9D2900;
+}
+
