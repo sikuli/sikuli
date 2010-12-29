@@ -1,23 +1,25 @@
-How To Run Sikuli From Command Line
+How to run Sikuli from Command Line
 ===================================
 
 Sikuli IDE can be used under command line to run a Sikuli script or a Sikuli test case. It is a little bit different to invoke the Sikuli IDE under command line on each platform.
 
 
-.. topic:: Windows
+.. windows::
 
-   :command:`PATH-TO-SIKULI/sikuli-ide.exe or PATH-TO-SIKULI/sikuli-ide.bat [options]`
+   :command:`PATH-TO-SIKULI/sikuli-ide.exe [options]` or 
 
-.. topic:: Mac OS X
+   :command:`PATH-TO-SIKULI/sikuli-ide.bat [options]`
+
+.. mac::
 
    :command:`/Applications/Sikuli-IDE.app/sikuli-ide.sh [options]`
 
-.. topic:: Linux
+.. linux::
 
    :command:`PATH-TO-SIKULI/sikuli-ide.sh [options]`
 
-Options
--------
+Command Line Options
+--------------------
 
 :program:`Sikuli-IDE`
 
@@ -54,15 +56,15 @@ Options
 Example - Run xxxx.sikuli with three arguments: 
 ------------------------------------------------
 
-.. topic:: Windows
+.. windows::
 
    :command:`PATH-TO-SIKULI/sikuli-ide.exe -r xxxx.sikuli --args a1 a2 a3`
 
-.. topic:: Linux
+.. linux::
 
    :command:`PATH-TO-SIKULI/sikuli-ide.sh -r xxxx.sikuli --args a1 a2 a3`
 
-.. topic:: Mac OS X
+.. mac::
 
    :command:`/Applications/Sikuli-IDE.app/sikuli-ide.sh -r xxxx.sikuli --args a1 a2 a3`
 
