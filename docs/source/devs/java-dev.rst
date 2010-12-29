@@ -64,6 +64,6 @@ The program clicks on the spotlight icon on the screen, waits spotlight's input 
 
 See also
 ---------------------------
- * `Javadoc of Sikuli Script <http://sikuli.org/doc/java/>`_.
+ * `Javadoc of Sikuli Script <http://sikuli.org/doc/java-x/>`_.
  * :doc:`/sikuli-script-index`.
 
