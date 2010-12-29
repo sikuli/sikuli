@@ -62,3 +62,7 @@ div.sphinxsidebar {
    padding-right: 12px;
    padding-left: 12px;
 }
+
+.sidebar li {
+   margin-bottom: 5px;
+}

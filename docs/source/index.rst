@@ -3,8 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-The Complete Guide to Sikuli X
-==============================
+Sikuli Documentation
+====================
+
+.. sidebar:: Getting Help
+
+   * Looking for specific information?
+     Try the :doc:`table of contents <toc>`, 
+     :ref:`genindex`, or :ref:`search`.
+   * See `other people's questions <https://answers.launchpad.net/sikuli>`_,
+     or `ask a question <https://answers.launchpad.net/sikuli/+addquestion>`_.
+   * If you think you've found bugs, search or report bugs in 
+     our `bug tracker <https://bugs.launchpad.net/sikuli>`_.
 
 This document was set up and is being maintained by `RaiMan
 <https://launchpad.net/~raimund-hocke>`_ (Raimund Hocke) with the great support
@@ -45,28 +55,48 @@ navigator] to browse all classes, methods and functions in alphabetical order
 (as every class shows its methods this way at the beginning of its chapter).
 
 
-Table of Contents
------------------
 
+Getting Started
+---------------
+
+Tutorials
+^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 2
+
+   tutorials/index
+
+FAQ
+^^^
+
+
+
+Complete Guide to Sikuli Script
+-------------------------------
 .. toctree::
    :maxdepth: 3
 
    new-in-sikulix
-   tutorials/index
-   sikuli-script-index
+   globals
+   region
+   screen
+   location
+   match
+   pattern
+   finder
+   keys
+
+
+
+For Hackers and Developers
+--------------------------
 
 .. toctree::
    :maxdepth: 2
 
    devs/index
    contributing
-   FAQ
    changes
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
