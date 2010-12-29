@@ -8,6 +8,7 @@ Tutorials
    helloworld/helloworld-win
    goodbyetrash/goodbyetrash 
    uncheckall/uncheckall
+   checkone/checkone
    sliders/sliders
    surveillance/surveillance
    resize/resize
