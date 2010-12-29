@@ -25,7 +25,7 @@ library, you can use any syntax of the Python language.  If you are new to
 programming, you can still enjoy using Sikuli to automate simple repetitive
 tasks without learning Python. But if you would like to write more powerful and
 complicated scripts, you may want to dive into the `Python Language
-<http://jythonpodcast.hostjava.net/jythonbook/en/1.0/ Python language>`_.
+<http://jythonpodcast.hostjava.net/jythonbook/en/1.0/>`_.
 
 The preface of a chapter briefly describes a class or a group of methods. It
 contains general usage and hints that apply to all methods in that chapter. We
@@ -59,6 +59,7 @@ Table of Contents
    :maxdepth: 2
 
    devs/index
+   contributing
    FAQ
    changes
 
