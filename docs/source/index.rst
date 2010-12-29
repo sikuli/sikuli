@@ -69,6 +69,11 @@ Tutorials
 
 FAQ
 ^^^
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   faq/*
 
 
 
