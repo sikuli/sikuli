@@ -19,6 +19,7 @@ SET(PACKAGE org.sikuli.script)
 STRING(REPLACE . / PACKAGE_DIR ${PACKAGE})
 
 SET(BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+SET(DOC_DIR "${BASE_DIR}/doc")
 SET(JAVA_SRC_DIR "${BASE_DIR}/src/main/java")
 SET(NATIVE_SRC_DIR "${BASE_DIR}/src/main/native")
 SET(PYTHON_SRC_DIR "${BASE_DIR}/src/main/python")
@@ -92,6 +93,10 @@ IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
    )
 ENDIF()
 
+add_custom_target(doc
+   javadoc -windowtitle "Javadoc of Sikuli Script" -sourcepath ${JAVA_SRC_DIR}
+    -d ${DOC_DIR} -classpath ${CLASSPATH}  ${PACKAGE}
+)
 # Dependencies
 
 add_dependencies(${JAR_FILE} 
