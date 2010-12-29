@@ -113,3 +113,9 @@ For Hackers and Developers
    changes
 
 
+Academic Papers
+---------------
+
+* `Sikuli: Using GUI Screenshots for Search and Automation <http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-uist2009.pdf>`_, UIST 2009 (PDF).
+* `GUI Testing Using Computer Vision <http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-chi2010.pdf>`_, CHI 2010 (PDF).
+
