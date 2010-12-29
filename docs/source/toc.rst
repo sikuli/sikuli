@@ -4,8 +4,8 @@ Table of Contents
 .. toctree::
    :maxdepth: 3
 
-   new-in-sikulix
    tutorials/index
+   new-in-sikulix
    sikuli-script-index
    FAQ
 

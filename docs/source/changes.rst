@@ -2,7 +2,7 @@ Changes in Sikuli
 =================
 
 X 1.0 rc1 (2010-12-23)
-------------------------
+----------------------
 
 * New computer vision engine - faster and more reliable.
 * Text recognition and matching (EXPERIMENTAL)
@@ -37,7 +37,7 @@ Special Notes
 * If you use Sikuli in your Java programs, please note the java package name of Sikuli has been changed from "edu.mit.csail.uid" to "org.sikuli.script". You need to replace the package name in all import statements.
 
 Bug Fixes
-^^^^^^^^^^
+^^^^^^^^^
 
 * #594529 Screenshot hotkey uses first char of key description instead of key
 * #599955 openApp on Linux foregrounds apps by default
@@ -120,7 +120,8 @@ usage: Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>]
  -r,--run <sikuli-file> run .sikuli or .skl file
 
 Bug Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^
+
 * #581712 Unit testing in Sikuli 0.10 doesn't work. (Unit testing panel is now working.)
 * #577610 capture(region) gives (partly) black images
 * #577220 exit() Function gives Runtime Error from Command Line
@@ -163,7 +164,8 @@ A great reference document The Complete Guide to Sikuli Script (http://sikuli.or
 ------------------
 
 General Notes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
+
 * Sikuli IDE saves all scripts in UTF-8 since this version. In addtion, paste() also supports unicode strings now, so international characters should be able to "paste" into any applications.
 * If a image pattern can not be found, find() and all actions that implicitly use find() throw a FindFailed exception by default. This exception can be handled by the try-except statement of Python if needed.
 * New API: run(command) - runs a string command and returns its output. This would be useful for running command line programs.
@@ -171,7 +173,7 @@ General Notes
 * The key modifier for click is fixed. Now you can do Ctrl+Alt+Shift+click.
 
 Platform Specific Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Mac OS X
 
@@ -187,7 +189,8 @@ Linux
 * Last location of opening files is remembered.
 
 Bug Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^
+
 * #515914 IDE crashed when running the note.sikuli sample script
 * #518491 type command turns characters in message string
 * #516795 UnknownFormatConversionException: Conversion = 'p'
@@ -207,7 +210,7 @@ Bug Fixes
 Sikuli 0.9.8 release added the missing feature, global shortcuts, to the Linux version and also fixed a serious bug that causes memory leak on all platforms. Anti-aliasing for text is enabled for Windows and Linux.
 
 Platform Specific Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Linux
 
@@ -219,7 +222,8 @@ Windows
 * Enabled anti-alias for text rendering
 
 Bug Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^
+
 * #515592 Feature Request: Turn on font aliasing in Windows version
 * #515406 double "\" generated into Sikuli-IDE.bat on Windows 2000
 * #511770 running out of memory soon
@@ -228,6 +232,7 @@ Bug Fixes
 
 0.9.7 (2010-01-27)
 ------------------
+
 * [NEW] Scripts can be exported as executable files (.skl) - double-click on .skl runs it (Mac only now)!
 * [NEW] Special keys are supported (see class Key in the Jython API reference.)
     TAB, ESC, F1~F15, UP, DOWN, RIGHT, LEFT, ENTER, BACKSPACE,
@@ -244,7 +249,7 @@ Bug Fixes
 * Added HowTo's on the web site
 
 Platform Specific Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Mac OS X Leopard(10.5)
 
@@ -255,7 +260,7 @@ Linux
 * Supported openApp, switchApp(wmctrl needed), closeApp
 
 Bug Fixes
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^
 
 * #511748  screenshot shortcut in the capture mode should be disabled
 * #511749  the number in Pattern.similar() has wrong decimal separator on French Windows
