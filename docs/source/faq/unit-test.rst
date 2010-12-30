@@ -1,5 +1,5 @@
-Unit Testing for GUI
-====================
+How to create Unit Testing Scripts for GUI
+==========================================
 
 Sikuli integrates with jUnit and supports unit testing for Graphical User Interfaces (GUI).
 The unit testing panel can be opened by clicking the menu
