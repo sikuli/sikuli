@@ -8,11 +8,10 @@ X 1.0 rc1 (2010-12-23)
 * Text recognition and matching (EXPERIMENTAL)
    * find("OK") returns all regions with a "OK" label.
    * region.text() returns the text in the region.
-* Screenshot naming - screenshots can be automatically named with timestamps, the text in them, or manually input.
-* Supports remote images
-     e.g. click(" http://sikuli.org/example/ok_button.png")
+* Screenshot naming - screenshots can be named automatically with timestamps or the text in them as well as manually with prompted filenames.
+* Supports remote images e.g. click("http://sikuli.org/docx/_static/ide-icon-64.png")
 * Image search path (SIKULI_IMAGE_PATH) - images can be stored anywhere you like.
-* .sikuli source can be imported as a module.
+* .sikuli source can be imported as a module - contained images are found automatically
 * New App class replaces the old openApp, switchApp, closeApp functions
    * App.open(), App.close(), App.focus()
    * App.window() returns the bound of the app window as a Region, so you can restrict following actions within that region. (EXPERIMENTAL: Windows and Mac only)
@@ -28,9 +27,9 @@ Special Notes
 ^^^^^^^^^^^^^
 
 * Text recognition and matching is implemented with the Tesseract OCR engine, which was
-   originally designed for recognizing scanned documents. Please note the OCR technology
-   is not perfect, especially for screen text. We believe there is still much space for tuning its
-   performance and we are working hard to improve it. Please look forward to it.
+  originally designed for recognizing scanned documents. Please note the OCR technology
+  is not perfect, especially for screen text. We believe there is still much space for tuning its
+  performance and we are working hard to improve it. Please look forward to it.
 
 * The observer is unstable in this version. We will fix it in the next release.
 
@@ -65,26 +64,26 @@ Bug Fixes
 0.10.2 (2010-08-07)
 -------------------
 
- * add an option "-test xxx.sikuli" to run a .sikuli as a test case.
- * add an option "-s" to output runtime errors to stderr instead of popping up a message box.
- * Sikuli-IDE.bat uses 32bit JRE automatically on Windows x64 (Thanks Brian Creation's patch)
- * fixed inline images overlapping on code
- * fixed unsatisfied linking error (Sikuli-IDE.exe) on Windows x64
- * the path to Sikuli scripts can have non-roman characters on Mac and Linux now (Thanks for niknah's idea)
- * fixed a critical memory leak issue (Thanks for niknah's patch)
- * fixed png pattern parsing failure (Thanks Timothy Fridey's patch)
- * fixed Korean IDE i18n resources
- * fixed the default width of the unit test panel, the default height of the console panel
+* add an option "-test xxx.sikuli" to run a .sikuli as a test case.
+* add an option "-s" to output runtime errors to stderr instead of popping up a message box.
+* Sikuli-IDE.bat uses 32bit JRE automatically on Windows x64 (Thanks Brian Creation's patch)
+* fixed inline images overlapping on code
+* fixed unsatisfied linking error (Sikuli-IDE.exe) on Windows x64
+* the path to Sikuli scripts can have non-roman characters on Mac and Linux now (Thanks for niknah's idea)
+* fixed a critical memory leak issue (Thanks for niknah's patch)
+* fixed png pattern parsing failure (Thanks Timothy Fridey's patch)
+* fixed Korean IDE i18n resources
+* fixed the default width of the unit test panel, the default height of the console panel
 
 New Command Line Usage
 ^^^^^^^^^^^^^^^^^^^^^^
 
-usage: Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>] [-s] [-t <sikuli-test-case>]
-     --args <arguments> specify the arguments passed to Jython's sys.argv
- -h,--help print this help message
- -r, --run <sikuli-file> run .sikuli or .skl file
- -s,--stderr print runtime errors to stderr instead of popping up a message box
- -t,--test <sikuli-test-case> run .sikuli as a unit test case with junit's text UI runner
+ Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>] [-s] [-t <sikuli-test-case>]
+  | --args <arguments> specify the arguments passed to Jython's sys.argv
+  | -h,--help print this help message
+  | -r, --run <sikuli-file> run .sikuli or .skl file
+  | -s,--stderr print runtime errors to stderr instead of popping up a message box
+  | -t,--test <sikuli-test-case> run .sikuli as a unit test case with junit's text UI runner
 
 Bug Fixes
 ^^^^^^^^^
@@ -114,10 +113,10 @@ Bug Fixes
   * Screen capturing: CTRL-SHIFT-2
 * Add command line options to Sikuli IDE.
 
-usage: Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>]
-     --args <arguments> specify the arguments passed to Jython's sys.argv
- -h,--help print this help message
- -r,--run <sikuli-file> run .sikuli or .skl file
+  Usage: Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>]
+   | --args <arguments> specify the arguments passed to Jython's sys.argv
+   | -h,--help print this help message
+   | -r,--run <sikuli-file> run .sikuli or .skl file
 
 Bug Fixes
 ^^^^^^^^^
