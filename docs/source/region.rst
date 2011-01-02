@@ -715,6 +715,22 @@ application for accepting the action.
 		**Sideeffects**: when using *PS*, the match can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards.
 		
+		**Example:**
+		
+		.. sikulicode::
+		 
+			# Windows XP
+			click("xpstart.png")
+		
+			# Windows Vista
+			click("vistastart.png")
+		
+			# Windows 7
+			click("w7start.png")
+		
+			# Mac
+			click("apple.png")
+		
 
 	.. py:method:: doubleClick(PSMRL, [modifiers])
 
