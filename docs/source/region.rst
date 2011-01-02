@@ -1,6 +1,8 @@
 Region
 ======
 
+.. py:class:: Region
+
 Region is a rectangular section on a screen, which is defined by 
 	1.	a location (x, y) of its upper left corner as a distance relative to the
 		upper left corner of the screen (0, 0), and
@@ -22,24 +24,24 @@ The visual content of a region is evaluated by using methods like
 content in the region has a similarity between 0 (not found) and 1 (found and
 it is per pixel exactly matches to the pattern). The find can be advised, to
 search with a minimum similarity, so that some minor variations in shape and
-color can be ignored. If nothins else is specified, Sikuli searches with a
+color can be ignored. If nothing else is specified, Sikuli searches with a
 minimum similarity of 0.7, which does what is expected in general cases.
 
 :ref:`Find operations <FindinginsideaRegionandWaitingforaVisualEvent>` return a
-:py:class:`Match` object, which has all the attributes and methods as a region
-has and can be used in exactly the same way (e.g. to find or click another
+:py:class:`Match` object, which has all the attributes and methods of a region
+and can be used in exactly the same way (e.g. to find or click another
 target within it). A :py:class:`Match` has the dimension of the pattern used
 for searching and also knows the position where it was found and its similarity
 score. A region preserves the best match of the last successful find operation
 and all matches of the last successful :py:meth:`Region.findAll` (accessible
-with :py:meth:`Region.getLastMatches` You can wait for patterns to show up
+with :py:meth:`Region.getLastMatches`. You can wait for patterns to show up
 using :py:meth:`Region.wait`, to vanish using :py:meth:`Region.waitVanish` or
-just check whether a pattern :py:meth:`Region.exists` without handling
-[#ExceptionFindFailed exceptions]. 
+just check whether a pattern :py:meth:`Region.exists` without the need to handle
+:ref:`exceptions <ExceptionsFindFailed>`. 
 
-Sikuli 0.10 begins to support visual event driven programming.  You can tell a
-region to [#ObservingVisualEventsinaRegion observe that something appears,
-vanishes, or changes]. It's possible to wait for the completion of an
+Sikuli 0.10 begins to support visual event driven programming. You can tell a region
+:ref:`to observe that something appears, vanishes or changes <ObservingVisualEventsinaRegion>`. 
+It is possible to wait for the completion of an
 observation or let it run in the background while your script is continuing.
 When one of the visual events happens, a handler in your script is called. Each
 region has one observer and each observer can handle multiple visual events.
@@ -75,15 +77,16 @@ method call. Here you will find the HowTo's.
 		by the IDE, a region can be created by specifying a rectangle. This is how
 		the visual representation in the IDE of such a region is internally set up in
 		the script.  A region can also be created by users in run-time using
-		[#selectRegion selectRegion()].
+		:py:meth:`Region.selectRegion`.
 
 		You can create a region by given another region. This just
 		duplicates the region into a different and new object. This can be useful, if
-		you need the same region with different attributes, such as
-		[#ObservingVisualEventsinaRegion observation loop] or [#setThrowException
-		whether throwing an exception when finding fails]. Another way to create a
-		region is to specify a rectangle object or to [#ExtendingaRegion extend an
-		existing region].
+		you need the same region with different attributes, such as another
+		:ref:`observation loop <ObservingVisualEventsinaRegion>` 
+		or use :py:meth:`Region.setThrowException` to control
+		whether throwing an exception when finding fails. Another way to create a
+		region is to specify a rectangle object or to 
+		:ref:`extend an existing region <ExtendingaRegion>`.
 
 	.. py:method:: selectRegion([text])
 
@@ -92,17 +95,16 @@ method call. Here you will find the HowTo's.
 		:param text: Text to display in the middle of the screen.
 		:return: a new region object or None, if the user cancels the capturing process.
 
-		In fact, :py:func:`selectRegion` is a method of [#ClassScreen Class Screen],
-		but since it creates a region, it's mentioned here too.
+		In fact it is a method of class Screen,
+		but since it creates a region, it is mentioned here too.
 
-		*text*  is displayed for about 2 seconds in the middle of the screen.
-		If *text* is omitted, the default "Select a region on the screen" is
+		**text**  is displayed for about 2 seconds in the middle of the screen.
+		If **text** is omitted, the default "Select a region on the screen" is
 		displayed. 
 
 		The interactive capture mode is entered and allows the user to select a
-		region the same way as using the selection tool in the IDE. You may have to
+		region the same way as using the selection tool in the IDE. You should
 		check the result, since the user may cancel the capturing.
-
 
 	.. py:method:: setX(number)
 		 setY(number)
@@ -121,13 +123,22 @@ method call. Here you will find the HowTo's.
 
 		Both methods are doing exactly the same: setting position and dimension to
 		new values. The motivation for two names is to make scripts more readable:
-		*setROI()* is intended to shrink a [#ClassScreen screen object] to speed up
-		processing searches (region of interest), whereas *setRect()* should be
+		``setROI()`` is intended to restrict the search to a smaller area to speed up
+		processing searches (region of interest), whereas ``setRect()`` should be
 		used to redefine a region (which could be enlarging it). 
 
 		:param x: the attributes of a rectangle
 		:param rectangle: a rectangle object
 		:return: None
+
+	.. py:method:: getX()
+		 getY()
+		 getW()
+		 getH()  
+
+		Get the respective attribute of the region.
+
+		:return: integer value
 
 	.. py:method:: getCenter()
 
@@ -141,10 +152,9 @@ method call. Here you will find the HowTo's.
       
 		:return: a new :py:class:`Screen` object
 		  
-		This method only makes sense in [#MultiMonitorEnvironments Multi
-		Monitor Environments], since it always return the default screen in a
-		single monitor
-		environment.
+		This method only makes sense in 
+		:ref:`Multi Monitor Environments <MultiMonitorEnvironments>`, 
+		since it always returns the default screen in a single monitor environment.
 
 	.. py:method:: getLastMatch()
 			getLastMatches()
@@ -152,17 +162,16 @@ method call. Here you will find the HowTo's.
 		:return: the best match as a :py:class:`Match` respectively one or more
 			match objects as an :py:class`Iterator` object
 
-		All successful find operations (explicit like [#find find()] or
-		implicit like [#click click()]), store the best match into lastMatch
-		of the region that was searched. findAll() store all found matches into
-		lastMatches of the region that
-		was searched as an iterator. 
+		All successful find operations (explicit like ``find()`` or
+		implicit like ``click()``), store the best match into lastMatch
+		of the region that was searched. ``findAll()`` stores all found matches into
+		lastMatches of the region that was searched as an iterator. 
 
-		To access these attributes use '''region.getLastMatch()''' or
-		'''region.getLastMatches()''' respectively.
+		To access these attributes use ``region.getLastMatch()`` or
+		``region.getLastMatches()`` respectively.
 
 		How to use the iterator object returned by getLastMatches()
-		[#IteratingMatches is documented here].
+		:ref:`is documented here <IteratingMatches>`.
 
 	.. py:method:: setAutoWaitTimeout(seconds)
 
@@ -175,13 +184,12 @@ method call. Here you will find the HowTo's.
 		pattern to appear until the specified amount of time has elapsed. The
 		default is 3.0 seconds. This method is intended for users to override
 		this default setting. As such it lets :py:meth:`Region.find` work like
-		`Region.wait`, without being able to set an individual timeout value
+		:py:meth:`Region.wait`, without being able to set an individual timeout value
 		for a specific find operation.
 
 	.. py:method:: getAutoWaitTimeout()
 
-		Get the current value of the maximum waiting time for all subsequent
-		find operations.
+		Get the current value of the maximum waiting time for	find operations.
 		
 		:return: timeout in seconds
 
@@ -190,15 +198,15 @@ method call. Here you will find the HowTo's.
 Extending a Region
 ------------------
 
-These methods (exception inside()) return a new region object, that is
+These methods (exception ``inside()``) return a new region object, that is
 constructed based on the specified region (sometimes called spatial operators).
 The range parameter, if given as positive integer number, restricts the
 dimension of the new region (width and/or height respectively) based on that
 value. If range  is not specified, the new region extends to the respective
-boundary of the screen the given region belongs to. An exception is nearby(),
+boundary of the screen the given region belongs to. An exception is ``nearby()``,
 which uses 50 as its default range.
 
-Note: In all cases the new region does not extend beyond any boundary of the
+**Note**: In all cases the new region does not extend beyond any boundary of the
 screen that contains the given region. 
 
 .. image:: spatial.jpg
@@ -206,15 +214,13 @@ screen that contains the given region.
 .. py:class:: Region
 
 	.. py:method:: inside()
-
-		Derive a :py:class:`Region` object that represents the *inside* of the
-		current region. This allows all subsequent searaches to be restricted
-		to inside the region.
-
-		:return: a :py:class:`Region` object
+	
+		Returns the same object. Retained for upward campatibility.
+		
+		:return: the :py:class:`Region` object
 
 		This method can be used to make scripts more readable.
-		region.inside().find() is totally equivalent to region.find()
+		``region.inside().find()`` is totally equivalent to ``region.find()``.
 
 	.. py:method:: nearby([range])
 
@@ -280,7 +286,8 @@ functions of Sikuli. As a default, if the visual object cannot be found, Sikuli
 will stop the script by raising an exception FindFailed. This follows the
 standards of the Python language so that you can handle such exceptions using
 try ... except. If you are not used to programming and just want to bypass the
-exception handling, you can read this section about exception FindFailed.
+exception handling, you should read this section about 
+:ref:`exception FindFailed <ExceptionFindFailed>`.
 
 **PS**: means, that either a :py:class:`Pattern` or a string (path to an image
 file or just plain text) can be used as parameter. A find operation is
@@ -292,20 +299,21 @@ similarity is given to :py:meth:`Region.find()`.
 
 If a find operation is successful, the returned match is additionally stored
 internally with the region that was used for the search. So instead of using a
-variable to store the match (m = find()), you can use getLastMatch() to access
+variable to store the match ( ``m = find()`` ), you can use ``getLastMatch()`` to access
 it afterwards. Unsuccessful find operations will leave these values unchanged.
-(This only happens when using exists(), exception handling or when running with
-setThrowException(''False'')).
+(This only happens when using ``exists()``, exception handling or when running with
+``setThrowException(False)``).
 
-Normally all these region methods are used as reg.find(PS), where reg is a
-region object. If written as find(PS) it acts on the default screen, which is
+Normally all these region methods are used as ``reg.find(PS)``, where reg is a
+region object. If written as ``find(PS)`` it acts on the default screen, which is
 an implicit region in this case. But sometimes it's a good idea to use
-region.find() to restrict the search to a smaller region in order to speed up
+``region.find()`` to restrict the search to a smaller region in order to speed up
 processing.
 
-If you have multiple monitors, please read Multi Monitor Environments.
+If you have multiple monitors, please read 
+:ref:`Multi Monitor Environments <MultiMonitorEnvironments>`.
 
-Note on IDE: Capturing is a tool in the IDE, to quickly set up images to search
+**Note on IDE**: Capturing is a tool in the IDE, to quickly set up images to search
 for. These images are named automatically by the IDE and stored together with
 the script, at the time it is saved (we call the location in the file system
 bundle-path). Behind the curtain, the images itself are specified simply by
@@ -320,8 +328,7 @@ using a string containing the file name (path to an image file).
 		:return: a :py:class:`Match` object that contains the best match. In
 			case thtat exception handling for :py:class:`FindFailed` is switched
 			off by :py:func:setThrowException, *None* is returned if nothing is
-			found. (Note: By default, the exception handling of
-			:py:class:`FindFailed` is turned on).
+			found. (Note: By default, the exception handling of FindFailed is turned on).
 
 		Find a particular GUI element, which is seen as the given image or
 		text. The given file name of an image specifies the element's
@@ -330,20 +337,22 @@ using a string containing the file name (path to an image file).
 		the pattern. If no similarity was set for the pattern by
 		:py:meth:`Pattern.similar` before, a default minimum similarity of 0.7
 		is set automatically. If no match is found with the minimum similarity
-		or greater, the find fails (raises exception :py:class:`FindFailed` or
-		returns None).
+		or greater, the find fails (raises 
+		:ref:`exception	FindFailed <ExceptionFindFailed>`
+		or returns None).
 
 		If autoWaitTimeout is set to a non-zero value, find() just acts as a wait().
 
 		**Side Effects**
 
-		1.	*FindFailed*: If the find fails (no match, whose similarity is equal or
+		  *FindFailed*: If the find fails (no match, whose similarity is equal or
 			greater than the minimum similarity of the pattern, can be found) and
-			exception handling is turned on (which is the the default), an
-			exception FindFailed is raised. If the script does not handle the
+			exception handling is turned on (which is the default), 
+			an :ref:`exception	FindFailed <ExceptionFindFailed>`
+			is raised. If the script does not handle the
 			exception, the script is stopped, with a message about the exception. 
 
-		2.	*lastMatch*: the best match can be accessed using
+		  *lastMatch*: the best match can be accessed using
 			:py:meth:`Region.getLastMatch` afterwards.
 
 	.. py:method:: findAll(PS)
@@ -363,13 +372,14 @@ using a string containing the file name (path to an image file).
 
 		**Side Effects**
 
-		1. 	*FindFailed*: If the find fails (no match can be found, whose similarity
+		  *FindFailed*: If the find fails (no match can be found, whose similarity
 			is equal or greater than the minimum similarity of the pattern) and
-			exception handling is turned on (which is the default) an exception
-			FindFailed is raised. If the script does not handle the exception, the
+			exception handling is turned on (which is the default) 
+			an :ref:`exception	FindFailed <ExceptionFindFailed>`
+			is raised. If the script does not handle the exception, the
 			script is stopped, with a message about the exception.
 			
-		2.	*lastMatches*: a reference to the returned iterator object containing the
+		  *lastMatches*: a reference to the returned iterator object containing the
 			found matches is stored with the region that was searched. It can be
 			accessed using getLastMatches() afterwards. How to iterate through an
 			iterator of matches is documented here.
@@ -393,6 +403,11 @@ using a string containing the file name (path to an image file).
 		:py:meth:`Region.find`) or the specified amount of time has elapsed. At
 		least one find operation is performed, even if 0 seconds is specified.) 
 
+		**Side Effects** same as with :py:meth:`Region.find`.
+
+		Note: You may adjust the scan rate (how often a search during the wait
+		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
+
 	.. py:method:: waitVanish(PS, [seconds])
 
 		Wait until the give pattern *PS* in the region vanishes.
@@ -414,8 +429,10 @@ using a string containing the file name (path to an image file).
 		longer) or the specified amount of time has elapsed. At least one find
 		operation is performed, even if 0 seconds is specified. 
 
-		Note: You may adjust the scan rate (how often a search during the wait
-		takes place) by setting Settings.WaitScanRate appropriately. 
+		**Side Effects** same as with :py:meth:`Region.find`.
+
+		**Note**: You may adjust the scan rate (how often a search during the wait
+		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
 
 	.. py:method:: exists(PS, [seconds])
 
@@ -442,6 +459,10 @@ using a string containing the file name (path to an image file).
 		there is no need to wait, since its your intention to get the
 		information "not found" directly. 
 
+		**Note**: You may adjust the scan rate (how often a search during the wait
+		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
+
+.. _ObservingVisualEventsinaRegion:
 
 Observing Visual Events in a Region
 -----------------------------------
@@ -450,18 +471,19 @@ This feature allows to some extent the implementation of visual event driven
 programming.
 
 You can tell a region to observe that something appears or vanishes or the
-content changes at all. Using the methods onAppear(), onVanish() and
-onChange(), you register an event observer that starts its observation when you
-call observe(). Each region object can have exactly one observation active and
+content changes at all. Using the methods 
+:py:meth:`Region.onAppear`, :py:meth:`Region.onVanish` and :py:meth:`Region.onChange`, 
+you register an event observer that starts its observation when you
+call :py:meth:`Region.observe`. Each region object can have exactly one observation active and
 running. For each observation, you can register as many event observers as
-needed. So you can think of it as grouping some wait() and waitVanish()
+needed. So you can think of it as grouping some ``wait()`` and ``waitVanish()``
 together and have them processed simultanouesly, while you are waiting for one
 of these events to happen.
 
-It's possible to let the script wait for the completion of an observation or
+It is possible to let the script wait for the completion of an observation or
 let it run in the background, while your script is continuing. With a timing
-parameter you can tell observe() to stop observation anyway after the given
-time.
+parameter you can tell :py:meth:`Region.observe` 
+to stop observation anyway after the given time.
 
 When one of the visual events happens, an event handler written by you is
 called. An event handler is a function contained in your script and expects an
@@ -471,7 +493,8 @@ main script and your handlers can be given forward and backward using global
 variables.
 
 It's your responsibility to stop an observation. This can either be done by
-calling region.stopObserver() or by starting observe() with a timing parameter.
+calling :py:meth:`Region.stopObserver` 
+or by starting the observation with a timing parameter.
 
 Since you can have as many region objects as needed and each region can have
 one observation active and running. So theoretically it's possible to have as
@@ -483,12 +506,13 @@ Be aware, that every observation is a number of different find operations that
 are processed repeatedly. So to speed up processing and keep your script
 acting, you may want to define a region for observation as small as possible.
 You may adjust the scan rate (how often a search during the observation takes
-place) by setting Settings.ObserveScanRate appropriately. 
+place) by setting 
+:py:attr:`Settings.ObserveScanRate` appropriately. 
 
-PS: means, that either a Pattern or a String (path to an image file or just
+**PS**: means, that either a Pattern or a String (path to an image file or just
 plain text) can be used as parameter.
 
-handler: as a parameter in the following methods, you have to specify the name
+**handler**: as a parameter in the following methods, you have to specify the *name*
 of a function, which will be called by the observer, in case the observed event
 happens. The function itself has to be defined in your script before using the
 method that references the function. The existance of the function will be
@@ -496,23 +520,22 @@ checked before starting the script. So to get your script running, you have to
 have at least the following statements in your script::
 
 	def myHandler(event): # you can choose any valid function name
-		# event: can be any variable name, it references an event object
+		# event: can be any variable name, it references the event object
 		pass # add your statements here
 
 	onAppear("path-to-an-image-file", myHandler) # or any other onEvent()
 	observe(10) # observes for 10 seconds
 
-Normally all the region methods are used as reg.onAppear(PS), where reg is a
-region object. If written as onAppear(PS) the different repeatedly performed
-implicit find operations operate on the default screen  being the implicit
-region in this case. But using region.onEvent() will restrict the search to the
+Normally all the region methods are used as ``reg.onAppear(PS)``, where ``reg`` is a
+region object. If written as ``onAppear(PS)`` it operates on the default screen being the implicit
+region in this case. Using ``region.onEvent()`` instead will restrict the search to the
 region's rectangle and speed up processing, if region is significantly smaller
 than the whole screen.
 
-Note: In case of having more than one Monitor active, read Multi Monitor
-Environments before.
+**Note**: In case of having more than one Monitor active, read 
+:ref:`Multi Monitor Environments <MultiMonitorEnvironments>` before.
 
-Note on IDE: Capturing is a tool in the IDE, to quickly set up images to search
+**Note on IDE**: Capturing is a tool in the IDE, to quickly set up images to search
 for. These images are named automatically by the IDE and stored together with
 the script, at the time it is saved (we call the location in the file system
 bundle-path). Behind the curtain the images itself are specified by using a
@@ -529,7 +552,7 @@ string containing the file name (path to an image file).
 
 		With the given region you register an observer, that should wait for
 		the pattern to be there or to appaear and is activated with the next
-		call of observe(). In the moment the internal find operation on the
+		call of ``observe()``. In the moment the internal find operation on the
 		given pattern is successful during observation, your handler is called
 		and the observation is paused until you return from your handler. 
 
@@ -542,7 +565,7 @@ string containing the file name (path to an image file).
 
 		With the given region you register an observer, that should wait for
 		the pattern to be not there or to vanish and is activated with the next
-		call of observe(). In the moment the internal find operation on the
+		call of ``observe()``. In the moment the internal find operation on the
 		given pattern fails during observation, your handler is called and the
 		observation is paused until you return from your handler. 
 
@@ -552,7 +575,7 @@ string containing the file name (path to an image file).
 		
 		With the given region you register an observer, that should wait for
 		the visual content of the given region to change and is activated with
-		the next call of observe(). In the moment the visual content changes
+		the next call of ``observe()``. In the moment the visual content changes
 		during observation, your handler is called and the observation is
 		paused until you return from your handler. 
 
@@ -563,7 +586,7 @@ string containing the file name (path to an image file).
 		:param seconds: a number, which can have a fraction, as maximum
 			observation time in seconds. Omit it or use the constant FOREVER to
 			tell the observation to run for an infinite time (or until stopped
-			by a call of stopObserve()). 
+			by a call of ``stopObserve()``). 
 		
 		:param background: a flag indicating whether observation is run in the
 			background. when set to *True*, the observation will be run in the
@@ -573,7 +596,7 @@ string containing the file name (path to an image file).
 
 		For each region object, only one observation can be running at a given time.
 
-		Note: You may adjust the scan rate (how often a search during the
+		**Note**: You may adjust the scan rate (how often a search during the
 		observation takes place) by setting :py:attr:`Settings.ObserveScanRate`
 		appropriately. 
 		
@@ -584,8 +607,17 @@ string containing the file name (path to an image file).
 		This must be called on a valid region object. The source region of an
 		observed visual event is available as one of the attributes of the *event*
 		parameter that is passed to the handler function when the function is
-		invoked. For example, to stop observation within a handler function, simply
-		call ``event.region.stopObserver()`` inside the handler function.
+		invoked. 
+		
+		For example, to stop observation within a handler function, simply
+		call ``event.region.stopObserver()`` inside the handler function.::
+		
+			def myHandler(event): 
+				event.region.stopObserver() # stops the observation
+						
+			onAppear("path-to-an-image-file", myHandler) 
+			observe(FOREVER) # observes until stopped in handler
+
 
 .. _ActingonaRegion:
 
@@ -607,39 +639,40 @@ and called like this:
 plain text) or a :py:class:`Match` or a :py:class:`Region` or a :py:class:`Location` can be used as parameter, in
 detail: 
 
-*	P: *pattern*: a :py:class:`Pattern` object. An implicit find operation is
+*	**P**: *pattern*: a :py:class:`Pattern` object. An implicit find operation is
 	processed first. If successful, the center of the resulting matches rectangle is
 	the click point. If the pattern object has a target offset specified, this is
 	used as click point instead. 
 
-*	S: *string*: a path to an image file or just plain text. An implicit find
+*	**S**: *string*: a path to an image file or just plain text. An implicit find
 	operation with the default minimum similarity 0.7 is processed first. If
 	successful, the center of the resulting match object is the click point. 
 
-*	M: *match:* a match object from a previous find operation. If the match has a target
+*	**M**: *match:* a match object from a previous find operation. If the match has a target
 	specified it is used as the click point, otherwise the center of the matches
 	rectangle. 
 
-*	R: *region:* a region object whose center is used as click point. 
+*	**R**: *region:* a region object whose center is used as click point. 
 
-*	L: *location:* a location object which by definition represents a point on the
+*	**L**: *location:* a location object which by definition represents a point on the
 	screen that is used as click point. 
 
-ers It is possible to press the so called key modifiers together with the mouse
+It is possible to simulate pressing the so called key modifiers together with the mouse
 operation or when simulating keyboard typing. The respective parameter is given by
 one or more predefined constants. If more than one modifier is necessary, they are
 combined by using "+" or "|".
 
-Be aware: when using PS as parameter, internally there has to be processed an
+Be aware: when using *PS* as parameter, internally there has to be processed an
 implicit find operation before, so the aspects of :ref:`find operations
 <FindinginsideaRegionandWaitingforaVisualEvent>` and of :py:meth:`Region.find`
 apply. If the find operation was successful, the match that was acted on, can be
 recalled using :py:meth:`Region.getLastMatch`. Especially remember the fact, that as
 a default, Sikuli will stop the script, if the visual object cannot be found, by
-raising an exception FindFailed. This is done according to the standards of the
+raising an exception FindFailed. 
+This is done according to the standards of the
 Python language, which allows you to handle such exceptions. If you are not really
 used to programming and do not have a good knowledge of Python, it may be helpful,
-to first read about exception FindFailed.
+to first read about :ref:`exception FindFailed <ExceptionFindFailed>`.
 
 Normally all these region methods are used as ``reg.click(PS)``, where reg is a
 region object. If written as ``click(PS)`` the implicit find is done on the default
@@ -647,19 +680,19 @@ screen being the implicit region in this case. But using ``reg.click(PS)`` will
 restrict the search to the region's rectangle and speed up processing, if region is
 significantly smaller than the whole screen.
 
-Note on IDE: Capturing is a tool in the IDE, to quickly set up images to search for.
+**Note on IDE**: Capturing is a tool in the IDE, to quickly set up images to search for.
 These images are named automatically by the IDE and stored together with the script,
 at the time it is saved (we call the location in the file system bundle-path).
 Behind the curtain the images itself are specified by using a string containing the
 file name (path to an image file).
 
-Note: If you need to implement more sophisticated mouse and keyboard actions look at
+**Note**: If you need to implement more sophisticated mouse and keyboard actions look at
 Low Level Mouse and Keyboard Actions.
 
-Note: In case of having more than one Monitor active, refer to :ref:`Multi Monitor
+**Note**: In case of having more than one Monitor active, refer to :ref:`Multi Monitor
 Environments <MultimonitorEnvironments>` for more details.
 
-Note on Mac: it might be necessary, to use :py:func:`switchApp` before, to prepare the
+**Note on Mac**: it might be necessary, to use :py:func:`switchApp` before, to prepare the
 application for accepting the action.
 
 .. py:class:: Region
@@ -681,24 +714,7 @@ application for accepting the action.
 
 		**Sideeffects**: when using *PS*, the match can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards.
-
-		Example:
-
-		.. sikulicode::
-
-			# Windows XP
-			click("xpstart.png")
-
-			# Windows Vista
-			click("vistastart.png")
-
-			# Windows 7
-			click("w7start.png")
-
-			# Mac
-			click("apple.png")
-
-
+		
 
 	.. py:method:: doubleClick(PSMRL, [modifiers])
 
@@ -771,7 +787,7 @@ application for accepting the action.
 				m = m.nearby(20)
 
 
-		The red frame is just an overlay in front of all other screen content and
+		**Note**: The red frame is just an overlay in front of all other screen content and
 		stays in its place, independently from the behavior of this other content,
 		which means it is not "connected" to the defining region. 
 
@@ -814,12 +830,12 @@ application for accepting the action.
 		timing parameter :py:attr:`Settings.MoveMouseDelay`.
 
 		Another solution might be, to use a combination of :py:meth:`Region.drag`
-		and :py:meth:`Region.dropAt` combined with your own wait()'s.  If the mouse
+		and :py:meth:`Region.dropAt` combined with your own ``wait()`` usages.  If the mouse
 		movement from source to target is the problem, you might break up the move
 		path into short steps using :py:meth:`Region.mouseMove`. 
 
-		Note: If you need to implement more sophisticated mouse and keyboard actions
-		look at Low Level Mouse and Keyboard Actions. 
+		**Note**: If you need to implement more sophisticated mouse and keyboard actions
+		look at :ref:`Low Level Mouse and Keyboard Actions <LowLevelMouseAndKeyboardActions>`. 
 
 
 	.. py:method:: drag(PSMRL)
@@ -881,12 +897,11 @@ application for accepting the action.
 		This method simulates keyboard typing interpreting the characters of text
 		based on the layout/keymap of the standard US keyboard (QWERTY). Special
 		keys (ENTER, TAB, BACKSPACE, ...) can be incorporated into text by using the
-		constants defined in class Key using the standard string concatenation (+).
+		constants defined in :doc:`Class Key <keys>` using the standard string concatenation (+).
 		
 		If *PSMRL* is given, a click on the clickpoint is performed before typing, to
-		gain the focus. (Mac: it my be necessary, to use :py:func:`switchApp` before
-		in order for a target application to obtain the input focus to accept typed
-		characters.)
+		gain the focus. (Mac: it might be necessary, to use :py:func:`switchApp`
+		to give focus to a target application before, to accept typed/pasted characters.)
 
 		If *PSMRL* is omitted, it performs the typing on the current focused visual
 		component (normally an input field or an menu entry that can be selected by
@@ -899,10 +914,17 @@ application for accepting the action.
 		**Sideeffects**: when using *PS*, the match can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards.
 
-		Note: If you need to type international characters or you are using
+		**Note**: If you need to type international characters or you are using
 		layouts/keymaps other than US-QWERTY, you should use :py:meth:`Region.paste`
-		insteda. Since type() is rather slow because it simulates each key press,
+		instead. Since type() is rather slow because it simulates each key press,
 		for longer text it is preferrable to use :py:meth:`Region.paste`.
+		
+		**Best Practice**: As a general guideline, the best choice is to use ``paste()``
+		for readable text and ``type()`` for action keys like TAB, ENTER, ESC, ....
+		Use one ``type()`` for each key or key combination and be aware, that in some cases 
+		a short ``wait()`` after a ``type()`` might be necessary 
+		to give the target application some time to react and be prepared 
+		for the next Sikuli action. 
 
 	.. py:method:: paste([PSMRL], text)
 
@@ -919,15 +941,14 @@ application for accepting the action.
 			null) is returned. Otherwise the script is stopped with a FindFailed
 			exception.
 
-		Pastes text using the clipboard with OS-level shortcut (Ctrl-V or Cmd-V). So
-		afterwards your clipboard contains text. paste() is a temporary solution for
+		Pastes *text* using the clipboard (OS-level shortcut (Ctrl-V or Cmd-V)). So
+		afterwards your clipboard contains *text*. ``paste()`` is a temporary solution for
 		typing international characters or typing on keyboard layouts other than
 		US-QWERTY.
 
 		If *PSMRL* is given, a click on the clickpoint is performed before typing, to
-		gain the focus. (Mac: it my be necessary, to use :py:func:`switchApp` before
-		in order for a target application to obtain the input focus to accept typed
-		characters.)
+		gain the focus. (Mac: it might be necessary, to use :py:func:`switchApp`
+		to give focus to a target application before, to accept typed/pasted characters.)
 
 		If *PSMRL* is omitted, it performs the paste on the current focused component
 		(normally an input field).
@@ -935,10 +956,14 @@ application for accepting the action.
 		**Sideeffects**: when using *PS*, the match can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards
 
-		NOTE: Special keys (ENTER, TAB, BACKSPACE, ...) cannot be used with paste().
-		If needed, you have to split your complete text into two or more paste()'s
-		and use type() for typing the special keys inbetween. Characters like \n
-		(enter/new line) and \t (tab) should work as expected with paste(). 
+		**Note**: Special keys (ENTER, TAB, BACKSPACE, ...) cannot be used with ``paste()``.
+		If needed, you have to split your complete text into two or more ``paste()``
+		and use ``type()`` for typing the special keys inbetween. 
+		Characters like \\n	(enter/new line) and \\t (tab) should work as expected with ``paste()``, 
+		but be aware of timing problems, when using e.g. intervening \\t to jump 
+		to the next input field of a form.
+		
+.. _RegionExtractingText: 
 
 Extracting Text from a Region
 -----------------------------
@@ -962,8 +987,8 @@ Low-level Mouse and Keyboard Actions
 
 		Press the mouse *button* down.
 
-		:param button: one or a combination of the button constants Button.LEFT,
-			Button.MIDDLE, Button.RIGHT. 
+		:param button: one or a combination of the button constants ``Button.LEFT``,
+			``Button.MIDDLE``, ``Button.RIGHT``. 
 
 		:return: the number 1 if the operation is performed successfully, and zero if
 			otherwise.
@@ -975,8 +1000,8 @@ Low-level Mouse and Keyboard Actions
 
 		Release the mouse button previously pressed.
 
-		:param button: one or a combination of the button constants Button.LEFT,
-			Button.MIDDLE, Button.RIGHT. 
+		:param button: one or a combination of the button constants ``Button.LEFT``,
+			``Button.MIDDLE``, ``Button.RIGHT``. 
 
 		:return: the number 1 if the operation is performed successfully, and zero if
 			otherwise.
@@ -1037,6 +1062,8 @@ Low-level Mouse and Keyboard Actions
 		:return: the number 1 if the operation could be performed and 0 if
 			otherwise.
 
+.. _ExceptionFindFailed:
+
 Exception FindFailed
 --------------------
 
@@ -1055,7 +1082,7 @@ To run all or only parts of your script without FindFailed exceptions to be rais
 use :py:meth:`Region.setThrowException` to switch it on and off as needed.
 
 For more sophisticated concepts, you can implement your own exception handling using
-the standard Python construct ``try: except:``.
+the standard Python construct ``try: ... except:``.
 
 Example: 3 solutions for a case, where you want to decide how to proceed in a
 workflow based on the fact that a specific image can be found. (pass is the python
@@ -1133,7 +1160,7 @@ you can group methods applied to the same region using Python's ``with`` syntax:
 		wait(image3, 10)
 		doubleClick(image4)
 
-All methods inside the *with* block that have the region omitted are redirected to the
-region object specified at the with statement.
+All methods inside the ``with`` block that have the region omitted are redirected to the
+region object specified at the ``with`` statement.
 
 
