@@ -1,7 +1,9 @@
 Finder
 ======
 
-A Finder object is based on an iterator of matches and allows to search for a visual
+.. py:class:: Finder
+
+A Finder object implements an iterator of matches and allows to search for a visual
 object in an image file that you provide (e.g. a screenshot taken and saved in a
 file before). After setting up the finder object and doing a find operation, you can
 iterate through the found matches if any.
@@ -10,21 +12,21 @@ Important to know:
 
 *	per definition, an iterator can be stepped through only once - it is empty
 	afterwards
-*	it has to be destroyed manually using iteratorMatches.destroy(), especially when
-	used with for: or while:
-*	when used in a with: construct, it is destroyed automatically
+*	it has to be destroyed using ``finder.destroy()``, especially when
+	used with ``for:`` or ``while:``
+*	when used in a ``with:`` construct, it is destroyed automatically
 
-Compared with the region based find operation findAll(), no exception FindFailed is
-raised in case of nothing found at all (use haseNext() to check) and what
-region.lastMatches is with findAll() is the finder object itself here.
+Compared with the region based find operation, no exception FindFailed is
+raised in case nothing is found at all (use ``hasNext()`` to check). The finder object 
+can be compared to what you get with ``region.getLastMatches()`` when using :py:meth:`findAll() <Region.findAll>`.
 
-Note: With this version, there is no chance, to get the number of matches in
+**Note**: With this version, there is no chance, to get the number of matches in
 advance. If you would iterate through to count, afterwards your finder would be
 empty. So in this case, you have to save your matches somehow (one possible solution
 see example below).
 
-The workflow always is, that first do a find operation and afterwards go through the
-matches found. After a complete iteration, the finder object is empty again. So you
+The workflow always is, that you first do a find operation and afterwards go through the
+matches found. After a complete iteration, the finder object is empty. So you
 could start a new find operation again.
 
 .. py:class:: Finder
@@ -73,7 +75,7 @@ Example 1: basic operations using a Finder
 	f.find(img) # find all matches
 	
 	while f.hasNext(): # loop as long there is a first and more matches
-		print "found: ",  f.next() # access the next match in the row
+		print "found: ", f.next() # access the next match in the row
 	
 	print f.hasNext() # is False, because f is empty now
 	f.destroy() # release the memory used by finder
@@ -93,6 +95,7 @@ Example 2: we want to know how many matches (based on the previous example).
 		mm.append(f.next())	# access next match and add to mm
 
 	print f.hasNext() # is False, because f is empty now
+	f.destroy() # release the memory used by finder
 	
 	# now we have our matches saved in the list mm
 	print len(mm) # the number of matches
@@ -100,5 +103,3 @@ Example 2: we want to know how many matches (based on the previous example).
 	# we want to use our matches
 	for m in mm:
 		print m 
-	
-	f.destroy() # release the memory used by finder

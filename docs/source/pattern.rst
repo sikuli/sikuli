@@ -1,20 +1,27 @@
 Pattern
 =======
 
+.. py:class:: Pattern
+
 A pattern is used, to associate an image file with additional attributes used in find
 operations and when acting on a match object.
 
-**Minimum similarity:** When using just an image file in a find operation, the search
-will be successful and return a match object, if the similarity of a possible match
-is 0.7 or higher. With a pattern object, you can associate a specific similarity
-value, that will be used as the minimum value, when this pattern object is searched
-(similar(), exact()). The IDE supports adjusting the minimum similarity with
-captured images (internally in the script, the images are turned into a pattern
-object definition)
+**Minimum Similarity:** 
 
-click point: normally when clicking on a match, the center pixel of the associated
-rectangle is used. With a pattern object, you can define a different click point
-(targetOffset()).
+When using just an image file in a find operation, the search
+will be successful and return a match object, if the similarity of a possible match
+is 0.7 or higher. 
+
+Using :py:meth:`similar() <Pattern.similar>` you can associate a specific similarity
+value, that will be used as the minimum value, when this pattern object is searched. 
+The IDE supports adjusting the minimum similarity of captured images using the Preview Pane
+(internally in the script, the images are turned into a pattern object automatically).
+
+**Click Point:**
+
+Normally when clicking on a match, the center pixel of the associated
+rectangle is used. With a pattern object, you can define a different click point 
+relative to the center using :py:meth:`targetOffset() <Pattern.targetOffset>`.
 
 .. py:class:: Pattern
 
@@ -29,7 +36,7 @@ rectangle is used. With a pattern object, you can define a different click point
 
 	.. py:method:: similar(similarity)
 
-		Derive a new Pattern object containing the same attributes (image, click
+		Return a new Pattern object containing the same attributes (image, click
 		point) with the minimum similarity set to the specified value.
 
 		:param similarity: the minimum similarity to use in a find operation. The
@@ -38,7 +45,7 @@ rectangle is used. With a pattern object, you can define a different click point
 
 	.. py:method:: exact()
 
-		Derive a new Pattern object containing the same attributes (image, click
+		Return a new Pattern object containing the same attributes (image, click
 		point) with the minimum similarity set to 1.0, which means exact match is
 		required.
 
@@ -46,8 +53,8 @@ rectangle is used. With a pattern object, you can define a different click point
 
 	.. py:method:: targetOffset(dx, dy)
 
-		Derive a new Pattern object containing the same attributes (image,
-		similarity), but a different definition for the click point can be used. By
+		Return a new Pattern object containing the same attributes (image,
+		similarity), but a different definition for the click. By
 		default, the click point is the center of the found match. By setting the
 		target offset, it is possible to specify a click point other than the
 		center. *dx* and *dy* will be used to calculate the position relative to the
@@ -65,6 +72,6 @@ rectangle is used. With a pattern object, you can define a different click point
 
 	.. py:method:: getTargetOffset()
 
-		Get the target of set of the Pattern object.
+		Get the target offset of the Pattern object.
 
-		:return: a :py:class:`Location` object indicating the target offset
+		:return: a :py:class:`Location` object as the target offset

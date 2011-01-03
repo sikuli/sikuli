@@ -1,6 +1,8 @@
 Match
 =====
 
+.. py:class:: Match
+
 An object of class Match represents the result of a successful find operation. It
 has the rectangle dimension of the image, that was used to search. It knows the
 point of its upper left corner on an existing monitor, where it was found.  

@@ -1,6 +1,8 @@
 Screen
 ======
 
+.. py:class:: Screen
+
 Class Screen is there, to have a representation for a pysical monitor where the
 capturing process (grabbing a rectangle from a screenshot, to be used for further
 processing with find operations is implemented. For :ref:`Multi Monitor Environments
