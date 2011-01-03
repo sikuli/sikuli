@@ -636,6 +636,8 @@ example::
 	# set a property's value
 	java.lang.System.getProperty("key-of-property", value)
 
+.. _ImageSearchPath:
+
 **Image Search Path**
 
 Sikuli maintains a list of locations to search for images when they are not found in

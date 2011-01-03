@@ -14,9 +14,10 @@ not work well or not support all platforms yet.
 
 *	Text recognition and matching 
 	
-	*	``find("OK")`` returns all regions with a "OK" label (see Finding a Pattern
-		(Image or Text)) ``region.text()`` returns the text in the region (see
-		Extracting Text from a Region(OCR))
+	*	``find("OK")`` returns all regions with a "OK" label 
+		(see :ref:`Finding a Pattern (Image or Text) <FindinginsideaRegionandWaitingforaVisualEvent>`)
+
+	* new :py:meth:`Region.text` returns the text in the region 
 
 *	Screenshot Naming in the IDE:
 	
@@ -34,14 +35,14 @@ not work well or not support all platforms yet.
 
 	*	e.g. ``click("http://sikuli.org/example/ok_button.png")``
 
-*	There is an Image Search Path - images can be stored wherever you like (see
-	Image Search Path)
+*	There is an Image Search Path - images can be stored wherever you like 
+	(see :ref:`Image Search Path <ImageSearchPath>`)
 
-*	Scripts can be imported from .sikuli sources as a module (Python style) (see
-	Importing Sikuli Scripts)
+*	Scripts can be imported from .sikuli sources as a module (Python style) 
+	(see :ref:`Importing Sikuli Scripts <ImportingSikuliScripts>`)
 
-*	New App Class replaces the old openApp, switchApp, closeApp functions (see Class
-	:py:class:`App`)
+*	New App Class replaces the old openApp, switchApp, closeApp functions 
+	(see Class :py:class:`App`)
 	
 	*	:py:meth:`App.open`, :py:meth:`App.close`, :py:meth:`App.focus`
 	
@@ -49,14 +50,15 @@ not work well or not support all platforms yet.
 		you can restrict following actions within that region. (Windows and Mac
 		only)
 
-*	Beautified Run in Slow Motion mode (see Controlling Sikuli Scripts)
+*	Beautified Run in Slow Motion mode 
+	(see :ref:`Controlling Sikuli Scripts <ControllingSikuliScriptsandtheirBehavior>`)
 
-*	Smooth mouse movement (see Controlling Sikuli Scripts)
+*	Smooth mouse movement 
+	(see :ref:`Controlling Sikuli Scripts <ControllingSikuliScriptsandtheirBehavior>`)
 
-*	More Special Keys are supported (PrintScreen, NumPad, CapsLock...)
+*	More Special Keys are supported (PrintScreen, NumPad, CapsLock...) (see Class :py:class:`Key`)
 
-*	New Region Highlighting: :ref:`region.highlight() <Region.highlight>` (Windows
-	and Mac only)
+*	New Region Highlighting: :py:meth:`Region.highlight` (Windows	and Mac only)
 
 *	Mouse Wheel supported: :py:meth:`wheel(target, WHEEL_UP | WHEEL_DOWN, steps)
 	<Region.wheel>` for scrolling the mouse wheel

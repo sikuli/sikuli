@@ -1,6 +1,7 @@
 Key Constants
 =============
 
+.. py:class:: Key
 
 Applicable usage situations for these predefined constants of special keys and key
 modifiers can be found in :ref:`Acting on a Region <ActingonaRegion>` and :ref:`Low
