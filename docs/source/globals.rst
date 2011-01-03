@@ -1,6 +1,7 @@
 Global Functions and Features
 =============================
 
+.. _ImportingSikuliScripts:
 
 Importing other Sikuli Scripts (reuse code and images)
 ------------------------------------------------------
@@ -16,19 +17,21 @@ This is possible with Sikuli X:
 * automatically access images contained in the imported .sikuli (no need to use
   :py:func:`setBundlePath`) 
 
-**Note**: Currently a .skl cannot be imported. As a circumvention it is up to you to unzip the .skl on the fly (e.g. with gzip on the command line) to a place of your choice as .sikuli (e.g. temp directory) and import it from there.
+**Note**: Currently a .skl cannot be imported. As a circumvention it is up to you 
+to unzip the .skl on the fly (e.g. with gzip on the command line) to a place of 
+your choice as .sikuli (e.g. temp directory) and import it from there.
 
-The prerequisites:
+**The prerequisites**:
 
 * the directories/folders containing your .sikuli's you want to import have to
-  be in ``sys.path`` (see below Usage)
+  be in ``sys.path`` (see below: Usage)
 
 * your imported script must contain (recommendation: as first line) the
   following statement: ``from sikuli.Sikuli import *`` (this is necessary for the
   Python environment to know the Sikuli classes, methods, functions and global
   names) 
 
-Usage:
+**Usage**:
 
 * Prepare sys.path (the example contains a recommendation to avoid double entries)
 * Import your .sikuli using just it's name:: 
@@ -58,9 +61,8 @@ the new SIKULI_IMAGE_PATH to make sure that images contained in imported
 *	An import is only processed once (the first time it is found in the program
 	flow). So be aware: 
 	
-	*	If your imported script contains code outside of any def()'s, then this
-		code is only processed once at the first time, when the import is
-	 	evaluated
+	*	If your imported script contains code outside of any function definitions ( ``def()`` ),
+		this code is only processed once at the first time, when the import is evaluated
 
 	*	Since the IDE is not reset at rerun of scripts: when changing
 	 	imported scripts while they are in use, you have to restart the IDE. 
@@ -68,14 +70,11 @@ the new SIKULI_IMAGE_PATH to make sure that images contained in imported
 *	Python has a so called namespace concept: names (variables, functions,
 	classes) are only known in it's namespace your main script has it's own namespace
 
-	*	Each imported script has its own namespace (that's why you need ``from
-		sikuli.Sikuli import *``)
-	
-	* 	So names contained in an imported script have to be qualified with the
-		module name (e.g. myLib.myFunction())
+	*	Each imported script has its own namespace. So names contained in an 
+		imported script have to be qualified with the	module name (e.g. ``myLib.myFunction()`` )
 
 	*	You may use ``from myLib import *``, which integrates all names from myLib
-		into your current namespace. So you can use myFunction() directly. When you
+		into your current namespace. So you can use ``myFunction()`` directly. When you
 		decide to use this version, be sure you have a naming convention that
 		prevents naming conflicts.
 
@@ -104,8 +103,8 @@ Controlling Sikuli Scripts and their Behavior
 
 	If set to *True*, when a script is run, Sikuli shows a visual effect (a blinking
 	double lined red circle) on the spot where the action will take place before
-	executing actions (e.g. click, dragDrop, type, etc) for about 2 seconds in the
-	standard. The default setting is False.
+	executing actions (e.g. ``click()``, ``dragDrop()``, ``type()``, etc) for about 2 seconds in the
+	standard (see :py:attr:`Settings.SlowMotionDelay` ). The default setting is False.
 
 .. py:function:: exit([value])
 
@@ -136,12 +135,14 @@ Controlling Sikuli Scripts and their Behavior
 	.. py:attribute:: DelayAfterDrag
 			DelayBeforeDrop
 
-	*DelayAfterDraft* specifies the waiting time after mouse down at the source
-	location as a decimal value (seconds). *DelayBeforeDrop* specifies the
+	*DelayAfterDrag* specifies the waiting time after mouse down at the source
+	location as a decimal value (seconds). 
+	
+	*DelayBeforeDrop* specifies the
 	waiting time before mouse up at the target location as a decimal value
 	(seconds).
 
-	When using :py:meth:`Region.dragDrop`  you may have situations, where the
+	**Usage**: When using :py:meth:`Region.dragDrop` you may have situations, where the
 	operation is not processed as expected. This may be due to the fact, that the
 	Sikuli actions are too fast for the target application to react properly. With
 	these settings the waiting time after the mouse down at the source location and
@@ -151,7 +152,7 @@ Controlling Sikuli Scripts and their Behavior
 	:py:attr:`Settings.MoveMouseDelay`::
 
 
-		# you may wish to save the actual settings beforev
+		# you may wish to save the actual settings before
 		Settings.DelayAfterDrag = 1
 		Settings.DelayBeforeDrop = 1
 		Settings.MoveMouseDelay = 3
@@ -238,7 +239,7 @@ This is a comparism of old and new functions:
 
 .. py:function:: switchApp(application)
 
-	Swtich to the specified application.
+	Switch to the specified application.
 
 	:param application: the name of an application (case-insensitive) or (part of) a
 		window title (Windows/Linux).
@@ -307,10 +308,16 @@ This is a comparism of old and new functions:
 
 	This function executes the command and the script waits for its completion.
 
+	
+The Application Class
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. py:class:: App
+
 Sikuli-X introduces the new class called :py:class:`App` to provide a more
 convenient and flexible way to control the application and its windows.
 
-*Using class methods of instance methods*
+**Using class methods or instance methods**
 
 Generally you have the choice between using the class methods (e.g.
 ``App.open("application-identifier")``) or first create an App instance and use
@@ -321,7 +328,7 @@ The only real difference is, that you might save some ressources, when using the
 instance approach, since using the class methods produces more intermediate
 objects. 
 
-*How to create an App instance*
+**How to create an App instance**
 
 The basic choice is to just say ``someApp = App("some-app-identifier")`` and you
 have your app instance, that you can later on use together with its methods,
@@ -330,7 +337,7 @@ without having to specify the string again. Additionally
 return an app instance, that you might save in a variable to use it later on in
 your script. 
 
-*Differences between Windows/Linux and Mac*
+**Differences between Windows/Linux and Mac**
 
 Windows/Linux: Sikuli's strategy on these systems in the moment is to rely on
 implicit or explicit path specifications to find an application, that has to be
@@ -339,8 +346,7 @@ started. Running "applications" can either be identified using their PID
 only switch to an open application, if the application internally handles the
 "more than one instance" situation".
 
-You usually will use ``App.open("c:\\Program Files\\Mozilla
-Firefox\\Firefox.exe")``
+You usually will use ``App.open("c:\\Program Files\\Mozilla Firefox\\Firefox.exe")``
 to start Firefox. This might open an additional window. And you can use
 ``App.focus("Firefox")`` to switch to the frontmost Firefox window (which has no
 effect if no window is found). To clarify your situation you may use the new
@@ -360,7 +366,7 @@ a specific name, before accessing it's window).
 
 On Mac OS X, on the system level the information is available, which windows
 belong to which applications. Sikuli uses this information. So by default using
-e.g. App.focus("Safari") starts Safari if not open already and switches to the
+e.g. ``App.focus("Safari")`` starts Safari if not open already and switches to the
 application Safari if it is open, without doing anything with it's windows (the
 z-order is not touched). Additionally, you can get all windows of an
 application, without knowing it's titles.
@@ -467,7 +473,7 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			wait(1)
 			type("l", KEY_CTRL) # switch to address field
 
-		Afterwards, it focuses on the Firefox application, uses the window() method to
+		Afterwards, it focuses on the Firefox application, uses the ``window()`` method to
 		obtain the region of the frontmost window, applies some operations
 		within the region, and finally closes the window::
 
@@ -483,7 +489,7 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			firefox.close() # close the window - stop the process
 
 
-		Below is another example that tries to close all the windows of an
+		Below is another example that highlights all the windows of an
 		application by looping through them (Mac)::
 
 			# not more than 100 windows should be open ;-)
@@ -501,11 +507,11 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 
 		*	Especially on Windows be aware, that there might be many matching
 			windows and windows, that might not be visible at all. Currently the
-			window() function has no feature to identify a special window besides
+			``window()`` function has no feature to identify a special window besides
 			returning the region. So you might need some additional checks to be
 			sure you are acting on the right window. 
 
-		*	Windows/Linux: The close() function currently kills the application,
+		*	Windows/Linux: The ``close()`` function currently kills the application,
 			without closing it's windows before. This is an abnormal termination and
 			might be recognized by your application at the next start (e.g. Firefox
 			usually tries to reload the pages).
@@ -513,11 +519,11 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 		*	Even if the windows are hidden/minimized, their region that they have in
 			the visible state is returned. Currently there is no Sikuli feature, to
 			decide wether the given window(n) is visible or not or if it is
-			currently the frontmost window. The only guarentee: window()/window(0)
+			currently the frontmost window. The only guarentee: ``window()``/``window(0)``
 			is the topmost window of an application (Mac) or a series of matching
 			windows (Windows/Linux). 
 
-		*	Currently there are methods available to act on such a window
+		*	Currently there are no methods available to act on such a window
 			(resize, bring to front, get the window title, ...).
 
 		Some tips:
@@ -529,13 +535,13 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			will occupy major parts of the screen, so a window's returned region of
 			e.g. 150x30 might be some invisible stuff or an overlay on the real app
 			window (e.g. the "search in history" input field on the Safari Top-Sites
-			page, which is reported as windows(0))
+			page, which is reported as ``windows(0)``)
 
 		*	If you have more than one application window, try to position them at
 			different coordinates, so you can decide which one you act on in the
 			moment.
 
-		*	It is sometimes possible to use the OCR text extraction feature (i.e.,
+		*	It is sometimes possible to use the OCR text extraction feature 
 			:py:meth:`Region.text` to obtain the window title.
 
 
@@ -587,9 +593,8 @@ settings. Publicly available attributes may be accessed by using
 to set it. It is highly recommended to only modify attributes, that are described in
 this document or when you really know, what you are doing.
 
-Actually all attributes of some value for scripting are described in the topic
-:ref:`Controlling Sikuli Scripts and their Behavior
-<ControllingSikuliScriptsandtheirBehavior>`
+Actually all attributes of some value for scripting are described in the 
+topic :ref:`Controlling Sikuli Scripts and their Behavior <ControllingSikuliScriptsandtheirBehavior>`.
 
 **Jython/Python Level**
 
@@ -600,7 +605,7 @@ so you can use their methods without the need for an import statement.
 ``sys.path`` may be one of the most valuable settings, since it is used by
 Python/Jython to locate modules, that are referenced using ``import module``. It is
 a list of path's, that is e.g. maintained by Sikuli to implement :ref:`Importing
-other Sikuli Scripts <ImportingOtherSikuliScripts>` (reuse code) as a standard
+other Sikuli Scripts <ImportingSikuliScripts>` as a standard
 compliant feature.
 
 If you want to use ``sys.path``, it is recommended to do it as shown in the following
@@ -612,13 +617,13 @@ example, to avoid appending the same entry again::
 
 **Java Level**
 
-va maintains a global storage for settings (key/value pairs), that can be accessed
+Java maintains a global storage for settings (key/value pairs), that can be accessed
 by the program/script. Sikuli uses it too for some of it's settings. Normally it is
 not necessary to access these settings at the Java level from a Sikuli script, since
 Sikuli provides getter and setter methods for accessing values, that make sense for
 scripting. One example is the list of paths, that Sikuli maintains to specify
 additional places to search for images (please refer to :ref:`Importing
-other Sikuli Scripts <ImportingOtherSikuliScripts>` for more information).
+other Sikuli Scripts <ImportingSikuliScripts>` for more information).
 
 If needed, you may access the java settings storage as shown in the following
 example::
@@ -649,22 +654,23 @@ but can be inspected and/or modified using the following functions:
 
 	Remove a path from the list of image search paths
 
-Note that paths must be specified using the correct path separators (slash on Mac
+*Note*: paths must be specified using the correct path separators (slash on Mac
 and Unix and double blackslashes on Windows).
 
-It is automatically extended by Sikuli with script folders, that are imported (see:
-Reuse of Code and Images), so their contained images can be accessed. If you want to
+This list is automatically extended by Sikuli with script folders, that are imported 
+(see: :ref:`Importing other Sikuli Scripts <ImportingSikuliScripts>`), 
+so their contained images can be accessed. If you want to
 be sure of the results of your manipulations, you can use ``getImagePath`` and check
 the content of the returned list.  When searching images, the path's are scanned in
 the order of the list. The first image file with a matching image name is used.
 
-Note: Behind the scenes this list is maintained in the java property store with the
+*Note*: Behind the scenes this list is maintained in the java property store with the
 key SIKULI_IMAGE_PATH. This can be preset when starting the JVM using the
 environment variable SIKULI_IMAGE_PATH and can be accessed at runtime using the
 approach as mentioned under Accessing Settings - Java level. Be aware, that this is
 one string, where the different entries are separated with a colon ( : ).
 
-The default bundle path can also be accessed and modified by the two functions
+**The default bundle path** can also be accessed and modified by the two functions
 below:
 
 .. py:function:: setBundlePath(path-to-a-folder)
@@ -696,10 +702,10 @@ below:
 .. py:staticmethod:: Env.getOS()
 		Env.getOSVersion()
 		
-	Get the type (getOS) and version (getOSVersion) of the operating system your
+	Get the type ( ``getOS()`` ) and version ( ``getOSVersion()`` ) of the operating system your
 	script is running on.
 	
-	An example using these methods on a Macis shown below::
+	An example using these methods on a Mac is shown below::
 
 		# on a Mac
 		myOS = Env.getOS()
@@ -720,13 +726,13 @@ below:
 
 	Get the content of the clipboard if it is text, otherwise an empty string.
 
-	Note: Be careful, when using ``Env.getClipboard()`` together with ``paste()``,
+	*Note*: Be careful, when using ``Env.getClipboard()`` together with ``paste()``,
 	since paste internally uses the clipboard to transfer text to other
 	applications, the clipboard will contain what you just pasted. Therefore, if you
 	need the content of the clipboard, you should call ``Env.getClipboard()`` before
 	using ``paste()``.
 
-	Tip: When the clipboard content was copied from a web page that mixes images and
+	*Tip*: When the clipboard content was copied from a web page that mixes images and
 	text, you should be aware, that there may be whitespace characters around and
 	inside your text, that you did not expect. In this case, you can use
 	``Env.getClipboard().strip()`` to get rid of surrounding whitespaces.
