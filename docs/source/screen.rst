@@ -3,7 +3,7 @@ Screen
 
 Class Screen is there, to have a representation for a pysical monitor where the
 capturing process (grabbing a rectangle from a screenshot, to be used for further
-processing with find operations is implemented. For :ref:`multi monitor environments
+processing with find operations is implemented. For :ref:`Multi Monitor Environments
 <MultimonitorEnvironments>` it contains features to map to the relevant monitor.
 
 Since Screen is of class :py:class:`Region`, grouping method calls can be used with
@@ -13,21 +13,6 @@ you have this feature by default. Be aware, that using the whole screen for find
 operations may have an impact on performance. So if possible either use setROI() or
 restrict a find opeation to a smaller region object (e.g. reg.find()) to speed up
 processing.
-
-Methods of Screen
------------------
-
-Since class Screen extends class :py:class:`Region`, all methods of class Region can
-be used with an existing screen object. These methods include:
-
-:py:meth:`Region.click`, :py:meth:`Region.drag`, :py:meth:`Region.dragDrop`,
-:py:meth:`Region.dropAt`, :py:meth:`Region.doubleClick`, :py:meth:`Region.exists`,
-
-
-Additionally, the Screen class provides four extra methods:
-
-:py:meth:`Screen.capture`, :py:meth:`Screen.getBounds`,
-:py:meth:`Screen.getNumberScreens`, :py:meth:`Screen.selectRegion`
 
 
 Screen: Setting, Getting Attributes and Information
@@ -153,6 +138,8 @@ Multi-Monitor Environments
 If more than one monitor is available, Sikuli is able to manage regions and click
 points on these monitors.
 
+.. image:: multi.jpg
+
 The base is the coordinate system (picture above), that positions the primary
 monitor with its upper left corner at (0,0) extending the x-direction to the right
 and the y-direction towards the lower boundary of the screen. The position of
@@ -175,11 +162,11 @@ monitor.
 
 How to get the relevant information:
 
-*	:py:func:`getNumberScreens` returns the number of available screens.
-*	:py:func:`getBounds` returns the rectangle covered by the default/primary
+*	:py:func:`getNumberScreens() <Screen.getNumberScreens>` returns the number of available screens.
+*	:py:func:`getBounds() <Screen.getBounds>` returns the rectangle covered by the default/primary
 	monitor.
 *	:py:meth:`Screen.getBounds` returns the rectangle covered by a screen object
-	which was previously created using ``Screen(id)``.
+	created using :py:meth:`Screen(id) <Screen.Screen>`.
 
 Be aware: Changes in your system settings are only recognized by the IDE, when it is
 started.
@@ -188,7 +175,7 @@ started.
 laptop monitor), will always be Screen(0). In the Windows settings it is possible to
 place the taskbar on one of the secondary monitors, which makes it the primary
 monitor getting the base coordinates (0,0). The other available monitors are mapped
-around based on your settings. But the mapping is not changed, so the primary
+around based on your settings. But the Sikuli internal mapping is not changed, so the primary
 monitor might be any of your Screen() objects. Sikuli takes care for that and maps
 SCREEN always to the primary monitor (the one with the (0,0) coordinates).
 So for example you have a laptop with an external monitor, that shows the taskbar
@@ -202,15 +189,15 @@ to the default SCREEN.
 
 **Linux** (Under construction)
 	
-So with its covered rectangle, a screen object is always identical with the monitor
-it was created based on ``Screen(id)``. Using :py:meth:`Region.setROI` to restrict
+With its rectangle, a screen object is always identical with the monitor
+it was created using :py:meth:`Screen(id) <Screen.Screen>`. Using :py:meth:`Region.setROI` to restrict
 the region of interest for find operations has no effect on the base rectangle of
 the screen object.
 
 On the other hand region objects and location objects can be positioned anywhere in
 the coordinate system. Only when a find operation or a click action has to be
 performed, the objects rectangle or point has to be inside the rectangle of an
-existing monitor (basically repersented by ``Screen(0)``, ``Screen(1)``, ...). When
+existing monitor (basically repersented by Screen(0), Screen(1), ...). When
 this condition is met, everything works as expected and known from a single monitor
 system.
 
@@ -231,7 +218,7 @@ With finding and acting there are the following exceptions:
 	*	a find operation will always fail
 
 *	**Region Partially Outside:** a region is partially outside a monitor but
-	without overlapping with another monitor
+	not overlapping another monitor
 
 	*	a click action is handled in the same way as **Point Outside**
 	*	a find operation will be carried out only in the part of region within the
@@ -241,26 +228,25 @@ With finding and acting there are the following exceptions:
 
 	*	a click action is handled in the same way as **Point Outside**
 	*	a find operation will be restricted to the region within the bounds of the
-		monitor that has a smaller *id*. If one of the monitors is the primary
-		montior, it will always be the primary monitor because its *id* is zero.
+		monitor that has a smaller *id*.
 
     
-An interactive capture (the user selects an image or a rectangle via
+An interactive capture (the user is asked to select an image or a rectangle via
 :py:meth:`Screen.capture` or :py:meth:`Screen.selectRegion`) will automatically be
-restricted to the monitor rectangle, where it was started.
+restricted to the monitor, where it was started.
 
-A scripted capture using a rectangle or a region (i.e., :py:meth:`Screen.capture`), will be handled according to the
-exceptions above.
+A scripted capture using a rectangle or a region 
+(i.e. :py:meth:`Screen.capture( region | rectangle ) <Screen.capture>`), 
+will be handled accordingly:
 
 *	**Region Outside:** no image is captured, *None* is returned
 *	**Region Partially Outside:** the returned image will only cover the part
-	contained in the monitor rectangle
+	inside the monitor
 *	**Region Across Monitors:** the returned image will only cover the part
-	contained in the monitor rectangle of the monitor with the smallest
-	id. 
+	inside the monitor with the smallest id. 
 
 Based on the knowledge of your monitor configuration, you can now start some further
 evaluations using e.g. :py:meth:`Region.hover` together with
-``setShowActions(True)`` and highlighting using :py:meth:`Region.highlight`.
+:py:func:`setShowActions(True) <setShowActions>` and highlighting using :py:meth:`Region.highlight`.
 
 
