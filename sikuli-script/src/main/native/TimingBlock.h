@@ -16,28 +16,40 @@
 class TimingBlock {
 private:
    static int _depth;
-   //struct timeval _begin, _end;   
    std::string _name;
+#if defined(_WIN32)
    SYSTEMTIME _begin;
    SYSTEMTIME _end;
+#else
+   struct timeval _begin, _end;   
+#endif
 public:
    inline TimingBlock(std::string name){
       _name = name; 
       _depth++;
-//	  SYSTEMTIME _begin;
-	  GetSystemTime(&_begin);
 
-      //gettimeofday(&_begin, NULL);
+#if defined(_WIN32)
+      GetSystemTime(&_begin);
+#else
+      gettimeofday(&_begin, NULL);
+#endif
+
    }
    inline ~TimingBlock(){
-	   GetSystemTime(&_end);
-      //gettimeofday(&_end, NULL);
+#if defined(_WIN32)
+      GetSystemTime(&_end);
+#else
+      gettimeofday(&_end, NULL);
+#endif
       _depth--;
       for(int i=0;i<_depth;i++)  std::cerr << "  ";
-      //long begin = ((long)_begin.tv_sec*1000000)+_begin.tv_usec;
-      //long end = ((long)_end.tv_sec*1000000)+_end.tv_usec;
+#if defined(_WIN32)
       long begin = (_begin.wSecond*1000000)+_begin.wMilliseconds;
       long end = (_end.wSecond*1000000)+_end.wMilliseconds;
+#else
+      long begin = ((long)_begin.tv_sec*1000000)+_begin.tv_usec;
+      long end = ((long)_end.tv_sec*1000000)+_end.tv_usec;
+#endif
 
       std::cerr << "[time] " << _name << " "
                 << (end-begin)/1000.0 << "ms" << std::endl;

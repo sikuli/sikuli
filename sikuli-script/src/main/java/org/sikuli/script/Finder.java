@@ -24,6 +24,7 @@ public class Finder implements Iterator<Match>{
       catch(IOException e){
          e.printStackTrace();
       }
+      Debug.ENABLE_PROFILING = true;
    }
 
    public Finder __enter__(){
@@ -106,16 +107,26 @@ public class Finder implements Iterator<Match>{
    }
 
    public <PSC> void findAll(PSC ptn) throws IOException {
+      Debug timing = new Debug();
+      timing.startTiming("Finder.findAll");
+
       setFindInput(ptn);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);
+
+      timing.endTiming("Finder.findAll");
    }
 
    public void findAll(String templateFilename, double minSimilarity) throws IOException {
+      Debug timing = new Debug();
+      timing.startTiming("Finder.findAll");
+
       setTargetSmartly(_findInput, templateFilename);
       _findInput.setSimilarity(minSimilarity);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);
+
+      timing.endTiming("Finder.findAll");
    }
 
    public boolean hasNext(){
