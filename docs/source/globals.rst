@@ -79,7 +79,7 @@ the new SIKULI_IMAGE_PATH to make sure that images contained in imported
 		prevents naming conflicts.
 
 
-**Another example: Importing from the same director**
+**Another example: Importing from the same directory**
 
 This approach allows to develop a modularized script app that is contained in
 one directory. This directory can be moved around with no changes and even
@@ -744,5 +744,5 @@ below:
 	*Tip*: When the clipboard content was copied from a web page that mixes images and
 	text, you should be aware, that there may be whitespace characters around and
 	inside your text, that you did not expect. In this case, you can use
-	``Env.getClipboard().strip()`` to get rid of surrounding whitespaces.
+	``Env.getClipboard().strip()`` to get rid of surrounding white spaces.
 
