@@ -92,6 +92,14 @@ Complete Guide to Sikuli Script
    new-in-sikulix
    sikuli-script-index
 
+Extensions
+----------
+.. toctree::
+   :maxdepth: 2
+
+   extensions/index
+
+
 
 For Hackers and Developers
 --------------------------
