@@ -8,9 +8,10 @@ operations and when acting on a match object.
 
 **Minimum Similarity:** 
 
-When using just an image file in a find operation, the search
-will be successful and return a match object, if the similarity of a possible match
-is 0.7 or higher. 
+While using a :py:meth:`Region.find` operation, 
+if only an image file is provided, Sikuli searches
+the region using a default minimum similarity of 0.7.
+This default value can be changed in :py:attr:`Settings.MinSimilarity`.
 
 Using :py:meth:`similar() <Pattern.similar>` you can associate a specific similarity
 value, that will be used as the minimum value, when this pattern object is searched. 

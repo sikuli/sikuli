@@ -26,6 +26,7 @@ it is per pixel exactly matches to the pattern). The find can be advised, to
 search with a minimum similarity, so that some minor variations in shape and
 color can be ignored. If nothing else is specified, Sikuli searches with a
 minimum similarity of 0.7, which does what is expected in general cases.
+(This default value can be changed in :py:attr:`Settings.MinSimilarity`.)
 
 :ref:`Find operations <FindinginsideaRegionandWaitingforaVisualEvent>` return a
 :py:class:`Match` object, which has all the attributes and methods of a region

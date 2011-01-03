@@ -113,6 +113,13 @@ Controlling Sikuli Scripts and their Behavior
 
 .. py:class:: Settings
 
+	.. py:attribute:: MinSimilarity
+
+	The default minimum similiarty of find operations.
+        While using a :py:meth:`Region.find` operation, 
+        if only an image file is provided, Sikuli searches
+        the region using a default minimum similarity of 0.7.
+
 	.. py:attribute:: MoveMouseDelay
 
 	Control the time taken for mouse movement to a target location by setting this
