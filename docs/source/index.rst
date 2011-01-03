@@ -90,15 +90,7 @@ Complete Guide to Sikuli Script
    :maxdepth: 3
 
    new-in-sikulix
-   globals
-   region
-   screen
-   location
-   match
-   pattern
-   finder
-   keys
-
+   sikuli-script-index
 
 
 For Hackers and Developers

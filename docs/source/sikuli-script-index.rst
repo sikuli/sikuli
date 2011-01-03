@@ -1,5 +1,5 @@
 Everything about Sikuli Script
-=========
+==============================
 
 .. toctree::
    :maxdepth: 2
