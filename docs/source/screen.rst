@@ -6,12 +6,16 @@ capturing process (grabbing a rectangle from a screenshot, to be used for furthe
 processing with find operations is implemented. For :ref:`Multi Monitor Environments
 <MultimonitorEnvironments>` it contains features to map to the relevant monitor.
 
-Since Screen is of class :py:class:`Region`, grouping method calls can be used with
-a screen object. Normally this should only be relevant in Multi Monitor
-Environments, to use it for other screens, than the default/primary screen, where
-you have this feature by default. Be aware, that using the whole screen for find
-operations may have an impact on performance. So if possible either use setROI() or
-restrict a find opeation to a smaller region object (e.g. reg.find()) to speed up
+Since Screen extends class :py:class:`Region`, all methods of 
+class Region can be used with a screen object.
+
+Of special interest might be the grouping of region method calls using ``with:`` in Multi Monitor
+Environments: use it for other screens, than the default/primary screen, where
+you have this feature by default. 
+
+Be aware, that using the whole screen for find
+operations may have an impact on performance. So if possible either use ``setROI()`` or
+restrict a find operation to a smaller region object (e.g. ``reg.find()``) to speed up
 processing.
 
 

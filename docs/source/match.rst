@@ -3,14 +3,10 @@ Match
 
 An object of class Match represents the result of a successful find operation. It
 has the rectangle dimension of the image, that was used to search. It knows the
-point of its upper left corner on an existing monitor, where it was found. You can
-act on it using the applicable methods of Class :py:class:`Region`. 
+point of its upper left corner on an existing monitor, where it was found.  
 
-Methods of Match
-----------------
-
-Since the class Match extends class :py:class:`Region`, all methods of the Region
-class canbe used with a match object.
+Since class Match extends class Region, all methods of 
+class :py:class:`Region` can be used with a match object.
 
 Creating a Match, Getting Attributes
 ------------------------------------
@@ -27,13 +23,11 @@ the similarity it was found with and a click point to be used, if set by a patte
 
 	# m is a reference to a match object, if found
 	m = find("apple.png")
-	
-	print m # message area: Match[833,248 447x141] score=0.89, target=null
+	print m # message area: Match[10,0 30x22] score=1.00, target=center
 
 	# m is a reference to a match object, if found
 	m = find(Pattern("apple.png").similar(0.5).targetOffset(100,0)) 
-	
-	print m # message area: Match[406,461 140x123] score=0.75, target=(576,522)
+	print m # message area: Match[10,0 30x22] score=1.00, target=(105,11)
 
 For all other aspects, the features and attributes of class :py:class:`Region`
 apply.
@@ -75,9 +69,9 @@ There you find an example, how to save the contained matches for later use.
 
 The methods to use:
 
-*	hasNext(): returns True, if there is at least one match left, otherwise False
-*	next(): returns the next match, if there is at least one match left, otherwise None
-*	destroy(): destroys the iterator object (releases memory)
+*	``hasNext()``: returns True, if there is at least one match left, otherwise False
+*	``next()``: returns the next match, if there is at least one match left, otherwise None
+*	``destroy()``: destroys the iterator object (releases memory)
 
 Example: using ``while:`` with default screen
 
@@ -88,10 +82,10 @@ Example: using ``while:`` with default screen
 	while mm.hasNext(): # loop as long there is a first and more matches
 			print "found: ",  mm.next() # access the next match in the row
 			
-			print mm.hasNext() # is False, because mm is empty now
-			print mm.next() # is None, because mm is empty now
-			print SCREEN.getLastMatches().hasNext() # is False also ;-)
-			mm.destroy() # to save memory
+	print mm.hasNext() # is False, because mm is empty now
+	print mm.next() # is None, because mm is empty now
+	print SCREEN.getLastMatches().hasNext() # is False also ;-)
+	mm.destroy() # to save memory
 			
 Example: using ``with:`` with default screen
 
@@ -100,5 +94,4 @@ Example: using ``with:`` with default screen
 	with findAll("star.png") as mm:
 		while mm.hasNext(): # loop as long there is a first and more matches
 			print "found: ",  mm.next() # access the next match
-			# mm will be None afterwards (destroyed automatically)
-
+	# mm will be None afterwards (destroyed automatically)
