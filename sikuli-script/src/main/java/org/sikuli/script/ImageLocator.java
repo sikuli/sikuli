@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 public class ImageLocator {
-   final int DOWNLOAD_BUFFER_SIZE = 153600;
 
    Map<URL,String> _cache = new HashMap<URL, String>();
    String _cache_dir;
@@ -44,31 +43,12 @@ public class ImageLocator {
       }
    }
 
-   protected String downloadURL(URL url) throws IOException{
-      InputStream reader = url.openStream();
-      String[] path = url.getPath().split("/");
-      String filename = path[path.length-1];
-      String fullpath =  _cache_dir + filename;
-      FileOutputStream writer = new FileOutputStream(fullpath);
-      byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
-      int totalBytesRead = 0;
-      int bytesRead = 0;
-      while ((bytesRead = reader.read(buffer)) > 0){  
-         writer.write(buffer, 0, bytesRead);
-         totalBytesRead += bytesRead;
-      }
-      reader.close();
-      writer.close();
-
-      return fullpath;
-   }
-
    public String locateURL(URL url) throws IOException{
       Debug.log(3, "locateURL " + url);
       if(_cache.containsKey(url))
          return _cache.get(url);
       try{
-         String localFile = downloadURL(url);
+         String localFile = Util.downloadURL(url, _cache_dir);
          Debug.log(3, "download " + url + " to local: "  + localFile);
          _cache.put(url, localFile);
          return localFile;

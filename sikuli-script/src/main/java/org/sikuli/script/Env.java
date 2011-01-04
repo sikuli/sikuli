@@ -96,4 +96,18 @@ public class Env {
       else
          return KeyEvent.VK_CONTROL;
    }
+
+   static String getSikuliDataPath(){
+      String home, sikuliPath;
+      if(isWindows()){
+         home = System.getenv("APPDATA");  
+         sikuliPath = "sikuli";
+      }
+      else{
+         home = System.getProperty("user.home");
+         sikuliPath = ".sikuli";
+      }
+      File fHome = new File(home, sikuliPath);
+      return fHome.getAbsolutePath();
+   }
 }

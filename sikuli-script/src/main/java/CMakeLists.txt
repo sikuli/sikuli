@@ -48,6 +48,7 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/AppNotFound.java
    org/sikuli/script/Animator.java
    org/sikuli/script/TransparentWindow.java
+   org/sikuli/script/ExtensionManager.java
    ${CMAKE_SWIG_OUTDIR}/*.java
 )
 
