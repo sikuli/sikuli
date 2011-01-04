@@ -79,7 +79,7 @@ class Parser:
 		self.out.write(FOOTER)
 
 	def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
-		if 1:
+		if 0:
 		   print "type", toktype, token.tok_name[toktype], "text", toktext,
 		   print "start", srow,scol, "end", erow,ecol, "<br>"
 
@@ -109,7 +109,7 @@ class Parser:
 		   #newpos = self.pos - len(toktext)/2
 		   newpos = self.pos
 		   self.out.write(self.raw[oldpos:newpos])
-		   print "[I]%d-%d" % (oldpos, newpos)
+		   #print "[I]%d-%d" % (oldpos, newpos)
 		   return
 
 	

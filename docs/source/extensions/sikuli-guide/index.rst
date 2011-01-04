@@ -4,13 +4,13 @@ Sikuli Guide
 (Coming Soon in Sikuli X 1.0-rc2)
 
 Sikuli Guide is an extension to Sikuli that provides a revolutionary way to
-create guided tours or tutorials for GUI application. The revolutionary aspect
-is that the content of the tours or tutorials can be displayed right at the
+create guided tours or tutorials for GUI applications. The revolutionary aspect
+is that the content of the tours or tutorials can be displayed right on the
 **actual interface**, rather than in a video or a series of screenshots on a
 web page.
 
 For example, suppose we want to create a guided tour of this very documentation
-page you are currently reading. Frist we want to bring your attention to the logo
+page you are currently reading. First we want to bring your attention to the logo
 picture to the right. Using the functions provided by Sikuli Guide, we can
 write the following script to accomplish this:
 
@@ -22,23 +22,24 @@ write the following script to accomplish this:
 
 When you run this script, Sikuli Guide will search for the logo's image on the
 screen, highlight it, and display the text ''This is Sikuli's logo'' below the
-image, like the figure below. 
+image, like the figure below: 
 
 .. image:: sikuli-logo-highlight.png
 
-Again, this happens in the **actual interface** rather than in a video or a
-screenshot.
+Again, this happens in the **actual interface**, rather than in a video or a
+screenshot. The logo image that is highlighted is the actual interface element
+users can click on.
 
-Let's explain the script line by line. The first line is an import statement
-that tells Sikuli to load the Sikuli Guide extension. The secod line uses the
-:py:func:`addText(pattern, text) <addText>` function to add ``text`` next to a
-given ``pattern``, in this case, the logo image. Note that by default the text
-added is not drawn immediately. In the third line, we call :py:func:`show(secs)
-<show>` to explicitly tell Sikuli Guide to display the text for the duration
-specified by ``secs``. 
+Let's explain the script line by line. The first line is an ``import``
+statement that tells Sikuli to load the Sikuli Guide extension. The secod line
+uses the :py:func:`addText(pattern, text) <addText>` function to add ``text``
+next to a given ``pattern``, in this case, the logo image. Note that by default
+the text added is not displayed immediately. In the third line, we call
+:py:func:`show(secs) <show>` to explicitly tell Sikuli Guide to display the
+text for the duration specified by ``secs``. 
 
 It is possible to add text or other annotations to multiple elements before
-calling ``show()`` to show them on the screen at the same time.
+calling ``show()`` in order to show them on the screen at the same time.
 
 .. sikulicode::
 
@@ -49,13 +50,15 @@ calling ``show()`` to show them on the screen at the same time.
 	addTooltip("index.png","Index")
 	show(5)
 
-The script below uses the function :py:func:`addTooltip` to add tooltips to three links in addition to the text annotation. The result of running this script is shown below: 
+The script above uses the function :py:func:`addTooltip` to add tooltips to
+three links in addition to the text annotation. The result of running this
+script is shown below: 
 
 .. image:: multiple-annotations.png
 
 Rather than showing the annotations all at once, we can also show them one by
-one using separate ``show()`` statements. Below is an example where we show
-the tooltip of each element one after another in an infinite cycle. 
+one using separate ``show()`` statements. Below is an example where we cycle
+through the three links and show the tooltip of each link one at the time.
 
 .. sikulicode::
 
