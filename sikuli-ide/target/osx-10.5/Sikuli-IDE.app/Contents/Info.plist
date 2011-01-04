@@ -49,6 +49,7 @@
 			<string>$JAVAROOT/sikuli-ide.jar</string>
 			<string>$JAVAROOT/swing-layout-1.0.1.jar</string>
 			<string>$JAVAROOT/commons-cli-1.2.jar</string>
+			<string>$JAVAROOT/json_simple-1.1.jar</string>
 		</array>
 		<key>JVMVersion</key>
 		<string>1.5+</string>
