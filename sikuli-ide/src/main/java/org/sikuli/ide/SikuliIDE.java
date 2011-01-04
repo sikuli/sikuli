@@ -1,5 +1,6 @@
 package org.sikuli.ide;
 
+import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
 
 import java.lang.reflect.Constructor;
@@ -47,7 +48,8 @@ public class SikuliIDE extends JFrame {
    private JMenu _fileMenu = new JMenu(_I("menuFile"));
    private JMenu _editMenu = new JMenu(_I("menuEdit"));
    private JMenu _runMenu = new JMenu(_I("menuRun"));
-   private JMenu _viewMenu = new JMenu(_I("menuView"));
+   private JMenu _viewMenu = new JMenu(_I("menuView"));   
+   private JMenu _toolMenu = new JMenu(_I("menuTool"));
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
@@ -237,6 +239,15 @@ public class SikuliIDE extends JFrame {
       _helpMenu.add( createMenuItem(_I("menuHelpHomepage"), 
                null, new HelpAction(HelpAction.OPEN_HOMEPAGE)));
    }
+   
+   private void initToolMenu() throws NoSuchMethodException{
+	   int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+	   _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
+	   _toolMenu.add( createMenuItem(_I("menuToolExtensions"), 
+			   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, scMask),
+			   new ToolAction(ToolAction.EXTENSIONS)));
+	   
+   }
 
    private void initViewMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -259,6 +270,7 @@ public class SikuliIDE extends JFrame {
          initEditMenu();
          initRunMenu();
          initViewMenu();
+         initToolMenu();
          initHelpMenu();
       }
       catch(NoSuchMethodException e){
@@ -269,6 +281,7 @@ public class SikuliIDE extends JFrame {
       _menuBar.add(_editMenu);
       _menuBar.add(_runMenu);
       _menuBar.add(_viewMenu);
+      _menuBar.add(_toolMenu);      
       _menuBar.add(_helpMenu);
       frame.setJMenuBar(_menuBar);
    }
@@ -809,6 +822,11 @@ public class SikuliIDE extends JFrame {
       PreferencesWin pwin = new PreferencesWin();
       pwin.setVisible(true);
    }
+   
+   public void showExtensionsFrame(){
+	   ExtensionManagerFrame extmg = ExtensionManagerFrame.getInstance();
+	   extmg.setVisible(true);
+   }
 
    class MenuAction implements ActionListener {
       protected Method actMethod = null;
@@ -843,6 +861,23 @@ public class SikuliIDE extends JFrame {
             }
          }
       }
+   }
+   
+   class ToolAction extends MenuAction {
+	   static final String EXTENSIONS = "extensions";
+	   
+	   public ToolAction(){
+		   super();
+	   }
+	   
+	   public ToolAction(String item) throws NoSuchMethodException{
+		   super(item);
+	   }
+
+	   public void extensions(ActionEvent ae){
+		   showExtensionsFrame();
+	   }
+
    }
    
    class RunAction extends MenuAction {
