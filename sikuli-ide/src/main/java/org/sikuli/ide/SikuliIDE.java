@@ -241,12 +241,12 @@ public class SikuliIDE extends JFrame {
    }
    
    private void initToolMenu() throws NoSuchMethodException{
-	   int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-	   _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
-	   _toolMenu.add( createMenuItem(_I("menuToolExtensions"), 
-			   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, scMask),
-			   new ToolAction(ToolAction.EXTENSIONS)));
-	   
+      int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+      _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
+      _toolMenu.add( createMenuItem(_I("menuToolExtensions"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, scMask),
+               new ToolAction(ToolAction.EXTENSIONS)));
+
    }
 
    private void initViewMenu() throws NoSuchMethodException{
@@ -824,8 +824,8 @@ public class SikuliIDE extends JFrame {
    }
    
    public void showExtensionsFrame(){
-	   ExtensionManagerFrame extmg = ExtensionManagerFrame.getInstance();
-	   extmg.setVisible(true);
+      ExtensionManagerFrame extmg = ExtensionManagerFrame.getInstance();
+      extmg.setVisible(true);
    }
 
    class MenuAction implements ActionListener {
@@ -875,7 +875,7 @@ public class SikuliIDE extends JFrame {
 	   }
 
 	   public void extensions(ActionEvent ae){
-		   showExtensionsFrame();
+              showExtensionsFrame();
 	   }
 
    }
