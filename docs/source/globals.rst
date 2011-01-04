@@ -1,6 +1,8 @@
 Global Functions and Features
 =============================
 
+.. index:: import .sikuli
+
 .. _ImportingSikuliScripts:
 
 Importing other Sikuli Scripts (reuse code and images)
@@ -53,7 +55,7 @@ your choice as .sikuli (e.g. temp directory) and import it from there.
 
 
 **Note on contained images:** Together with the import, Sikuli internally uses
-the new SIKULI_IMAGE_PATH to make sure that images contained in imported
+the new :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>` to make sure that images contained in imported
 .sikuli's are found automatically.
 
 **Some comments for readers not familiar with Python import**
@@ -643,6 +645,9 @@ example::
 	# set a property's value
 	java.lang.System.getProperty("key-of-property", value)
 
+.. index:: 
+	pair: Image Search Path; SIKULI_IMAGE_PATH
+
 .. _ImageSearchPath:
 
 **Image Search Path**
@@ -651,15 +656,21 @@ Sikuli maintains a list of locations to search for images when they are not foun
 the current .sikuli folder (a.k.a. bundle path). This list is maintained internally
 but can be inspected and/or modified using the following functions:
 
-.. py:function: getImagePath()
+.. py:function:: getImagePath()
 
-	Get a list of paths where Sikuli will use to search for images
+	Get a list of paths where Sikuli will search for images. ::
+	
+		# getImagePath() returns a Java array of unicode strings
+		imgPath = list(getImagePath()) # makes it a Python list
+		# to loop through
+		for p in imgPath:
+			print p
 
-.. py:function: addImagePath(a-new-path)
+.. py:function:: addImagePath(a-new-path)
 
 	Add a new path to the list of image search paths
 
-.. py:function: removeImagePath(a-path-already-in-the-list)
+.. py:function:: removeImagePath(a-path-already-in-the-list)
 
 	Remove a path from the list of image search paths
 
@@ -679,6 +690,8 @@ environment variable SIKULI_IMAGE_PATH and can be accessed at runtime using the
 approach as mentioned under Accessing Settings - Java level. Be aware, that this is
 one string, where the different entries are separated with a colon ( : ).
 
+.. index:: Bundle Path
+
 **The default bundle path** can also be accessed and modified by the two functions
 below:
 
@@ -690,9 +703,9 @@ below:
 	you are doing. Using it generally means that you would like to take care of your
 	captured images by yourself.
 
-	Additionally images are searched for in the SIKULI_IMAGE_PATH, that is a global
+	Additionally images are searched for in the :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>`, that is a global
 	list of other places to look for images. It is implicitly extended by script
-	folders, that are imported (see: Reuse of Code and Images).
+	folders, that are imported (see: :ref:`Reuse of Code and Images <ImportingSikuliScripts>`).
 
 .. py:function:: getBundlePath()
 
@@ -704,7 +717,7 @@ below:
 	you to access to the path name, so you may need other python modules for I/O or
 	other purposes.
 
-	Other places, where Sikuli looks for images, might be in the SIKULI_IMAGE_PATH.
+	Other places, where Sikuli looks for images, might be in the :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>`.
 
 **Other Environment Information**
 
