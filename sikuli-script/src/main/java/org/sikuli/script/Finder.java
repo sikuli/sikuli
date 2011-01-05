@@ -19,7 +19,6 @@ public class Finder implements Iterator<Match>{
       try{
          NativeLoader.loadLibrary("VisionProxy");
          System.out.println("Sikuli vision engine loaded.");
-         TextRecognizer tr = TextRecognizer.getInstance();
       }
       catch(IOException e){
          e.printStackTrace();
@@ -84,6 +83,8 @@ public class Finder implements Iterator<Match>{
          fin.setTarget(filename, false);
       }
       catch(IOException e){
+         // this will init text recognizer on demand
+         TextRecognizer tr = TextRecognizer.getInstance();
          //assume it's text 
          fin.setTarget(target, true);
       }
