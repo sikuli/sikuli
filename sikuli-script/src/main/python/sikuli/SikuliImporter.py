@@ -3,6 +3,8 @@ import os
 import java.lang.System
 import imp
 from Screen import Screen
+from org.sikuli.script import Env
+import Sikuli
 
 def _stripPackagePrefix(module_name):
    pdot = module_name.rfind('.')
@@ -33,11 +35,13 @@ class SikuliImporter:
          img_path = java.lang.System.getProperty("SIKULI_IMAGE_PATH")
          if not img_path:
             img_path = ""
-         elif img_path[-1] != ':' or img_path[-1] != ';':
-            img_path += ':'
+         elif img_path[-1] != Env.getSeparator():
+            img_path += Env.getSeparator()
          img_path += self.path
          java.lang.System.setProperty("SIKULI_IMAGE_PATH", img_path)
          return self._load_module(module_name)
+
+
 
    def _find_module(self, module_name, fullpath):
       fullpath = fullpath + "/" + module_name + ".sikuli"
@@ -59,6 +63,10 @@ class SikuliImporter:
          mod = self._find_module(module_name, path)
          if mod:
             return mod
+      if Sikuli.load(module_name +".jar"):
+         print "[sikuli] " + module_name + ".jar loaded"
+         return None
+
       return None
 
 
