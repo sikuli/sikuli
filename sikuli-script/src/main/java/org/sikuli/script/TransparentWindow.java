@@ -6,4 +6,11 @@ public class TransparentWindow extends JWindow {
    public void setOpacity(float alpha){
       Env.getOSUtil().setWindowOpacity(this, alpha);
    }
+   
+   public void close(){
+      setVisible(false);
+      dispose();
+   }
+   
+
 }
