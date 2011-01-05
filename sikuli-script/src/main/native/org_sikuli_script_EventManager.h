@@ -7,12 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#undef org_sikuli_script_EventManager_APPEAR
-#define org_sikuli_script_EventManager_APPEAR 0L
-#undef org_sikuli_script_EventManager_VANISH
-#define org_sikuli_script_EventManager_VANISH 1L
-#undef org_sikuli_script_EventManager_CHANGE
-#define org_sikuli_script_EventManager_CHANGE 2L
 /*
  * Class:     org_sikuli_script_EventManager
  * Method:    createEventManager

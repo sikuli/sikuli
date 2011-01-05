@@ -34,7 +34,7 @@ IF(NOT WIN32)
    FIND_PACKAGE(Tesseract REQUIRED)
    INCLUDE_DIRECTORIES(${Tesseract_INCLUDE_DIR})
    # timing
-   SET(CMAKE_CXX_FLAGS "-DENABLE_TIMING")
+   #SET(CMAKE_CXX_FLAGS "-DENABLE_TIMING")
 ELSE()
    SET(TESSERACT_SRC_DIRS ccmain ccutil ccstruct viewer 
                           image textord wordrec dict cutil

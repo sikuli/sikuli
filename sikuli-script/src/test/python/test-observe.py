@@ -33,7 +33,7 @@ with Region(b.width-280,0,280,100) as r2:
    print "start observing on r2..."
    observe(background=True)
 
-wait(8)
+wait(12)
 print "stop observing..."
 r1.stopObserver()
 r2.stopObserver()
