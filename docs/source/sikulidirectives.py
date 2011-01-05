@@ -64,6 +64,8 @@ class Parser:
 		#if LOCAL_CONVERT:
 		#   HEADER = HEADER.replace("$HIDE_INFO", "display: none;")
 		self.out.write(HEADER)
+
+		self.out.write(" 1: ")
 		
 		try:
 		   tokenize.tokenize(text.readline, self)
@@ -90,21 +92,27 @@ class Parser:
 		# handle newlines
 		if toktype in [token.NEWLINE, tokenize.NL]:
 		   self.out.write('\n')
+		   lineno = srow + 1
+		   self.out.write("%2d: " % lineno)
 		   return
 
+
+	    # send the original whitespace, if needed
+		if newpos > oldpos:
+		   self.out.write(self.raw[oldpos:newpos])
+	
 		# skip indenting tokens
 		# hack to force tabspace = 4
-		if toktype in [token.INDENT]:#, token.DEDENT]:
+		if toktype in [token.INDENT, token.DEDENT]:
+		   #self.pos = 
 		   #newpos = newpos/2
-		   newpos = self.pos - len(toktext)/2
+		   #newpos = self.pos - len(toktext)/2
+		   newpos = self.pos
 		   self.out.write(self.raw[oldpos:newpos])
 		   #print "[I]%d-%d" % (oldpos, newpos)
 		   return
 
-	   # send the original whitespace, if needed
-		if newpos > oldpos:
-		   self.out.write(self.raw[oldpos:newpos])
-
+	
 		# map token type to a color group
 		if token.LPAR <= toktype and toktype <= token.OP:
 		   toktype = token.OP
