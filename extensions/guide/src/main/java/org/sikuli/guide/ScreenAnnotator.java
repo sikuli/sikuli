@@ -8,26 +8,19 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.Location;
 import org.sikuli.script.OS;
-import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.ScreenHighlighter;
 import org.sikuli.script.TransparentWindow;
-import org.sikuli.script.UnionScreen;
 
 
 //- multiscreen working
@@ -51,11 +44,41 @@ public class ScreenAnnotator extends TransparentWindow {
       add(content);
 
       setBounds(rect);
-      setVisible(false);
-      setAlwaysOnTop(true);
+
       
       Color transparentColor = new Color(0F,0F,0F,0.0F);
-      setBackground(transparentColor);    
+      setBackground(transparentColor);
+      
+      
+      getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
+      ((JPanel)getContentPane()).setDoubleBuffered(true);
+      
+      setVisible(false);
+      setAlwaysOnTop(true);
+ 
+      
+//      addMouseMotionListener( new MouseMotionAdapter(){
+//         public void mouseDragged(java.awt.event.MouseEvent e) {
+//            Debug.log(e.getX() + "," + e.getY());
+////            if (_scr_img == null) return;
+////            destx = e.getX();
+////            desty = e.getY();
+////            repaint(); 
+//         }
+//      });
+//      
+//      addMouseListener(new MouseAdapter(){
+//         public void mousePressed(java.awt.event.MouseEvent e){
+//            //if (_scr_img == null) return;
+//            int srcx = e.getX();
+//            int srcy = e.getY();
+//            //srcScreenId = (new UnionScreen()).getIdFromPoint(srcx, srcy);
+//            Debug.log(3, "pressed " + srcx + "," + srcy);
+//            
+//            repaint();
+//         }
+//
+//      });
    }
    
    JPanel content = new JPanel(null);
@@ -140,15 +163,40 @@ public class ScreenAnnotator extends TransparentWindow {
       content.add(l);
       repaint();
    }
-
-   public void show(float secs){
+   
+   public void showWaitForButtonClick(String button_text, String message){
 
       setVisible(true);
       toFront();
-      repaint();
+      
+      
+      SingleButtonMessageBox nav = new SingleButtonMessageBox(this, button_text, message);
+      nav.toFront();
+      nav.setAlwaysOnTop(true);
+      nav.pack();
+      nav.setLocationRelativeTo(this);
+      nav.setVisible(true);
+      
+      synchronized(this){
+         try {
+            wait();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      }
+      
+      clear();
+      close();
+   }
+
+   public void show(float secs){
+   
+      setVisible(true);
+      toFront();
 
       float secs1 = (float) Math.max(3.0, secs);
       closeAfter(secs1);
+
    }
    
    private void closeAfter(float secs){
@@ -191,8 +239,8 @@ public class ScreenAnnotator extends TransparentWindow {
       //		sh.clear();
 
 
-      Screen s = new UnionScreen();
-      //Screen s = new Screen(1);
+      //Screen s = new UnionScreen();
+      Screen s = new Screen(0);
 
       Region r = null;
 
@@ -205,7 +253,8 @@ public class ScreenAnnotator extends TransparentWindow {
       sa.addHighlight(r);
       sa.addToolTip("Run", new Point(r.x,r.y+r.h+5));
 
-      //		sa.show(3.0f);
+      //sa.show(3.0f);
+      sa.showWaitForButtonClick("Continue", "Step 1");
 
       //		r = s.find("Package Explorer");
       //		sa.addHighlight(r);
@@ -221,10 +270,12 @@ public class ScreenAnnotator extends TransparentWindow {
       sa.addText("Click this to create a Java class", x1);
       sa.addArrow(x1,c);
 
-      r = s.find("tools.png");
-      sa.addHighlight(r);
+//      r = s.find("tools.png");
+//      sa.addHighlight(r);
 
-      sa.show(3.0f);
+      //sa.show(3.0f);
+      sa.showWaitForButtonClick("Finish", "Step 2");
+      
       //
       //
       //		
@@ -239,6 +290,22 @@ public class ScreenAnnotator extends TransparentWindow {
 
 
 
+   }
+   
+   @Override
+   public void toFront(){
+      if(Env.getOS() == OS.MAC){
+         // this call is necessary to allow clicks to go through the window (ignoreMouse == true)
+         Env.getOSUtil().bringWindowToFront(this, true);
+         //FIXME: windows?
+      }
+      /*
+      else if(Env.getOS() == OS.WINDOWS){
+         Win32Util.bringWindowToFront(this, true);
+      }
+      else
+      */
+         super.toFront();
    }
 
 

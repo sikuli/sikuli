@@ -22,3 +22,7 @@ def addTooltip(target, text):
 def show(secs):
 	_sa.show(secs)
 
+def nextStep(text):
+	_sa.showWaitForButtonClick("Next", text)
+
+
