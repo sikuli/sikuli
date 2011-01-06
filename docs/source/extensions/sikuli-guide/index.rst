@@ -23,7 +23,7 @@ write the following script to accomplish this:
 
 .. sikulicode::
 
-	from sikuliext.guide import *
+	from guide import *
 	addText("sikuli-logo.png", "This is Sikuli's logo")
 	show(5)
 
@@ -53,7 +53,7 @@ calling ``show()`` in order to show them on the screen at the same time.
 
 .. sikulicode::
 
-	from sikuliext.guide import *
+	from guide import *
 	addText("sikuli-logo.png", "This is Sikuli's logo")
 	addTooltip("previous.png","Previous")
 	addTooltip("next.png","Next")
@@ -72,7 +72,7 @@ through the three links and show the tooltip of each link one at the time.
 
 .. sikulicode::
 
-	from sikuliext.guide import *
+	from guide import *
 	while True():
 		addTooltip("previous.png","Previous") 
 		show(3) 

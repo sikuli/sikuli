@@ -11,6 +11,22 @@
    white-space: -o-pre-wrap;    /* Opera 7 */
    word-wrap: break-word;       /* Internet Explorer 5.5+ */
    width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+   overflow: visible;
+   margin-left: 2em;
+}
+
+.lineno {
+   -moz-user-select: none;
+   -webkit-user-select: none;
+   user-select: none;
+   color: #ccc;
+   position: relative;
+   left: -2.4em;
+   width: 1.5em;
+   margin-right: -1.5em;
+   display:inline-block;
+   text-align:right;
+   font-size: small;
 }
 
 .kw {

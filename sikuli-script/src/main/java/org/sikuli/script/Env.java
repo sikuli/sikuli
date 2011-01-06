@@ -101,7 +101,12 @@ public class Env {
       String home, sikuliPath;
       if(isWindows()){
          home = System.getenv("APPDATA");  
-         sikuliPath = "sikuli";
+         sikuliPath = "Sikuli";
+      }
+      else if(isMac()){
+         home = System.getProperty("user.home") + 
+                "/Library/Application Support";
+         sikuliPath = "Sikuli";
       }
       else{
          home = System.getProperty("user.home");
