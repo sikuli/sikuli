@@ -1,10 +1,11 @@
-from sikuli.Sikuli import *
-#from edu.mit.csail.uid import VisionProxy
-#from edu.mit.csail.uid import DebugCategories
+from __future__ import with_statement
+from sikuli import *
 
-switchApp("System Preferences")
+pref = App("System Preferences").open()
 setAutoWaitTimeout(10)
 #click("System Preferences")
 #VisionProxy.setDebug(DebugCategories.OCR,1)
-print "OCR text: ", find("test-res/sound.png").text() 
-assert("Sound" in find("test-res/sound.png").text()) 
+with Region(pref.window()):
+   print "OCR text: ", find("test-res/sound.png").text() 
+   assert("Sound" in find("test-res/sound.png").text()) 
+   click("Sound")

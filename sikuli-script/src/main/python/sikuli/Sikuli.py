@@ -2,6 +2,7 @@
 # This module provides a Jython interface of Sikuli Script to automate GUI
 # interactions.
 ##
+from __future__ import with_statement
 import java.io.File
 import time
 from org.sikuli.script import SikuliScript

@@ -13,6 +13,11 @@
 #include "imgdb.h"
 #include <sys/stat.h> 
 
+#ifdef ENABLE_VISUAL_LOG
+   const bool enable_visual_log = true;
+#else
+   const bool enable_visual_log = false;
+#endif 
 using namespace sikuli;
 
 bool fileExists(const char* strFilename){
@@ -194,7 +199,7 @@ find_text(FindInput& input){
               FONT_HERSHEY_SIMPLEX, 0.3, Color::RED);
       
    }
-   VisualLogger::setEnabled(true);
+   VisualLogger::setEnabled(enable_visual_log);
    VisualLogger::log("FindText-Result", result_image);
 
    
@@ -297,7 +302,7 @@ find_button(FindInput& input){
       
    }
    
-   VisualLogger::setEnabled(true);
+   VisualLogger::setEnabled(enable_visual_log);
    VisualLogger::log("Buttons-OCR", result_image);
    
    return results;

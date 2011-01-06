@@ -4,8 +4,10 @@
 #include <string>
 #include <stdlib.h>
 #include "tessocr.h"
+#include "sikuli-debug.h"
 
 using namespace std;
+using namespace sikuli;
 
 #ifdef WIN32
    #include "baseapi.h"
@@ -486,13 +488,6 @@ vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
    return ocr_chars;
 }
 
-ostream& dout(const char* name){
-   return cout;
-}
-
-ostream& dhead(const char* name){
-   return cout << "[" << name << "] ";
-}
 
 void
 find_phrase_helper(const Mat& screen_gray, vector<string> words, vector<LineBlob> lineblobs,
