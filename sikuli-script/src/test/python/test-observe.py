@@ -8,6 +8,7 @@ def addCount():
    print "count: " + str(count)
 
 def changed(event):
+   print event.type == SikuliEvent.Type.CHANGE
    print "changed!: " + str(event)
    for ch in event.changes:
       ch.highlight()

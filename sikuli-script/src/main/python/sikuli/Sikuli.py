@@ -8,6 +8,7 @@ from org.sikuli.script import SikuliScript
 from org.sikuli.script import Match
 from org.sikuli.script import Pattern
 from org.sikuli.script import FindFailed
+from org.sikuli.script import SikuliEvent
 import __builtin__
 import __main__
 import types

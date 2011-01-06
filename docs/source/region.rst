@@ -43,7 +43,8 @@ just check whether a pattern :py:meth:`Region.exists` without the need to handle
 Sikuli 0.10 begins to support visual event driven programming. You can tell a region
 :ref:`to observe that something appears, vanishes or changes <ObservingVisualEventsinaRegion>`. 
 It is possible to wait for the completion of an
-observation or let it run in the background while your script is continuing.
+observation or let it run in the background while your following script 
+continues running.
 When one of the visual events happens, a handler in your script is called. Each
 region has one observer and each observer can handle multiple visual events.
 It's your responsibility to stop an observation.
@@ -468,11 +469,8 @@ using a string containing the file name (path to an image file).
 Observing Visual Events in a Region
 -----------------------------------
 
-This feature allows to some extent the implementation of visual event driven
-programming.
-
-You can tell a region to observe that something appears or vanishes or the
-content changes at all. Using the methods 
+You can tell a region to observe that something appears or vanishes,
+or something changes in that region. Using the methods 
 :py:meth:`Region.onAppear`, :py:meth:`Region.onVanish` and :py:meth:`Region.onChange`, 
 you register an event observer that starts its observation when you
 call :py:meth:`Region.observe`. Each region object can have exactly one observation active and
@@ -487,8 +485,9 @@ parameter you can tell :py:meth:`Region.observe`
 to stop observation anyway after the given time.
 
 When one of the visual events happens, an event handler written by you is
-called. An event handler is a function contained in your script and expects an
-event object as a parameter. During the processing in your handler, the
+called. An event handler is a function contained in your script and expects a
+:py:class:`SikuliEvent` object as a parameter. 
+During the processing in your handler, the
 observation is paused until your handler has ended. Information between the
 main script and your handlers can be given forward and backward using global
 variables.
@@ -570,17 +569,36 @@ string containing the file name (path to an image file).
 		given pattern fails during observation, your handler is called and the
 		observation is paused until you return from your handler. 
 
-	.. py:method:: onChange(handler)
+	.. py:method:: onChange([minChangedSize], handler)
 
+		:param minChangedSize: the minimum size in pixels of a change to trigger a change event
 		:param handler: the name of a handler function in the script
 		
 		With the given region you register an observer, that should wait for
 		the visual content of the given region to change and is activated with
 		the next call of ``observe()``. In the moment the visual content changes
 		during observation, your handler is called and the observation is
-		paused until you return from your handler. 
+		paused until you return from your handler.
 
-	.. py:method:: observe([seconds], [background = False | True])
+		Here is a example that highlight all changes in an observing region.
+		::
+
+			def changed(event):
+				print "something changed in ", event.region
+				for ch in event.changes:
+					ch.highlight() # highlight all changes
+				sleep(1)
+				for ch in event.changes:
+					ch.highlight() # turn off the highlights
+			with selectRegion("select a region to observe") as r:
+			    onChange(50, changed) # any changes in r larger than 50 pixels would trigger the changed function
+			    observe(background=True)
+
+			wait(30) # another way to observe for 30 seconds
+			r.stopObserver()
+
+
+   .. py:method:: observe([seconds], [background = False | True])
 
 		Begin observation within the region.
 
@@ -618,6 +636,42 @@ string containing the file name (path to an image file).
 						
 			onAppear("path-to-an-image-file", myHandler) 
 			observe(FOREVER) # observes until stopped in handler
+
+
+.. versionadded:: X1.0-rc2
+.. py:class:: SikuliEvent
+
+   .. py:attribute:: type
+
+   The :py:attr:`type` of this event can be 
+   :py:const:`SikuliEvent.Type.APPEAR`, :py:const:`SikuliEvent.Type.VANISH`,
+   or :py:const:`SikuliEvent.Type.CHANGE`.
+
+   .. py:attribute:: pattern
+
+   The source pattern that triggers this event. This's only valid
+   in appear and vanish events.
+
+   .. py:attribute:: region
+
+   The source region of this event.
+
+   .. py:attribute:: match
+
+   In an appear event, *match* saves the top :py:class:`Match` object
+   that appears in the observed region.
+
+   In a vanish event, *match* saves the *last* :py:class:`Match` object
+   that was in the observed region but vanishes.
+
+   This attribute is not valid in a change event.
+
+   .. py:attribute:: changes
+
+   This attribute is valid only in a change event.
+
+   This *changes* attribute is a list of :py:class:`Match` objects that
+   change and their sizes are at least :py:meth:`minChangedSize <Region.onChange>` pixels.
 
 
 .. _ActingonaRegion:
