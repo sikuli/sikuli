@@ -13,7 +13,6 @@ INCLUDE("${CMAKE_MODULE_PATH}/common.cmake")
 
 FIND_PROGRAM ( JAVA_JAVA_H javah PATHS ${JAVA_BIN_PATH} )
 SET(JNI_HEADERS
-   org_sikuli_script_EventManager.h
    org_sikuli_script_VDictProxy.h
    org_sikuli_script_Win32Util.h
    org_sikuli_script_MacUtil.h
@@ -119,10 +118,7 @@ SWIG_ADD_MODULE(VisionProxy java vision.i
    pyramid-template-matcher.cpp
    tessocr.cpp
    vision.cpp
-   EventManagerProxy.cc
-   event-manager.cc
    sikuli-debug.cpp
-   org_sikuli_script_EventManager.h
    ${TESSERACT_SOURCES}
 ) 
 SWIG_LINK_LIBRARIES(VisionProxy ${Tesseract_LIBRARY} ${OpenCV_LIBS})  

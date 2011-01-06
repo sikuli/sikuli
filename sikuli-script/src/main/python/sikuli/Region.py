@@ -229,11 +229,24 @@ class Region(JRegion):
             handler(event)
       return JRegion.onVanish(self, target, AnonyObserver())
 
-   def onChange(self, handler):
+   ##
+   #  onChange( [min_change_size], handler )
+   #
+   def onChange(self, arg1, arg2=None):
+      t_arg1 = __builtin__.type(arg1)
+      if t_arg1 is types.IntType:
+         min_size = arg1
+         handler = arg2
+      else:
+         min_size = None
+         handler = arg1
       class AnonyObserver(SikuliEventAdapter):
          def targetChanged(self, event):
             handler(event)
+      if min_size != None:
+         return JRegion.onChange(self, min_size, AnonyObserver())
       return JRegion.onChange(self, AnonyObserver())
+
 
    def observe(self, time=FOREVER, background=False):
       if background:

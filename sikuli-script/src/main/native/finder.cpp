@@ -384,8 +384,8 @@ FaceFinder::next(){
 }
 
 //=====================================================================================
-#define PIXEL_DIFF_THRESHOLD 50
-#define IMAGE_DIFF_THRESHOLD 20
+#define PIXEL_DIFF_THRESHOLD 5
+#define IMAGE_DIFF_THRESHOLD 5
 
 ChangeFinder::ChangeFinder(const char* screen_image_filename)
 : BaseFinder(screen_image_filename){

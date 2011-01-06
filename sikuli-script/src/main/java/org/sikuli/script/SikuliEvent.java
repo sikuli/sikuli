@@ -1,25 +1,31 @@
 package org.sikuli.script;
 
+import java.util.List;
+
 public class SikuliEvent {
    public enum Type {
       APPEAR, VANISH, CHANGE
    }
-   Type type;
+   public Type type;
 
    //DEPRECATED (leave them to be compatiable to 0.10)
-   int x, y, w, h;
+   public int x, y, w, h;
 
-   Region region;
+   public Region region;
 
    // AppearEvent must have a match
    // VanishEvent may have a match, depending on if the pattern appeared before
-   Match match;
+   public Match match;
+
+   // ChangeEvent has 0+ changes.
+   public List<Match> changes;
 
    // the pattern for observing this event
-   Object pattern;
+   public Object pattern;
 
    public SikuliEvent(){
    }
+
 
    public SikuliEvent(Object ptn, Match m, Region r){
       if(m != null){

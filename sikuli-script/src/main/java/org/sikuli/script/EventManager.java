@@ -1,9 +1,9 @@
 package org.sikuli.script;
 
-import java.awt.*;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
+import java.awt.AWTException;
 
 public class EventManager {
    protected enum State {
@@ -11,10 +11,12 @@ public class EventManager {
    }
 
    private Region _region;
+   private Mat _lastImgMat = null;
    private Map<Object, State> _state;
    private Map<Object, Match> _lastMatch;
    private Map<Object, SikuliEventObserver> _appearOb, _vanishOb;
-   //, _changeOb;
+   private Map<Integer, SikuliEventObserver> _changeOb;
+   private int _minChanges;
 
 
    public EventManager(Region region){
@@ -23,7 +25,7 @@ public class EventManager {
       _lastMatch = new HashMap<Object, Match>();
       _appearOb = new HashMap<Object, SikuliEventObserver>();
       _vanishOb = new HashMap<Object, SikuliEventObserver>();
-//      _changeOb = new HashMap<Object, SikuliEventObserver>();
+      _changeOb = new HashMap<Integer, SikuliEventObserver>();
    }
 
    private <PSC> float getSimiliarity(PSC ptn){
@@ -47,9 +49,9 @@ public class EventManager {
       _state.put(ptn, State.UNKNOWN);
    }
 
-   //FIXME add paramater: change threshold
-   public void addChangeObserver(SikuliEventObserver ob){
-      //_changeOb.put(ptn, ob);
+   public void addChangeObserver(int threshold, SikuliEventObserver ob){
+      _changeOb.put(new Integer(threshold), ob);
+      _minChanges = getMinChanges();
    }
 
    protected void callAppearObserver(Object ptn, Match m){
@@ -101,9 +103,56 @@ public class EventManager {
 
    }
 
+   protected void callChangeObserver(FindResults results) throws AWTException{
+      for(Integer n : _changeOb.keySet()){
+         List<Match> changes = new ArrayList<Match>();
+         for(int i=0;i<results.size();i++){
+            FindResult r = results.get(i);
+            if( r.getW() * r.getH() >= n )
+               changes.add(_region.toGlobalCoord(new Match(r)));
+         }
+         if(changes.size() > 0){
+            ChangeEvent se = new ChangeEvent(changes, _region);
+            SikuliEventObserver ob = _changeOb.get(n);
+            ob.targetChanged(se);
+         }
+      }
+   }
+
+   protected int getMinChanges(){
+      int min = Integer.MAX_VALUE;
+      for(Integer n : _changeOb.keySet())
+         if(n < min)
+            min = n;
+      return min;
+   }
+
+   protected void checkChanges(ScreenImage img){
+      if(_lastImgMat == null){
+         _lastImgMat = OpenCV.convertBufferedImageToMat(img.getImage());
+         return;
+      }
+
+      FindInput fin = new FindInput();
+      fin.setSource(_lastImgMat);
+      Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
+      fin.setTarget(target);
+      fin.setSimilarity(_minChanges);
+
+      FindResults results = Vision.findChanges(fin);
+      try{
+         callChangeObserver(results);
+      }
+      catch(AWTException e){
+         e.printStackTrace();
+      }
+
+      _lastImgMat = target;
+   }
 
    public void update(ScreenImage img){
       checkPatterns(img);
+      checkChanges(img);
    }
 
    protected void finalize() throws Throwable {
