@@ -76,7 +76,7 @@ public class Env {
    }
 
    static OSUtil _osUtil = null;
-   static OSUtil getOSUtil(){
+   public static OSUtil getOSUtil(){
       if(_osUtil == null){
          try{
             Class c = Class.forName(getOSUtilClass());
