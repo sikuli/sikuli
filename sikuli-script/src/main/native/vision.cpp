@@ -369,6 +369,30 @@ Vision::find(FindInput input){
    return final_results;
 }
 
+vector<FindResult> 
+Vision::findChanges(FindInput input){
+
+   vector<FindResult> results;
+   Mat source = input.getSourceMat();
+   Mat image = input.getTargetMat();
+   ChangeFinder f(source);
+   
+   //f.find(image, input.getSimilarity());
+   f.find(image);
+   while (f.hasNext() && (results.size() < input.getLimit())){
+      results.push_back(f.next());
+   }
+   
+   vector<FindResult> final_results;
+   int n = input.getLimit();
+   if(n < results.size()){
+      copy(results.begin(), results.begin()+n, final_results.begin());
+      return final_results;
+   }
+   else
+      return results;
+}
+
 
 
 

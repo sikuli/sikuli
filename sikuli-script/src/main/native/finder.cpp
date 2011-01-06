@@ -384,8 +384,8 @@ FaceFinder::next(){
 }
 
 //=====================================================================================
-#define PIXEL_DIFF_THRESHOLD 50
-#define IMAGE_DIFF_THRESHOLD 20
+#define PIXEL_DIFF_THRESHOLD 5
+#define IMAGE_DIFF_THRESHOLD 5
 
 ChangeFinder::ChangeFinder(const char* screen_image_filename)
 : BaseFinder(screen_image_filename){
@@ -670,6 +670,7 @@ Finder::find(IplImage* target, double min_similarity){
       TemplateFinder* tf = new TemplateFinder(_source);
       if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find(target, min_similarity);
+      if(_finder) delete _finder;
       _finder = tf;
       
    }
@@ -702,6 +703,7 @@ Finder::find(const char *target, double min_similarity){
       const char* q = p + j + 1;
          
       wf->find(q,0.6);
+      if(_finder) delete _finder;
       _finder = wf;
       
    }else {
@@ -709,6 +711,7 @@ Finder::find(const char *target, double min_similarity){
       TemplateFinder* tf = new TemplateFinder(_source);
       if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find(target, min_similarity);
+      if(_finder) delete _finder;
       _finder = tf;
    }                    
 }
@@ -718,6 +721,7 @@ Finder::find_all(IplImage*  target, double min_similarity){
    TemplateFinder* tf  = new TemplateFinder(_source);
    if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
    tf->find_all(target, min_similarity);
+   if(_finder) delete _finder;
    _finder = tf;
 }
 
@@ -742,12 +746,14 @@ Finder::find_all(const char *target, double min_similarity){
       const char* q = p + j + 1;
       
       wf->find(q,0.6);
+      if(_finder) delete _finder;
       _finder = wf;
    }else {
       
       TemplateFinder* tf = new TemplateFinder(_source);
       if(_roi.width>0) tf->setROI(_roi.x, _roi.y, _roi.width, _roi.height);
       tf->find_all(target, min_similarity);
+      if(_finder) delete _finder;
       _finder = tf;
    }     
 }

@@ -517,8 +517,13 @@ public class Region {
       getEventManager().addVanishObserver(target, observer);
    }
 
+   public void onChange(int threshold, SikuliEventObserver observer){
+      getEventManager().addChangeObserver(threshold, observer);
+   }
+
    public void onChange(SikuliEventObserver observer){
-      getEventManager().addChangeObserver(observer);
+      getEventManager().addChangeObserver(Settings.ObserveMinChangedPixels,
+                                          observer);
    }
 
    public void observe(){

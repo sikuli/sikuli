@@ -12,4 +12,5 @@ public class Settings {
    public static float SlowMotionDelay = 2.0f; // in seconds
    public static float MoveMouseDelay = 0.5f; // in seconds
    public static String OcrDataPath = null;
+   public static int ObserveMinChangedPixels = 50; // in pixels
 }

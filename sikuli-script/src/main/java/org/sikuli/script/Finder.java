@@ -21,7 +21,7 @@ public class Finder implements Iterator<Match>{
    private FindInput _findInput = new FindInput();
    private FindResults _results = null;
    private ImageLocator _imgLocator = null;
-   private int _cur_result_i = 0;
+   private int _cur_result_i;
 
    static {
       try{
@@ -107,12 +107,14 @@ public class Finder implements Iterator<Match>{
    public <PSC> void find(PSC ptn) throws IOException{
       setFindInput(ptn);
       _results = Vision.find(_findInput);
+      _cur_result_i = 0;
    }
 
    public void find(String templateFilename, double minSimilarity) throws IOException{
       setTargetSmartly(_findInput, templateFilename);
       _findInput.setSimilarity(minSimilarity);
       _results = Vision.find(_findInput);
+      _cur_result_i = 0;
    }
 
    public <PSC> void findAll(PSC ptn) throws IOException {
@@ -122,6 +124,7 @@ public class Finder implements Iterator<Match>{
       setFindInput(ptn);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);
+      _cur_result_i = 0;
 
       timing.endTiming("Finder.findAll");
    }
@@ -134,6 +137,7 @@ public class Finder implements Iterator<Match>{
       _findInput.setSimilarity(minSimilarity);
       _findInput.setFindAll(true);
       _results = Vision.find(_findInput);
+      _cur_result_i = 0;
 
       timing.endTiming("Finder.findAll");
    }

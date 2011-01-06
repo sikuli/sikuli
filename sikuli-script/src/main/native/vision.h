@@ -84,6 +84,8 @@ class Vision{
 public:
       
    static vector<FindResult> find(FindInput q);
+
+   static std::vector<FindResult> findChanges(FindInput q);
    
    static double compare(cv::Mat m1, cv::Mat m2);
    
