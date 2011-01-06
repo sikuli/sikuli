@@ -4,6 +4,10 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
+
+import org.sikuli.script.natives.Mat;
+import org.sikuli.script.natives.Vision;
+
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 // Singleton

@@ -8,6 +8,7 @@ ENDIF()
 
 
 SET(JAVA_SOURCE_FILES 
+   ${CMAKE_SWIG_OUTDIR}/*.java
    ${OS_EXTRA_SOURCE_FILES}
    org/sikuli/script/AppearEvent.java
    org/sikuli/script/CapturePrompt.java
@@ -49,7 +50,6 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/Animator.java
    org/sikuli/script/TransparentWindow.java
    org/sikuli/script/ExtensionManager.java
-   ${CMAKE_SWIG_OUTDIR}/*.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes

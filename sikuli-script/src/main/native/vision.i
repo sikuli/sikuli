@@ -14,6 +14,11 @@
 
 %template(FindResults) std::vector<FindResult>;
 
+%template(OCRChars) std::vector<OCRChar>;
+%template(OCRWords) std::vector<OCRWord>;
+%template(OCRLines) std::vector<OCRLine>;
+%template(OCRParagraphs) std::vector<OCRParagraph>;
+
 %typemap(jni) unsigned char*        "jbyteArray"
 %typemap(jtype) unsigned char*      "byte[]"
 %typemap(jstype) unsigned char*     "byte[]"
@@ -46,82 +51,148 @@ struct FindResult {
    int w, h;
    double score;
    FindResult(){
-      x=0;y=0;w=0;h=0;score=-1;
+      x=0;y=0;w=0;h=0;score=-1;text = "";
    }
    FindResult(int _x, int _y, int _w, int _h, double _score){
       x = _x; y = _y;
       w = _w; h = _h;
       score = _score;
+      text = "";
    }
+   
+   std::string text;
+};
+
+class OCRRect {
+   
+public:
+   
+   OCRRect();
+   OCRRect(int x_, int y_, int width_, int height_);
+   
+   int x;
+   int y;
+   int height;
+   int width;
+   
+};
+
+class OCRChar : public OCRRect{
+   
+public:
+   
+   OCRChar(char ch_, int x_, int y_, int width_, int height_)
+   : ch(ch_), OCRRect(x_,y_,width_,height_){};
+   
+   char ch;
+};
+
+class OCRWord : public OCRRect {
+   
+public:
+   std::string getString();
+   
+   std::vector<OCRChar> getChars();
+};
+
+class OCRLine : public OCRRect{
+public:
+   
+   std::string getString();
+   std::vector<OCRWord> getWords();
+   
+};
+
+class OCRParagraph : public OCRRect{
+public:  
+   
+   std::vector<OCRLine> getLines();
+   
+};
+
+class OCRText : public OCRRect{
+   
+public:   
+   
+   std::string getString();
+   
+   std::vector<OCRWord> getWords();
+   std::vector<OCRParagraph> getParagraphs();
+   
+};
+
+%include "enumtypeunsafe.swg"
+%javaconst(1);
+enum TARGET_TYPE{
+   IMAGE,
+   TEXT,
+   BUTTON
 };
 
 namespace sikuli {
-
-
+   
    class FindInput{
-
+      
    public:
-
+      
       FindInput();
       FindInput(cv::Mat source, cv::Mat target);
-      FindInput(cv::Mat source, const char* target, bool text = false);
-      FindInput(const char* source_filename, const char* target, bool text = false);
-
+      FindInput(cv::Mat source, int target_type, const char* target);
+      
+      FindInput(const char* source_filename, int target_type, const char* target);
+      
+      FindInput(cv::Mat source, int target_type);
+      FindInput(const char* source_filename, int target_type);
+      
+      // copy everything in 'other' except for the source image
+      FindInput(cv::Mat source, const FindInput other);
+      
       void setSource(const char* source_filename);
-      void setTarget(const char* target_string, bool text = false);
+      void setTarget(int target_type, const char* target_string);
+      
       void setSource(cv::Mat source);
       void setTarget(cv::Mat target);
+      
       cv::Mat getSourceMat();
       cv::Mat getTargetMat();
-
+      
       void setFindAll(bool all);
       bool isFindingAll();
-
-      void setFindText(bool text);
-      bool isFindingText();
-
+      
       void setLimit(int limit);
       int getLimit();
-
+      
       void setSimilarity(double similarity);
       double getSimilarity();
-
+      
+      int getTargetType();
+      
       std::string getTargetText();
-
-   private:
-
-      void init(cv::Mat source_, const char* target_string, bool text);
-      void init();
-
-
-      cv::Mat source;
-      cv::Mat target;
-      std::string targetText;
-
-      int limit;
-      double similarity;
-
-      int ordering;
-      int position;
-
-      bool bFindingAll;
-      bool bFindingText;
    };
-
-
+   
    class Vision{
    public:
-
+      
       static std::vector<FindResult> find(FindInput q);
-
+      
       static double compare(cv::Mat m1, cv::Mat m2);
-
+      
       static void initOCR(const char* ocrDataPath);
-
+      
+      static std::string query(const char* index_filename, cv::Mat image);
+      
+      
+      static OCRText recognize_as_ocrtext(cv::Mat image);
+      
       static std::string recognize(cv::Mat image);
-
+      
+      //helper functions
       static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
+      
+   private:   
+      
    };
+   
 
    enum DebugCategories {
       OCR, FINDER

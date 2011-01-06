@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 
+import org.sikuli.script.natives.FindResult;
+
 public class Match extends Region implements Comparable {
    double score;
 

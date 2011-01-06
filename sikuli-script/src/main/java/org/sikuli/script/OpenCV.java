@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.color.*;
 
+import org.sikuli.script.natives.Mat;
+import org.sikuli.script.natives.Vision;
+
 public class OpenCV {
    public static BufferedImage createBufferedImage(int w, int h)
    {

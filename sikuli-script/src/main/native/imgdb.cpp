@@ -9,10 +9,6 @@
 
 #include "imgdb.h"
 
-#ifdef WIN32
-typedef short int int32_t;
-#endif
-
 void
 ImageRecord::write(ostream& output_stream){   
    output_stream.write((char *) this, sizeof(class ImageRecord));
@@ -27,14 +23,12 @@ Database::Database(){
 }
 
 
-
 vector<ImageRecord> 
-Database::find(const char* filename){
-   
+Database::find(Mat image){
    vector<ImageRecord> top_matches;
    vector<ImageRecord> records;
    
-   records = create_image_records_from_imagefile(filename);   
+   records = create_image_records_from_image(image);   
    
    for (vector<ImageRecord>::iterator r = records.begin();
         r != records.end(); ++r){
@@ -53,6 +47,12 @@ Database::find(const char* filename){
    
    return top_matches;
    
+}
+
+vector<ImageRecord> 
+Database::find(const char* filename){
+   Mat image = imread(filename, 1);
+   return find(image);
 }
 
 void
@@ -117,10 +117,10 @@ Database::insert_file(const char* filename, int screenshot_id){
    
    
    char buf[200];
-   sprintf(buf,"%s.ui.txt",filename);
-   std::ofstream fout(buf);
+//   sprintf(buf,"%s.ui",filename);
+//   std::ofstream fout(buf);
    
-   sprintf(buf,"%s.ui.loc",filename);
+   sprintf(buf,"%s.ui",filename);
    std::ofstream fout_loc(buf);
    
    vector<Blob> text_blobs, image_blobs;
@@ -161,7 +161,7 @@ Database::insert_file(const char* filename, int screenshot_id){
          r.id = matches[0].id;
       }
       
-      fout << "ui" << r.id << " ";
+      //fout << "ui" << r.id << " ";
       
       
       
@@ -170,21 +170,26 @@ Database::insert_file(const char* filename, int screenshot_id){
       fout_loc << endl;
    }
    
-   fout << endl;
-   fout.close();
+   //fout << endl;
+   //fout.close();
    fout_loc.close();
 } 
+
+vector<ImageRecord>
+Database::create_image_records_from_image(Mat image){
+   vector<Blob> text_blobs;
+   vector<Blob> image_blobs;
+   
+   cvgui::segmentScreenshot(image, text_blobs, image_blobs);     
+   return create_image_records_from_blobs(image, image_blobs);
+}
+
 
 
 vector<ImageRecord>
 Database::create_image_records_from_imagefile(const char* filename){
-   vector<Blob> text_blobs;
-   vector<Blob> image_blobs;
-   
    Mat image = imread(filename, 1);
-   cvgui::segmentScreenshot(image, text_blobs, image_blobs);  
-   
-   return create_image_records_from_blobs(image, image_blobs);
+   return create_image_records_from_image(image);
 }
 
 
