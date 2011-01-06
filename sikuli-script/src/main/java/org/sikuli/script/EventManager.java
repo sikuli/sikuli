@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.AWTException;
 
+import org.sikuli.script.natives.FindInput;
+import org.sikuli.script.natives.FindResult;
+import org.sikuli.script.natives.FindResults;
+import org.sikuli.script.natives.Mat;
+import org.sikuli.script.natives.Vision;
+
 public class EventManager {
    protected enum State {
       UNKNOWN, APPEARED, VANISHED

@@ -96,7 +96,7 @@ two-part guided tour.
 
 .. sikulicode::
 
-	from sikuliext.guide import *
+	from guide import *
 	addText("links.png","Use these to jump to other parts")
 	nextStep("Part 1: Navigation Links")
 	addText("sikuli-logo.png","Use this to go back to Home")

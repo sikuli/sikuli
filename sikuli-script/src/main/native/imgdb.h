@@ -57,7 +57,7 @@ public:
    // File is broken into components, return the top match
    // of each component
    vector<ImageRecord> find(const char* filename);
-   
+   vector<ImageRecord> find(Mat image);   
    
    void insert_file(const char* filename, int screenshot_id);   
    
@@ -71,6 +71,7 @@ private:
    
    vector<ImageRecord> create_image_records_from_blobs(const Mat& src, const vector<Blob> image_blobs);
    vector<ImageRecord> create_image_records_from_imagefile(const char* imagefile);
+   vector<ImageRecord> create_image_records_from_image(Mat image);   
    
 };
 

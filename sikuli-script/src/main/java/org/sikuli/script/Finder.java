@@ -5,6 +5,14 @@ import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+
+import org.sikuli.script.natives.FindInput;
+import org.sikuli.script.natives.FindResult;
+import org.sikuli.script.natives.FindResults;
+import org.sikuli.script.natives.Mat;
+import org.sikuli.script.natives.TARGET_TYPE;
+import org.sikuli.script.natives.Vision;
+
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 public class Finder implements Iterator<Match>{
@@ -67,7 +75,7 @@ public class Finder implements Iterator<Match>{
    protected <PSC> void setFindInput(PSC ptn) throws IOException{
       if( ptn instanceof Pattern ){
          _pattern = (Pattern)ptn;
-         _findInput.setTarget(findImageFile(_pattern.imgURL));
+         _findInput.setTarget(TARGET_TYPE.IMAGE,findImageFile(_pattern.imgURL));
          _findInput.setSimilarity(_pattern.similarity);
       }
       else if( ptn instanceof String){
@@ -80,13 +88,13 @@ public class Finder implements Iterator<Match>{
       try{
          //assume it's a file first
          String filename = findImageFile(target);
-         fin.setTarget(filename, false);
+         fin.setTarget(TARGET_TYPE.IMAGE, filename);
       }
       catch(IOException e){
          // this will init text recognizer on demand
          TextRecognizer tr = TextRecognizer.getInstance();
          //assume it's text 
-         fin.setTarget(target, true);
+         fin.setTarget(TARGET_TYPE.TEXT, target);
       }
    }
 
