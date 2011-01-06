@@ -125,18 +125,18 @@ Controlling Sikuli Scripts and their Behavior
 	.. py:attribute:: MoveMouseDelay
 
 	Control the time taken for mouse movement to a target location by setting this
-	value to a decimal value (default 1.0). The unit is in seconds.  Setting it to
+	value to a decimal value (default 0.5). The unit is seconds.  Setting it to
 	0 will switch off any animation (the mouse will "jump" to the target location). 
 
 	As a standard behavior the time to move the mouse pointer from the current
-	location to the target location given by mouse actions is 1.0 second. During
+	location to the target location given by mouse actions is 0.5 seconds. During
 	this time, the mouse pointer is moved continuosly with decreasing speed to the
 	target point. An additional benefit of this behavior is, that it gives the
 	active application some time to react on the previous mouse action, since the
 	e.g. click is simulated at the end of the mouse movement::
 
 		mmd = Settings.MoveMouseDelay # save default/actual value
-		click(image1) # implicitly wait 1 second before click
+		click(image1) # implicitly wait 0.5 seconds before click
 		Settings.MoveMouseDelay = 3
 		click(image2) # give app 3 seconds time before clicking again
 		Settings.MoveMouseDelay = mmd # reset to original value
