@@ -512,6 +512,8 @@ place) by setting
 **PS**: means, that either a Pattern or a String (path to an image file or just
 plain text) can be used as parameter.
 
+.. _ObserveHandler:
+
 **handler**: as a parameter in the following methods, you have to specify the *name*
 of a function, which will be called by the observer, in case the observed event
 happens. The function itself has to be defined in your script before using the
@@ -520,13 +522,15 @@ checked before starting the script. So to get your script running, you have to
 have at least the following statements in your script::
 
 	def myHandler(event): # you can choose any valid function name
-		# event: can be any variable name, it references the event object
+		# event: can be any variable name, it references the SikuliEvent object
 		pass # add your statements here
 
 	onAppear("path-to-an-image-file", myHandler) # or any other onEvent()
 	observe(10) # observes for 10 seconds
+	
+Read :py:class:`SikuliEvent` to know what is contained in a SikuliEvent object
 
-Normally all the region methods are used as ``reg.onAppear(PS)``, where ``reg`` is a
+**Note on performance**: Normally all the region methods are used as ``reg.onAppear(PS)``, where ``reg`` is a
 region object. If written as ``onAppear(PS)`` it operates on the default screen being the implicit
 region in this case. Using ``region.onEvent()`` instead will restrict the search to the
 region's rectangle and speed up processing, if region is significantly smaller
@@ -571,16 +575,20 @@ string containing the file name (path to an image file).
 
 	.. py:method:: onChange([minChangedSize], handler)
 
-		:param minChangedSize: the minimum size in pixels of a change to trigger a change event
+		:param minChangedSize: the minimum size in pixels of a change to trigger a change event.
+			If omitted: 50 is used (see :py:attr:`Settings.ObserveMinChangedPixels`).
 		:param handler: the name of a handler function in the script
 		
+		.. versionadded:: X1.0-rc2
+			**minChangedSize**
+
 		With the given region you register an observer, that should wait for
 		the visual content of the given region to change and is activated with
 		the next call of ``observe()``. In the moment the visual content changes
 		during observation, your handler is called and the observation is
 		paused until you return from your handler.
 
-		Here is a example that highlight all changes in an observing region.
+		Here is a example that highlights all changes in an observed region.
 		::
 
 			def changed(event):
@@ -591,14 +599,15 @@ string containing the file name (path to an image file).
 				for ch in event.changes:
 					ch.highlight() # turn off the highlights
 			with selectRegion("select a region to observe") as r:
-			    onChange(50, changed) # any changes in r larger than 50 pixels would trigger the changed function
+			    # any change in r larger than 50 pixels would trigger the changed function
+			    onChange(50, changed) 
 			    observe(background=True)
 
 			wait(30) # another way to observe for 30 seconds
 			r.stopObserver()
 
 
-   .. py:method:: observe([seconds], [background = False | True])
+	.. py:method:: observe([seconds], [background = False | True])
 
 		Begin observation within the region.
 
@@ -641,6 +650,17 @@ string containing the file name (path to an image file).
 .. versionadded:: X1.0-rc2
 .. py:class:: SikuliEvent
 
+   When processing an :ref:`observation in a region <ObservingVisualEventsinaRegion>`, 
+   a :ref:`handler function is called <ObserveHandler>`, when one of your 
+   registered events :py:meth:`Region.onAppear`, :py:meth:`Region.onVanish` or :py:meth:`Region.onChange` happen.
+   
+   The one parameter, you have access to in your handler function is an instance
+   of *Class SikuliEvent*. You have access to the following attributes of the event, 
+   that might help to identify the cause of the event and act on the resulting matches.
+   
+   *Usage:* ``event.attribute`` 
+      where ``event`` is the parameter from the definition of your handler function: ``def myHandler(event):``
+
    .. py:attribute:: type
 
    The :py:attr:`type` of this event can be 
@@ -649,8 +669,8 @@ string containing the file name (path to an image file).
 
    .. py:attribute:: pattern
 
-   The source pattern that triggers this event. This's only valid
-   in appear and vanish events.
+   The source pattern that triggered this event. This is only valid
+   in APPEAR and VANISH events.
 
    .. py:attribute:: region
 
@@ -658,20 +678,20 @@ string containing the file name (path to an image file).
 
    .. py:attribute:: match
 
-   In an appear event, *match* saves the top :py:class:`Match` object
-   that appears in the observed region.
+   In an APPEAR event, *match* saves the top :py:class:`Match` object
+   that appeared in the observed region.
 
-   In a vanish event, *match* saves the *last* :py:class:`Match` object
-   that was in the observed region but vanishes.
+   In a VANISH event, *match* saves the *last* :py:class:`Match` object
+   that was in the observed region but vanished.
 
-   This attribute is not valid in a change event.
+   This attribute is not valid in a CHANGE event.
 
    .. py:attribute:: changes
 
-   This attribute is valid only in a change event.
+   This attribute is valid only in a CHANGE event.
 
    This *changes* attribute is a list of :py:class:`Match` objects that
-   change and their sizes are at least :py:meth:`minChangedSize <Region.onChange>` pixels.
+   changed and their sizes are at least :py:meth:`minChangedSize <Region.onChange>` pixels.
 
 
 .. _ActingonaRegion:

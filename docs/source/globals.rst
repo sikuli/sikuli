@@ -200,6 +200,13 @@ Controlling Sikuli Scripts and their Behavior
 		# since your script does not wait here, you 
 		# might want to stop the observing later on ;-)
 
+.. versionadded:: X1.0-rc2		
+.. py:attribute:: Settings.ObserveMinChangedPixels
+
+	 The minimum size in pixels of a change to trigger a change event when using :py:meth:`Region.onChange` without specifying this value.
+	 The default value is 50.
+
+
 Controlling Applications and their Windows
 ------------------------------------------
 
