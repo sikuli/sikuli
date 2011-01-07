@@ -160,7 +160,27 @@ public class Region {
       return new Location(x+w/2, y+h/2);
    }
 
+   public Location getTopLeft(){ 
+      return new Location(x, y);
+   }
+
+   public Location getTopRight(){ 
+      return new Location(x+w, y);
+   }
+
+   public Location getBottomLeft(){ 
+      return new Location(x, y+h);
+   }
+
+   public Location getBottomRight(){ 
+      return new Location(x+w, y+h);
+   }
+
    ///// SPATIAL OPERATORS
+
+   public Region offset(Location loc){
+      return new Region(x+loc.x, y+loc.y, w, h);
+   }
 
    public Region nearby(){
       final int PADDING = 50;
