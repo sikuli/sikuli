@@ -710,7 +710,7 @@ public class Region {
    }
 
 
-   private <PSRML> Location getLocationFromPSRML(PSRML target) 
+   public <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
          Match m = find(target);
