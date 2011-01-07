@@ -161,6 +161,7 @@ public class Region {
    }
 
    ///// SPATIAL OPERATORS
+
    public Region nearby(){
       final int PADDING = 50;
       return nearby(PADDING);
@@ -650,6 +651,20 @@ public class Region {
          throw new FindFailed(target + " can't be found.");
       return null;
    }
+
+   public <PSRM> Region getRegionFromPSRM(PSRM target) 
+                                             throws  FindFailed {
+      if(target instanceof Pattern || target instanceof String){
+         Match m = find(target);
+         if(m!=null)
+            return m;
+         return null;
+      }
+      if(target instanceof Region)
+         return (Region)target;
+      return null;
+   }
+
 
    private <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {
