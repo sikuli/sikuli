@@ -95,6 +95,13 @@ public class Region {
       }
    }
 
+   protected void updateSelf(){
+      if(_overlay != null)
+         _overlay.highlight(this);
+   }
+
+   ////////////////////////////////////////////////////////
+
    public Screen getScreen(){ return _scr;   }
 
    public int getX(){ return x; }
@@ -117,6 +124,7 @@ public class Region {
       w = roi.w;
       h = roi.h;
    }
+
    public void setROI(Rectangle roi){
       x = (int)roi.getX();
       y = (int)roi.getY();
@@ -180,6 +188,22 @@ public class Region {
 
    public Region offset(Location loc){
       return new Region(x+loc.x, y+loc.y, w, h);
+   }
+
+   public Region moveTo(Location loc){
+      x = loc.x;
+      y = loc.y;
+      updateSelf();
+      return this;
+   }
+
+   public Region morphTo(Region r){
+      x = r.x;
+      y = r.y;
+      w = r.w;
+      h = r.h;
+      updateSelf();
+      return this;
    }
 
    public Region nearby(){
