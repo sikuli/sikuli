@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 
 public class Region {
@@ -15,6 +17,22 @@ public class Region {
    private ScreenHighlighter _overlay = null;
 
    public int x, y, w, h;
+   
+   
+   public enum FindFailedResponse{
+      ABORT,
+      PROMPT,
+      SKIP,
+      RETRY
+   };
+   
+   FindFailedResponse _defaultFindFailedResponse = FindFailedResponse.ABORT;
+   public void setDefaultFindFailedResponse(FindFailedResponse res){
+      _defaultFindFailedResponse = res;
+   }
+   public FindFailedResponse getDefaultFindFailedResponse(){
+      return _defaultFindFailedResponse;
+   }
 
    protected boolean _throwException = true;
    protected double _autoWaitTimeout = 3.0;
@@ -261,13 +279,21 @@ public class Region {
    }
 
    //////////// Settings
-   public void setThrowException(boolean flag){ _throwException = flag; } 
+   public void setThrowException(boolean flag){ 
+      _throwException = flag; 
+      if (_throwException){
+         _defaultFindFailedResponse = FindFailedResponse.ABORT;
+      }
+   } 
+   
    public void setAutoWaitTimeout(double sec){ _autoWaitTimeout = sec; }
 
    public boolean getThrowException(){ return _throwException; }
    public double getAutoWaitTimeout(){ return _autoWaitTimeout; }
 
 
+
+   
    //////////// CORE FUNCTIONS
 
    /**
@@ -275,14 +301,43 @@ public class Region {
     * finds the given pattern on the screen and returns the best match.
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
-   public <PSC> Match find(PSC ptn) throws FindFailed{
-      if(_autoWaitTimeout > 0)
-         return wait(ptn, _autoWaitTimeout);
-      else{
-         _lastMatch = findNow(ptn);
-         if(_lastMatch == null && _throwException)
-            throw new FindFailed(ptn + " can't be found.");
-         return _lastMatch;
+   public <PSC> Match find(PSC target) throws FindFailed{
+      
+      while (true){
+      
+         if(_autoWaitTimeout > 0){
+            try {
+               return wait(target, _autoWaitTimeout);
+            }catch(FindFailed ff){
+               
+            }
+         }
+         else{
+            _lastMatch = findNow(target);
+            if (_lastMatch != null)
+               return _lastMatch;
+         }
+         
+         // find failed
+         
+         FindFailedResponse response;
+         if (_defaultFindFailedResponse == FindFailedResponse.PROMPT){
+            FindFailedDialog fd = new FindFailedDialog(null, target);
+            fd.setVisible(true);
+            response = fd.getResponse();
+         }else{
+            response = _defaultFindFailedResponse;
+         }
+
+
+         if (response == FindFailedResponse.SKIP){
+            return null;
+         }else if (response == FindFailedResponse.RETRY){
+            continue;
+         }else if (response == FindFailedResponse.ABORT){
+            throw new FindFailed("can not find " + target);
+         }
+
       }
    }
 
@@ -298,13 +353,11 @@ public class Region {
       }
       else{
          _lastMatches = findAllNow(ptn);
-         if(_lastMatches == null && _throwException)
-            throw new FindFailed(ptn + " can't be found.");
+         if(_lastMatches == null)
+            return onFindAllFailed(ptn);
       }
       return _lastMatches;
    }
-
-
 
    public <PSC> Match wait(PSC target) throws FindFailed{
       return wait(target, _autoWaitTimeout);
@@ -330,9 +383,7 @@ public class Region {
          else
             _robot.delay(10);
       }while( begin_t + timeout*1000 > (new Date()).getTime() );
-      if(_throwException)
-         throw new FindFailed(target + " can't be found.");
-      return null;
+      return onFindFailed(target);
    }
 
    public <PSC> Match exists(PSC target) {
@@ -691,10 +742,53 @@ public class Region {
          else
             _robot.delay(10);
       }while( begin_t + timeout*1000 > (new Date()).getTime() );
-      if(_throwException)
-         throw new FindFailed(target + " can't be found.");
-      return null;
+      
+      return onFindAllFailed(target);
    }
+   
+   <PSC> Iterator<Match> onFindAllFailed(PSC target) throws FindFailed{
+      if (_throwException)
+         throw new FindFailed(target + " can't be found.");
+      else
+         return null;
+   }
+   
+   <PSC> Match onFindFailed(PSC target) throws FindFailed{
+//      Object[] options = {"Skip","Retry","Abort"};
+//      int n = JOptionPane.showOptionDialog(null,
+//               "Find faied",
+//               "Sikuli",
+//                  JOptionPane.YES_NO_CANCEL_OPTION,
+//                  JOptionPane.QUESTION_MESSAGE,
+//                  null,
+//                  options,
+//                  options[2]);
+//                  
+//      
+//      
+//      
+      if (_throwException)
+         throw new FindFailed(target + " can't be found.");
+      else
+         return null;
+   }
+ 
+   
+//   <PSC> boolean findInteractive(PSC target, double timeout){
+//      
+//      while (true){
+//         
+//         if (timeout > 0){
+//            
+//            Match m = findNow(target);
+//            if (m != null){
+//               return true;
+//            }
+//         }
+//      }
+//      
+//      return true;
+//   }
 
    public <PSRM> Region getRegionFromPSRM(PSRM target) 
                                              throws  FindFailed {
@@ -709,6 +803,9 @@ public class Region {
       return null;
    }
 
+   
+   
+   
 
    public <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {
