@@ -299,34 +299,23 @@ public class Region {
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
    public <PSC> Match find(final PSC target) throws FindFailed{
-      
+      if(_autoWaitTimeout > 0){
+         return wait(target, _autoWaitTimeout);
+      }
       while (true){
-         
          Match match = null;
          try{
-            
-            if(_autoWaitTimeout > 0){
-               RepeatableFind rf = new RepeatableFind(target);
-               rf.repeat(_autoWaitTimeout);
-               match = rf.getMatch();
-            }
-            else{
-               match = doFind(target);
-            }
-            
+            match = doFind(target);
          }catch (Exception e){
             throw new FindFailed(e.getMessage());
          }
-        
          
          if (match != null){
             _lastMatch = match;
             return _lastMatch;
          }       
          
-         if (handleFindFailed(target))
-            continue;
-         else
+         if (!handleFindFailed(target))
             return null;
       }
    }
@@ -338,9 +327,6 @@ public class Region {
      
       FindFailedResponse response;
       if (_defaultFindFailedResponse == FindFailedResponse.PROMPT){
-         JFrame w = new JFrame();
-         JWindow f = new JWindow(w);
-
          FindFailedDialog fd = new FindFailedDialog(target);
          fd.setVisible(true);
          response = fd.getResponse();
@@ -392,9 +378,7 @@ public class Region {
             return _lastMatches;
          }       
          
-         if (handleFindFailed(target))
-            continue;
-         else
+         if (!handleFindFailed(target))
             return null;
       }     
    }
@@ -529,7 +513,8 @@ public class Region {
 
          Debug.log("" + target + " has not appeared.");
          
-         handleFindFailed(target);
+         if (!handleFindFailed(target))
+            return null;
       }
       
       return _lastMatch;
@@ -903,6 +888,7 @@ public class Region {
     *  Iterator<Match> waitAll(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
+   @Deprecated
    public <PSC> Iterator<Match> waitAll(PSC target, double timeout) 
                                              throws  FindFailed{
       
@@ -920,7 +906,8 @@ public class Region {
          if (_lastMatches != null)
             break;
          
-         handleFindFailed(target);
+         if (!handleFindFailed(target))
+            return null;
       }
       
       return _lastMatches;
