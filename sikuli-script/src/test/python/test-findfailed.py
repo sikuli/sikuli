@@ -3,17 +3,17 @@ from sikuli import *
 popup("Please press skip")
 SCREEN.setDefaultFindFailedResponse(FindFailedResponse.PROMPT)
 SCREEN.setAutoWaitTimeout(0)
-find("test-res/google.png")
+assert find("test-res/google.png") == None
 
+
+#should skip
+SCREEN.setDefaultFindFailedResponse(FindFailedResponse.SKIP)
+assert wait("test-res/google.png", 2) == None
+
+#should skip
+SCREEN.setDefaultFindFailedResponse(FindFailedResponse.SKIP)
 assert find("test-res/apple.png") != None
-
-#should skip
-SCREEN.setDefaultFindFailedResponse(FindFailedResponse.SKIP)
-wait("test-res/google.png", 2)
-
-#should skip
-SCREEN.setDefaultFindFailedResponse(FindFailedResponse.SKIP)
-waitVanish("test-res/apple.png")
+assert waitVanish("test-res/apple.png", 2) == False
 
 #should throw exception
 SCREEN.setDefaultFindFailedResponse(FindFailedResponse.ABORT)

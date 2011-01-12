@@ -387,107 +387,6 @@ public class Region {
       return wait(target, _autoWaitTimeout);
    }
    
-   abstract class Repeatable{
-
-      abstract void run() throws Exception;
-      abstract boolean ifSuccessful();
-      
-      // return TRUE if successful before timeout
-      // return FALSE if otherwise
-      // throws Exception if any unexpected error occurs
-      boolean repeat(double timeout) throws Exception{
-
-         int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
-         long begin_t = (new Date()).getTime();
-         do{
-            long before_find = (new Date()).getTime();
-            
-            run();
-            if (ifSuccessful())
-               return true;
-
-            long after_find = (new Date()).getTime();
-            if(after_find-before_find<MaxTimePerScan)
-               _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
-            else
-               _robot.delay(10);
-         }while( begin_t + timeout*1000 > (new Date()).getTime() );
-
-         return false;
-      }
-   }
-   
-   class RepeatableFind extends Repeatable{
-      
-      Object _target;
-      Match _match = null;
-      public <PSC> RepeatableFind(PSC target){
-         _target = target;
-      }
-      
-      public Match getMatch() {
-         return _match;
-      }
-
-      @Override
-      public void run() throws IOException{
-         _match = doFind(_target);
-      }
-
-       @Override
-      boolean ifSuccessful() {
-         return _match != null;
-      }
-
-   };    
-   
-   class RepeatableFindAll extends Repeatable{
-      
-      Object _target;
-      Iterator<Match> _matches = null;
-      public <PSC> RepeatableFindAll(PSC target){
-         _target = target;
-      }
-      
-      public Iterator<Match> getMatches() {
-         return _matches;
-      }
-
-      @Override
-      public void run() throws IOException{
-         _matches = doFindAll(_target);
-      }
-
-       @Override
-      boolean ifSuccessful() {
-         return _matches != null;
-      }
-
-   }; 
-   
-   class RepeatableVanish extends Repeatable{
-      
-      Object _target;
-      Match _match = null;
-      public <PSC> RepeatableVanish(PSC target){
-         _target = target;
-      }
-      
-      public Match getMatch() {
-         return _match;
-      }
-
-      @Override
-      public void run() throws IOException{
-         _match = doFind(_target);
-      }
-
-       @Override
-      boolean ifSuccessful() {
-         return _match == null;
-      }
-
-   };    
 
    /**
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
@@ -1184,6 +1083,96 @@ public class Region {
             throw new IllegalArgumentException("Cannot type character " + character);
       }
    }
+
+   abstract class Repeatable{
+
+      abstract void run() throws Exception;
+      abstract boolean ifSuccessful();
+      
+      // return TRUE if successful before timeout
+      // return FALSE if otherwise
+      // throws Exception if any unexpected error occurs
+      boolean repeat(double timeout) throws Exception{
+
+         int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+         long begin_t = (new Date()).getTime();
+         do{
+            long before_find = (new Date()).getTime();
+            
+            run();
+            if (ifSuccessful())
+               return true;
+
+            long after_find = (new Date()).getTime();
+            if(after_find-before_find<MaxTimePerScan)
+               _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+            else
+               _robot.delay(10);
+         }while( begin_t + timeout*1000 > (new Date()).getTime() );
+
+         return false;
+      }
+   }
+   
+   class RepeatableFind extends Repeatable{
+      
+      Object _target;
+      Match _match = null;
+      public <PSC> RepeatableFind(PSC target){
+         _target = target;
+      }
+      
+      public Match getMatch() {
+         return _match;
+      }
+
+      @Override
+      public void run() throws IOException{
+         _match = doFind(_target);
+      }
+
+       @Override
+      boolean ifSuccessful() {
+         return _match != null;
+      }
+
+   }   
+
+   class RepeatableVanish extends RepeatableFind{
+      public <PSC> RepeatableVanish(PSC target){
+         super(target);
+      }
+      
+      @Override
+      boolean ifSuccessful() {
+         return _match == null;
+      }
+   }
+   
+   class RepeatableFindAll extends Repeatable{
+      
+      Object _target;
+      Iterator<Match> _matches = null;
+      public <PSC> RepeatableFindAll(PSC target){
+         _target = target;
+      }
+      
+      public Iterator<Match> getMatches() {
+         return _matches;
+      }
+
+      @Override
+      public void run() throws IOException{
+         _matches = doFindAll(_target);
+      }
+
+       @Override
+      boolean ifSuccessful() {
+         return _matches != null;
+      }
+
+   }
+   
 
 }
 
