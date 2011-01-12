@@ -286,6 +286,8 @@ public class Region {
       _throwException = flag; 
       if (_throwException){
          _defaultFindFailedResponse = FindFailedResponse.ABORT;
+      }else{
+         _defaultFindFailedResponse = FindFailedResponse.SKIP;         
       }
    } 
    
@@ -932,13 +934,6 @@ public class Region {
       return _lastMatches;
    }
    
-   <PSC> Iterator<Match> onFindAllFailed(PSC target) throws FindFailed{
-      if (_throwException)
-         throw new FindFailed(target + " can't be found.");
-      else
-         return null;
-   }
-
    public <PSRM> Region getRegionFromPSRM(PSRM target) 
                                              throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
@@ -951,10 +946,6 @@ public class Region {
          return (Region)target;
       return null;
    }
-
-   
-   
-   
 
    public <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {

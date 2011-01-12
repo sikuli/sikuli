@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import org.sikuli.script.TransparentWindow;
 
 
-class SingleButtonMessageBox extends TransparentWindow {
+public class SingleButtonMessageBox extends TransparentWindow {
 
    String message;
    Object owner;
