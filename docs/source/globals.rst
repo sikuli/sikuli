@@ -88,9 +88,9 @@ one directory. This directory can be moved around with no changes and even
 distributed as a zipped file::
 
 	# works on all platforms
-	p = getBundlePath()
-	slash = "\\" if Env.getOS() == OS.WINDOWS else "/"
-	myPath = p.rpartition(slash)[0] # gets the directory containing your running .sikuli
+	import os
+	# get the directory containing your running .sikuli
+	myPath = os.path.dirname(getBundlePath()) 
 	if not myPath in sys.path: sys.path.append(myPath)
 
 	# now you can import every .sikuli in the same directory

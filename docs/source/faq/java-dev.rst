@@ -2,7 +2,9 @@
 How to use Sikuli Script in your JAVA programs
 ==============================================
 
-The core of Sikuli Script is written in Java, which means you can use Sikuli Script as a standard JAVA library in your program. This document lets you know how to do that.
+The core of Sikuli Script is written in Java, which means you can use Sikuli Script as a standard JAVA library in your program. This document lets you know how to do that. 
+
+After having installed Sikuli on your system, as recommended on the `download page <http://sikuli.org/download.shtml>`_, you have to do the following:
 
 1. Get sikuli-script.jar from your Sikuli IDE installation path.
 ----------------------------------------------------------------
@@ -11,12 +13,12 @@ Sikuli Script is packed in a JAR file - sikuli-script.jar. Depending on the oper
  * Windows, Linux: Sikuli-IDE/sikuli-script.jar
  * Mac OS X: Sikuli-IDE.app/Contents/Resources/Java/sikuli-script.jar
 
-2. Install OpenCV.
-------------------
-Sikuli Script uses OpenCV as its computer vision engine. On Windows, you can simply add the path Sikuli-IDE/tmplib to the environment variable PATH, and then Windows can automatically find OpenCV's DLLs in there. However, it's more complicated on Mac and Linux. Therefore, our suggestion is to install OpenCV by yourself.
-
- * Mac OS X: you can install OpenCV using `Darwin Ports <http://darwinports.com/>`_. Type "port install opencv" in Terminal.app once you have installed Darwin Ports.
- * Linux: OpenCV is often packed as a series of packages. For example, libcv4, libcvaux4, libhighgui4 on Ubuntu Linux.
+2. Make the native libraries available
+--------------------------------------
+Sikuli Script uses OpenCV as its computer vision engine and, depending on the system environment, needs some other native libraries. These libraries are packaged with the distribution (except Linux). 
+ * **Windows:** follow the instructions at `FAQ Using sikuli-script.jar standalone ... <https://answers.launchpad.net/sikuli/+faq/1436>`_.
+ * **Mac OS X:** follow the instructions at `FAQ Using sikuli-script.jar standalone ... <https://answers.launchpad.net/sikuli/+faq/1436>`_.
+ * **Linux:** no additional requirements, when Sikuli-IDE works as expected.
 
 3. Include sikuli-script.jar in the CLASSPATH of your Java project.
 ------------------------------------------------------------------- 
@@ -61,9 +63,9 @@ The program clicks on the spotlight icon on the screen, waits spotlight's input 
 	
 	}
 
-
 See also
 --------
+Be aware, that some method signatures differ from the Sikuli Script level.
  * `Javadoc of Sikuli Script <http://sikuli.org/doc/java-x/>`_.
  * :doc:`/sikuli-script-index`.
 
