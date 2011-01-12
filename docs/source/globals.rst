@@ -115,14 +115,14 @@ Controlling Sikuli Scripts and their Behavior
 
 .. py:class:: Settings
 
-	.. py:attribute:: MinSimilarity
+.. py:attribute:: Settings.MinSimilarity
 
 	The default minimum similiarty of find operations.
         While using a :py:meth:`Region.find` operation, 
         if only an image file is provided, Sikuli searches
         the region using a default minimum similarity of 0.7.
 
-	.. py:attribute:: MoveMouseDelay
+.. py:attribute:: Settings.MoveMouseDelay
 
 	Control the time taken for mouse movement to a target location by setting this
 	value to a decimal value (default 0.5). The unit is seconds.  Setting it to
@@ -141,8 +141,8 @@ Controlling Sikuli Scripts and their Behavior
 		click(image2) # give app 3 seconds time before clicking again
 		Settings.MoveMouseDelay = mmd # reset to original value
 
-	.. py:attribute:: DelayAfterDrag
-			DelayBeforeDrop
+.. py:attribute:: Settings.DelayAfterDrag
+			Settings.DelayBeforeDrop
 
 	*DelayAfterDrag* specifies the waiting time after mouse down at the source
 	location as a decimal value (seconds). 
@@ -169,13 +169,13 @@ Controlling Sikuli Scripts and their Behavior
 		# time for complete dragDrop: about 5 seconds + search times
 
 
-	.. py:attribute:: SlowMotionDelay
+.. py:attribute:: Settings.SlowMotionDelay
 
 	Control the duration of the visual effect (seconds).
 
 
-	.. py:attribute:: WaitScanRate
-			ObserveScanRate
+.. py:attribute:: Settings.WaitScanRate
+			Settings.ObserveScanRate
 
 	Specify the number of times actual search operations are performed per second
 	while waiting for a pattern to appear or vanish.
@@ -199,6 +199,13 @@ Controlling Sikuli Scripts and their Behavior
 		# the observer will look every 5 seconds
 		# since your script does not wait here, you 
 		# might want to stop the observing later on ;-)
+
+.. versionadded:: X1.0-rc2		
+.. py:attribute:: Settings.ObserveMinChangedPixels
+
+	 The minimum size in pixels of a change to trigger a change event when using :py:meth:`Region.onChange` without specifying this value.
+	 The default value is 50.
+
 
 Controlling Applications and their Windows
 ------------------------------------------
@@ -326,6 +333,8 @@ The Application Class
 Sikuli-X introduces the new class called :py:class:`App` to provide a more
 convenient and flexible way to control the application and its windows.
 
+:ref:`go directly to the methods <ClassAppMethods>`
+
 **Using class methods or instance methods**
 
 Generally you have the choice between using the class methods (e.g.
@@ -337,12 +346,15 @@ The only real difference is, that you might save some ressources, when using the
 instance approach, since using the class methods produces more intermediate
 objects. 
 
+.. _CreateAppInstance:
+
 **How to create an App instance**
 
 The basic choice is to just say ``someApp = App("some-app-identifier")`` and you
 have your app instance, that you can later on use together with its methods,
-without having to specify the string again. Additionally
-``App.open("some-app-identifier")`` and ``App.focus("some-app-identifier")``
+without having to specify the string again. 
+
+Additionally ``App.open("some-app-identifier")`` and ``App.focus("some-app-identifier")``
 return an app instance, that you might save in a variable to use it later on in
 your script. 
 
@@ -384,9 +396,13 @@ Note on Windows: when specifying a path in a string, you have to use \\ (double
 backslash) for each \ (backslash)
 e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 
-.. py:class:: App
+.. _ClassAppMethods:
 
+.. py:class:: App
+  
 	.. py:classmethod:: open(application)
+	
+		*Usage:* ``App.open(application)``
 
 		Open the specified application.
 
@@ -394,6 +410,8 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			be found in the path used by the system to locate applications, or the
 			full path to an application (Windows: use double backslash \\ in the
 			path string to represent a backslash)
+			
+		:return: an App object, that can be used with the instance methods.
 		
 		This method is functionally equivalent to :py:func:`openApp`. It opens the
 		specified application and brings its window the front. Whether this
@@ -402,22 +420,33 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 
 	.. py:method:: open()
 	
+		*Usage:* ``someApp.open()`` where App instance ``someApp`` was :ref:`created before <CreateAppInstance>`.
+	
 		Open this application.
 
+
 	.. py:classmethod:: focus(application)
+
+		*Usage:* ``App.focus(application)``
 
 		Switch the focus to an application.
 
 		:param application: The name of an application (case-insensitive) or (part
 			of) a window title (Windows/Linux).
 
+		:return: an App object, that can be used with the instance methods.
+		
 	.. py:method:: focus()
 	
+		*Usage:* ``someApp.focus()`` where App instance ``someApp`` was :ref:`created before <CreateAppInstance>`.
+
 		Switch the focus to this application.
 
 
 	.. py:classmethod:: close(application)
 	
+		*Usage:* ``App.close(application)``
+
 		Close the specified application.
 
 		:param application: The name of an application (case-insensitive) or (part
@@ -432,11 +461,16 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 
 	.. py:method:: close()
 
+		*Usage:* ``someApp.close()`` where App instance ``someApp`` was :ref:`created before <CreateAppInstance>`.
+
 		Close this application.
 
 	.. py:classmethod:: focusedWindow()
 
+		*Usage:* ``App.focusedWindow()``
+
 		Identify the currently focused or the frontmost window and switch to it.
+		Sikuli does not tell you, to which application this window belongs.
 
 		:return: a :py:class:`Region` object representing the window or *None* if
 			there is no such window.
@@ -460,6 +494,10 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			firstWindow.highlight(2)
 
 	.. py:method:: window([n])
+
+		*Usage 1:* ``App(application).window([n])`` an App instance is created on the fly.
+		
+		*Usage 2:* ``someApp.window([n])`` where App instance ``someApp`` was :ref:`created before <CreateAppInstance>`.
 
 		Get the region corresponding to the n-th window of this application (Mac) or
 		a series of windows with the matching title (Windows/Linux). 
@@ -598,7 +636,7 @@ General Settings and Access to Environment Information
 
 Sikuli internally uses the class :py:class:`Settings` to store globally used
 settings. Publicly available attributes may be accessed by using
-``Settings.[name-of-an-attribute]`` to get it's value and Settings.attribute = value
+``Settings.[name-of-an-attribute]`` to get it's value and ``Settings.attribute = value``
 to set it. It is highly recommended to only modify attributes, that are described in
 this document or when you really know, what you are doing.
 
@@ -721,7 +759,7 @@ below:
 
 **Other Environment Information**
 
-.. py:staticmethod:: Env.getOS()
+.. py:method:: Env.getOS()
 		Env.getOSVersion()
 		
 	Get the type ( ``getOS()`` ) and version ( ``getOSVersion()`` ) of the operating system your
@@ -744,7 +782,7 @@ below:
 		else:
 			print "Sorry, not a Mac"
 
-.. py:staticmethod:: Env.getClipboard()
+.. py:method:: Env.getClipboard()
 
 	Get the content of the clipboard if it is text, otherwise an empty string.
 

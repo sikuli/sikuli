@@ -11,6 +11,10 @@ public class Location extends Point{
       super(loc.x, loc.y);
    }
 
+   public Location negative(){
+      return new Location(-x, -y);
+   }
+
    public Location offset(int dx, int dy){
       return new Location(x+dx, y+dy);
    }

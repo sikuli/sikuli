@@ -24,3 +24,5 @@ sikuli-script/target/jar
 sikuli-script/target/lib
 sikuli-ide/target/linux/Sikuli-IDE/libs
 .bzrignore
+lib/Lib
+lib/cachedir

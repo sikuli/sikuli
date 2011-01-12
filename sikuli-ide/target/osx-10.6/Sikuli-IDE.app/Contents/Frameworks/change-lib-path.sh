@@ -4,6 +4,6 @@ do
    for ref in `otool -L $dylib | grep "lib.*.dylib[^:]" | awk '{print $1'} | grep ^[^/]`
    do
       #echo $ref
-      install_name_tool -change $ref @executable_path/../Frameworks/`basename $ref` $dylib
+      install_name_tool -change $ref @loader_path/`basename $ref` $dylib
    done
 done

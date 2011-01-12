@@ -95,6 +95,13 @@ public class Region {
       }
    }
 
+   protected void updateSelf(){
+      if(_overlay != null)
+         _overlay.highlight(this);
+   }
+
+   ////////////////////////////////////////////////////////
+
    public Screen getScreen(){ return _scr;   }
 
    public int getX(){ return x; }
@@ -117,6 +124,7 @@ public class Region {
       w = roi.w;
       h = roi.h;
    }
+
    public void setROI(Rectangle roi){
       x = (int)roi.getX();
       y = (int)roi.getY();
@@ -160,7 +168,44 @@ public class Region {
       return new Location(x+w/2, y+h/2);
    }
 
+   public Location getTopLeft(){ 
+      return new Location(x, y);
+   }
+
+   public Location getTopRight(){ 
+      return new Location(x+w, y);
+   }
+
+   public Location getBottomLeft(){ 
+      return new Location(x, y+h);
+   }
+
+   public Location getBottomRight(){ 
+      return new Location(x+w, y+h);
+   }
+
    ///// SPATIAL OPERATORS
+
+   public Region offset(Location loc){
+      return new Region(x+loc.x, y+loc.y, w, h);
+   }
+
+   public Region moveTo(Location loc){
+      x = loc.x;
+      y = loc.y;
+      updateSelf();
+      return this;
+   }
+
+   public Region morphTo(Region r){
+      x = r.x;
+      y = r.y;
+      w = r.w;
+      h = r.h;
+      updateSelf();
+      return this;
+   }
+
    public Region nearby(){
       final int PADDING = 50;
       return nearby(PADDING);
@@ -651,7 +696,21 @@ public class Region {
       return null;
    }
 
-   private <PSRML> Location getLocationFromPSRML(PSRML target) 
+   public <PSRM> Region getRegionFromPSRM(PSRM target) 
+                                             throws  FindFailed {
+      if(target instanceof Pattern || target instanceof String){
+         Match m = find(target);
+         if(m!=null)
+            return m;
+         return null;
+      }
+      if(target instanceof Region)
+         return (Region)target;
+      return null;
+   }
+
+
+   public <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
          Match m = find(target);

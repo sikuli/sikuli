@@ -6,16 +6,16 @@ s = UnionScreen()
 _sa = ScreenAnnotator(s);
 
 def addHighlight(target):
-	r = s.find(target)
+	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
 
 def addText(target, text):
-	r = s.find(target)
+	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
 	_sa.addText(text, Point(r.x, r.y+r.h+5))
 
 def addTooltip(target, text):
-	r = s.find(target)
+	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
 	_sa.addToolTip(text, Point(r.x, r.y+r.h+5))
 
