@@ -21,7 +21,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.sikuli.script.Region.FindFailedResponse;
 
 
 //TODO:

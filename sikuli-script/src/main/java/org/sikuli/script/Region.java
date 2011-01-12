@@ -21,14 +21,6 @@ public class Region {
 
    public int x, y, w, h;
    
-   
-   public enum FindFailedResponse{
-      ABORT,
-      PROMPT,
-      SKIP,
-      RETRY
-   };
-   
    FindFailedResponse _defaultFindFailedResponse = FindFailedResponse.ABORT;
    public void setDefaultFindFailedResponse(FindFailedResponse res){
       _defaultFindFailedResponse = res;
