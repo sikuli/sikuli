@@ -2,6 +2,7 @@
 
 SIKULI_DIR=$HOME/sikuli
 LIB_DIR=${SIKULI_DIR}/lib
+DEBUG_LEVEL=1
 
 JARS="
 ${LIB_DIR}/commons-cli-1.2.jar
@@ -21,6 +22,6 @@ CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-ide/resources"
 CLASSPATH="${CLASSPATH}:${LIB_DIR}/sikuli-script.jar"
 #CLASSPATH="${CLASSPATH}:${LIB_DIR}/jython-2.5.1.jar"
 
-JAVA_OPT="-Dsikuli.console=true -Xms64M -Xmx512M -Dfile.encoding=UTF-8"
+JAVA_OPT="-Dsikuli.console=false -Xms64M -Xmx512M -Dfile.encoding=UTF-8 -Dsikuli.Debug=${DEBUG_LEVEL}"
 
 java $JAVA_OPT -cp "$CLASSPATH" org.sikuli.ide.SikuliIDE "$@"
