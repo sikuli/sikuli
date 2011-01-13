@@ -16,18 +16,28 @@ Methods where key modifiers can be used include: :py:meth:`click() <Region.click
 :py:meth:`type() <Region.type>`.
 
 **the oldies but goldies**
-
-KEY_ALT, KEY_CTRL, KEY_SHIFT
+::
+	KEY_ALT, KEY_CTRL, KEY_SHIFT
 
 **system specific Win/Mac**
+::
+	KEY_WIN, KEY_CMD 
+	KEY_META (a synonym for KEY_WIN or KEY_CMD on Windows and Mac respectively).
+	
+The modifier constants can be combined to the modifier parameter by either using "+" or "|", if more than one key modifier is needed.
+::
+	type(Key.ESC, KEY_CTRL + KEY_ALT)
+	# or equivalent
+	type(Key.ESC, KEY_CTRL | KEY_ALT)
 
-KEY_WIN, KEY_CMD, KEY_META (a synonym for KEY_WIN or KEY_CMD on
-	Windows and Mac respectively).
+They should **only** be used in the
+modifiers parameter with functions like :py:meth:`type() <Region.type>`, :py:meth:`rightClick() <Region.rightClick>`, etc. 
 
-Note: These constants are mapped to the according constants of the Java environment
-in the class java.awt.event.InputEvent. They should only be used only as the
-modifiers parameter in functions like type(), click(), etc. 
-They should never be used with keyDown() and keyUp().
+They should **never** be used with :py:meth:`keyDown() <Region.keyDown>` or :py:meth:`keyUp() <Region.keyUp>`.
+
+*Note for Java programming*: These constants are mapped to the according constants of the Java environment
+in the class ``java.awt.event.InputEvent``. 
+
 
 Special Keys
 ------------
@@ -36,32 +46,39 @@ The methods supporting the use of special keys are :py:meth:`type() <Region.type
 :py:meth:`keyDown() <Region.keyDown>`, and :py:meth:`keyUp() <Region.keyUp>`.
 
 Usage: `Key.CONSTANT` (where CONSTANT is one of the following key names).
-Concatenation with strings with "+" can be used.
+
+String concatenation with with other text or other key constants is possible using "+".
+::
+	type("some text" + Key.TAB + "more text" + Key.TAB + Key.ENTER)
+	# or eqivalent
+	type("some text\tmore text\n")	
 
 **miscellanous keys**
-
-ENTER, TAB, ESC, BACKSPACE, DELETE, INSERT
+::
+	ENTER, TAB, ESC, BACKSPACE, DELETE, INSERT
 
 **function keys**
-
-F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15
+::
+	F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15
 
 **navigation keys**
-
-HOME, END, LEFT, RIGHT, DOWN, UP, PAGE_DOWN, PAGE_UP
+::
+	HOME, END, LEFT, RIGHT, DOWN, UP, PAGE_DOWN, PAGE_UP
 
 **special keys**
-
-PRINTSCREEN, PAUSE, CAPS_LOCK, SCROLL_LOCK, NUM_LOCK
+::
+	PRINTSCREEN, PAUSE, CAPS_LOCK, SCROLL_LOCK, NUM_LOCK
 
 **numpad keys**
-
-NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, SEPARATOR, ADD, MINUS,
-MULTIPLY, DIVIDE
+::
+	NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9
+	SEPARATOR, ADD, MINUS, MULTIPLY, DIVIDE
 
 **key modifiers**
+::
+	ALT, CMD, CTRL, META, SHIFT, WIN
 
-ALT, CMD, CTRL, META, SHIFT, WIN
+These key modifiers can **not** be used  with functions
+like :py:meth:`type() <Region.type>`, :py:meth:`rightClick() <Region.rightClick>`, etc. 
 
-Note: These key modifier constants can not be used as the parameter with functions
-like type(), click(), etc. They can only be used with keyDown() and keyUp().
+They can **only** be used with :py:meth:`keyDown() <Region.keyDown>` and :py:meth:`keyUp() <Region.keyUp>`.
