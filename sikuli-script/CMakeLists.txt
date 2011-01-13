@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 2.6)
 PROJECT (sikuli-script Java)
 
 ENABLE_TESTING()
@@ -121,7 +122,7 @@ SET(PYTHON_TESTS
    basic bundle capture click dragdrop env findAll 
    keys mouse multiscreen observe region 
    showActions sikuli type vdict wait with
-   ocr imageurl wheel imagepath
+   ocr imageurl wheel imagepath findfailed
 )
 
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")

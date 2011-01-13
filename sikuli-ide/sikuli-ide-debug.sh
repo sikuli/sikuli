@@ -15,12 +15,12 @@ ${LIB_DIR}/swing-layout-1.0.1.jar
 
 JARS=`echo $JARS`
 CLASSPATH="${JARS// /:}"
-CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-ide/target/classes"
-CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-script/target/classes"
+CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-ide/bin"
+CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-script/bin"
 CLASSPATH="${CLASSPATH}:${SIKULI_DIR}/sikuli-ide/resources"
 CLASSPATH="${CLASSPATH}:${LIB_DIR}/sikuli-script.jar"
 #CLASSPATH="${CLASSPATH}:${LIB_DIR}/jython-2.5.1.jar"
 
 JAVA_OPT="-Dsikuli.console=true -Xms64M -Xmx512M -Dfile.encoding=UTF-8"
 
-java $JAVA_OPT -cp "$CLASSPATH" org.sikuli.ide.SikuliIDE
+java $JAVA_OPT -cp "$CLASSPATH" org.sikuli.ide.SikuliIDE "$@"

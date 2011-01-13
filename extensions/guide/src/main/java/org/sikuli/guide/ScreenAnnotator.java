@@ -20,7 +20,9 @@ import org.sikuli.script.OS;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.ScreenHighlighter;
+import org.sikuli.script.Settings;
 import org.sikuli.script.TransparentWindow;
+import org.sikuli.script.Region.FindFailedResponse;
 
 
 //- multiscreen working
@@ -242,12 +244,23 @@ public class ScreenAnnotator extends TransparentWindow {
       //Screen s = new UnionScreen();
       Screen s = new Screen(0);
 
+      Settings.ShowActions = true;
+      s.setDefaultFindFailedResponse(FindFailedResponse.PROMPT);
+      //s.waitVanish("play.png",5);
+      //s.wait("tools.png",5);
+
+      s.click("tools.png",0);
+
       Region r = null;
 
       //ScreenAnnotator sa = new ScreenAnnotator(s);
       ScreenAnnotator sa = new ScreenAnnotator();
 
-
+      s.setDefaultFindFailedResponse(FindFailedResponse.PROMPT);
+      r = s.find("tools.png");
+      sa.addHighlight(r);
+      sa.showWaitForButtonClick("Tools", "Step 1");
+      
       r = s.find("play.png");
       Debug.log("r:" + r);
       sa.addHighlight(r);

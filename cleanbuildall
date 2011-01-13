@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd `dirname $0`
+cd sikuli-script/build || exit 1
+make clean
+make
+cd ../../sikuli-ide/build || exit 1
+make clean
+make package

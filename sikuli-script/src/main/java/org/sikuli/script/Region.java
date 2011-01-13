@@ -6,6 +6,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JWindow;
 
 
 public class Region {
@@ -15,6 +20,14 @@ public class Region {
    private ScreenHighlighter _overlay = null;
 
    public int x, y, w, h;
+   
+   FindFailedResponse _defaultFindFailedResponse = FindFailedResponse.ABORT;
+   public void setDefaultFindFailedResponse(FindFailedResponse res){
+      _defaultFindFailedResponse = res;
+   }
+   public FindFailedResponse getDefaultFindFailedResponse(){
+      return _defaultFindFailedResponse;
+   }
 
    protected boolean _throwException = true;
    protected double _autoWaitTimeout = 3.0;
@@ -261,13 +274,23 @@ public class Region {
    }
 
    //////////// Settings
-   public void setThrowException(boolean flag){ _throwException = flag; } 
+   public void setThrowException(boolean flag){ 
+      _throwException = flag; 
+      if (_throwException){
+         _defaultFindFailedResponse = FindFailedResponse.ABORT;
+      }else{
+         _defaultFindFailedResponse = FindFailedResponse.SKIP;         
+      }
+   } 
+   
    public void setAutoWaitTimeout(double sec){ _autoWaitTimeout = sec; }
 
    public boolean getThrowException(){ return _throwException; }
    public double getAutoWaitTimeout(){ return _autoWaitTimeout; }
 
 
+
+   
    //////////// CORE FUNCTIONS
 
    /**
@@ -275,15 +298,53 @@ public class Region {
     * finds the given pattern on the screen and returns the best match.
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
-   public <PSC> Match find(PSC ptn) throws FindFailed{
-      if(_autoWaitTimeout > 0)
-         return wait(ptn, _autoWaitTimeout);
-      else{
-         _lastMatch = findNow(ptn);
-         if(_lastMatch == null && _throwException)
-            throw new FindFailed(ptn + " can't be found.");
-         return _lastMatch;
+   public <PSC> Match find(final PSC target) throws FindFailed{
+      if(_autoWaitTimeout > 0){
+         return wait(target, _autoWaitTimeout);
       }
+      while (true){
+         Match match = null;
+         try{
+            match = doFind(target);
+         }catch (Exception e){
+            throw new FindFailed(e.getMessage());
+         }
+         
+         if (match != null){
+            _lastMatch = match;
+            return _lastMatch;
+         }       
+         
+         if (!handleFindFailed(target))
+            return null;
+      }
+   }
+   
+   // return false to skip
+   // return true to try again
+   // throw FindFailed to abort
+   <PSC> boolean handleFindFailed(PSC target) throws FindFailed{
+     
+      FindFailedResponse response;
+      if (_defaultFindFailedResponse == FindFailedResponse.PROMPT){
+         FindFailedDialog fd = new FindFailedDialog(target);
+         fd.setVisible(true);
+         response = fd.getResponse();
+         
+      }else{
+         response = _defaultFindFailedResponse;
+      }
+
+
+      if (response == FindFailedResponse.SKIP){
+         return false;
+      }else if (response == FindFailedResponse.RETRY){
+         return true;
+      }else if (response == FindFailedResponse.ABORT){
+         throw new FindFailed("can not find " + target);
+      }
+      
+      return false;
    }
 
    /**
@@ -291,48 +352,71 @@ public class Region {
     * finds the given pattern on the screen and returns the best match.
     * If AutoWaitTimeout is set, this is equivalent to wait().
     */
-   public <PSC> Iterator<Match> findAll(PSC ptn) 
+   public <PSC> Iterator<Match> findAll(PSC target) 
                                              throws  FindFailed{
-      if(_autoWaitTimeout > 0){
-         _lastMatches = waitAll(ptn, _autoWaitTimeout);
-      }
-      else{
-         _lastMatches = findAllNow(ptn);
-         if(_lastMatches == null && _throwException)
-            throw new FindFailed(ptn + " can't be found.");
-      }
-      return _lastMatches;
+      
+      while (true){
+         
+         Iterator<Match> matches = null;
+         try{
+            
+            if(_autoWaitTimeout > 0){
+               RepeatableFindAll rf = new RepeatableFindAll(target);
+               rf.repeat(_autoWaitTimeout);
+               matches = rf.getMatches();
+            }
+            else{
+               matches = doFindAll(target);
+            }
+            
+         }catch (Exception e){
+            throw new FindFailed(e.getMessage());
+         }
+         
+         if (matches != null){
+            _lastMatches = matches;
+            return _lastMatches;
+         }       
+         
+         if (!handleFindFailed(target))
+            return null;
+      }     
    }
-
-
-
+   
    public <PSC> Match wait(PSC target) throws FindFailed{
       return wait(target, _autoWaitTimeout);
    }
+   
 
    /**
     *  Match wait(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
    public <PSC> Match wait(PSC target, double timeout) throws FindFailed{
-      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
-      long begin_t = (new Date()).getTime();
-      do{
-         long before_find = (new Date()).getTime();
-         Match m = findNow(target);
-         if(m != null){
-            _lastMatch = m;
-            return m;
+      
+      while (true){         
+         try {
+            Debug.log("waiting for " + target + " to appear");
+            RepeatableFind rf = new RepeatableFind(target);
+            rf.repeat(timeout);
+            _lastMatch = rf.getMatch();
+            
+         } catch (Exception e) {
+            throw new FindFailed(e.getMessage());
+         }  
+         
+         if (_lastMatch != null){
+            Debug.log("" + target + " has appeared.");
+            break;
          }
-         long after_find = (new Date()).getTime();
-         if(after_find-before_find<MaxTimePerScan)
-            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
-         else
-            _robot.delay(10);
-      }while( begin_t + timeout*1000 > (new Date()).getTime() );
-      if(_throwException)
-         throw new FindFailed(target + " can't be found.");
-      return null;
+
+         Debug.log("" + target + " has not appeared.");
+         
+         if (!handleFindFailed(target))
+            return null;
+      }
+      
+      return _lastMatch;
    }
 
    public <PSC> Match exists(PSC target) {
@@ -346,11 +430,16 @@ public class Region {
     */
    public <PSC> Match exists(PSC target, double timeout) {
       try{
-         return wait(target, timeout);
+         RepeatableFind rf = new RepeatableFind(target);
+         if (rf.repeat(timeout))
+            return rf.getMatch();
       }
-      catch(FindFailed ff){
-         return null;
+      catch(Exception ff){
+         // TODO: This should throw an exception since
+         // it is likely caused by not able to read the input
+         // image.
       }
+      return null;
    }
 
 
@@ -364,24 +453,25 @@ public class Region {
     *  @return true if the target vanishes, otherwise returns false.
     */
    public <PSC> boolean waitVanish(PSC target, double timeout) {
-      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
-      long begin_t = (new Date()).getTime();
-      do{
-         long before_find = (new Date()).getTime();
-         try{
-            Match ms = findNow(target);
-            if(ms == null)
-               return true;
-         }
-         catch(FindFailed e){
+      try {
+         Debug.log("waiting for " + target + " to vanish");
+         RepeatableVanish r = new RepeatableVanish(target);
+         if (r.repeat(timeout)){
+            // target has vanished before timeout
+            Debug.log("" + target + " has vanished");
             return true;
+         }else{            
+            // target has not vanished before timeout
+            Debug.log("" + target + " has not vanished before timeout");
+            return false;
          }
-         long after_find = (new Date()).getTime();
-         if(after_find-before_find<MaxTimePerScan)
-            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
-         else
-            _robot.delay(10);
-      } while( begin_t + timeout*1000 > (new Date()).getTime() );
+
+      } catch (Exception e) {
+         // TODO: This should throw an error (IOException caused by target
+         // image not readable).
+         Debug.error(e.getMessage());
+      }  
+
       return false;
    }
 
@@ -649,7 +739,28 @@ public class Region {
       }
       return ret;
    }
+   
+   
+   <PSC> Match doFind(PSC ptn) throws IOException{
+      ScreenImage simg = _scr.capture(x, y, w, h);
+      Finder f = new Finder(simg, this);
+      f.find(ptn);
+      if(f.hasNext()){
+         return f.next();
+      }
+      return null;
+   }
 
+   <PSC> Iterator<Match> doFindAll(PSC ptn) throws IOException{
+      ScreenImage simg = _scr.capture(x, y, w, h);
+      Finder f = new Finder(simg, this);
+      f.findAll(ptn);
+      if(f.hasNext()){
+         return f;
+      }
+      return null;
+   }
+   
    /**
     * Match findAllNow( Pattern/String/PatternClass ) 
     * finds the given pattern on the screen and returns the best match 
@@ -676,26 +787,31 @@ public class Region {
     *  Iterator<Match> waitAll(Pattern/String/PatternClass target, timeout-sec)
     *  waits until target appears or timeout (in second) is passed
     */
+   @Deprecated
    public <PSC> Iterator<Match> waitAll(PSC target, double timeout) 
                                              throws  FindFailed{
-      int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
-      long begin_t = (new Date()).getTime();
-      do{
-         long before_find = (new Date()).getTime();
-         Iterator<Match> ms = findAllNow(target);
-         if(ms != null)
-            return ms;
-         long after_find = (new Date()).getTime();
-         if(after_find-before_find<MaxTimePerScan)
-            _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
-         else
-            _robot.delay(10);
-      }while( begin_t + timeout*1000 > (new Date()).getTime() );
-      if(_throwException)
-         throw new FindFailed(target + " can't be found.");
-      return null;
-   }
+      
+      while (true){         
+         try {
 
+            RepeatableFindAll rf = new RepeatableFindAll(target);
+            rf.repeat(timeout);
+            _lastMatches = rf.getMatches();
+            
+         } catch (Exception e) {
+            throw new FindFailed(e.getMessage());
+         }  
+         
+         if (_lastMatches != null)
+            break;
+         
+         if (!handleFindFailed(target))
+            return null;
+      }
+      
+      return _lastMatches;
+   }
+   
    public <PSRM> Region getRegionFromPSRM(PSRM target) 
                                              throws  FindFailed {
       if(target instanceof Pattern || target instanceof String){
@@ -708,7 +824,6 @@ public class Region {
          return (Region)target;
       return null;
    }
-
 
    public <PSRML> Location getLocationFromPSRML(PSRML target) 
                                              throws  FindFailed {
@@ -968,6 +1083,96 @@ public class Region {
             throw new IllegalArgumentException("Cannot type character " + character);
       }
    }
+
+   abstract class Repeatable{
+
+      abstract void run() throws Exception;
+      abstract boolean ifSuccessful();
+      
+      // return TRUE if successful before timeout
+      // return FALSE if otherwise
+      // throws Exception if any unexpected error occurs
+      boolean repeat(double timeout) throws Exception{
+
+         int MaxTimePerScan = (int)(1000.0/Settings.WaitScanRate); 
+         long begin_t = (new Date()).getTime();
+         do{
+            long before_find = (new Date()).getTime();
+            
+            run();
+            if (ifSuccessful())
+               return true;
+
+            long after_find = (new Date()).getTime();
+            if(after_find-before_find<MaxTimePerScan)
+               _robot.delay((int)(MaxTimePerScan-(after_find-before_find)));
+            else
+               _robot.delay(10);
+         }while( begin_t + timeout*1000 > (new Date()).getTime() );
+
+         return false;
+      }
+   }
+   
+   class RepeatableFind extends Repeatable{
+      
+      Object _target;
+      Match _match = null;
+      public <PSC> RepeatableFind(PSC target){
+         _target = target;
+      }
+      
+      public Match getMatch() {
+         return _match;
+      }
+
+      @Override
+      public void run() throws IOException{
+         _match = doFind(_target);
+      }
+
+       @Override
+      boolean ifSuccessful() {
+         return _match != null;
+      }
+
+   }   
+
+   class RepeatableVanish extends RepeatableFind{
+      public <PSC> RepeatableVanish(PSC target){
+         super(target);
+      }
+      
+      @Override
+      boolean ifSuccessful() {
+         return _match == null;
+      }
+   }
+   
+   class RepeatableFindAll extends Repeatable{
+      
+      Object _target;
+      Iterator<Match> _matches = null;
+      public <PSC> RepeatableFindAll(PSC target){
+         _target = target;
+      }
+      
+      public Iterator<Match> getMatches() {
+         return _matches;
+      }
+
+      @Override
+      public void run() throws IOException{
+         _matches = doFindAll(_target);
+      }
+
+       @Override
+      boolean ifSuccessful() {
+         return _matches != null;
+      }
+
+   }
+   
 
 }
 
