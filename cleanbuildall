@@ -1,9 +1,24 @@
 #!/bin/bash
 
-cd `dirname $0`
-cd sikuli-script/build || exit 1
-make clean
+sikulidir=`dirname $0`
+cd $sikulidir
+if [ -d sikuli-script/build ]; then
+    pushd sikuli-script/build
+    make clean
+    popd
+fi
+if [ -d sikuli-ide/build ]; then
+    pushd sikuli-ide/build
+    make clean
+    popd
+fi
+mkdir -p sikuli-script/build
+pushd sikuli-script/build
+cmake ..
 make
-cd ../../sikuli-ide/build || exit 1
-make clean
+popd
+mkdir -p sikuli-ide/build
+pushd sikuli-ide/build
+cmake ..
 make package
+popd

@@ -284,7 +284,7 @@ FOREACH(JAR ${INCLUDE_JARS})
 ENDFOREACH(JAR ${INCLUDE_JARS})
 
 
-#add_dependencies( app ${APP_FILE})
+add_dependencies( app ${APP_FILE})
 
 ## Language files
 
@@ -335,7 +335,7 @@ add_dependencies( ${JAR_FILE}.prepare
 )
 
 add_dependencies( ${JAR_FILE} ${JAR_FILE}.prepare )
-add_dependencies( run ${JAR_FILE}.prepare )
+add_dependencies( run ${JAR_FILE})
 add_dependencies( app ${APP_FILE}) 
 
 SUBDIRS(${JAVA_SRC_DIR} ${NATIVE_SRC_DIR})

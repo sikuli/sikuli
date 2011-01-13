@@ -55,9 +55,8 @@ Creating a Region, Setting and Getting Attributes
 -------------------------------------------------
 
 In this chapter, you can find information on how to create a new region object.
-Some of the attributes of a region object can be accessed directly or via a
-method call. Here you will find the HowTo's. 
-
+The attributes of a region object can be accessed directly or via
+method calls, e.g. to change their position and/or dimension. Here you will find the HowTo's. 
 
 .. py:class:: Region
 
@@ -81,14 +80,28 @@ method call. Here you will find the HowTo's.
 		the script.  A region can also be created by users in run-time using
 		:py:meth:`Region.selectRegion`.
 
-		You can create a region by given another region. This just
-		duplicates the region into a different and new object. This can be useful, if
+		You can create a region based on another region. This just
+		duplicates the region (new object). This can be useful, if
 		you need the same region with different attributes, such as another
 		:ref:`observation loop <ObservingVisualEventsinaRegion>` 
 		or use :py:meth:`Region.setThrowException` to control
 		whether throwing an exception when finding fails. Another way to create a
 		region is to specify a rectangle object or to 
 		:ref:`extend an existing region <ExtendingaRegion>`.
+		
+		*Note:* The position and dimension attributes are named x, y 
+		(values representing the top left corner) and w, h (width and height).
+		You might use these or the get/set methods.
+		::
+		
+			topLeft = Location(reg.x, reg.y) # equivalent to
+			topLeft = reg.getTopLeft()
+			
+			theWidth = reg.w # equivalent to
+			theWidth = reg.getW()
+			
+			reg.h = theWidth # equivalent to
+			reg.setH(theWidth) 
 
 	.. py:method:: selectRegion([text])
 
@@ -118,6 +131,19 @@ method call. Here you will find the HowTo's.
 
 		:param number: the new value
 
+	.. versionadded:: X1.0-rc2
+	.. py:method:: moveTo(location)
+		
+		Set the position of this region regarding it's top left corner 
+		to the given location (the x and y values are modified).
+		
+		:param location: location object becomes the new top left corner
+		:return: the modified region object
+		::
+		
+			reg.moveTo(anotherLocation) # equivalent to
+			reg.setX(anotherLocation.x); reg.setY(anotherLocation.y)
+
 	.. py:method:: setROI(x,y,w,h)
 		 setROI(rectangle)
 		 setRect(x,y,w,h)
@@ -129,9 +155,22 @@ method call. Here you will find the HowTo's.
 		processing searches (region of interest), whereas ``setRect()`` should be
 		used to redefine a region (which could be enlarging it). 
 
-		:param x: the attributes of a rectangle
+		:param all x, y, w, h: the attributes of a rectangle
 		:param rectangle: a rectangle object
 		:return: None
+		
+	.. versionadded:: X1.0-rc2
+	.. py:method:: morphTo(region)
+		
+		Set the position and dimension of this region to the corresponding values 
+		of the region given as parameter. (see: :py:meth:`setRect() <Region.setRect>`)
+
+		:param region: a region object		
+		:return: the modified region object
+		::
+		
+			reg.morphTo(anotherRegion) # equivalent to
+			r = anotherRegion; reg.setX(r.x); reg.setY(r.y); reg.setW(r.w); reg.setH(r.h)
 
 	.. py:method:: getX()
 		 getY()
@@ -147,6 +186,16 @@ method call. Here you will find the HowTo's.
 		Get the center of the region.
 
 		:return: an object of :py:class:`Location`
+		
+	.. versionadded:: X1.0-rc2
+	.. py:method:: getTopLeft()
+		getTopRight()
+		getBottomLeft()
+		getBottomRight()
+		
+		Get the location of the region's respective corner
+		
+		:return: Location object
 
 	.. py:method:: getScreen()
 

@@ -211,6 +211,19 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
                new EditAction(EditAction.SELECT_ALL)));
       _editMenu.addSeparator();
+      JMenu findMenu = new JMenu(_I("menuFind"));
+      findMenu.setMnemonic(KeyEvent.VK_F);
+      findMenu.add( createMenuItem(_I("menuFindFind"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, scMask),
+               new EditAction(EditAction.FIND)));
+      findMenu.add( createMenuItem(_I("menuFindFindNext"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask),
+               new EditAction(EditAction.FIND_NEXT)));
+      findMenu.add( createMenuItem(_I("menuFindFindPrev"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask | InputEvent.SHIFT_MASK),
+               new EditAction(EditAction.FIND_PREV)));
+      _editMenu.add(findMenu);
+      _editMenu.addSeparator();
       _editMenu.add( createMenuItem(_I("menuEditIndent"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, 0),
                new EditAction(EditAction.INDENT)));
@@ -1033,6 +1046,9 @@ public class SikuliIDE extends JFrame {
       static final String SELECT_ALL = "doSelectAll";
       static final String INDENT = "doIndent";
       static final String UNINDENT = "doUnindent";
+      static final String FIND = "doFind";
+      static final String FIND_NEXT = "doFindNext";
+      static final String FIND_PREV = "doFindPrev";
 
       public EditAction(){
          super();
@@ -1046,6 +1062,15 @@ public class SikuliIDE extends JFrame {
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliPane pane = ide.getCurrentCodePane();
          pane.getActionMap().get(action).actionPerformed(ae);
+      }
+
+      public void doFind(ActionEvent ae){
+      }
+
+      public void doFindNext(ActionEvent ae){
+      }
+
+      public void doFindPrev(ActionEvent ae){
       }
 
       public void doCut(ActionEvent ae){

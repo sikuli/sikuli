@@ -27,3 +27,4 @@ sikuli-ide/target/linux/Sikuli-IDE/libs
 lib/Lib
 lib/cachedir
 sikuli-script/src/main/python/**/*.class
+docs/build
