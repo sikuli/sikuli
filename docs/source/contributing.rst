@@ -64,7 +64,11 @@ for a progress report, your claim on the bug may be revoked.
 Generate and Submit Patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. Please generate your patches using :command:`bzr diff`, so we can
+#. Branch the Sikuli source tree using :command:`bzr branch lp:sikuli`.
+
+#. Fix bugs or add new features. 
+
+#. Generate your patches using :command:`bzr diff`, so we can
    incorporate your patches into our code base esaily.
 
 #. Name the patch file with a :file:`.diff` extension.
@@ -75,9 +79,9 @@ Generate and Submit Patches
 #. If the patch adds a new feature, or modifies existing behavior, please
    leave documentation in the comment area.
 
+If you want to contribute changes that involve hundred lines of code,
+Please `register a branch <https://code.launchpad.net/sikuli/+addbranch>`_ on Sikuli and then propose for merging once you have done all changes.
 
-If you contribute patches very actively, we can give you the commit
-permission to our bzr source tree so you can submit patches by yourself.
 
 .. _translate-sikuli:
 
