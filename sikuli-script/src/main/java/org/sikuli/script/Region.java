@@ -21,11 +21,12 @@ public class Region {
 
    public int x, y, w, h;
    
-   FindFailedResponse _defaultFindFailedResponse = FindFailedResponse.ABORT;
-   public void setDefaultFindFailedResponse(FindFailedResponse res){
+   protected FindFailedResponse _defaultFindFailedResponse = 
+                                          FindFailedResponse.ABORT;
+   public void setFindFailedResponse(FindFailedResponse res){
       _defaultFindFailedResponse = res;
    }
-   public FindFailedResponse getDefaultFindFailedResponse(){
+   public FindFailedResponse getFindFailedResponse(){
       return _defaultFindFailedResponse;
    }
 
