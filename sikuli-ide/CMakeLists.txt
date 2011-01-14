@@ -338,5 +338,7 @@ add_dependencies( ${JAR_FILE} ${JAR_FILE}.prepare )
 add_dependencies( run ${JAR_FILE})
 add_dependencies( app ${APP_FILE}) 
 
-SUBDIRS(${JAVA_SRC_DIR} ${NATIVE_SRC_DIR})
+ADD_SUBDIRECTORY( ${JAVA_SRC_DIR} )
+ADD_SUBDIRECTORY( ${NATIVE_SRC_DIR} )
 
+INCLUDE(CTest)
