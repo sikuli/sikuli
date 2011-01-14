@@ -11,6 +11,7 @@ FIND_PATH(TESSERACT_DATA_DIR confsets
    "/opt/local/share/tessdata"
    "/usr/local/share/tessdata"
    "/usr/share/tesseract-ocr/tessdata"
+   "/usr/share/tesseract/tessdata"
    "/usr/share/tessdata"
    "c:/tesseract-2.04/tessdata"
 )
