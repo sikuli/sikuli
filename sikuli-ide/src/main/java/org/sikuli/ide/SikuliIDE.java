@@ -18,6 +18,8 @@ import javax.swing.event.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.jdesktop.swingx.JXSearchField;
+
 import org.sikuli.script.Debug;
 import org.sikuli.script.CapturePrompt;
 import org.sikuli.script.ScriptRunner;
@@ -388,6 +390,11 @@ public class SikuliIDE extends JFrame {
       }
       toolbar.add(_btnRun);
       toolbar.add(_btnRunViz);
+      JXSearchField searchField = new JXSearchField();
+      searchField.setPreferredSize(new Dimension(220,24));
+      searchField.setMaximumSize(new Dimension(300,30));
+      toolbar.add(Box.createHorizontalGlue());
+      toolbar.add(searchField);
       toolbar.setFloatable(false);
       return toolbar;
    }
