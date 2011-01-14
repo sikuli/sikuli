@@ -1272,7 +1272,7 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 		
 		:param PROMPT: all subsequent find operations will not raise
 			exception FindFailed. Instead you will be prompted for the way 
-			to handle the situation (see :ref:`FindFailedPrompt`). Only the current 
+			to handle the situation (see :ref:`using PROMPT <FindFailedPrompt>`). Only the current 
 			find operation is affected by your response to the prompt. 
 	
 		:param RETRY: all subsequent find operations will not raise
