@@ -4,5 +4,7 @@ PROJECT (sikuli)
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
 INCLUDE(${CMAKE_MODULE_PATH}/common.cmake)
 
-SUBDIRS(sikuli-script sikuli-ide)
+ADD_SUBDIRECTORY(sikuli-script)
+ADD_SUBDIRECTORY(sikuli-ide)
 
+INCLUDE(CTest)
