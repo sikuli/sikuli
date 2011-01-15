@@ -746,38 +746,66 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
    */
 
+   /*
    public int search(String str){
       return search(str, true);
    }
+   */
 
-   public int search(String str, boolean forward){
-      if(!str.equals(_lastSearchString)){
-         _lastSearchString = str;
-         Document doc = getDocument();
-         int pos = getCaretPosition();
-         Debug.log("caret: "  + pos);
-         try{
-            String body = doc.getText(pos, doc.getLength()-pos);
-            Pattern pattern = Pattern.compile(str);
-            _lastSearchMatcher = pattern.matcher(body);
+   public int search(String str, int pos, boolean forward){
+      int ret = -1;
+      Document doc = getDocument();
+      Debug.log(9, "search caret: "  + pos);
+      try{
+         String body;
+         int begin;
+         if(forward){
+            body = doc.getText(pos, doc.getLength()-pos+1);
+            begin = pos;
          }
-         catch(BadLocationException e){
-            e.printStackTrace();
+         else{
+            body = doc.getText(0, pos);
+            begin = 0;
+         }
+         Pattern pattern = Pattern.compile(str);
+         Matcher matcher = pattern.matcher(body);
+         ret = continueSearch(matcher, begin, forward);
+         if(ret < 0){
+            if(forward && pos != 0) // search from beginning
+               return search(str, 0, forward);
+            if(!forward && pos != doc.getLength()) // search from end
+               return search(str, doc.getLength(), forward);
          }
       }
-      return continueSearch(forward);
+      catch(BadLocationException e){
+         e.printStackTrace();
+      }
+      return ret;
    }
 
-   protected int continueSearch(boolean forward){
-      if(forward){
-         if(_lastSearchMatcher.find()){
-            Document doc = getDocument();
-            int pos = getCaretPosition();
-            getCaret().setDot(pos+_lastSearchMatcher.start());
-            getCaret().moveDot(pos+_lastSearchMatcher.end());
-            getCaret().setSelectionVisible(true);
-            return _lastSearchMatcher.end();
+   protected int continueSearch(Matcher matcher, int pos, boolean forward){
+      boolean hasNext = false;
+      int start=0, end=0;
+      if(!forward){
+         while(matcher.find()){
+            hasNext = true;
+            start = matcher.start();
+            end = matcher.end();
          }
+      }
+      else{
+         hasNext = matcher.find();
+         if(!hasNext)
+            return -1;
+         start = matcher.start();
+         end = matcher.end();
+      }
+      if(hasNext){
+         Document doc = getDocument();
+         getCaret().setDot(pos+end);
+         getCaret().moveDot(pos+start);
+         getCaret().setSelectionVisible(true);
+         return pos+start;
       }
       return -1;
    }

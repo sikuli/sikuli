@@ -33,6 +33,9 @@ import org.apache.commons.cli.CommandLine;
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
 
+   final static Color COLOR_SEARCH_FAILED = Color.red;
+   final static Color COLOR_SEARCH_NORMAL = Color.white;
+
    private static NativeLayer _native;
 
    private ConsolePane _console;
@@ -43,6 +46,7 @@ public class SikuliIDE extends JFrame {
    private StatusBar _status;
    private JToolBar _cmdToolBar;
    private JXSearchField _searchField;
+   private FindAction _findHelper;
 
    private CaptureButton _btnCapture;
    private ButtonRun _btnRun, _btnRunViz;
@@ -215,16 +219,17 @@ public class SikuliIDE extends JFrame {
                new EditAction(EditAction.SELECT_ALL)));
       _editMenu.addSeparator();
       JMenu findMenu = new JMenu(_I("menuFind"));
+      _findHelper = new FindAction();
       findMenu.setMnemonic(KeyEvent.VK_F);
       findMenu.add( createMenuItem(_I("menuFindFind"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, scMask),
-               new EditAction(EditAction.FIND)));
+               new FindAction(FindAction.FIND)));
       findMenu.add( createMenuItem(_I("menuFindFindNext"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask),
-               new EditAction(EditAction.FIND_NEXT)));
+               new FindAction(FindAction.FIND_NEXT)));
       findMenu.add( createMenuItem(_I("menuFindFindPrev"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask | InputEvent.SHIFT_MASK),
-               new EditAction(EditAction.FIND_PREV)));
+               new FindAction(FindAction.FIND_PREV)));
       _editMenu.add(findMenu);
       _editMenu.addSeparator();
       _editMenu.add( createMenuItem(_I("menuEditIndent"), 
@@ -409,14 +414,29 @@ public class SikuliIDE extends JFrame {
       */
       _searchField = new JXSearchField("Find...");
       _searchField.setUseNativeSearchFieldIfPossible(true);
+      //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
       _searchField.setPreferredSize(new Dimension(220,24));
       _searchField.setMaximumSize(new Dimension(300,30));
-      _searchField.addActionListener(new ActionListener(){
+      _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
-            String str = _searchField.getText();
-            Debug.log("find " + str);
-            SikuliPane codePane = getCurrentCodePane();
-            codePane.search(str);
+            getCurrentCodePane().requestFocus();
+            _findHelper.setFailed(false);
+         }
+      });
+      _searchField.setFindAction(new ActionListener(){
+         public void actionPerformed(ActionEvent evt) {    
+            boolean ret = _findHelper.findNext(_searchField.getText());
+            _findHelper.setFailed(!ret);
+         }
+      });
+      _searchField.addKeyListener(new KeyAdapter(){
+         public void keyReleased(java.awt.event.KeyEvent ke) {
+            boolean ret;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER)
+               ret = _findHelper.findNext(_searchField.getText());
+            else
+               ret = _findHelper.findStr(_searchField.getText());
+            _findHelper.setFailed(!ret);
          }
       });
       return _searchField;
@@ -1069,6 +1089,64 @@ public class SikuliIDE extends JFrame {
       }
    }
 
+   class FindAction extends MenuAction {
+      static final String FIND = "doFind";
+      static final String FIND_NEXT = "doFindNext";
+      static final String FIND_PREV = "doFindPrev";
+
+      public FindAction(){
+         super();
+      }
+
+      public FindAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+
+      public void doFind(ActionEvent ae){
+         _searchField.requestFocus();
+      }
+
+      public void doFindNext(ActionEvent ae){
+         findNext(_searchField.getText());
+      }
+
+      public void doFindPrev(ActionEvent ae){
+         findPrev(_searchField.getText());
+      }
+
+      private boolean _find(String str, int begin, boolean forward){
+         SikuliPane codePane = getCurrentCodePane();
+         int pos = codePane.search(str, begin, forward);
+         Debug.log(7, "find \"" + str + "\" at " + begin + ", found: " + pos);
+         if(pos < 0)
+            return false;
+         return true;
+      }
+
+      public boolean findStr(String str){
+         return _find(str, getCurrentCodePane().getCaretPosition(), true);
+      }
+
+      public boolean findPrev(String str){
+         return _find(str, getCurrentCodePane().getCaretPosition(), false);
+      }
+
+      public boolean findNext(String str){
+         return _find(str, 
+                      getCurrentCodePane().getCaretPosition()+str.length(),
+                      true);
+      }
+
+      public void setFailed(boolean failed){
+         Debug.log(7, "search failed: " + failed);
+         if(failed)
+            _searchField.setBackground(COLOR_SEARCH_FAILED);
+         else
+            _searchField.setBackground(COLOR_SEARCH_NORMAL);
+      }
+
+   }
+
    class EditAction extends MenuAction {
       static final String CUT = "doCut";
       static final String COPY = "doCopy";
@@ -1076,9 +1154,6 @@ public class SikuliIDE extends JFrame {
       static final String SELECT_ALL = "doSelectAll";
       static final String INDENT = "doIndent";
       static final String UNINDENT = "doUnindent";
-      static final String FIND = "doFind";
-      static final String FIND_NEXT = "doFindNext";
-      static final String FIND_PREV = "doFindPrev";
 
       public EditAction(){
          super();
@@ -1092,16 +1167,6 @@ public class SikuliIDE extends JFrame {
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliPane pane = ide.getCurrentCodePane();
          pane.getActionMap().get(action).actionPerformed(ae);
-      }
-
-      public void doFind(ActionEvent ae){
-         _searchField.requestFocus();
-      }
-
-      public void doFindNext(ActionEvent ae){
-      }
-
-      public void doFindPrev(ActionEvent ae){
       }
 
       public void doCut(ActionEvent ae){
