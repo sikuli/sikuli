@@ -24,6 +24,7 @@ import org.sikuli.script.ScriptRunner;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Location;
 
+
 public class SikuliPane extends JTextPane implements KeyListener, 
                                                      CaretListener{
    private String _editingFilename;
@@ -34,6 +35,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private ImageLocator _imgLocator;
 
    private String _tabString = "   ";
+
+   private Pattern _lastSearchPattern = null;
+   private String _lastSearchString = null;
+   private Matcher _lastSearchMatcher;
 
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
@@ -716,6 +721,67 @@ public class SikuliPane extends JTextPane implements KeyListener,
          e.printStackTrace();
       }
    }
+
+   // search forward
+   /*
+   public int search(Pattern pattern){
+      return search(pattern, true);
+   }
+
+   public int search(Pattern pattern, boolean forward){
+      if(!pattern.equals(_lastSearchPattern)){
+         _lastSearchPattern = pattern;
+         Document doc = getDocument();
+         int pos = getCaretPosition();
+         Debug.log("caret: "  + pos);
+         try{
+            String body = doc.getText(pos, doc.getLength()-pos);
+            _lastSearchMatcher = pattern.matcher(body);
+         }
+         catch(BadLocationException e){
+            e.printStackTrace();
+         }
+      }
+      return continueSearch(forward);
+   }
+   */
+
+   public int search(String str){
+      return search(str, true);
+   }
+
+   public int search(String str, boolean forward){
+      if(!str.equals(_lastSearchString)){
+         _lastSearchString = str;
+         Document doc = getDocument();
+         int pos = getCaretPosition();
+         Debug.log("caret: "  + pos);
+         try{
+            String body = doc.getText(pos, doc.getLength()-pos);
+            Pattern pattern = Pattern.compile(str);
+            _lastSearchMatcher = pattern.matcher(body);
+         }
+         catch(BadLocationException e){
+            e.printStackTrace();
+         }
+      }
+      return continueSearch(forward);
+   }
+
+   protected int continueSearch(boolean forward){
+      if(forward){
+         if(_lastSearchMatcher.find()){
+            Document doc = getDocument();
+            int pos = getCaretPosition();
+            getCaret().setDot(pos+_lastSearchMatcher.start());
+            getCaret().moveDot(pos+_lastSearchMatcher.end());
+            getCaret().setSelectionVisible(true);
+            return _lastSearchMatcher.end();
+         }
+      }
+      return -1;
+   }
+
 
 
 

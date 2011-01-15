@@ -109,7 +109,8 @@ add_custom_target( update-version
 
 SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR} 
                  ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
-                 ${BINARY_DIR}/${JAR_FILE}
+                 ${BINARY_DIR}/${JAR_FILE} ${JSON_SIMPLE_JAR}
+                 ${SWINGX_JAR}
 )
 
 ## Windows Package
@@ -304,7 +305,8 @@ add_custom_target( update-prop
 ## Packaging
 
 if(APPLE)
-   SET(CPACK_GENERATOR DragNDrop )
+   #   SET(CPACK_GENERATOR DragNDrop )
+      SET(CPACK_GENERATOR ZIP )
 else(APPLE)
    SET(CPACK_GENERATOR 
       ZIP

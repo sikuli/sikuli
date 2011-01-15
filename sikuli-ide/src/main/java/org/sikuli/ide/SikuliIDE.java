@@ -42,6 +42,7 @@ public class SikuliIDE extends JFrame {
    private JPanel _unitPane;
    private StatusBar _status;
    private JToolBar _cmdToolBar;
+   private JXSearchField _searchField;
 
    private CaptureButton _btnCapture;
    private ButtonRun _btnRun, _btnRunViz;
@@ -390,13 +391,35 @@ public class SikuliIDE extends JFrame {
       }
       toolbar.add(_btnRun);
       toolbar.add(_btnRunViz);
-      JXSearchField searchField = new JXSearchField();
-      searchField.setPreferredSize(new Dimension(220,24));
-      searchField.setMaximumSize(new Dimension(300,30));
       toolbar.add(Box.createHorizontalGlue());
-      toolbar.add(searchField);
+      toolbar.add( createSearchField() );
       toolbar.setFloatable(false);
       return toolbar;
+   }
+
+   private JComponent createSearchField(){
+      /*
+      if(Utils.isMacOSX()){
+         _searchField = new JTextField();
+         _searchField.putClientProperty("JTextField.variant", "search");
+      }
+      else{
+         _searchField = new JXSearchField();
+      }
+      */
+      _searchField = new JXSearchField("Find...");
+      _searchField.setUseNativeSearchFieldIfPossible(true);
+      _searchField.setPreferredSize(new Dimension(220,24));
+      _searchField.setMaximumSize(new Dimension(300,30));
+      _searchField.addActionListener(new ActionListener(){
+         public void actionPerformed(ActionEvent evt) {    
+            String str = _searchField.getText();
+            Debug.log("find " + str);
+            SikuliPane codePane = getCurrentCodePane();
+            codePane.search(str);
+         }
+      });
+      return _searchField;
    }
 
 
@@ -1072,6 +1095,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void doFind(ActionEvent ae){
+         _searchField.requestFocus();
       }
 
       public void doFindNext(ActionEvent ae){
