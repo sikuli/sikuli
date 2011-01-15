@@ -412,9 +412,9 @@ public class SikuliIDE extends JFrame {
          _searchField = new JXSearchField();
       }
       */
-      _searchField = new JXSearchField("Find...");
+      _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
-      //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      _searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
       _searchField.setPreferredSize(new Dimension(220,24));
       _searchField.setMaximumSize(new Dimension(300,30));
       _searchField.setCancelAction(new ActionListener(){
@@ -425,6 +425,7 @@ public class SikuliIDE extends JFrame {
       });
       _searchField.setFindAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
+            _searchField.selectAll();
             boolean ret = _findHelper.findNext(_searchField.getText());
             _findHelper.setFailed(!ret);
          }
@@ -432,8 +433,10 @@ public class SikuliIDE extends JFrame {
       _searchField.addKeyListener(new KeyAdapter(){
          public void keyReleased(java.awt.event.KeyEvent ke) {
             boolean ret;
-            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER)
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
+               _searchField.selectAll();
                ret = _findHelper.findNext(_searchField.getText());
+            }
             else
                ret = _findHelper.findStr(_searchField.getText());
             _findHelper.setFailed(!ret);

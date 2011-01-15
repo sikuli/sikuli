@@ -755,12 +755,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
    public int search(String str, int pos, boolean forward){
       int ret = -1;
       Document doc = getDocument();
-      Debug.log(9, "search caret: "  + pos);
+      Debug.log(9, "search caret: "  + pos + ", " + doc.getLength());
       try{
          String body;
          int begin;
          if(forward){
-            body = doc.getText(pos, doc.getLength()-pos+1);
+            int len = doc.getLength()-pos;
+            body = doc.getText(pos, len>0?len:0);
             begin = pos;
          }
          else{
@@ -778,7 +779,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
          }
       }
       catch(BadLocationException e){
-         e.printStackTrace();
+         Debug.log(7, "search caret: "  + pos + ", " + doc.getLength() + 
+               e.getStackTrace());
       }
       return ret;
    }
