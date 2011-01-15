@@ -1185,12 +1185,33 @@ To implement some checkpoints, where you want to asure your workflow, use
 FindFailed (returns False instead).
 
 To run all or only parts of your script without FindFailed exceptions to be raised,
-use :py:meth:`Region.setThrowException` to switch it on and off as needed.
+use :py:meth:`Region.setThrowException` or :py:meth:`Region.setFindFailedResponse`
+to switch it on and off as needed.
 
 For more sophisticated concepts, you can implement your own exception handling using
 the standard Python construct ``try: ... except: ...`` .
 
-Example: 3 solutions for a case, where you want to decide how to proceed in a
+.. versionadded:: X1.0-rc2
+
+These are the possibilities to handle "not found" situations:
+	* generally abort a script, if not handled with ``try: ... except: ...``
+		(the default setting or using :py:meth:`setThrowException(True) <Region.setThrowException>` 
+		or :py:meth:`setFindFailedResponse(ABORT) <Region.setFindFailedResponse>`) 
+	* generally ignore all "not found" situations 
+		(using :py:meth:`setThrowException(False) <Region.setThrowException>` 
+		or :py:meth:`setFindFailedResponse(SKIP) <Region.setFindFailedResponse>`), 
+	* want to be prompted in such a case 
+		(using :py:meth:`setFindFailedResponse(PROMPT) <Region.setFindFailedResponse>`)
+	* advise Sikuli to wait forever (be careful with that!)
+		(using :py:meth:`setFindFailedResponse(RETRY) <Region.setFindFailedResponse>`)
+
+.. _FindFailedPrompt:
+
+*comments on using PROMPT*: 
+
+*under construction*
+
+**Examples**: 3 solutions for a case, where you want to decide how to proceed in a
 workflow based on the fact that a specific image can be found. (pass is the python
 statement, that does nothing, but maintains indentation to form the blocks)::
 
@@ -1208,40 +1229,101 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 	except FindFailed:
 		pass # we miss it
 
+	# --- using setFindFailedResponse
+	setFindFailedResponse(SKIP) # no exception raised, not found returns None
+	if find("path-to-image"):
+		setFindFailedResponse(ABORT) # reset to default
+		pass # it is there
+	else:
+		setFindFailedResponse(ABORT) # reset to default
+		pass # we miss it
+
 	# --- using setThrowException
 	setThrowException(False) # no exception raised, not found returns None
 	if find("path-to-image"):
 		setThrowException(True) # reset to default
 		pass # it is there
 	else:
-		setThrowException(True)
-		# reset to default
+		setThrowException(True) # reset to default
 		pass # we miss it
-
 
 .. py:class:: Region
 
+	**Reminder** If used without specifying a region, the default/primary screen
+	(default region SCREEN) is used. 
+
+	.. versionadded:: X1.0-rc2
+	
+	.. py:method:: setFindFailedResponse(ABORT | SKIP | PROMPT | RETRY)
+	
+		For the specified region set the option, how Sikuli should handle 
+		"not found" situations. The option stays in effect until changed 
+		by another ``setFindFailedResponse()``.
+	
+		:param ABORT: all subsequent find failed operations (explicit or
+			implicit) will raise exception FindFailed (which is the default when a
+			script is started). 
+
+		:param SKIP: all subsequent find operations will not raise
+			exception FindFailed. Instead, explicit find operations such as
+			:py:meth:`Region.find` will return *None*. Implicit find operations 
+			(action functions) such as :py:meth:`Region.click` will do
+			nothing and return 0.
+		
+		:param PROMPT: all subsequent find operations will not raise
+			exception FindFailed. Instead you will be prompted for the way 
+			to handle the situation (see :ref:`using PROMPT <FindFailedPrompt>`). Only the current 
+			find operation is affected by your response to the prompt. 
+	
+		:param RETRY: all subsequent find operations will not raise
+			exception FindFailed. Instead, Sikuli will try to find the target 
+			until it gets visible. This is equivalent to using ``wait( ... , FOREVER)``
+			instead of ``find()`` or using setAutoWaitTimeout(FOREVER).
+			
+	.. py:method:: getFindFailedResponse()
+	
+		Get the current setting in this region.
+	
+		:return: ABORT or SKIP or PROMPT or RETRY
+		
+		Usage::
+		
+			val = getFindFailedResponse()
+			if val == ABORT:
+				print "not found will stop script with Exception FindFailed"
+			elif val == SKIP:
+				print "not found will be ignored"
+			elif val == PROMPT:
+				print "when not found you will be prompted"
+			elif val == RETRY:
+				print "we will always wait forever"
+			else:
+				print val, ": this is a bug :-("
+
+	**Note**: It is recommended to use ``set/getFindFailedResponse()`` instead of 
+	``set/getThrowException()`` since the latter ones might be deprecated in the future.
+	
 	.. py:method:: setThrowException(False | True)
 	
 		By using this method you control, how Sikuli should handle not found
-		situations. If used without specifying a region, the default/primary screen
-		(default region SCREEN) is used. 
+		situations in this region.
 
-		If set to *True*, all subsequent failed find operations (explicit or
-		implicit) will raise exception FindFailed (which is the default when a
-		script is started).
+		:param True: all subsequent find operations (explicit or
+			implicit) will raise exception FindFailed (which is the default when a
+			script is started) in case of not found.
 
-		If set to *False*, all subsequent failed find operations will not raise
-		exception FindFailed. Instead, explicit find operations such as
-		:py:meth:`Region.find` will return *None*. Implicit find operations as
-		byproduct of action functions such as :py:meth:`Region.click` will do
-		nothing and return 0.
+		:param False: all subsequent find operations will not raise
+			exception FindFailed. Instead, explicit find operations such as
+			:py:meth:`Region.find` will return *None*. Implicit find operations 
+			(action functions) such as :py:meth:`Region.click` will do
+			nothing and return 0.
 
 	.. py:method:: getThrowException()
+	
+		:return: ``True`` or ``False``
 
 		Get the current setting as True or False (after start of script, this is True by
-		default). If used without specifying a region, the default/primary screen
-		(default region SCREEN) is used. 
+		default) in this region.
 
 .. _GroupingMethodCallsWithRegion:
 
