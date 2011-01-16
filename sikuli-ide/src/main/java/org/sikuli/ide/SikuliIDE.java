@@ -324,10 +324,10 @@ public class SikuliIDE extends JFrame {
    }
 
    private String[] CommandCategories = {
-      "Find",
-      "Mouse Actions",
-      "Keyboard Actions",
-      "Event Observation"
+      _I("cmdListFind"),
+      _I("cmdListMouse"),
+      _I("cmdListKeyboard"),
+      _I("cmdListObserver")
    };
    
    private String[][] CommandsOnToolbar = {
@@ -376,7 +376,7 @@ public class SikuliIDE extends JFrame {
       {_I("cmdObserve")},
    };
 
-   private JPanel createCommandPane(){
+   private JComponent createCommandPane(){
       JXTaskPaneContainer con = new JXTaskPaneContainer();
 
       UserPreferences pref = UserPreferences.getInstance();
@@ -390,8 +390,9 @@ public class SikuliIDE extends JFrame {
             pref.setAutoCaptureForCmdButtons(flag);
          }
       });
-      con.add(new JLabel(_I("cmdListCommandList")));
-      con.add(chkAutoCapture);
+      JXTaskPane setPane = new JXTaskPane();
+      setPane.setTitle(_I("cmdListSettings"));
+      setPane.add(chkAutoCapture);
       int cat = 0;
       JXTaskPane taskPane = new JXTaskPane();
       taskPane.setTitle(CommandCategories[cat++]);
@@ -408,7 +409,8 @@ public class SikuliIDE extends JFrame {
          else
             taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
       }
-      return con;
+      con.add(setPane);
+      return new JScrollPane(con);
    }
 
    private JToolBar initCmdToolbar(){
@@ -416,35 +418,6 @@ public class SikuliIDE extends JFrame {
       toolbar.add(createCommandPane());
       return toolbar;
    }
-
-   /*
-   private JToolBar initCmdToolbar(){
-      JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
-      UserPreferences pref = UserPreferences.getInstance();
-      JCheckBox chkAutoCapture = 
-         new JCheckBox(_I("cmdListAutoCapture"), 
-                       pref.getAutoCaptureForCmdButtons());
-      chkAutoCapture.addChangeListener(new ChangeListener(){
-         public void stateChanged(javax.swing.event.ChangeEvent e){
-            boolean flag = ((JCheckBox)e.getSource()).isSelected();
-            UserPreferences pref = UserPreferences.getInstance();
-            pref.setAutoCaptureForCmdButtons(flag);
-         }
-      });
-      toolbar.add(new JLabel(_I("cmdListCommandList")));
-      toolbar.add(chkAutoCapture);
-      for(int i=0;i<CommandsOnToolbar.length;i++){
-         String cmd = CommandsOnToolbar[i++][0];
-         String[] params = CommandsOnToolbar[i++];
-         String[] desc = CommandsOnToolbar[i];
-         if( cmd.equals("----") )
-            toolbar.addSeparator();
-         else
-            toolbar.add(new ButtonGenCommand(cmd, desc[0], params));
-      }
-      return toolbar;
-   }
-   */
 
    private JToolBar initToolbar(){
       JToolBar toolbar = new JToolBar();

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-13 13:56-0400\n"
+"POT-Creation-Date: 2011-01-15 23:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,7 @@ msgid "Un-Indent"
 msgstr ""
 
 #: menuFind
+msgctxt "menuFind"
 msgid "Find"
 msgstr ""
 
@@ -125,7 +126,6 @@ msgid "Unit Test"
 msgstr ""
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr ""
 
@@ -173,13 +173,29 @@ msgstr ""
 msgid "No update is available."
 msgstr ""
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr ""
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
 msgstr ""
 
 #: paneMessage
