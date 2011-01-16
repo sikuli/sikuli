@@ -505,7 +505,6 @@ public class SikuliIDE extends JFrame {
    private void initTabPane(){
       _mainPane = new CloseableTabbedPane();
       _mainPane.setUI(new AquaCloseableTabbedPaneUI());
-      _mainPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       _mainPane.addCloseableTabbedPaneListener(
                 new CloseableTabbedPaneListener(){
          public boolean closeTab(int i){
@@ -653,6 +652,7 @@ public class SikuliIDE extends JFrame {
 
       _mainSplitPane.add(createCommandPane(), "cmds");
       JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
+      codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
       codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
       _mainSplitPane.add(codeAndUnitPane, "code");

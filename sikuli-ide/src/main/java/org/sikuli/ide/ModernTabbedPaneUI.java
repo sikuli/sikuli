@@ -219,7 +219,7 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 
         if (tabPane.getTabPlacement() == TOP) {
             g2d.drawImage(tab, insets.left, insets.top,
-                        size.width - insets.right - insets.left,
+                        size.width - insets.right - insets.left-1,
                         calculateTabAreaHeight(tabPlacement, runCount,
                                                maxTabHeight),
                         null);
@@ -233,39 +233,38 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
     protected void paintTabBackground(Graphics g, int tabPlacement,
                                       int tabIndex, int x, int y, int w, int h,
                                       boolean isSelected) {
-        BufferedImage background;
-        BufferedImage end;
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING , RenderingHints.VALUE_ANTIALIAS_ON);
-    
-        if (isSelected) {
-            if (tabPressed == tabIndex) {
-                background = tabSelectedPressed;
-                end = tabSelectedPressedEnd;
-            } else {
-                background = tabSelected;
-                end = tabSelectedEnd;
-            }
-        } else {
-            if (getRolloverTab() == tabIndex) {
-                background = tabRollover;
-                end = tabRolloverEnd;
-            } else {
-                background = tab;
-                end = tabEnd;
-            }
-        }
+       BufferedImage background;
+       BufferedImage end;
+       Graphics2D g2d = (Graphics2D)g;
+       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING , RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (x < 0) {
-            x = 0;
-        }
+       if (isSelected) {
+          if (tabPressed == tabIndex) {
+             background = tabSelectedPressed;
+             end = tabSelectedPressedEnd;
+          } else {
+             background = tabSelected;
+             end = tabSelectedEnd;
+          }
+       } else {
+          if (getRolloverTab() == tabIndex) {
+             background = tabRollover;
+             end = tabRolloverEnd;
+          } else {
+             background = tab;
+             end = tabEnd;
+          }
+       }
 
-        if (y < 0) {
-            y = 0;
-        }
-//System.out.println("Width"+TAB_WIDTH);
-        g2d.drawImage(background, x, y, w, 25, null);
-        g2d.drawLine(end.getWidth(), x + w- end.getWidth(),end.getWidth(),25);
+       if (x < 0) {
+          x = 0;
+       }
+
+       if (y < 0) {
+          y = 0;
+       }
+       g2d.drawImage(background, x, y, w, 25, null);
+       g2d.drawLine(end.getWidth(), x + w- end.getWidth(),end.getWidth(),25);
        g2d.drawImage(end, x + w - end.getWidth(), 25, null);
     }
 
