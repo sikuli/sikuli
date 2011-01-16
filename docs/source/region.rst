@@ -3,9 +3,9 @@ Region
 
 .. py:class:: Region
 
-Region is a rectangular section on a screen, which is defined by 
-	1.	a location (x, y) of its upper left corner as a distance relative to the
-		upper left corner of the screen (0, 0), and
+Region is a rectangular area on a screen, which is defined by 
+	1.	its upper left corner (x, y) as a distance relative to the
+		upper left corner of the screen (0, 0) and
 	2.	its dimension (w, h) as its width and height. 
 
 x, y, w, h are integer numbers counting a distance in pixels.
