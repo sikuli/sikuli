@@ -49,6 +49,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/StatusBar.java
          org/sikuli/ide/Subject.java
          org/sikuli/ide/TargetOffsetPane.java
+         org/sikuli/ide/ToolbarButton.java
          org/sikuli/ide/UserPreferences.java
          org/sikuli/ide/Utils.java
          org/sikuli/ide/NamingPane.java

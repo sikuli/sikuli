@@ -36,6 +36,8 @@ import org.sikuli.script.Subject;
 
 import org.apache.commons.cli.CommandLine;
 
+import com.explodingpixels.macwidgets.MacUtils;
+
 
 public class SikuliIDE extends JFrame {
    boolean ENABLE_RECORDING = false;
@@ -419,7 +421,10 @@ public class SikuliIDE extends JFrame {
       return toolbar;
    }
 
+
    private JToolBar initToolbar(){
+      //MacUtils.makeWindowLeopardStyle(this.getRootPane());
+
       JToolBar toolbar = new JToolBar();
       _btnRun = new ButtonRun();
       JButton btnInsertImage = new ButtonInsertImage();
@@ -429,16 +434,19 @@ public class SikuliIDE extends JFrame {
       toolbar.add(_btnCapture);
       toolbar.add(btnInsertImage);
       toolbar.add(btnSubregion);
-      toolbar.addSeparator();
+      toolbar.add(Box.createHorizontalGlue());
+      /*
       if( ENABLE_RECORDING ){
          JToggleButton btnRecord = new ButtonRecord();
          toolbar.add(btnRecord);
       }
+      */
       toolbar.add(_btnRun);
       toolbar.add(_btnRunViz);
       toolbar.add(Box.createHorizontalGlue());
       toolbar.add( createSearchField() );
       toolbar.setFloatable(false);
+      //toolbar.setMargin(new Insets(5, 5, 5, 5));
       return toolbar;
    }
 
@@ -455,8 +463,8 @@ public class SikuliIDE extends JFrame {
       _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
       //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
-      _searchField.setPreferredSize(new Dimension(220,24));
-      _searchField.setMaximumSize(new Dimension(300,30));
+      _searchField.setPreferredSize(new Dimension(220,30));
+      _searchField.setMaximumSize(new Dimension(380,30));
 
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
@@ -1415,9 +1423,10 @@ public class SikuliIDE extends JFrame {
    class ButtonRunViz extends ButtonRun {
       public ButtonRunViz(){
          super();
-         URL imageURL = SikuliIDE.class.getResource("/icons/runviz.png");
+         URL imageURL = SikuliIDE.class.getResource("/icons/run_big_yl.png");
          setIcon(new ImageIcon(imageURL));
          setToolTipText(_I("menuRunRunAndShowActions"));
+         setText(_I("btnRunSlowMotionLabel"));
       }
 
       protected void runPython(File f) throws Exception{
@@ -1436,18 +1445,18 @@ public class SikuliIDE extends JFrame {
       }
    }
 
-   class ButtonRun extends JButton implements ActionListener {
+   class ButtonRun extends ToolbarButton implements ActionListener {
       private Thread _runningThread = null;
 
       public ButtonRun(){
          super();
 
-         URL imageURL = SikuliIDE.class.getResource("/icons/run.png");
+         URL imageURL = SikuliIDE.class.getResource("/icons/run_big_green.png");
          setIcon(new ImageIcon(imageURL));
-         setMaximumSize(new Dimension(26,26));
-         setBorderPainted(false);
          initTooltip();
          addActionListener(this);
+         setText(_I("btnRunLabel"));
+         //setMaximumSize(new Dimension(45,45));
       }
 
       protected void runPython(File f) throws Exception{
@@ -1596,13 +1605,13 @@ public class SikuliIDE extends JFrame {
    }
 }
 
-class ButtonInsertImage extends JButton implements ActionListener{
+class ButtonInsertImage extends ToolbarButton implements ActionListener{
    public ButtonInsertImage(){
       super();
       URL imageURL = SikuliIDE.class.getResource("/icons/insert-image.png");
       setIcon(new ImageIcon(imageURL));
-      setMaximumSize(new Dimension(26,26));
-      setBorderPainted(false);
+      setText(SikuliIDE._I("btnInsertImageLabel"));
+      //setMaximumSize(new Dimension(26,26));
       setToolTipText(SikuliIDE._I("btnInsertImageHint"));
       addActionListener(this);
    }
@@ -1620,13 +1629,13 @@ class ButtonInsertImage extends JButton implements ActionListener{
    }
 }
 
-class ButtonSubregion extends JButton implements ActionListener, Observer{
+class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
    public ButtonSubregion(){
       super();
       URL imageURL = SikuliIDE.class.getResource("/icons/subregion.png");
       setIcon(new ImageIcon(imageURL));
-      setMaximumSize(new Dimension(26,26));
-      setBorderPainted(false);
+      setText(SikuliIDE._I("btnRegionLabel"));
+      //setMaximumSize(new Dimension(26,26));
       setToolTipText( SikuliIDE._I("btnRegionHint") );
       addActionListener(this);
    }

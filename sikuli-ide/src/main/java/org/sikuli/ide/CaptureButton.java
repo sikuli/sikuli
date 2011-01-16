@@ -13,7 +13,7 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
 
-class CaptureButton extends JButton implements ActionListener, Cloneable, Observer{
+class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, Observer{
    protected Element _line;
    protected SikuliPane _codePane;
    protected boolean _isCapturing;
@@ -32,8 +32,9 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       String strHotkey = Utils.convertKeyToText(
             pref.getCaptureHotkey(), pref.getCaptureHotkeyModifiers() );
       setToolTipText(SikuliIDE._I("btnCaptureHint", strHotkey));
-      setBorderPainted(false);
-      setMaximumSize(new Dimension(26,26));
+      setText(SikuliIDE._I("btnCaptureLabel"));
+      //setBorderPainted(false);
+      //setMaximumSize(new Dimension(26,26));
       addActionListener(this);
       _line = null;
    }
@@ -44,6 +45,7 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       _codePane = codePane;
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
+      setText(null);
    }
 
    public boolean hasNext(){  return false;  }
