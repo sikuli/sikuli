@@ -440,15 +440,16 @@ ChangeFinder::find(Mat new_screen_image){
    Mat diff1;
    absdiff(gray1,gray2,diff1);
    
-   typedef float T;
    
    Size size = diff1.size();
+   int ch = diff1.channels();
+   typedef unsigned char T;
 
    int diff_cnt = 0;
    for( int i = 0; i < size.height; i++ )
     {
         const T* ptr1 = diff1.ptr<T>(i);
-        for( int j = 0; j < size.width; j += 4 )
+        for( int j = 0; j < size.width; j += ch )
         {         
          if (ptr1[j] > PIXEL_DIFF_THRESHOLD)
             diff_cnt++;
