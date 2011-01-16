@@ -167,7 +167,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
    public UnitTestRunner(){
       mainPane = new JPanel(new GridBagLayout());
       mainPane.setMinimumSize(new Dimension(0,0));
-      mainPane.setPreferredSize(new Dimension(270,400));
+      mainPane.setPreferredSize(new Dimension(270,200));
       minPane = new JPanel(new GridBagLayout());
 
       initComponents();

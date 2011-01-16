@@ -57,7 +57,6 @@ public class SikuliIDE extends JFrame {
    private JXCollapsiblePane  _sidePane;
    private JXMultiSplitPane _mainSplitPane;
 
-   private JSplitPane _codeAndUnitPane;
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
    private StatusBar _status;
@@ -559,36 +558,25 @@ public class SikuliIDE extends JFrame {
       _testRunner = new UnitTestRunner();
       _unitPane = _testRunner.getPanel();
       _chkShowUnitTest.setState(false);
-      //(new ViewAction()).toggleUnitTest(null);
       addAuxTab(_I("paneTestTrace"), _testRunner.getTracePane());
    }
 
    private void initSidePane(){
       initUnitPane();
       _sidePane = new JXCollapsiblePane(JXCollapsiblePane.Direction.RIGHT);
+      _sidePane.setMinimumSize(new Dimension(0,0));
       CloseableTabbedPane tabPane = new CloseableTabbedPane();
       _sidePane.getContentPane().add(tabPane);
-      _sidePane.setMinimumSize(new Dimension(0,0));
       tabPane.setMinimumSize(new Dimension(0,0));
       tabPane.addTab(_I("tabUnitTest"), _unitPane);
       tabPane.addCloseableTabbedPaneListener(new CloseableTabbedPaneListener(){
          public boolean closeTab(int tabIndexToClose){
             _sidePane.setCollapsed(true);
+            _chkShowUnitTest.setState(false);
             return false;
          }
       });
-      tabPane.addChangeListener(new ChangeListener(){
-         public void stateChanged(javax.swing.event.ChangeEvent e){
-            /*
-            JTabbedPane pane = (JTabbedPane)e.getSource();
-            int sel = pane.getSelectedIndex();
-            if( sel == -1 ) { // all tabs closed
-               _codeAndUnitPane.setDividerLocation(1.0D);
-               _chkShowUnitTest.setState(false);
-            }
-            */
-         }
-      });
+      _sidePane.setCollapsed(true);
    }
 
    private StatusBar initStatusbar(){
@@ -677,29 +665,15 @@ public class SikuliIDE extends JFrame {
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
       codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
       _mainSplitPane.add(codeAndUnitPane, "code");
-      //_mainSplitPane.add(_sidePane, "test");
       _mainSplitPane.add(_auxPane, "msg");
 
-      /*
-      _codeAndUnitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT, true, _mainPane, _sidePane);
-      JSplitPane mainAndConsolePane = new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT, true, _codeAndUnitPane, _auxPane);
-      _cmdToolBar = initCmdToolbar();
-      */
 
       c.add(initToolbar(), BorderLayout.NORTH);
-      /*
-      c.add(_cmdToolBar, BorderLayout.WEST);
-      c.add(mainAndConsolePane, BorderLayout.CENTER);
-      */
       c.add(_mainSplitPane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
       setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
-      adjustCodePaneWidth();
-      //mainAndConsolePane.setDividerLocation(450);
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -791,16 +765,6 @@ public class SikuliIDE extends JFrame {
       catch(IOException e){
          e.printStackTrace();
       }
-   }
-
-   private void adjustCodePaneWidth(){
-      //FIXME
-      /*
-      int pos = getWidth() - _sidePane.getMinimumSize().width-15 
-                           - _cmdToolBar.getWidth();
-      if(_codeAndUnitPane != null && pos >= 0)
-         _codeAndUnitPane.setDividerLocation(pos);
-         */
    }
 
 
@@ -1112,15 +1076,10 @@ public class SikuliIDE extends JFrame {
       }
 
       public void toggleUnitTest(ActionEvent ae){
-         _sidePane.setCollapsed(!_sidePane.isCollapsed());
-         /*
-         if( _chkShowUnitTest.getState() ){
-            _sidePane.addTab(_I("tabUnitTest"), _unitPane);
-            adjustCodePaneWidth();
-         }
+         if(_chkShowUnitTest.getState())
+            _sidePane.setCollapsed(false);
          else
-            _sidePane.remove(_unitPane);
-            */
+            _sidePane.setCollapsed(true);
       }
    }
 
