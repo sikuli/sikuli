@@ -18,7 +18,14 @@ import javax.swing.event.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXSearchField;
+import org.jdesktop.swingx.JXTaskPaneContainer;
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXMultiSplitPane;
+import org.jdesktop.swingx.MultiSplitLayout;
+
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.CapturePrompt;
@@ -36,10 +43,20 @@ public class SikuliIDE extends JFrame {
    final static Color COLOR_SEARCH_FAILED = Color.red;
    final static Color COLOR_SEARCH_NORMAL = Color.white;
 
+   final static String MAIN_LAYOUT_DEF = 
+      "(ROW " +
+         "(LEAF name=cmds weight=0.15) " +
+         "(COLUMN weight=0.85" + 
+            "(LEAF name=code weight=0.9)" +
+            "(LEAF name=msg weight=0.1)))";
+
    private static NativeLayer _native;
 
    private ConsolePane _console;
-   private CloseableTabbedPane _mainPane, _sidePane;
+   private CloseableTabbedPane _mainPane;
+   private JXCollapsiblePane  _sidePane;
+   private JXMultiSplitPane _mainSplitPane;
+
    private JSplitPane _codeAndUnitPane;
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
@@ -307,6 +324,13 @@ public class SikuliIDE extends JFrame {
       frame.setJMenuBar(_menuBar);
    }
 
+   private String[] CommandCategories = {
+      "Find",
+      "Mouse Actions",
+      "Keyboard Actions",
+      "Event Observation"
+   };
+   
    private String[][] CommandsOnToolbar = {
       {"find"}, {"PATTERN"},
       {_I("cmdFind")},
@@ -333,6 +357,7 @@ public class SikuliIDE extends JFrame {
       {"drag"}, {"PATTERN"},
       {"dropAt"}, {"PATTERN", "[delay]"},
 */
+      {"----"},{},{},
       {"type"}, {"_text", "[modifiers]"},
       {_I("cmdType")},
       {"type"}, {"PATTERN", "_text", "[modifiers]"},
@@ -352,6 +377,48 @@ public class SikuliIDE extends JFrame {
       {_I("cmdObserve")},
    };
 
+   private JPanel createCommandPane(){
+      JXTaskPaneContainer con = new JXTaskPaneContainer();
+
+      UserPreferences pref = UserPreferences.getInstance();
+      JCheckBox chkAutoCapture = 
+         new JCheckBox(_I("cmdListAutoCapture"), 
+                       pref.getAutoCaptureForCmdButtons());
+      chkAutoCapture.addChangeListener(new ChangeListener(){
+         public void stateChanged(javax.swing.event.ChangeEvent e){
+            boolean flag = ((JCheckBox)e.getSource()).isSelected();
+            UserPreferences pref = UserPreferences.getInstance();
+            pref.setAutoCaptureForCmdButtons(flag);
+         }
+      });
+      con.add(new JLabel(_I("cmdListCommandList")));
+      con.add(chkAutoCapture);
+      int cat = 0;
+      JXTaskPane taskPane = new JXTaskPane();
+      taskPane.setTitle(CommandCategories[cat++]);
+      con.add(taskPane);
+      for(int i=0;i<CommandsOnToolbar.length;i++){
+         String cmd = CommandsOnToolbar[i++][0];
+         String[] params = CommandsOnToolbar[i++];
+         String[] desc = CommandsOnToolbar[i];
+         if( cmd.equals("----") ){
+            taskPane = new JXTaskPane();
+            taskPane.setTitle(CommandCategories[cat++]);
+            con.add(taskPane);
+         }
+         else
+            taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
+      }
+      return con;
+   }
+
+   private JToolBar initCmdToolbar(){
+      JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
+      toolbar.add(createCommandPane());
+      return toolbar;
+   }
+
+   /*
    private JToolBar initCmdToolbar(){
       JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
       UserPreferences pref = UserPreferences.getInstance();
@@ -378,6 +445,7 @@ public class SikuliIDE extends JFrame {
       }
       return toolbar;
    }
+   */
 
    private JToolBar initToolbar(){
       JToolBar toolbar = new JToolBar();
@@ -491,20 +559,34 @@ public class SikuliIDE extends JFrame {
       _testRunner = new UnitTestRunner();
       _unitPane = _testRunner.getPanel();
       _chkShowUnitTest.setState(false);
-      (new ViewAction()).toggleUnitTest(null);
+      //(new ViewAction()).toggleUnitTest(null);
       addAuxTab(_I("paneTestTrace"), _testRunner.getTracePane());
    }
 
    private void initSidePane(){
-      _sidePane = new CloseableTabbedPane();
-      _sidePane.addChangeListener(new ChangeListener(){
+      initUnitPane();
+      _sidePane = new JXCollapsiblePane(JXCollapsiblePane.Direction.RIGHT);
+      CloseableTabbedPane tabPane = new CloseableTabbedPane();
+      _sidePane.getContentPane().add(tabPane);
+      _sidePane.setMinimumSize(new Dimension(0,0));
+      tabPane.setMinimumSize(new Dimension(0,0));
+      tabPane.addTab(_I("tabUnitTest"), _unitPane);
+      tabPane.addCloseableTabbedPaneListener(new CloseableTabbedPaneListener(){
+         public boolean closeTab(int tabIndexToClose){
+            _sidePane.setCollapsed(true);
+            return false;
+         }
+      });
+      tabPane.addChangeListener(new ChangeListener(){
          public void stateChanged(javax.swing.event.ChangeEvent e){
+            /*
             JTabbedPane pane = (JTabbedPane)e.getSource();
             int sel = pane.getSelectedIndex();
             if( sel == -1 ) { // all tabs closed
                _codeAndUnitPane.setDividerLocation(1.0D);
                _chkShowUnitTest.setState(false);
             }
+            */
          }
       });
    }
@@ -585,23 +667,39 @@ public class SikuliIDE extends JFrame {
       initTabPane();
       initAuxPane();
       initSidePane();
-      initUnitPane();
 
+      _mainSplitPane = new JXMultiSplitPane();
+      _mainSplitPane.getMultiSplitLayout().setModel( 
+            MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
+
+      _mainSplitPane.add(createCommandPane(), "cmds");
+      JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
+      codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
+      codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
+      _mainSplitPane.add(codeAndUnitPane, "code");
+      //_mainSplitPane.add(_sidePane, "test");
+      _mainSplitPane.add(_auxPane, "msg");
+
+      /*
       _codeAndUnitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT, true, _mainPane, _sidePane);
       JSplitPane mainAndConsolePane = new JSplitPane(
             JSplitPane.VERTICAL_SPLIT, true, _codeAndUnitPane, _auxPane);
       _cmdToolBar = initCmdToolbar();
+      */
 
       c.add(initToolbar(), BorderLayout.NORTH);
+      /*
       c.add(_cmdToolBar, BorderLayout.WEST);
       c.add(mainAndConsolePane, BorderLayout.CENTER);
+      */
+      c.add(_mainSplitPane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
       setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
       adjustCodePaneWidth();
-      mainAndConsolePane.setDividerLocation(450);
+      //mainAndConsolePane.setDividerLocation(450);
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -696,10 +794,13 @@ public class SikuliIDE extends JFrame {
    }
 
    private void adjustCodePaneWidth(){
+      //FIXME
+      /*
       int pos = getWidth() - _sidePane.getMinimumSize().width-15 
                            - _cmdToolBar.getWidth();
       if(_codeAndUnitPane != null && pos >= 0)
          _codeAndUnitPane.setDividerLocation(pos);
+         */
    }
 
 
@@ -1011,12 +1112,15 @@ public class SikuliIDE extends JFrame {
       }
 
       public void toggleUnitTest(ActionEvent ae){
+         _sidePane.setCollapsed(!_sidePane.isCollapsed());
+         /*
          if( _chkShowUnitTest.getState() ){
             _sidePane.addTab(_I("tabUnitTest"), _unitPane);
             adjustCodePaneWidth();
          }
          else
             _sidePane.remove(_unitPane);
+            */
       }
    }
 
