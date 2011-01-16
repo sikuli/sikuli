@@ -414,9 +414,10 @@ public class SikuliIDE extends JFrame {
       */
       _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
-      _searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
       _searchField.setPreferredSize(new Dimension(220,24));
       _searchField.setMaximumSize(new Dimension(300,30));
+
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
             getCurrentCodePane().requestFocus();
