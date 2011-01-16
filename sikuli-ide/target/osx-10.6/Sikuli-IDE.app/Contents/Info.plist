@@ -51,6 +51,8 @@
 			<string>$JAVAROOT/commons-cli-1.2.jar</string>
 			<string>$JAVAROOT/json_simple-1.1.jar</string>
 			<string>$JAVAROOT/swingx-core-1.6.2.jar</string>
+			<string>$JAVAROOT/mac_widgets.jar</string>
+			<string>$JAVAROOT/forms-1.2.1.jar</string>
 		</array>
 		<key>JVMVersion</key>
 		<string>1.5+</string>

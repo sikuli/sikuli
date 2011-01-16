@@ -40,7 +40,8 @@ import com.explodingpixels.macwidgets.MacUtils;
 
 
 public class SikuliIDE extends JFrame {
-   boolean ENABLE_RECORDING = false;
+   final static boolean ENABLE_RECORDING = false;
+   final static boolean ENABLE_UNIFIED_TOOLBAR = true;
 
    final static Color COLOR_SEARCH_FAILED = Color.red;
    final static Color COLOR_SEARCH_NORMAL = Color.white;
@@ -148,11 +149,16 @@ public class SikuliIDE extends JFrame {
 
    boolean checkDirtyPanes(){
       for(int i=0;i<_mainPane.getComponentCount();i++){
-         JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-         SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-         if(codePane.isDirty()){
-            getRootPane().putClientProperty("Window.documentModified", true);
-            return true;
+         try{
+            JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
+            SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+            if(codePane.isDirty()){
+               getRootPane().putClientProperty("Window.documentModified", true);
+               return true;
+            }
+         }
+         catch(Exception e){
+            Debug.log(7, "checkDirtyPanes: " + e.getMessage());
          }
       }
       getRootPane().putClientProperty("Window.documentModified", false);
@@ -423,7 +429,8 @@ public class SikuliIDE extends JFrame {
 
 
    private JToolBar initToolbar(){
-      //MacUtils.makeWindowLeopardStyle(this.getRootPane());
+      if(ENABLE_UNIFIED_TOOLBAR)
+         MacUtils.makeWindowLeopardStyle(this.getRootPane());
 
       JToolBar toolbar = new JToolBar();
       _btnRun = new ButtonRun();
@@ -497,20 +504,23 @@ public class SikuliIDE extends JFrame {
 
    private void initTabPane(){
       _mainPane = new CloseableTabbedPane();
+      _mainPane.setUI(new AquaCloseableTabbedPaneUI());
+      _mainPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       _mainPane.addCloseableTabbedPaneListener(
                 new CloseableTabbedPaneListener(){
          public boolean closeTab(int i){
             try{
                JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
                SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-               Debug.log(3, "close tab: " + _mainPane.getComponentCount());
+               Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                boolean ret = codePane.close();
-               Debug.log(3, "close tab after: " + _mainPane.getComponentCount());
+               Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
                checkDirtyPanes();
                return ret;
             }
             catch(Exception e){
                Debug.info("Can't close this tab: " + e.getStackTrace());
+               e.printStackTrace();
                return false;
             }
          }

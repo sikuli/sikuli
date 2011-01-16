@@ -22,6 +22,8 @@ import javax.swing.event.EventListenerList;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
  
+import org.sikuli.script.Debug;
+
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
  *
@@ -59,6 +61,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    */
   private Icon pressedCloseIcon = SikuliIDE.getIconResource("/icons/close-pressed.gif");
  
+
   /**
    * Creates a new instance of <code>CloseableTabbedPane</code>
    */
@@ -87,10 +90,13 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     addMouseListener(this);
     addMouseMotionListener(this);
  
+    //setUI(new AquaCloseableTabbedPaneUI(horizontalTextPosition));
     if (getUI() instanceof MetalTabbedPaneUI)
       setUI(new CloseableMetalTabbedPaneUI(horizontalTextPosition));
+    /*
     else
       setUI(new CloseableTabbedPaneUI(horizontalTextPosition));
+   */
   }
  
   /**
@@ -216,6 +222,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
   private void processMouseEvents(MouseEvent e) {
     int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());
     if (tabNumber < 0) return;
+    //Debug.log("click tab: "  + tabNumber + " cur: " + getSelectedIndex());
     CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
     if (icon != null) {
       Rectangle rect= icon.getBounds();
@@ -460,6 +467,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     }
   }
  
+
   /**
    * A specific <code>BasicTabbedPaneUI</code>.
    */

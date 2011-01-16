@@ -53,6 +53,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/UserPreferences.java
          org/sikuli/ide/Utils.java
          org/sikuli/ide/NamingPane.java
+         org/sikuli/ide/ModernTabbedPaneUI.java
          org/sikuli/ide/extmanager/ExtensionItem.java
          org/sikuli/ide/extmanager/ExtensionManagerFrame.java
 )
