@@ -63,7 +63,7 @@ public class SikuliIDE extends JFrame {
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
    private StatusBar _status;
-   private JToolBar _cmdToolBar;
+   private JComponent _cmdList;
    private JXSearchField _searchField;
    private FindAction _findHelper;
 
@@ -418,7 +418,8 @@ public class SikuliIDE extends JFrame {
             taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
       }
       con.add(setPane);
-      return new JScrollPane(con);
+      _cmdList =  new JScrollPane(con);
+      return _cmdList;
    }
 
    private JToolBar initCmdToolbar(){
@@ -647,6 +648,7 @@ public class SikuliIDE extends JFrame {
       initSidePane();
 
       _mainSplitPane = new JXMultiSplitPane();
+      //_mainSplitPane.setDividerPainter(new BevelDividerPainter(_mainSplitPane));
       _mainSplitPane.getMultiSplitLayout().setModel( 
             MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
 
@@ -1063,7 +1065,25 @@ public class SikuliIDE extends JFrame {
       }
 
       public void toggleCmdList(ActionEvent ae){
-         _cmdToolBar.setVisible(!_cmdToolBar.isVisible());
+         /*
+         MultiSplitLayout.Node cmdNode = _mainSplitPane.getMultiSplitLayout().getNodeForName("cmds");
+         MultiSplitLayout.Node divider = cmdNode.nextSibling();
+         MultiSplitLayout.Node codeNode = 
+             _mainSplitPane.getMultiSplitLayout().getNodeForName("code");
+
+         Rectangle b = divider.getBounds();
+         b.x = 0;
+         divider.setBounds(b);
+
+         Rectangle codeBound = codeNode.getBounds();
+         Rectangle cmdBound = cmdNode.getBounds();
+         codeBound.width += cmdBound.width;
+         cmdBound.width = 0;
+         codeNode.setBounds(codeBound);
+         cmdNode.setBounds(cmdBound);
+
+         _mainSplitPane.revalidate();
+         */
       }
 
       public void toggleUnitTest(ActionEvent ae){
