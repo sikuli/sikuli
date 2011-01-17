@@ -15,6 +15,9 @@ import java.text.MessageFormat;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
+import javax.swing.undo.*;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.event.UndoableEditEvent;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -79,6 +82,10 @@ public class SikuliIDE extends JFrame {
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
+
+   private UndoAction _undoAction = new UndoAction();
+   private RedoAction _redoAction = new RedoAction();
+   private UndoHandler _undoHandler = new UndoHandler();
 
    private static CommandLine _cmdLine;
    private static boolean _useStderr = false;
@@ -229,6 +236,14 @@ public class SikuliIDE extends JFrame {
    private void initEditMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
+      JMenuItem undoItem = _editMenu.add( _undoAction );
+      undoItem.setAccelerator(
+         KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, scMask));
+      JMenuItem redoItem = _editMenu.add( _redoAction );
+      redoItem.setAccelerator(
+         KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, scMask|InputEvent.SHIFT_MASK));
+      _editMenu.addSeparator();
+
       _editMenu.add( createMenuItem(_I("menuEditCut"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, scMask),
                new EditAction(EditAction.CUT)));
@@ -242,6 +257,7 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
                new EditAction(EditAction.SELECT_ALL)));
       _editMenu.addSeparator();
+
       JMenu findMenu = new JMenu(_I("menuFind"));
       _findHelper = new FindAction();
       findMenu.setMnemonic(KeyEvent.VK_F);
@@ -1326,6 +1342,7 @@ public class SikuliIDE extends JFrame {
             }
          
          });
+         codePane.getDocument().addUndoableEditListener(_undoHandler);
          codePane.requestFocus();
       }
       
@@ -1633,6 +1650,66 @@ public class SikuliIDE extends JFrame {
          _runningThread.start();
       }
    }
+
+   class UndoAction extends AbstractAction{ 
+      public UndoAction(){ 
+         super(_I("menuEditUndo")); 
+         setEnabled(false); 
+      } 
+      public void updateUndoState(){ 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         if (undo.canUndo()){ 
+            setEnabled(true); 
+         } 
+         else { 
+            setEnabled(false); 
+         } 
+      } 
+      public void actionPerformed(ActionEvent e){ 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         try{ 
+            undo.undo(); 
+         } 
+         catch (CannotUndoException ex){} 
+         updateUndoState(); 
+         _redoAction.updateRedoState(); 
+      } 
+   }
+
+   class RedoAction extends AbstractAction{ 
+      public RedoAction() { 
+         super(_I("menuEditRedo")); 
+         setEnabled(false); 
+      } 
+      public void actionPerformed(ActionEvent e){ 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         try{ 
+            undo.redo(); 
+         }
+         catch(CannotRedoException ex){} 
+         updateRedoState(); 
+         _undoAction.updateUndoState(); 
+      } 
+      protected void updateRedoState() { 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         if (undo.canRedo()) { 
+            setEnabled(true); 
+         } 
+         else { 
+            setEnabled(false); 
+         } 
+      }
+   }
+
+   private class UndoHandler implements UndoableEditListener {
+         public void undoableEditHappened(UndoableEditEvent e) {
+            UndoManager undo = getCurrentCodePane().getUndoManager();
+            //Remember the edit and update the menus
+            undo.addEdit(e.getEdit());
+            _undoAction.updateUndoState();
+            _redoAction.updateRedoState();
+         }
+   }  
 }
 
 class ButtonInsertImage extends ToolbarButton implements ActionListener{
@@ -1702,5 +1779,7 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
       ide.setVisible(true);
       codePane.requestFocus();
    }
+
+ 
 
 }

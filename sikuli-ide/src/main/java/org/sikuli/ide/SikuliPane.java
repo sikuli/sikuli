@@ -14,6 +14,8 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.undo.*;
+
 import javax.imageio.*;
 
 import org.python.util.PythonInterpreter; 
@@ -40,6 +42,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private String _lastSearchString = null;
    private Matcher _lastSearchMatcher;
 
+   private UndoManager _undo = new UndoManager();
+
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
       setContentType("text/python");
@@ -56,6 +60,9 @@ public class SikuliPane extends JTextPane implements KeyListener,
       getDocument().addDocumentListener(new DirtyHandler());
    }
 
+   public UndoManager getUndoManager(){
+      return _undo;
+   }
 
    private void initKeyMap(){
       InputMap map = this.getInputMap();
@@ -829,6 +836,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setDirty(true);
       }
    }
+
 
 }
 
