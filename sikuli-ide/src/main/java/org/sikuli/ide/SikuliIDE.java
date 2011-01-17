@@ -1757,6 +1757,7 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
          Rectangle roi = r.getROI();
          complete((int)roi.getX(), (int)roi.getY(),
                   (int)roi.getWidth(), (int)roi.getHeight());
+         SikuliIDE.getInstance().setVisible(true);
       }
    }
 
@@ -1766,7 +1767,6 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt(500);
-      ide.setVisible(true);
    }
 
    public void complete(int x, int y, int w, int h){

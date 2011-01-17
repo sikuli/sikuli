@@ -40,21 +40,22 @@ class RegionButton extends JButton implements ActionListener, Observer{
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage r = cp.getSelection();
-         if(r==null)
-            return;
-         cp.close();
-         try{
-            Thread.sleep(300);
+         if(r!=null){
+            cp.close();
+            try{
+               Thread.sleep(300);
+            }
+            catch(InterruptedException ie){}
+            Rectangle roi = r.getROI();
+            _x = (int)roi.getX();
+            _y = (int)roi.getY();
+            _w = (int)roi.getWidth();
+            _h = (int)roi.getHeight();
+            BufferedImage img = getRegionImage(_x, _y, _w, _h);
+            setIcon(new ImageIcon(img));
+            setToolTipText( this.toString() );
          }
-         catch(InterruptedException ie){}
-         Rectangle roi = r.getROI();
-         _x = (int)roi.getX();
-         _y = (int)roi.getY();
-         _w = (int)roi.getWidth();
-         _h = (int)roi.getHeight();
-         BufferedImage img = getRegionImage(_x, _y, _w, _h);
-         setIcon(new ImageIcon(img));
-         setToolTipText( this.toString() );
+         SikuliIDE.getInstance().setVisible(true);
       }
    }
 
@@ -64,7 +65,6 @@ class RegionButton extends JButton implements ActionListener, Observer{
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
-      ide.setVisible(true);
    }
 
    private BufferedImage getRegionImage(int x, int y, int w, int h) {

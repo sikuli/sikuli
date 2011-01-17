@@ -181,6 +181,10 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
             }
             catch(Exception e){}
             (new CapturePrompt(null, CaptureButton.this)).prompt();
+            try{
+               Thread.sleep(500);
+            }
+            catch(Exception e){}
             if(delay!=0) ide.setVisible(true);
          }
       };
