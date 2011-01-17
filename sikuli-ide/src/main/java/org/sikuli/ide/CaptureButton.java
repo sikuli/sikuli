@@ -43,6 +43,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
       this();
       _line = elmLine;
       _codePane = codePane;
+      setUI(UIManager.getUI(this));
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
       setText(null);
