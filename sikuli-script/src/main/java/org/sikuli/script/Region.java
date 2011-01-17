@@ -432,8 +432,10 @@ public class Region {
    public <PSC> Match exists(PSC target, double timeout) {
       try{
          RepeatableFind rf = new RepeatableFind(target);
-         if (rf.repeat(timeout))
-            return rf.getMatch();
+         if (rf.repeat(timeout)){
+            _lastMatch = rf.getMatch();
+            return _lastMatch;
+         }
       }
       catch(Exception ff){
          // TODO: This should throw an exception since
