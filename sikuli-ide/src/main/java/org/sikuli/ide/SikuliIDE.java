@@ -1219,13 +1219,13 @@ public class SikuliIDE extends JFrame {
       public boolean findStr(String str){
          if(getCurrentCodePane() != null)
             return _find(str, getCurrentCodePane().getCaretPosition(), true);
-         return -1;
+         return false;
       }
 
       public boolean findPrev(String str){
          if(getCurrentCodePane() != null)
             return _find(str, getCurrentCodePane().getCaretPosition(), false);
-         return -1;
+         return false;
       }
 
       public boolean findNext(String str){
@@ -1233,7 +1233,7 @@ public class SikuliIDE extends JFrame {
             return _find(str, 
                          getCurrentCodePane().getCaretPosition()+str.length(),
                          true);
-         return -1;
+         return false;
       }
 
       public void setFailed(boolean failed){
