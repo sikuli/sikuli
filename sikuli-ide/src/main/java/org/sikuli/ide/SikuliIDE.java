@@ -85,7 +85,6 @@ public class SikuliIDE extends JFrame {
 
    private UndoAction _undoAction = new UndoAction();
    private RedoAction _redoAction = new RedoAction();
-   private UndoHandler _undoHandler = new UndoHandler();
 
    private static CommandLine _cmdLine;
    private static boolean _useStderr = false;
@@ -549,7 +548,7 @@ public class SikuliIDE extends JFrame {
             int i = tab.getSelectedIndex();
             if(i>=0)
                SikuliIDE.this.setTitle(tab.getTitleAt(i));
-
+            updateUndoRedoStates();
          }
       });
             
@@ -1218,17 +1217,23 @@ public class SikuliIDE extends JFrame {
       }
 
       public boolean findStr(String str){
-         return _find(str, getCurrentCodePane().getCaretPosition(), true);
+         if(getCurrentCodePane() != null)
+            return _find(str, getCurrentCodePane().getCaretPosition(), true);
+         return -1;
       }
 
       public boolean findPrev(String str){
-         return _find(str, getCurrentCodePane().getCaretPosition(), false);
+         if(getCurrentCodePane() != null)
+            return _find(str, getCurrentCodePane().getCaretPosition(), false);
+         return -1;
       }
 
       public boolean findNext(String str){
-         return _find(str, 
-                      getCurrentCodePane().getCaretPosition()+str.length(),
-                      true);
+         if(getCurrentCodePane() != null)
+            return _find(str, 
+                         getCurrentCodePane().getCaretPosition()+str.length(),
+                         true);
+         return -1;
       }
 
       public void setFailed(boolean failed){
@@ -1342,7 +1347,6 @@ public class SikuliIDE extends JFrame {
             }
          
          });
-         codePane.getDocument().addUndoableEditListener(_undoHandler);
          codePane.requestFocus();
       }
       
@@ -1657,8 +1661,8 @@ public class SikuliIDE extends JFrame {
          setEnabled(false); 
       } 
       public void updateUndoState(){ 
-         UndoManager undo = getCurrentCodePane().getUndoManager();
-         if (undo.canUndo()){ 
+         if (getCurrentCodePane() != null && 
+             getCurrentCodePane().getUndoManager().canUndo()){
             setEnabled(true); 
          } 
          else { 
@@ -1691,8 +1695,8 @@ public class SikuliIDE extends JFrame {
          _undoAction.updateUndoState(); 
       } 
       protected void updateRedoState() { 
-         UndoManager undo = getCurrentCodePane().getUndoManager();
-         if (undo.canRedo()) { 
+         if (getCurrentCodePane() != null && 
+             getCurrentCodePane().getUndoManager().canRedo()){
             setEnabled(true); 
          } 
          else { 
@@ -1701,15 +1705,11 @@ public class SikuliIDE extends JFrame {
       }
    }
 
-   private class UndoHandler implements UndoableEditListener {
-         public void undoableEditHappened(UndoableEditEvent e) {
-            UndoManager undo = getCurrentCodePane().getUndoManager();
-            //Remember the edit and update the menus
-            undo.addEdit(e.getEdit());
-            _undoAction.updateUndoState();
-            _redoAction.updateRedoState();
-         }
-   }  
+   public void updateUndoRedoStates(){
+      _undoAction.updateUndoState();
+      _redoAction.updateRedoState();
+   }
+
 }
 
 class ButtonInsertImage extends ToolbarButton implements ActionListener{

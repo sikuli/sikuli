@@ -14,7 +14,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.undo.*;
+//import javax.swing.undo.*;
 
 import javax.imageio.*;
 
@@ -58,6 +58,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       //setTabSize(4);
       setBackground(Color.WHITE);
       getDocument().addDocumentListener(new DirtyHandler());
+      getDocument().addUndoableEditListener(_undo);
    }
 
    public UndoManager getUndoManager(){
@@ -836,6 +837,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setDirty(true);
       }
    }
+
 
 
 }
