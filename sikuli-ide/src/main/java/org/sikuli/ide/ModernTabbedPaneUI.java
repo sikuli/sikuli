@@ -34,7 +34,7 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
     private static final Logger LOGGER = Logger.getLogger(TABBED_PANE_UI_LOGGER);
 
     private   int TAB_WIDTH = 0;
-    private static  int TAB_HEIGHT = 25;
+    private static  int TAB_HEIGHT = 24;
 
     private static BufferedImage tabSelectedPressedEnd;
     private static BufferedImage tabSelectedPressed;
@@ -223,6 +223,10 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
                         calculateTabAreaHeight(tabPlacement, runCount,
                                                maxTabHeight),
                         null);
+            g2d.setColor(Color.gray);
+            g2d.drawLine(size.width-1, insets.top+2, size.width-1, insets.top+
+                        calculateTabAreaHeight(tabPlacement, runCount,
+                                               maxTabHeight));
         }
        /*System.out.println("Tab Height"+calculateTabAreaHeight(tabPlacement, runCount,
                maxTabHeight));*/
@@ -263,9 +267,9 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
        if (y < 0) {
           y = 0;
        }
-       g2d.drawImage(background, x, y, w, 25, null);
-       g2d.drawLine(end.getWidth(), x + w- end.getWidth(),end.getWidth(),25);
-       g2d.drawImage(end, x + w - end.getWidth(), 25, null);
+       g2d.drawImage(background, x+1, y+1, w-1, TAB_HEIGHT, null);
+       //g2d.drawLine(end.getWidth(), x + w- end.getWidth(),end.getWidth(),TAB_HEIGHT);
+       //g2d.drawImage(end, x + w - end.getWidth()+1, TAB_HEIGHT, null);
     }
 
     private class TabPressedTracker extends MouseAdapter {
@@ -341,17 +345,17 @@ class AquaCloseableTabbedPaneUI extends ModernTabbedPaneUI {
    }
 
    Color darkTabColor = new Color(200,200,200, 100);
-   Color borderColor = new Color(0,0,0, 100);
+   Color borderColor = new Color(150,150,150);
    protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected){
 
       super.paintTabBackground(g, tabPlacement, tabIndex, x, y, w, h, isSelected);
       if(!isSelected){
          g.setColor(darkTabColor);
-         g.fillRect(x+1, y+1, w-1, h-1);
+         g.fillRect(x+1, y+2, w-1, h-1);
       }
       g.setColor(borderColor);
-      g.drawLine(x+w,y+1,x+w,y+h);
-      g.drawLine(x,y+1,x,y+h);
+      g.drawLine(x+w,y+2,x+w,y+h);
+      g.drawLine(x,y+2,x,y+h);
       if(isSelected){
          g.setColor(Color.white);
          g.drawLine(x,y+h,x+w,y+h);
