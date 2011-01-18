@@ -58,9 +58,10 @@ def load(jar):
    if _load(jarInExtPath):
       return True
    path = getBundlePath()
-   jarInBundle = path + java.io.File.separator + jar
-   if _load(jarInBundle):
-      return True
+   if path:
+      jarInBundle = path + java.io.File.separator + jar
+      if _load(jarInBundle):
+         return True
    return False
 
 def addImagePath(path):
