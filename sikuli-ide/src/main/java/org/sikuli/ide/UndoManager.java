@@ -1,6 +1,7 @@
 package org.sikuli.ide;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
@@ -51,37 +52,41 @@ class UndoManager extends AbstractUndoableEdit
    public void undoableEditHappened(UndoableEditEvent e) {
       UndoableEdit edit=e.getEdit();
       if (edit instanceof AbstractDocument.DefaultDocumentEvent) {
-         try {
-            AbstractDocument.DefaultDocumentEvent event=(AbstractDocument.DefaultDocumentEvent)edit;
-            int start=event.getOffset();
-            int len=event.getLength();
-            String text=event.getDocument().getText(start, len);
-            boolean isNeedStart=false;
-            if (current==null) {
-               isNeedStart=true;
+         AbstractDocument.DefaultDocumentEvent event=(AbstractDocument.DefaultDocumentEvent)edit;
+         int start=event.getOffset();
+         int len=event.getLength();
+         Debug.log(9, "undoableEditHappened " + start + "," + len);
+         boolean isNeedStart=false;
+         if(event.getType().equals(DocumentEvent.EventType.CHANGE) || 
+            event.getType().equals(DocumentEvent.EventType.INSERT) ){
+            try {
+               String text=event.getDocument().getText(start, len);
+               if (text.contains("\n")) 
+                  isNeedStart=true;
+            } catch (BadLocationException e1) {
+               e1.printStackTrace();
             }
-            else if (text.contains("\n")) {
-               isNeedStart=true;
-            }
-            else if (lastEditName==null || !lastEditName.equals(edit.getPresentationName())) {
-               isNeedStart=true;
-            }
-
-            while (pointer<edits.size()-1) {
-               edits.remove(edits.size()-1);
-               isNeedStart=true;
-            }
-            if (isNeedStart) {
-               createCompoundEdit();
-            }
-
-            current.addEdit(edit);
-            lastEditName=edit.getPresentationName();
-
-            refreshControls();
-         } catch (BadLocationException e1) {
-            e1.printStackTrace();
          }
+
+         if (current==null) {
+            isNeedStart=true;
+         }
+         else if (lastEditName==null || !lastEditName.equals(edit.getPresentationName())) {
+            isNeedStart=true;
+         }
+
+         while (pointer<edits.size()-1) {
+            edits.remove(edits.size()-1);
+            isNeedStart=true;
+         }
+         if (isNeedStart) {
+            createCompoundEdit();
+         }
+
+         current.addEdit(edit);
+         lastEditName=edit.getPresentationName();
+
+         refreshControls();
       }
    }
 

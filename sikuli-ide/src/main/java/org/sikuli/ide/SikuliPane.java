@@ -57,6 +57,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);
+      updateDocumentListeners();
+   }
+
+   private void updateDocumentListeners(){
       getDocument().addDocumentListener(new DirtyHandler());
       getDocument().addUndoableEditListener(_undo);
    }
@@ -325,7 +329,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _editingFilename = getSourceFilename(filename);
       this.read( new BufferedReader(new InputStreamReader(
                   new FileInputStream(_editingFilename), "UTF8")), null);
-      getDocument().addDocumentListener(new DirtyHandler());
+      updateDocumentListeners();
       setDirty(false);
    }
 
