@@ -7,7 +7,8 @@ Sikuli Guide is an extension to Sikuli that provides a revolutionary way to
 create guided tours or tutorials for GUI applications. The revolutionary aspect
 is that the content of the tours or tutorials can be displayed right on the
 **actual interface**, rather than in a video or a series of screenshots on a
-web page.
+web page. All this can be combined with guided user activities directly in the  
+respective GUI applications using all the other Sikuli features. 
 
 
 Quick Start
@@ -39,16 +40,18 @@ users can click on.
 
 Let's explain the script line by line. The first line is an ``import``
 statement that tells Sikuli to load the Sikuli Guide extension. The secod line
-uses the :py:func:`addText(pattern, text) <addText>` function to add ``text``
+uses the :py:func:`addText(pattern, text) <guide.addText>` function to add ``text``
 next to a given ``pattern``, in this case, the logo image. Note that by default
-the text added is not displayed immediately. In the third line, we call
-:py:func:`show(secs) <show>` to explicitly tell Sikuli Guide to display the
-text for the duration specified by ``secs``. 
+the text added is not displayed immediately, it is only internally added 
+to the visual element. In the third line, we call
+:py:func:`show(secs) <guide.show>` to explicitly tell Sikuli Guide to now display 
+all registerd annotation elements (in this case only the
+text) for the duration specified by ``secs``. 
 
 Adding Multiple Annotations
 ---------------------------
 
-It is possible to add text or other annotations to multiple annotation elements before
+It is possible to add text or other annotations to multiple visual elements before
 calling ``show()`` in order to show them on the screen at the same time.
 
 .. sikulicode::
@@ -68,7 +71,7 @@ script is shown below:
 
 Rather than showing the annotations all at once, we can also show them one by
 one using separate ``show()`` statements. Below is an example where we cycle
-through the three links and show the tooltip of each link one at the time.
+through the three links and show the tooltip of each link one at a time.
 
 .. sikulicode::
 
@@ -120,37 +123,58 @@ screen will look like below:
 
 .. image:: step2.png
 
+.. py:module:: guide
+
 Function References
 ^^^^^^^^^^^^^^^^^^^
 
+**PSRM**: when used as a parameter, it can be either **P** a Pattern, 
+**S** a string (image file name or just plain text), a **R** Region object
+or **M** a Match object. With **PS** an implicit find operation takes place. 
+(More information: :ref:`Finding inside a Region ... <FindinginsideaRegionandWaitingforaVisualEvent>`)
 
 Annotations
 -----------
+	
+.. py:function:: addHighlight(PSRM)
 
-.. py:function:: guide.addText
+	The specified target is highlighted with a light red overlay.
+	
+	:param PSRM: a pattern, string, region or match 
 
-	Add some text.
+.. py:function:: addText(PSRM, text)
 
-.. py:function:: guide.addTooltip
+	Add some text (white large letters on dark grey background) left justified below the specified target, which is additionally highlighted.
 
-	Add a tooltip.
+	:param PSRM: a pattern, string, region or match 
+	:param text: a string as text to display
 
-.. py:function:: guide.addArrow
+.. py:function:: addTooltip(PSRM, text)
 
-	Add an arrow from one element to another element
+	Add a tooltip (small text in a light yellow box) left justified below the specified target
+
+	:param PSRM: a pattern, string, region or match 
+	:param text: a string as text to display
+
+
 
 Control
 -------
+	
+.. py:function:: show(seconds)
 
-.. py:function:: guide.show
+	Show annotations added so far for the specified amount of time.
 
-	Show annotations added so far for a specified amount of time. 
+	:param seconds: a decimal number as display duration in seconds
 
-
-.. py:function:: guide.nextStep
+.. py:function:: nextStep(text)
 
 	Show annotations added so far and display a confirmation message box
-	for users to interactively move to the next step.
+	(white large letters on dark grey background with a "Next" button below) 
+	in the middle of the screen for users to interactively move to the next step.
+
+	:param text: a string as text to display
+
 
 
 
