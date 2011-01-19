@@ -186,11 +186,11 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         super.setRolloverTab(index);
 
         if (oldIndex != index) {
-            if (oldIndex != -1) {
-                tabPane.repaint(getTabBounds(tabPane, oldIndex));
+            if (oldIndex != -1 && oldIndex < tabPane.getTabCount()) {
+               tabPane.repaint(getTabBounds(tabPane, oldIndex));
             }
 
-            if (index != -1) {
+            if (index != -1 && index < tabPane.getTabCount()) {
                 tabPane.repaint(getTabBounds(tabPane, index));
             }
         }
