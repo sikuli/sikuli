@@ -307,6 +307,8 @@ screen that contains the given region.
 		of the screen. The new region has the same width and x-position as the
 		current region.
 
+		:param range: a positive integer defining the new height
+		
 	.. py:method:: left([range])
 
 		Returns a new :py:class:`Region` that is defined left of the current region's
@@ -316,6 +318,8 @@ screen that contains the given region.
 		of the screen. The new region has the same height and y-position as the
 		current region.
 
+		:param range: a positive integer defining the new width
+		
 	.. py:method:: right([range])
 
 		Returns a new :py:class:`Region` that is defined right of the current region's
@@ -325,6 +329,8 @@ screen that contains the given region.
 		of the screen. The new region has the same height and y-position as the
 		current region.
 
+		:param range: a positive integer defining the new width
+		
 .. _FindinginsideaRegionandWaitingforaVisualEvent:
 
 Finding inside a Region and Waiting for a Visual Event
