@@ -270,7 +270,7 @@ screen that contains the given region.
 
 	.. py:method:: inside()
 	
-		Returns the same object. Retained for upward campatibility.
+		Returns the same object. Retained for upward compatibility.
 		
 		:return: the :py:class:`Region` object
 
@@ -297,6 +297,7 @@ screen that contains the given region.
 		current region.
 
 		:param range: a positive integer defining the new height
+		:return: a :py:class:`Region` object
 		
 	.. py:method:: below([range])
 
@@ -308,6 +309,7 @@ screen that contains the given region.
 		current region.
 
 		:param range: a positive integer defining the new height
+		:return: a :py:class:`Region` object
 		
 	.. py:method:: left([range])
 
@@ -319,6 +321,7 @@ screen that contains the given region.
 		current region.
 
 		:param range: a positive integer defining the new width
+		:return: a :py:class:`Region` object
 		
 	.. py:method:: right([range])
 
@@ -330,6 +333,7 @@ screen that contains the given region.
 		current region.
 
 		:param range: a positive integer defining the new width
+		:return: a :py:class:`Region` object
 		
 .. _FindinginsideaRegionandWaitingforaVisualEvent:
 
