@@ -252,12 +252,14 @@ Extending a Region
 ------------------
 
 These methods (exception ``inside()``) return a new region object, that is
-constructed based on the specified region (sometimes called spatial operators).
+defined based on the specified region (sometimes called spatial operators).
 The range parameter, if given as positive integer number, restricts the
-dimension of the new region (width and/or height respectively) based on that
-value. If range  is not specified, the new region extends to the respective
+dimension of the new region (width and/or height respectively) to that
+value. If range is not specified, the new region extends to the respective
 boundary of the screen the given region belongs to. An exception is ``nearby()``,
 which uses 50 as its default range.
+
+**Note**: In all cases the current region remains unchanged.
 
 **Note**: In all cases the new region does not extend beyond any boundary of the
 screen that contains the given region. 
@@ -277,57 +279,51 @@ screen that contains the given region.
 
 	.. py:method:: nearby([range])
 
-		Derive a new :py:class:`Region` that represents the nearby neighorhood
-		of the the current region. The new region is derived by extending the
-		current region in all directions by *range* number of pixels. The
-		center of the new region remains hte same.
+		Returns a new :py:class:`Region` that includes the nearby neighbourhood
+		of the the current region. The new region is defined by extending the
+		current region's dimensions in all directions by *range* number of pixels. The
+		center of the new region remains the same.
 
 		:param range: a positive integer indicating the number of pixels (default = 50).
 		:return: a :py:class:`Region` object
 
 	.. py:method:: above([range])
 
-		Derive a new :py:class:`Region` that represents the area *above* the
-		current region. The new region is constructed by extending the current
-		region from its top border by *range* number of pixels towards the top
-		boundary of the screen. This new region will also include the current
-		region. If *range* is omitted, it extends all the way to the boudnary
+		Returns a new :py:class:`Region` that is defined above the current region's
+		top border with a height of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the top 
 		of the screen. The new region has the same width and x-position as the
 		current region.
 
-		:param range: a positive integer indicating the number of pixels to
-			extend above.
-
+		:param range: a positive integer defining the new height
+		
 	.. py:method:: below([range])
 
-		Derive a new :py:class:`Region` that represents the area *below* the
-		current region. The new region is constructed by extending the current
-		region from its bottom border by *range* number of pixels towards the
-		bottom boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		bottom boundary of the sreen. The new region has the same width and
-		x-position as the current region.
-
+		Returns a new :py:class:`Region` that is defined below the current region's
+		bottom border with a height of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the bottom
+		of the screen. The new region has the same width and x-position as the
+		current region.
 
 	.. py:method:: left([range])
 
-		Derive a new :py:class:`Region` that represents the area to the *left*
-		of the current region. The new region is constructed by extending the
-		current region from its left border by *range* number of pixels towards
-		the left boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		left boundary of the sreen. The new region has the same height and
-		y-position as the current region.
+		Returns a new :py:class:`Region` that is defined left of the current region's
+		left border with a width of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the left border
+		of the screen. The new region has the same height and y-position as the
+		current region.
 
 	.. py:method:: right([range])
 
-		Derive a new :py:class:`Region` that represents the area to the *right* of the
-		current region. The new region is constructed by extending the current
-		region from its right border by *range* number of pixels towards the
-		right boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		right boundary of the sreen. The new region has the same height and
-		y-position as the current region.
+		Returns a new :py:class:`Region` that is defined right of the current region's
+		right border with a width of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the right border
+		of the screen. The new region has the same height and y-position as the
+		current region.
 
 .. _FindinginsideaRegionandWaitingforaVisualEvent:
 
