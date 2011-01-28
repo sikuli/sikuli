@@ -26,7 +26,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 
    public CaptureButton(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/capture.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/camera-icon.png");
       setIcon(new ImageIcon(imageURL));
       UserPreferences pref = UserPreferences.getInstance();
       String strHotkey = Utils.convertKeyToText(
@@ -47,6 +47,8 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
       setText(null);
+      URL imageURL = SikuliIDE.class.getResource("/icons/capture.png");
+      setIcon(new ImageIcon(imageURL));
    }
 
    public boolean hasNext(){  return false;  }

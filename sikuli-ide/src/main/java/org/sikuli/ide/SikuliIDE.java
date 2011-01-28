@@ -1715,7 +1715,7 @@ public class SikuliIDE extends JFrame {
 class ButtonInsertImage extends ToolbarButton implements ActionListener{
    public ButtonInsertImage(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/insert-image.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/insert-image-icon.png");
       setIcon(new ImageIcon(imageURL));
       setText(SikuliIDE._I("btnInsertImageLabel"));
       //setMaximumSize(new Dimension(26,26));
@@ -1739,7 +1739,7 @@ class ButtonInsertImage extends ToolbarButton implements ActionListener{
 class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
    public ButtonSubregion(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/subregion.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/region-icon.png");
       setIcon(new ImageIcon(imageURL));
       setText(SikuliIDE._I("btnRegionLabel"));
       //setMaximumSize(new Dimension(26,26));

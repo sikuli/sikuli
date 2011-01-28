@@ -2,6 +2,7 @@ package org.sikuli.ide;
 
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -21,6 +22,7 @@ public class ToolbarButton extends JButton {
       setFont(f);
       */
       setUI(new UnifiedToolbarButtonUI());
+      //setMaximumSize(new Dimension(32,32));
       setBorder(BorderFactory.createEmptyBorder(3,10,3,10));
    }
 }
