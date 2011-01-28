@@ -22,7 +22,7 @@ class AnnotationHighlight extends Annotation {
 	}
 	
 	boolean border = true;
-	Color border_color = Color.yellow;
+	Color border_color = Color.black;
 		
 	public void setBorder(boolean enable_border){
 		border = enable_border;
@@ -46,7 +46,12 @@ class AnnotationHighlight extends Annotation {
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));			
 		g2d.fillRect(rectangle.x,rectangle.y,rectangle.width,rectangle.height);
 
+//		Color oldcolor = g2d.getColor();
+//      g2d.setColor(Color.black);		
+//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+//		g2d.drawRect(rectangle.x,rectangle.y,rectangle.width,rectangle.height);
+//
+//      g2d.setColor(oldcolor);    
 		
-		//paintRectangle(g2d, rectangle, 3.0F, border_color);
 	}
 }
