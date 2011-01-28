@@ -190,7 +190,7 @@ msgstr "Créer une région pour restreindre la recherche"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "Faire une capture d'écran ({0})"
+msgstr "Faire une capture d''écran ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -201,7 +201,7 @@ msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
-"Erreur d'exécution lors de l'exécution {0}\n"
+"Erreur d''exécution lors de l''exécution {0}\n"
 "{1}"
 
 #: msgExit
@@ -221,7 +221,7 @@ msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
-"Message d'erreur :\n"
+"Message d''erreur :\n"
 "{0}"
 
 #: msgCapturePrompt
