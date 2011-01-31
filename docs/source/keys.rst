@@ -15,17 +15,17 @@ Methods where key modifiers can be used include: :py:meth:`click() <Region.click
 <Region.doubleClick>` , :py:meth:`rightClick() <Region.rightClick>`,
 :py:meth:`type() <Region.type>`.
 
-**the oldies but goldies**
-::
+**the oldies but goldies** ::
+
 	KEY_ALT, KEY_CTRL, KEY_SHIFT
 
-**system specific Win/Mac**
-::
+**system specific Win/Mac** ::
+
 	KEY_WIN, KEY_CMD 
 	KEY_META (a synonym for KEY_WIN or KEY_CMD on Windows and Mac respectively).
 	
-The modifier constants can be combined to the modifier parameter by either using "+" or "|", if more than one key modifier is needed.
-::
+The modifier constants can be combined to the modifier parameter by either using "+" or "|", if more than one key modifier is needed. ::
+
 	type(Key.ESC, KEY_CTRL + KEY_ALT)
 	# or equivalent
 	type(Key.ESC, KEY_CTRL | KEY_ALT)
@@ -47,35 +47,35 @@ The methods supporting the use of special keys are :py:meth:`type() <Region.type
 
 Usage: `Key.CONSTANT` (where CONSTANT is one of the following key names).
 
-String concatenation with with other text or other key constants is possible using "+".
-::
+String concatenation with with other text or other key constants is possible using "+". ::
+
 	type("some text" + Key.TAB + "more text" + Key.TAB + Key.ENTER)
 	# or eqivalent
 	type("some text\tmore text\n")	
 
-**miscellanous keys**
-::
+**miscellanous keys** ::
+
 	ENTER, TAB, ESC, BACKSPACE, DELETE, INSERT
 
-**function keys**
-::
+**function keys** ::
+
 	F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15
 
-**navigation keys**
-::
+**navigation keys** ::
+
 	HOME, END, LEFT, RIGHT, DOWN, UP, PAGE_DOWN, PAGE_UP
 
-**special keys**
-::
+**special keys** ::
+
 	PRINTSCREEN, PAUSE, CAPS_LOCK, SCROLL_LOCK, NUM_LOCK
 
-**numpad keys**
-::
+**numpad keys** ::
+
 	NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9
 	SEPARATOR, ADD, MINUS, MULTIPLY, DIVIDE
 
-**key modifiers**
-::
+**key modifiers** ::
+
 	ALT, CMD, CTRL, META, SHIFT, WIN
 
 These key modifiers can **not** be used  with functions
