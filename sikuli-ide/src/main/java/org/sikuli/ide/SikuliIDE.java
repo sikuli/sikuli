@@ -468,8 +468,9 @@ public class SikuliIDE extends JFrame {
       toolbar.add(_btnRunViz);
       toolbar.add(Box.createHorizontalGlue());
       toolbar.add( createSearchField() );
+      toolbar.add(Box.createRigidArea(new Dimension(7,0)));
       toolbar.setFloatable(false);
-      //toolbar.setMargin(new Insets(5, 5, 5, 5));
+      //toolbar.setMargin(new Insets(0, 0, 0, 5));
       return toolbar;
    }
 
