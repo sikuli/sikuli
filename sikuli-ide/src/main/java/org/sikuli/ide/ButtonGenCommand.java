@@ -3,6 +3,7 @@ package org.sikuli.ide;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.text.*;
+import javax.swing.border.*;
 import java.net.URL;
 
 
@@ -11,7 +12,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
    String _cmd;
    String[] _params;
    String _desc;
-   final static String DefaultStyle = "color:black", 
+   final static String DefaultStyle = "color:black;font-weight:normal", 
                        HoverStyle = "color:#3333ff;font-weight:bold;",
                        PressedStyle = "color:#3333ff;font-weight:bold;text-decoration:underline;";
 
@@ -24,7 +25,9 @@ public class ButtonGenCommand extends JButton implements ActionListener,
       setHorizontalAlignment(SwingConstants.LEFT);
       addActionListener(this);
       addMouseListener(this);
-      setBorder(null);
+      setBorderPainted(false);
+      setBorder(BorderFactory.createEmptyBorder(1,2,2,1));
+      setContentAreaFilled(false);
    }
 
    static String getParamHTML(String p, boolean first, boolean showOptParam){
@@ -139,19 +142,15 @@ public class ButtonGenCommand extends JButton implements ActionListener,
    public void mouseClicked(MouseEvent e){}
    public void mouseEntered(MouseEvent e){
       setText(getRichRepresentation(HoverStyle, _cmd, _desc, _params, false));
-      setBorder(null);
    }
    public void mouseExited(MouseEvent e){
       setText(getRichRepresentation(DefaultStyle, _cmd, _desc, _params, false));
-      setBorder(null);
    }
    public void mousePressed(MouseEvent e) {
       setText(getRichRepresentation(PressedStyle, _cmd, _desc, _params, false));
-      setBorder(null);
    }
    public void mouseReleased(MouseEvent e) {
       setText(getRichRepresentation(HoverStyle, _cmd, _desc, _params, false));
-      setBorder(null);
    }
 
 }
