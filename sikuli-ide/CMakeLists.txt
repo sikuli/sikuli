@@ -38,6 +38,9 @@ SET(COMMONS_CLI_JAR "${COMMON_LIB_DIR}/commons-cli-1.2.jar")
 SET(JSON_SIMPLE_JAR "${COMMON_LIB_DIR}/json_simple-1.1.jar")
 SET(JXGRABKEY_JAR "${COMMON_LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar")
 SET(JINTELLITYPE_JAR "${COMMON_LIB_DIR}/jintellitype-1.3.6/jintellitype-1.3.6.jar")
+SET(SWINGX_JAR "${COMMON_LIB_DIR}/swingx-core-1.6.2.jar")
+SET(MAC_WIDGETS_JAR "${COMMON_LIB_DIR}/mac_widgets.jar")
+SET(FORMS_JAR "${COMMON_LIB_DIR}/forms-1.2.1.jar")
 
 
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
@@ -58,7 +61,7 @@ ENDIF()
 SET(ARGS "")
 
 SET(CLASSPATH 
-   ${SIKULI_SCRIPT_JAR}${SEP}${JUNIT_JAR}${SEP}${SWING_LAYOUT_JAR}${SEP}${COMMONS_CLI_JAR}${SEP}${JSON_SIMPLE_JAR}
+   ${SIKULI_SCRIPT_JAR}${SEP}${JUNIT_JAR}${SEP}${SWING_LAYOUT_JAR}${SEP}${COMMONS_CLI_JAR}${SEP}${JSON_SIMPLE_JAR}${SEP}${SWINGX_JAR}${SEP}${MAC_WIDGETS_JAR}${SEP}${FORMS_JAR}
 )
 
 SET(JAR_FILE sikuli-ide.jar)
@@ -108,7 +111,8 @@ add_custom_target( update-version
 
 SET(INCLUDE_JARS ${SIKULI_SCRIPT_JAR} ${JUNIT_JAR} 
                  ${SWING_LAYOUT_JAR} ${COMMONS_CLI_JAR}
-                 ${BINARY_DIR}/${JAR_FILE}
+                 ${BINARY_DIR}/${JAR_FILE} ${JSON_SIMPLE_JAR}
+                 ${SWINGX_JAR} ${MAC_WIDGETS_JAR} ${FORMS_JAR}
 )
 
 ## Windows Package
@@ -303,7 +307,8 @@ add_custom_target( update-prop
 ## Packaging
 
 if(APPLE)
-   SET(CPACK_GENERATOR DragNDrop )
+   #   SET(CPACK_GENERATOR DragNDrop )
+      SET(CPACK_GENERATOR ZIP )
 else(APPLE)
    SET(CPACK_GENERATOR 
       ZIP

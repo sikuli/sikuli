@@ -8,38 +8,88 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.sikuli.script.App;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.FindFailedResponse;
+import org.sikuli.script.Location;
 import org.sikuli.script.OS;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
-import org.sikuli.script.ScreenHighlighter;
-import org.sikuli.script.Settings;
 import org.sikuli.script.TransparentWindow;
-import org.sikuli.script.Region.FindFailedResponse;
+
+/** TODO:
+
+- allow users to specify alignment properties explicitly
+- dimming highlight effect
+- rename to SikuliGuide
+- (done) make add[X] uniform. The first argument is always a location.
+
+- Clickable targets
+   - allow other kinds of clicks (i.e., double-click, right-click)
+   - (done) allow multiple targets
+
+- Dialog
+   - auto-advance if used with clickable targets
+   - always-on-top? this can be tricky because it will complicate Sikuli's screen capture.
+      - solution 1: prompt users to move the dialog box somewhere else when find fails
+      - solution 2: automatically position the dialog box outside of the application bounds
+
+- how should clickable targets and the dialog box co-exist?
+   - (done) option 1: all clickable targets don't hide until the box is dismissed. but the clicks are passed through
 
 
-//- multiscreen working
-//- inherit directly from TransparentWindow
-//- take a Region object to construct
-//- default to the primary screen (i.e., Screen(0))
-//- all annotation objects take global screen locations and internally convert to relative screen locations.
+- (done) get it to work with multi-screen
+- (done) inherit directly from TransparentWindow
+- (done) take a Region object to construct
+- (done) default to the primary screen (i.e., Screen(0))
+- (done) all annotation objects take global screen locations and internally convert to relative screen locations.
+- (done) automatically position text so that it won't run outside the screen boundary
+
+ */
 
 public class ScreenAnnotator extends TransparentWindow {
 
+
+   static final float DEFAULT_SHOW_DURATION = 3.0f;
+
+   Robot robot;
+
+   // all the actions will be restricted to this region
    Region _region;
+
+   // swing components will be drawn on this panel
+   JPanel content = new JPanel(null);
+
+   ArrayList<Annotation> _annotations = new ArrayList<Annotation>();
+   
+   ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
+
    public ScreenAnnotator(){
-      super();
       init(new Screen());
    }
 
+   public ScreenAnnotator(Region region) {
+      init(region);
+   }
+
    void init(Region region){
+
+      try {
+         robot = new Robot();
+      } catch (AWTException e1) {
+         e1.printStackTrace();
+      }
+
+
       _region = region;      
       Rectangle rect = _region.getRect();
       content.setPreferredSize(rect.getSize());
@@ -47,53 +97,22 @@ public class ScreenAnnotator extends TransparentWindow {
 
       setBounds(rect);
 
-      
+
       Color transparentColor = new Color(0F,0F,0F,0.0F);
       setBackground(transparentColor);
-      
-      
+
+
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       ((JPanel)getContentPane()).setDoubleBuffered(true);
-      
+
       setVisible(false);
       setAlwaysOnTop(true);
- 
-      
-//      addMouseMotionListener( new MouseMotionAdapter(){
-//         public void mouseDragged(java.awt.event.MouseEvent e) {
-//            Debug.log(e.getX() + "," + e.getY());
-////            if (_scr_img == null) return;
-////            destx = e.getX();
-////            desty = e.getY();
-////            repaint(); 
-//         }
-//      });
-//      
-//      addMouseListener(new MouseAdapter(){
-//         public void mousePressed(java.awt.event.MouseEvent e){
-//            //if (_scr_img == null) return;
-//            int srcx = e.getX();
-//            int srcy = e.getY();
-//            //srcScreenId = (new UnionScreen()).getIdFromPoint(srcx, srcy);
-//            Debug.log(3, "pressed " + srcx + "," + srcy);
-//            
-//            repaint();
-//         }
-//
-//      });
-   }
-   
-   JPanel content = new JPanel(null);
-   
-   public ScreenAnnotator(Region region) {
-      super();
-      init(region);
+
    }
 
-   ArrayList<Annotation> _annotations = new ArrayList<Annotation>();
 
    public void paint(Graphics g){
-      
+
       Graphics2D g2d = (Graphics2D)g;
 
       // clear the screen
@@ -113,28 +132,30 @@ public class ScreenAnnotator extends TransparentWindow {
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
             RenderingHints.VALUE_ANTIALIAS_ON);
-      
+
       super.paint(g);
    }
 
    public void clear(){
       _annotations.clear();
       content.removeAll();
+      dialog = null;
+      _clickTargets.clear();
    }
 
    public void addAnnotation(Annotation annotation){
       _annotations.add(annotation);
    }
 
-   Point convertToScreenLocation(Point point_in_global_coordinate){
+   Point convertToRegionLocation(Point point_in_global_coordinate){
       Point ret = new Point(point_in_global_coordinate);
       ret.translate(-_region.x, -_region.y);
       return ret;
    }
 
    public void addArrow(Point from, Point to){
-      Point from1 = convertToScreenLocation(from);
-      Point to1 = convertToScreenLocation(to);
+      Point from1 = convertToRegionLocation(from);
+      Point to1 = convertToRegionLocation(to);
 
       addAnnotation(new AnnotationArrow(from1, to1, Color.black));
    }
@@ -145,12 +166,22 @@ public class ScreenAnnotator extends TransparentWindow {
       addAnnotation(new AnnotationHighlight(rect));
    }
 
-   public void addToolTip(String message, Point location){
-      Point screen_loc = convertToScreenLocation(location);
+   ClickTarget _clickTarget = null;
+   public void addClickTarget(Region region, String name){
+      _clickTargets.add(new ClickTarget(this, region.getRect(), name));
+   }
+
+   public void addToolTip(Location location, String message){
+      Point screen_loc = convertToRegionLocation(location);
       addAnnotation(new AnnotationToolTip(message, screen_loc));
    }
 
-   public void addText(String message, Point location){
+   public void addText(Location location, String message){
+      // The location is in the global screen coordinate
+
+      // the margin to the screen boundary
+      final int margin = 5;
+
       //String tooltipStyle = "font-size:16px;background-color:#FFFFDD;padding:3px;";
       String bwStyle = "font-size:16px;color:white;background-color:#333333;padding:3px";
 
@@ -158,153 +189,359 @@ public class ScreenAnnotator extends TransparentWindow {
          "<html><div style='" + bwStyle + "'>"
          + message + "</div></html>";
 
-      Point screen_location = convertToScreenLocation(location);
-      JLabel l = new JLabel(htmltxt);
-      Dimension size = l.getPreferredSize();
-      l.setBounds(screen_location.x,screen_location.y,size.width,size.height);
-      content.add(l);
+      JLabel textbox = new JLabel(htmltxt);
+      Dimension size = textbox.getPreferredSize();
+
+      int x_origin = location.x;
+      int y_origin = location.y;
+
+      Screen screen = _region.getScreen();
+
+      Location screen_br = screen.getBottomRight();
+      Location region_br = _region.getBottomRight();
+
+      // calculate how much the text box goes over the screen boundary
+      int x_overflow = x_origin + size.width - Math.min(screen_br.x, region_br.x);
+      if (x_overflow > 0){
+         x_origin -= x_overflow;
+         x_origin -= margin; 
+      }
+
+      int y_overflow = y_origin + size.height - Math.min(screen_br.y, region_br.y);
+      if (y_overflow > 0){
+         y_origin -= y_overflow;
+         y_origin -= margin;
+      }
+
+      // convert to region coordinate
+      x_origin -= _region.x;
+      y_origin -= _region.y;
+
+      textbox.setBounds(x_origin,y_origin,size.width,size.height);
+      content.add(textbox);
       repaint();
    }
-   
-   public void showWaitForButtonClick(String button_text, String message){
 
+   SingleButtonMessageBox dialog = null;
+   public void addDialog(String button_text, String message){
+      dialog = new SingleButtonMessageBox(this, button_text, message);    
+      dialog.setAlwaysOnTop(true);
+      dialog.pack();
+      dialog.setLocationRelativeTo(this);
+   }
+
+
+   ClickTarget _lastClickedTarget = null;
+
+   public ClickTarget getLastClickedTarget() {
+      return _lastClickedTarget;
+   }
+
+   public void setLastClickedTarget(ClickTarget lastClickedTarget) {
+      this._lastClickedTarget = lastClickedTarget;
+   }
+
+   public void showNow(){
+
+      // do these to allow static elements to be drawn
       setVisible(true);
       toFront();
-      
-      
-      SingleButtonMessageBox nav = new SingleButtonMessageBox(this, button_text, message);
-      nav.toFront();
-      nav.setAlwaysOnTop(true);
-      nav.pack();
-      nav.setLocationRelativeTo(this);
-      nav.setVisible(true);
-      
-      synchronized(this){
-         try {
-            wait();
-         } catch (InterruptedException e) {
-            e.printStackTrace();
+
+
+      // deal with interactive elements
+
+      if (dialog != null){
+
+         for (ClickTarget target : _clickTargets){
+            target.setVisible(true);        
+            target.setIgnoreMouse(true);
          }
+
+         dialog.setVisible(true);
+         synchronized(this){
+            try {
+               wait();
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
+         }
+
+         for (ClickTarget target : _clickTargets){
+            target.dispose();
+         }        
+         dialog.dispose();
+
+         closeNow();
+
+         focusBelow();
+
+      }else if (!_clickTargets.isEmpty()){
+
+         for (ClickTarget target : _clickTargets){
+            target.setVisible(true);
+         }
+
+
+         synchronized(this){
+            try {
+               wait();
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
+         }
+
+
+         for (ClickTarget target : _clickTargets){
+            target.dispose();
+         }
+
+         Debug.log("Last clicked:" + _lastClickedTarget.getName());
+
+         closeNow();
+
+         
+         focusBelow();
+
+         robot.mousePress(InputEvent.BUTTON1_MASK);            
+         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+      }else{
+
+         // if there's no interactive element
+
+         closeAfter(DEFAULT_SHOW_DURATION);
       }
-      
-      clear();
-      close();
+
    }
 
-   public void show(float secs){
-   
+   public void showNow(float secs){
+
       setVisible(true);
       toFront();
 
-      float secs1 = (float) Math.max(3.0, secs);
-      closeAfter(secs1);
-
+      closeAfter(secs);
    }
-   
+
+   private void closeNow(){
+      clear();
+      setVisible(false);
+      dispose();
+   }
+
    private void closeAfter(float secs){
       try{
          Thread.sleep((int)secs*1000);
       }
       catch(InterruptedException e){
-         close();
+         closeNow();
          e.printStackTrace();
       }
-      clear();
-      close();
+      closeNow();
    }
-   
-   
-   public void close(){
-      setVisible(false);
-      dispose();
+
+   public static void testICDL() throws FindFailed{
+
+      App a = new App("Firefox");
+      a.focus();
+
+      Region s = a.window(0);
+      Region r = null;
+
+      ScreenAnnotator sa = new ScreenAnnotator(s);
+
+      sa.addDialog("Next","Welcome!");  
+      sa.showNow();
+
+      r = s.find("tiger.png");
+      //sa.addHighlight(r);
+
+      Location o = r.getTopLeft().above(100);
+
+      sa.addText(o,"Click on the Tiger or the Unicorn");
+
+
+//      sa.addDialog("Next","Click here");  
+
+      sa.addClickTarget(r,"Tiger");
+
+      sa.addClickTarget(s.find("unicorn.png"),"Unicorn");
+      sa.showNow();
+
+
+      sa.addText(o, "You just clicked on the " + sa.getLastClickedTarget().getName());
+
+      sa.showNow();
+
+      r = s.find("tiger.png");
+      sa.addClickTarget(r,"Tiger");
+      sa.showNow();
+      
+      //      sa.showWaitForButtonClick("Continue", "Use these to select books suitable for your age.");
+      //      
+      //      r = s.find("booksizes.png");
+      //      sa.addHighlight(r);      
+      //      sa.showWaitForButtonClick("Continue", "Use these to select the size of <br> the book you want to read.");
+      //      
+      //      r = s.find("colors.png");
+      //      sa.addHighlight(r);      
+      //      sa.showWaitForButtonClick("Continue", "Use these to select the color of <br> the book's cover.");
+
    }
-   
-
-   public static void main(String[] args) throws AWTException, FindFailed {
-
-      //		Screen screen = new Screen();
-      //
-      //		ScreenAnnotator sa = new ScreenAnnotator(screen);
-      //		
-      //		Screen s = new Screen();
-      //		Region r = null;
-      //		
-
-      //r = s.find(new Pattern("http://sikuli.org/images/puzzle.png"));
-      // = s.find(new Pattern("http://udn.com/2010MAIN/photonews/6048009-2482714_small.jpg"));
-
-      //r = s.find(new Pattern("puzzle.png"));
-      //		sh.addToolTip("Text recog", new Point(r.x,r.y+r.h+5));
-      //		sh.addHighlight(r);
-      //		sh.drawNow(3.0f);
-
-      //		sh.clear();
 
 
-      //Screen s = new UnionScreen();
-      Screen s = new Screen(0);
+   public static void testFirefox() throws FindFailed{
+      App a = new App("Firefox");
+      a.focus();
 
-      Settings.ShowActions = true;
-      s.setDefaultFindFailedResponse(FindFailedResponse.PROMPT);
-      //s.waitVanish("play.png",5);
-      //s.wait("tools.png",5);
+      Region s = a.window(0);
 
-      s.click("tools.png",0);
+      Debug.log("s=" + s);
+      s.getCenter();
+
+      s.setFindFailedResponse(FindFailedResponse.PROMPT);
+
+
+      //      Settings.ShowActions = true;
 
       Region r = null;
 
-      //ScreenAnnotator sa = new ScreenAnnotator(s);
-      ScreenAnnotator sa = new ScreenAnnotator();
+      //      s.click("tools.png",0);
 
-      s.setDefaultFindFailedResponse(FindFailedResponse.PROMPT);
+      ScreenAnnotator sa = new ScreenAnnotator(s);
+
       r = s.find("tools.png");
       sa.addHighlight(r);
-      sa.showWaitForButtonClick("Tools", "Step 1");
-      
-      r = s.find("play.png");
-      Debug.log("r:" + r);
-      sa.addHighlight(r);
-      sa.addToolTip("Run", new Point(r.x,r.y+r.h+5));
 
-      //sa.show(3.0f);
-      sa.showWaitForButtonClick("Continue", "Step 1");
 
-      //		r = s.find("Package Explorer");
-      //		sa.addHighlight(r);
-      //	
-      r = s.find("addjava.png");
-      sa.addHighlight(r);
-      Point x = new Point(r.x,r.y);
-      Point x1 = new Point(x);
-      x1.translate(0, r.h+5);
 
-      Point c =  r.getCenter();
 
-      sa.addText("Click this to create a Java class", x1);
-      sa.addArrow(x1,c);
+      // sa.showWaitForButtonClick("Continue", "Tools");
+   }
 
-//      r = s.find("tools.png");
-//      sa.addHighlight(r);
 
-      //sa.show(3.0f);
-      sa.showWaitForButtonClick("Finish", "Step 2");
-      
+   public static void main(String[] args) throws AWTException, FindFailed {
+      //testFirefox();
+
+      testICDL();
+      //      
+      //
+      //      //		Screen screen = new Screen();
+      //      //
+      //      //		ScreenAnnotator sa = new ScreenAnnotator(screen);
+      //      //		
+      //      //		Screen s = new Screen();
+      //      //		Region r = null;
+      //      //		
+      //
+      //      //r = s.find(new Pattern("http://sikuli.org/images/puzzle.png"));
+      //      // = s.find(new Pattern("http://udn.com/2010MAIN/photonews/6048009-2482714_small.jpg"));
+      //
+      //      //r = s.find(new Pattern("puzzle.png"));
+      //      //		sh.addToolTip("Text recog", new Point(r.x,r.y+r.h+5));
+      //      //		sh.addHighlight(r);
+      //      //		sh.drawNow(3.0f);
+      //
+      //      //		sh.clear();
       //
       //
-      //		
-      //		r = s.find("new.png");
-      //		sa.addHighlight(r);
-      //		sa.addToolTip("Create a new project", new Point(r.x,r.y+r.h+5));
-      //		//sa.addText("Click this to create <br>a new project", new Point(r.x,r.y+r.h+20));
-      //		
-      //		
-      //		sa.show(3.0f);
-
+      //      //Screen s = new UnionScreen();
+      //      //Screen s = new Screen(0);
+      //
+      //      App a = new App("Firefox");
+      //      a.focus();
+      //      
+      //      Region s = a.window();
+      //      s.getCenter();
+      //      
+      //      
+      //      
+      //      
+      //      Settings.ShowActions = true;
+      //     // s.setFindFailedResponse(FindFailedResponse.PROMPT);
+      //      //s.waitVanish("play.png",5);
+      //      //s.wait("tools.png",5);
+      //      
+      //      
+      //     // s.click("play.png",0);
+      //      
+      //      //s.click("tools.png",0);
+      //
+      //      Region r = null;
+      //
+      //      //ScreenAnnotator sa = new ScreenAnnotator(s);
+      //      ScreenAnnotator sa = new ScreenAnnotator();
+      //
+      //      s.setFindFailedResponse(FindFailedResponse.PROMPT);
+      ////      r = s.find("tools.png");
+      ////   
+      ////      sa.addHighlight(r);
+      ////      sa.showWaitForButtonClick("Tools", "Step 1");
+      ////      
+      //      r = s.find("play.png");
+      //      Debug.log("r:" + r);
+      //      sa.addHighlight(r);
+      //      sa.addToolTip("Run", new Point(r.x,r.y+r.h+5));
+      //
+      //      //sa.show(3.0f);
+      //      sa.showWaitForButtonClick("Continue", "Step 1");
+      //
+      //      //		r = s.find("Package Explorer");
+      //      //		sa.addHighlight(r);
+      //      //	
+      //      r = s.find("addjava.png");
+      //      sa.addHighlight(r);
+      //      Point x = new Point(r.x,r.y);
+      //      Point x1 = new Point(x);
+      //      x1.translate(0, r.h+5);
+      //
+      //      Point c =  r.getCenter();
+      //
+      //      sa.addText("Click this to create a Java class", x1);
+      //      sa.addArrow(x1,c);
+      //
+      ////      r = s.find("tools.png");
+      ////      sa.addHighlight(r);
+      //
+      //      //sa.show(3.0f);
+      //      sa.showWaitForButtonClick("Finish", "Step 2");
+      //      
+      //      //
+      //      //
+      //      //		
+      //      //		r = s.find("new.png");
+      //      //		sa.addHighlight(r);
+      //      //		sa.addToolTip("Create a new project", new Point(r.x,r.y+r.h+5));
+      //      //		//sa.addText("Click this to create <br>a new project", new Point(r.x,r.y+r.h+20));
+      //      //		
+      //      //		
+      //      //		sa.show(3.0f);
+      //
 
 
 
    }
-   
+
+
+   // send focus to the application right below the current mouse cusor
+   public void focusBelow(){
+      if(Env.getOS() == OS.MAC){
+         // TODO: replace this hack with a more robust method
+         
+         // Mac's hack to bring focus to the window directly underneath
+         // this hack works on the assumption that the caller has
+         // the input focus but no interaction area at the current
+         // mouse cursor position
+         robot.mousePress(InputEvent.BUTTON1_MASK);            
+         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+      }
+      
+      // TODO: Verify its correctness on Windows
+      // on Windows, it seems we don't have to do any additional thing
+      
+
+   }
+
+
    @Override
    public void toFront(){
       if(Env.getOS() == OS.MAC){
@@ -317,8 +554,8 @@ public class ScreenAnnotator extends TransparentWindow {
          Win32Util.bringWindowToFront(this, true);
       }
       else
-      */
-         super.toFront();
+       */
+      super.toFront();
    }
 
 

@@ -3,20 +3,31 @@ package org.sikuli.ide;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.text.*;
+import javax.swing.border.*;
 import java.net.URL;
 
 
-public class ButtonGenCommand extends JButton implements ActionListener{
+public class ButtonGenCommand extends JButton implements ActionListener, 
+                                                         MouseListener {
    String _cmd;
    String[] _params;
+   String _desc;
+   final static String DefaultStyle = "color:black;font-weight:normal", 
+                       HoverStyle = "color:#3333ff;font-weight:bold;",
+                       PressedStyle = "color:#3333ff;font-weight:bold;text-decoration:underline;";
 
    public ButtonGenCommand(String cmd, String desc, String... params){
-      super(getRichRepresentation(cmd, desc, params, false));
+      super(getRichRepresentation(DefaultStyle, cmd, desc, params, false));
       _cmd = cmd;
       _params = params;
-      setToolTipText(getRichRepresentation(cmd, desc, params, true));
+      _desc = desc;
+      setToolTipText(getRichRepresentation(DefaultStyle, cmd, desc, params, true));
       setHorizontalAlignment(SwingConstants.LEFT);
       addActionListener(this);
+      addMouseListener(this);
+      setBorderPainted(false);
+      setBorder(BorderFactory.createEmptyBorder(1,2,2,1));
+      setContentAreaFilled(false);
    }
 
    static String getParamHTML(String p, boolean first, boolean showOptParam){
@@ -41,8 +52,9 @@ public class ButtonGenCommand extends JButton implements ActionListener{
       return !item.equals(", ")? item : "";
    }
 
-   static String getRichRepresentation(String cmd, String desc, String[] params, boolean showOptParam){
-      String ret = "<html><table><tr><td valign=\"middle\"><b>" + cmd + "</b>(";
+   static String getRichRepresentation(String style, String cmd, String desc, String[] params, boolean showOptParam){
+      String ret = "<html><table><tr><td valign=\"middle\">"+
+                   "<span style=\""+style+"\">" + cmd + "</span>(";
       int count = 0;
       for(String p : params){
          String item = getParamHTML(p, count==0, showOptParam);
@@ -125,6 +137,20 @@ public class ButtonGenCommand extends JButton implements ActionListener{
          System.out.println("sel: " + pane.getSelectedText());
       }
       pane.requestFocus();
+   }
+
+   public void mouseClicked(MouseEvent e){}
+   public void mouseEntered(MouseEvent e){
+      setText(getRichRepresentation(HoverStyle, _cmd, _desc, _params, false));
+   }
+   public void mouseExited(MouseEvent e){
+      setText(getRichRepresentation(DefaultStyle, _cmd, _desc, _params, false));
+   }
+   public void mousePressed(MouseEvent e) {
+      setText(getRichRepresentation(PressedStyle, _cmd, _desc, _params, false));
+   }
+   public void mouseReleased(MouseEvent e) {
+      setText(getRichRepresentation(HoverStyle, _cmd, _desc, _params, false));
    }
 
 }

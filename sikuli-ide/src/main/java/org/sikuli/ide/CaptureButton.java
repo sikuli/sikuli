@@ -13,7 +13,7 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
 
-class CaptureButton extends JButton implements ActionListener, Cloneable, Observer{
+class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, Observer{
    protected Element _line;
    protected SikuliPane _codePane;
    protected boolean _isCapturing;
@@ -26,14 +26,15 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
 
    public CaptureButton(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/capture.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/camera-icon.png");
       setIcon(new ImageIcon(imageURL));
       UserPreferences pref = UserPreferences.getInstance();
       String strHotkey = Utils.convertKeyToText(
             pref.getCaptureHotkey(), pref.getCaptureHotkeyModifiers() );
       setToolTipText(SikuliIDE._I("btnCaptureHint", strHotkey));
-      setBorderPainted(false);
-      setMaximumSize(new Dimension(26,26));
+      setText(SikuliIDE._I("btnCaptureLabel"));
+      //setBorderPainted(false);
+      //setMaximumSize(new Dimension(26,26));
       addActionListener(this);
       _line = null;
    }
@@ -42,8 +43,12 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
       this();
       _line = elmLine;
       _codePane = codePane;
+      setUI(UIManager.getUI(this));
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
+      setText(null);
+      URL imageURL = SikuliIDE.class.getResource("/icons/capture.png");
+      setIcon(new ImageIcon(imageURL));
    }
 
    public boolean hasNext(){  return false;  }
@@ -179,6 +184,10 @@ class CaptureButton extends JButton implements ActionListener, Cloneable, Observ
             }
             catch(Exception e){}
             (new CapturePrompt(null, CaptureButton.this)).prompt();
+            try{
+               Thread.sleep(500);
+            }
+            catch(Exception e){}
             if(delay!=0) ide.setVisible(true);
          }
       };

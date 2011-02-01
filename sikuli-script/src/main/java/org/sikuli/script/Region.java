@@ -21,11 +21,12 @@ public class Region {
 
    public int x, y, w, h;
    
-   FindFailedResponse _defaultFindFailedResponse = FindFailedResponse.ABORT;
-   public void setDefaultFindFailedResponse(FindFailedResponse res){
+   protected FindFailedResponse _defaultFindFailedResponse = 
+                                          FindFailedResponse.ABORT;
+   public void setFindFailedResponse(FindFailedResponse res){
       _defaultFindFailedResponse = res;
    }
-   public FindFailedResponse getDefaultFindFailedResponse(){
+   public FindFailedResponse getFindFailedResponse(){
       return _defaultFindFailedResponse;
    }
 
@@ -35,6 +36,10 @@ public class Region {
    protected boolean _observing = false;
    protected EventManager _evtMgr = null;
 
+   // the last captured screen image the last match or matches are based on
+   // TODO: consider moving this to Screen class
+   protected ScreenImage _lastScreenImage;
+   
    protected Match _lastMatch;
    protected Iterator<Match> _lastMatches;
 
@@ -431,8 +436,10 @@ public class Region {
    public <PSC> Match exists(PSC target, double timeout) {
       try{
          RepeatableFind rf = new RepeatableFind(target);
-         if (rf.repeat(timeout))
-            return rf.getMatch();
+         if (rf.repeat(timeout)){
+            _lastMatch = rf.getMatch();
+            return _lastMatch;
+         }
       }
       catch(Exception ff){
          // TODO: This should throw an exception since
@@ -479,19 +486,28 @@ public class Region {
    public <PSRML> int click(PSRML target, int modifiers) 
                                                 throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
-      return _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
+      int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
+      
+      SikuliActionManager.getInstance().clickTarget(this, target, _lastScreenImage, _lastMatch);      
+      return ret;
    }
 
    public <PSRML> int doubleClick(PSRML target, int modifiers) 
                                                 throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
-      return _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
+      int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
+
+      SikuliActionManager.getInstance().doubleClickTarget(this, target, _lastScreenImage, _lastMatch);      
+      return ret;
    }
 
    public <PSRML> int rightClick(PSRML target, int modifiers) 
                                                 throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
-      return _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
+      int ret = _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
+      
+      SikuliActionManager.getInstance().rightClickTarget(this, target, _lastScreenImage, _lastMatch);      
+      return ret;
    }
 
    public int wheel(int direction, int steps) throws FindFailed{
@@ -687,6 +703,7 @@ public class Region {
       while( _observing && begin_t + secs*1000 > (new Date()).getTime() ){
          long before_find = (new Date()).getTime();
          ScreenImage simg = _scr.capture(x, y, w, h);
+         _lastScreenImage = simg;
          _evtMgr.update(simg);
          long after_find = (new Date()).getTime();
          try{
@@ -707,6 +724,7 @@ public class Region {
 
    public String text(){
       ScreenImage simg = _scr.capture(x, y, w, h);
+      _lastScreenImage = simg;
       return TextRecognizer.getInstance().recognize(simg);
    }
 
@@ -726,6 +744,7 @@ public class Region {
     */
    public <PSC> Match findNow(PSC ptn) throws FindFailed{
       ScreenImage simg = _scr.capture(x, y, w, h);
+      _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       Match ret = null;
       try{
@@ -743,6 +762,7 @@ public class Region {
    
    <PSC> Match doFind(PSC ptn) throws IOException{
       ScreenImage simg = _scr.capture(x, y, w, h);
+      _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       f.find(ptn);
       if(f.hasNext()){
@@ -753,6 +773,7 @@ public class Region {
 
    <PSC> Iterator<Match> doFindAll(PSC ptn) throws IOException{
       ScreenImage simg = _scr.capture(x, y, w, h);
+      _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       f.findAll(ptn);
       if(f.hasNext()){
@@ -769,6 +790,7 @@ public class Region {
    public <PSC> Iterator<Match> findAllNow(PSC ptn) 
                                              throws  FindFailed{
       ScreenImage simg = _scr.capture(x, y, w, h);
+      _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       try{
          f.findAll(ptn);

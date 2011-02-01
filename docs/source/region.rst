@@ -3,9 +3,9 @@ Region
 
 .. py:class:: Region
 
-Region is a rectangular section on a screen, which is defined by 
-	1.	a location (x, y) of its upper left corner as a distance relative to the
-		upper left corner of the screen (0, 0), and
+Region is a rectangular area on a screen, which is defined by 
+	1.	its upper left corner (x, y) as a distance relative to the
+		upper left corner of the screen (0, 0) and
 	2.	its dimension (w, h) as its width and height. 
 
 x, y, w, h are integer numbers counting a distance in pixels.
@@ -37,10 +37,10 @@ score. A region preserves the best match of the last successful find operation
 and all matches of the last successful :py:meth:`Region.findAll` (accessible
 with :py:meth:`Region.getLastMatches`. You can wait for patterns to show up
 using :py:meth:`Region.wait`, to vanish using :py:meth:`Region.waitVanish` or
-just check whether a pattern :py:meth:`Region.exists` without the need to handle
+just check whether a pattern :py:meth:`exists <Region.exists>` without the need to handle
 :ref:`exceptions <ExceptionsFindFailed>`. 
 
-Sikuli 0.10 begins to support visual event driven programming. You can tell a region
+Sikuli supports visual event driven programming. You can tell a region
 :ref:`to observe that something appears, vanishes or changes <ObservingVisualEventsinaRegion>`. 
 It is possible to wait for the completion of an
 observation or let it run in the background while your following script 
@@ -139,6 +139,7 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 		
 		:param location: location object becomes the new top left corner
 		:return: the modified region object
+		
 		::
 		
 			reg.moveTo(anotherLocation) # equivalent to
@@ -167,8 +168,9 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 
 		:param region: a region object		
 		:return: the modified region object
+
 		::
-		
+
 			reg.morphTo(anotherRegion) # equivalent to
 			r = anotherRegion; reg.setX(r.x); reg.setY(r.y); reg.setW(r.w); reg.setH(r.h)
 
@@ -250,12 +252,14 @@ Extending a Region
 ------------------
 
 These methods (exception ``inside()``) return a new region object, that is
-constructed based on the specified region (sometimes called spatial operators).
+defined based on the specified region (sometimes called spatial operators).
 The range parameter, if given as positive integer number, restricts the
-dimension of the new region (width and/or height respectively) based on that
-value. If range  is not specified, the new region extends to the respective
+dimension of the new region (width and/or height respectively) to that
+value. If range is not specified, the new region extends to the respective
 boundary of the screen the given region belongs to. An exception is ``nearby()``,
 which uses 50 as its default range.
+
+**Note**: In all cases the current region remains unchanged.
 
 **Note**: In all cases the new region does not extend beyond any boundary of the
 screen that contains the given region. 
@@ -266,7 +270,7 @@ screen that contains the given region.
 
 	.. py:method:: inside()
 	
-		Returns the same object. Retained for upward campatibility.
+		Returns the same object. Retained for upward compatibility.
 		
 		:return: the :py:class:`Region` object
 
@@ -275,70 +279,69 @@ screen that contains the given region.
 
 	.. py:method:: nearby([range])
 
-		Derive a new :py:class:`Region` that represents the nearby neighorhood
-		of the the current region. The new region is derived by extending the
-		current region in all directions by *range* number of pixels. The
-		center of the new region remains hte same.
+		Returns a new :py:class:`Region` that includes the nearby neighbourhood
+		of the the current region. The new region is defined by extending the
+		current region's dimensions in all directions by *range* number of pixels. The
+		center of the new region remains the same.
 
 		:param range: a positive integer indicating the number of pixels (default = 50).
 		:return: a :py:class:`Region` object
 
 	.. py:method:: above([range])
 
-		Derive a new :py:class:`Region` that represents the area *above* the
-		current region. The new region is constructed by extending the current
-		region from its top border by *range* number of pixels towards the top
-		boundary of the screen. This new region will also include the current
-		region. If *range* is omitted, it extends all the way to the boudnary
+		Returns a new :py:class:`Region` that is defined above the current region's
+		top border with a height of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the top 
 		of the screen. The new region has the same width and x-position as the
 		current region.
 
-		:param range: a positive integer indicating the number of pixels to
-			extend above.
-
+		:param range: a positive integer defining the new height
+		:return: a :py:class:`Region` object
+		
 	.. py:method:: below([range])
 
-		Derive a new :py:class:`Region` that represents the area *below* the
-		current region. The new region is constructed by extending the current
-		region from its bottom border by *range* number of pixels towards the
-		bottom boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		bottom boundary of the sreen. The new region has the same width and
-		x-position as the current region.
+		Returns a new :py:class:`Region` that is defined below the current region's
+		bottom border with a height of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the bottom
+		of the screen. The new region has the same width and x-position as the
+		current region.
 
-
+		:param range: a positive integer defining the new height
+		:return: a :py:class:`Region` object
+		
 	.. py:method:: left([range])
 
-		Derive a new :py:class:`Region` that represents the area to the *left*
-		of the current region. The new region is constructed by extending the
-		current region from its left border by *range* number of pixels towards
-		the left boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		left boundary of the sreen. The new region has the same height and
-		y-position as the current region.
+		Returns a new :py:class:`Region` that is defined left of the current region's
+		left border with a width of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the left border
+		of the screen. The new region has the same height and y-position as the
+		current region.
 
+		:param range: a positive integer defining the new width
+		:return: a :py:class:`Region` object
+		
 	.. py:method:: right([range])
 
-		Derive a new :py:class:`Region` that represents the area to the *right* of the
-		current region. The new region is constructed by extending the current
-		region from its right border by *range* number of pixels towards the
-		right boundary of the screen. The new region will also include the
-		current region. If *range* is omitted, it extends all the way to the
-		right boundary of the sreen. The new region has the same height and
-		y-position as the current region.
+		Returns a new :py:class:`Region` that is defined right of the current region's
+		right border with a width of *range* number of pixels. 
+		So it does not include the current	region. 
+		If *range* is omitted, it reaches to the right border
+		of the screen. The new region has the same height and y-position as the
+		current region.
 
+		:param range: a positive integer defining the new width
+		:return: a :py:class:`Region` object
+		
 .. _FindinginsideaRegionandWaitingforaVisualEvent:
 
 Finding inside a Region and Waiting for a Visual Event
 ------------------------------------------------------
 
-In addition to acting on visual objects, finding them is also one of the core
-functions of Sikuli. As a default, if the visual object cannot be found, Sikuli
-will stop the script by raising an exception FindFailed. This follows the
-standards of the Python language so that you can handle such exceptions using
-try ... except. If you are not used to programming and just want to bypass the
-exception handling, you should read this section about 
-:ref:`exception FindFailed <ExceptionFindFailed>`.
+Besides :ref:`acting on visual objects <ActingonaRegion>`, finding them is one of the core
+functions of Sikuli. 
 
 **PS**: means, that either a :py:class:`Pattern` or a string (path to an image
 file or just plain text) can be used as parameter. A find operation is
@@ -348,20 +351,30 @@ specify how likely the given image looks like the target. By default, the
 similarity is 0.7 if an image rather than a pattern object with a specific
 similarity is given to :py:meth:`Region.find()`.
 
-If a find operation is successful, the returned match is additionally stored
-internally with the region that was used for the search. So instead of using a
-variable to store the match ( ``m = find()`` ), you can use ``getLastMatch()`` to access
-it afterwards. Unsuccessful find operations will leave these values unchanged.
-(This only happens when using ``exists()``, exception handling or when running with
-``setThrowException(False)``).
-
 Normally all these region methods are used as ``reg.find(PS)``, where reg is a
 region object. If written as ``find(PS)`` it acts on the default screen, which is
-an implicit region in this case. But sometimes it's a good idea to use
+an implicit region in this case (see: :ref:`SCREEN as Default Region <DefaultScreen>`). 
+But in most cases it is a good idea to use
 ``region.find()`` to restrict the search to a smaller region in order to speed up
-processing.
+processing. 
 
-If you have multiple monitors, please read 
+If a find operation is successful, the returned match is additionally stored
+internally with the region that was used for the search. So instead of using a
+variable to store the match ( ``m = reg.find()`` ), you can use ``reg.getLastMatch()`` to access
+it afterwards. Unsuccessful find operations will leave these values unchanged.
+
+.. _PatternNotFound:
+
+As a default, if the **visual object (image or text) cannot be found**, Sikuli
+will stop the script by raising an :ref:`Exception FindFailed <ExceptionFindFailed>`. 
+This follows the standards of the Python language, so that you could handle such exceptions using
+``try: ... except: ...``. 
+
+If you are not used to programming using the Python language or because of other reasons, you might just want to bypass the
+exception handling (ignore it) or interactively react on a FindFailed situation (e.g. optionally repeat the find).
+Read more about concepts and options at: :ref:`Exception FindFailed <ExceptionFindFailed>`.
+
+If you have **multiple monitors**, please read 
 :ref:`Multi Monitor Environments <MultiMonitorEnvironments>`.
 
 **Note on IDE**: Capturing is a tool in the IDE, to quickly set up images to search
@@ -375,65 +388,38 @@ using a string containing the file name (path to an image file).
 	.. py:method:: find(PS)
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image file or just plain text)
-
-		:return: a :py:class:`Match` object that contains the best match. In
-			case thtat exception handling for :py:class:`FindFailed` is switched
-			off by :py:func:setThrowException, *None* is returned if nothing is
-			found. (Note: By default, the exception handling of FindFailed is turned on).
+		:return: a :py:class:`Match` object that contains the best match or ``None`` if not found. 
 
 		Find a particular GUI element, which is seen as the given image or
-		text. The given file name of an image specifies the element's
+		just plain text. The given file name of an image specifies the element's
 		appearance. It searches within the region and returns the best match,
 		which shows a similarity greater than the minimum similarity given by
 		the pattern. If no similarity was set for the pattern by
 		:py:meth:`Pattern.similar` before, a default minimum similarity of 0.7
-		is set automatically. If no match is found with the minimum similarity
-		or greater, the find fails (raises 
-		:ref:`exception	FindFailed <ExceptionFindFailed>`
-		or returns None).
+		is set automatically. 
+		
+		If no match is found with the minimum similarity
+		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
 
 		If autoWaitTimeout is set to a non-zero value, find() just acts as a wait().
 
-		**Side Effects**
-
-		  *FindFailed*: If the find fails (no match, whose similarity is equal or
-			greater than the minimum similarity of the pattern, can be found) and
-			exception handling is turned on (which is the default), 
-			an :ref:`exception	FindFailed <ExceptionFindFailed>`
-			is raised. If the script does not handle the
-			exception, the script is stopped, with a message about the exception. 
-
-		  *lastMatch*: the best match can be accessed using
-			:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 	.. py:method:: findAll(PS)
 
-		Repeatedly find ALL the instances of a pattern, until no match can be
+		:param PS: a :py:class:`Pattern` object or a string (path to an image
+			file or just plain text)
+		:return: one ore more match objects as an iterator object or ``None`` if not found. How to
+			iterate through is :ref:`documented here <IteratingMatches>`. 
+
+		Repeatedly find ALL instances of a pattern, until no match can be
 		found anymore, that meets the requirements for a single
 		:py:meth:`Region.find()` with the specified pattern.
 
-		:param PS: a :py:class:`Pattern` object or a string (path to an image
-			file or just plain text)
-
-		:return: one ore more match objects as an iterator object. How to
-			iterate through is documented here. In case that exception handling for
-			FindFailed is switched off by :py:func:`setThrowException` *None* is
-			returned, if nothing is found. (Note: By default at script start
-			exception handling of FindFailed is turned on). 
-
-		**Side Effects**
-
-		  *FindFailed*: If the find fails (no match can be found, whose similarity
-			is equal or greater than the minimum similarity of the pattern) and
-			exception handling is turned on (which is the default) 
-			an :ref:`exception	FindFailed <ExceptionFindFailed>`
-			is raised. If the script does not handle the exception, the
-			script is stopped, with a message about the exception.
-			
-		  *lastMatches*: a reference to the returned iterator object containing the
-			found matches is stored with the region that was searched. It can be
-			accessed using getLastMatches() afterwards. How to iterate through an
-			iterator of matches is documented here.
+		**Side Effect** *lastMatches*: a reference to the returned iterator object containing the 
+		found matches is stored with the region that was searched. It can be
+		accessed using getLastMatches() afterwards. How to iterate through an
+		iterator of matches is :ref:`documented here <IteratingMatches>`.
 
 	.. py:method:: wait([PS],[seconds])
 
@@ -444,17 +430,18 @@ using a string containing the file name (path to an image file).
 			specified, the auto wait timeout value set by
 			:py:meth:`Region.setAutoWaitTimeout` is used. Use the constant
 			*FOREVER* to wait for an infinite time. 
+		:return: a :py:class:`Match` object that contains the best match or ``None`` if not found. 
 
 		If *PS* is not specified, the script just pauses for the specified
-		amount of time. ( it's still possible to use sleep( seconds ) instead,
-		but this is deprecated. )
+		amount of time. It is still possible to use ``sleep(seconds)`` instead,
+		but this is deprecated.
 
 		If *PS* is specified, it keeps searching the given pattern in the
 		region until the image appears ( would have been found with
 		:py:meth:`Region.find`) or the specified amount of time has elapsed. At
 		least one find operation is performed, even if 0 seconds is specified.) 
 
-		**Side Effects** same as with :py:meth:`Region.find`.
+		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 		Note: You may adjust the scan rate (how often a search during the wait
 		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
@@ -470,7 +457,6 @@ using a string containing the file name (path to an image file).
 			specified, the auto wait timeout value set by
 			:py:meth:`Region.setAutoWaitTimeout` is used. Use the constant
 			*FOREVER* to wait for an infinite time.
-
 		:return: *True* if the pattern vanishes within the specified waiting
 			time, or *False* if the pattern stays visible after the waiting time
 			has elapsed.
@@ -479,8 +465,6 @@ using a string containing the file name (path to an image file).
 		image vanishes (can not be found with :py:meth:`Region.find` any
 		longer) or the specified amount of time has elapsed. At least one find
 		operation is performed, even if 0 seconds is specified. 
-
-		**Side Effects** same as with :py:meth:`Region.find`.
 
 		**Note**: You may adjust the scan rate (how often a search during the wait
 		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
@@ -491,13 +475,11 @@ using a string containing the file name (path to an image file).
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image
 			file or just plain text)
-		
 		:param seconds: a number, which can have a fraction, as maximum waiting
 			time in seconds. The internal granularity is milliseconds. If not
 			specified, the auto wait timeout value set by
 			:py:meth:`Region.setAutoWaitTimeout` is used. Use the constant
 			*FOREVER* to wait for an infinite time.
-
 		:return: a :py:class:`Match` object that contains the best match. None
 			is returned, if nothing is found within the specified waiting time
 
@@ -509,6 +491,8 @@ using a string containing the file name (path to an image file).
 		seconds is specified. So specifying 0 seconds saves some time, in case
 		there is no need to wait, since its your intention to get the
 		information "not found" directly. 
+
+		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 		**Note**: You may adjust the scan rate (how often a search during the wait
 		takes place) by setting :py:attr:`Settings.WaitScanRate` appropriately. 
@@ -748,14 +732,16 @@ string containing the file name (path to an image file).
 Acting on a Region
 ------------------
 
-Besides finding visual objects on the screen, acting on these elements is one of the
+Besides :ref:`finding visual objects <FindinginsideaRegionandWaitingforaVisualEvent>` 
+on the screen, acting on these elements is one of the
 kernel operations of Sikuli. Mouse actions can be simulated as well as pressing keys
 on a keyboard.
 
 The place on the screen, that should be acted on (in the end just one specific
-pixel, the click point), can be given either as a pattern PS like with the find
-operations or by directly referencing a pixel as center of a region object (match or
-screen also), the target pixel connected with a match or a pixel location. Since all
+pixel, the click point), can be given either as a :py:class:`pattern <Pattern>` like with the find
+operations or by directly referencing a pixel :py:class:`location <Location>` 
+or as center of a :py:class:`region <Region>` object (:py:class:`match <Match>` or
+:py:class:`screen <Screen>` also) or the target offset location connected with a :py:class:`match <Match>`. Since all
 these choices can be used with all action methods as needed, they are abbreviated
 and called like this:
 
@@ -772,37 +758,37 @@ detail:
 	operation with the default minimum similarity 0.7 is processed first. If
 	successful, the center of the resulting match object is the click point. 
 
-*	**M**: *match:* a match object from a previous find operation. If the match has a target
+*	**M**: *match:* a :py:class:`match <Match>` object from a previous find operation. If the match has a target
 	specified it is used as the click point, otherwise the center of the matches
 	rectangle. 
 
-*	**R**: *region:* a region object whose center is used as click point. 
+*	**R**: *region:* a :py:class:`region <Region>` object whose center is used as click point. 
 
-*	**L**: *location:* a location object which by definition represents a point on the
+*	**L**: *location:* a :py:class:`location <Location>` object which by definition represents a point on the
 	screen that is used as click point. 
 
-It is possible to simulate pressing the so called key modifiers together with the mouse
+It is possible to simulate pressing the so called :doc:`key modifiers <keys>` together with the mouse
 operation or when simulating keyboard typing. The respective parameter is given by
 one or more predefined constants. If more than one modifier is necessary, they are
 combined by using "+" or "|".
 
-Be aware: when using *PS* as parameter, internally there has to be processed an
-implicit find operation before, so the aspects of :ref:`find operations
-<FindinginsideaRegionandWaitingforaVisualEvent>` and of :py:meth:`Region.find`
-apply. If the find operation was successful, the match that was acted on, can be
-recalled using :py:meth:`Region.getLastMatch`. Especially remember the fact, that as
-a default, Sikuli will stop the script, if the visual object cannot be found, by
-raising an exception FindFailed. 
-This is done according to the standards of the
-Python language, which allows you to handle such exceptions. If you are not really
-used to programming and do not have a good knowledge of Python, it may be helpful,
-to first read about :ref:`exception FindFailed <ExceptionFindFailed>`.
-
 Normally all these region methods are used as ``reg.click(PS)``, where reg is a
 region object. If written as ``click(PS)`` the implicit find is done on the default
-screen being the implicit region in this case. But using ``reg.click(PS)`` will
+screen being the implicit region in this case (see: :ref:`SCREEN as Default Region <DefaultScreen>`). 
+But using ``reg.click(PS)`` will
 restrict the search to the region's rectangle and speed up processing, if region is
 significantly smaller than the whole screen.
+
+Generally all aspects of :ref:`find operations
+<FindinginsideaRegionandWaitingforaVisualEvent>` and of :py:meth:`Region.find`
+apply. 
+
+If the find operation was successful, the match that was acted on, can be
+recalled using :py:meth:`Region.getLastMatch`. 
+
+As a default, if the **visual object (image or text) cannot be found**, Sikuli
+will stop the script by raising an :ref:`Exception FindFailed <ExceptionFindFailed>` 
+(details see: :ref:`not found <PatternNotFound>`).
 
 **Note on IDE**: Capturing is a tool in the IDE, to quickly set up images to search for.
 These images are named automatically by the IDE and stored together with the script,
@@ -811,7 +797,7 @@ Behind the curtain the images itself are specified by using a string containing 
 file name (path to an image file).
 
 **Note**: If you need to implement more sophisticated mouse and keyboard actions look at
-Low Level Mouse and Keyboard Actions.
+:ref:`Low Level Mouse and Keyboard Actions <LowLevelMouseAndKeyboardActions>`.
 
 **Note**: In case of having more than one Monitor active, refer to :ref:`Multi Monitor
 Environments <MultimonitorEnvironments>` for more details.
@@ -831,13 +817,9 @@ application for accepting the action.
 		:param modifiers: one or more key modifiers
 
 		:return: the number of performed clicks (actually 1). A 0 (integer null)
-			means that because of some reason, no click could be performed. This
-			would be the case, if using *PS* (yields an implicit find), the find fails
-			and you have switched of exception FindFailed to be raised. Otherwise
-			the script is stopped with a FindFailed exception.
+			means that because of some reason, no click could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 		
 		**Example:**
 		
@@ -866,13 +848,9 @@ application for accepting the action.
 		:param modifiers: one or more key modifiers
 
 		:return: the number of performed double-clicks (actually 1). A 0 (integer null)
-			means that because of some reason, no click could be performed. This
-			would be the case, if using *PS* (yields an implicit find), the find fails
-			and you have switched of exception FindFailed to be raised. Otherwise
-			the script is stopped with a FindFailed exception.
-
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+			means that because of some reason, no click could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
+			
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 
 	.. py:method:: rightClick(PSMRL, [modifiers])
@@ -885,13 +863,9 @@ application for accepting the action.
 		:param modifiers: one or more key modifiers
 
 		:return: the number of performed right cilicks (actually 1). A 0 (integer null)
-			means that because of some reason, no click could be performed. This
-			would be the case, if using *PS* (yields an implicit find), the find fails
-			and you have switched of exception FindFailed to be raised. Otherwise
-			the script is stopped with a FindFailed exception.
+			means that because of some reason, no click could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 	.. py:method:: highlight([seconds])
 
@@ -926,10 +900,11 @@ application for accepting the action.
 				m.highlight(1)
 				m = m.nearby(20)
 
-
 		**Note**: The red frame is just an overlay in front of all other screen content and
 		stays in its place, independently from the behavior of this other content,
-		which means it is not "connected" to the defining region. 
+		which means it is not "connected" to the *content* of the defining region. 
+		But it will be adjusted automatically, if you change position and/or dimension 
+		of this region in your script, while it is highlighted.
 
 	.. py:method:: hover(PSMRL)
 
@@ -941,12 +916,10 @@ application for accepting the action.
 		:param modifiers: one or more key modifiers
 
 		:return: the number 1 if the mousepointer could be moved to the click point.
-			If using *PS*  (yields an implicit find), the find fails and you have
-			switched of exception FindFailed to be raised, a 0 (integer null) is
-			returned.  Otherwise the script is stopped with a FindFailed exception.
+			A 0 (integer null) returned
+			means that because of some reason, no move could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 
 	.. py:method:: dragDrop(PSMRL, PSMRL, [modifiers])
@@ -958,12 +931,14 @@ application for accepting the action.
 			evaluates to a click point.
 
 		:param modifiers: one or more key modifiers
+		
+		If one of the parameters is *PS*, the operation might fail due to :ref:`not Found <PatternNotFound>`.
 
-		**Sideeffects**: when using *PS*, the match of the target can be accessed using
+		**Sideeffect**: when using *PS*, the match of the target can be accessed using
 		:py:meth:`Region.getLastMatch` afterwards. If only the first parameter is
 		given as *PS*, this match is returned by :py:meth:`Region.getLastMatch`.
 
-		When the operation does not perform as expected (usually caused by timing
+		**When the operation does not perform as expected** (usually caused by timing
 		problems due to delayed reactions of applications), you may adjust the
 		internal timing parameters :py:attr:`Settings.DelayAfterDrag` and
 		:py:attr:`Settings.DelayBeforeDrop` eventually combined with the internal
@@ -987,18 +962,15 @@ application for accepting the action.
 
 		:param modifiers: one or more key modifiers
 
-		:return: the number 1 if the operation could be performed. If using *PS*
-			(yields an implicit find), the find fails and you have switched of
-			exception FindFailed to be raised, a 0 (integer null) is returned.
-			Otherwise the script is stopped with a FindFailed exception.
+		:return: the number 1 if the operation could be performed. A 0 (integer null) returned
+			means that because of some reason, no move could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 			
 		The mousepointer is moved to the click point and the left mouse button is
 		pressed and held, until another mouse action is performed (e.g. a
 		:py:meth:`Region.dropAt()`	afterwards). This is nomally used to start a
 		drag-and-drop operation.
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 	.. py:method:: dropAt(PSMRL, [delay])
 
@@ -1010,10 +982,8 @@ application for accepting the action.
 
 		:param modifiers: one or more key modifiers
 
-		:return: the number 1 if the operation could be performed. If using *PS*
-			(yields an implicit find), the find fails and you have switched of
-			exception FindFailed to be raised, a 0 (integer null) is returned.
-			Otherwise the script is stopped with a FindFailed exception.
+		:return: the number 1 if the operation could be performed. A 0 (integer null) returned
+			means that because of some reason, no move could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 
 		The mousepointer is moved to the click point. After waiting for delay
 		seconds the left mouse button is released. This is normally used to finalize
@@ -1021,8 +991,7 @@ application for accepting the action.
 		points after dragging and before dropping, you can use
 		:py:meth:`Region.mouseMove` inbetween.
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 	.. py:method:: type([PSMRL], text, [modifiers])
 
@@ -1034,8 +1003,13 @@ application for accepting the action.
 
 		:param modifiers: one or more key modifiers
 
+		:returns: the number 1 if the operation could be
+			performed, otherwise 0 (integer null), which means,
+			that because of some reason, it was not possible or the click 
+			could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
+		
 		This method simulates keyboard typing interpreting the characters of text
-		based on the layout/keymap of the standard US keyboard (QWERTY). Special
+		based on the layout/keymap of the **standard US keyboard (QWERTY)**. Special
 		keys (ENTER, TAB, BACKSPACE, ...) can be incorporated into text by using the
 		constants defined in :doc:`Class Key <keys>` using the standard string concatenation (+).
 		
@@ -1045,14 +1019,9 @@ application for accepting the action.
 
 		If *PSMRL* is omitted, it performs the typing on the current focused visual
 		component (normally an input field or an menu entry that can be selected by
-		typing something). returns: the number 1 if the operation could be
-		performed, otherwise 0 (integer null). If using *PS*  (yields an implicit
-		find), the find fails and you have switched of exception FindFailed to be
-		raised, a 0 (integer null) is returned. Otherwise the script is stopped with
-		a FindFailed exception. 
+		typing something). 
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards.
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 		**Note**: If you need to type international characters or you are using
 		layouts/keymaps other than US-QWERTY, you should use :py:meth:`Region.paste`
@@ -1076,10 +1045,9 @@ application for accepting the action.
 		:param modifiers: one or more key modifiers
 
 		:returns: the number 1 if the operation could be performed, otherwise 0
-			(integer null). If using PS (yields an implicit find), the find fails
-			and you have switched of exception FindFailed to be raised, a 0 (integer
-			null) is returned. Otherwise the script is stopped with a FindFailed
-			exception.
+			(integer null), which means,
+			that because of some reason, it was not possible or the click 
+			could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`). 
 
 		Pastes *text* using the clipboard (OS-level shortcut (Ctrl-V or Cmd-V)). So
 		afterwards your clipboard contains *text*. ``paste()`` is a temporary solution for
@@ -1093,8 +1061,7 @@ application for accepting the action.
 		If *PSMRL* is omitted, it performs the paste on the current focused component
 		(normally an input field).
 
-		**Sideeffects**: when using *PS*, the match can be accessed using
-		:py:meth:`Region.getLastMatch` afterwards
+		**Side Effect** if *PS* was used, the match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
 		**Note**: Special keys (ENTER, TAB, BACKSPACE, ...) cannot be used with ``paste()``.
 		If needed, you have to split your complete text into two or more ``paste()``
@@ -1114,7 +1081,12 @@ Extracting Text from a Region
 
 		Extract the text contained in the region using OCR.
 
-		:return: the text as a string. Multiple lines of text are separated by '\n'.
+		:return: the text as a string. Multiple lines of text are separated by intervening '\n'.
+		
+		**Note**: Since this feature is still in an **experimental state**, be aware, 
+		that in some cases it might not work as expected. If you face any problems 
+		look at the `Questions & Answers / FAQ's <https://answers.launchpad.net/sikuli>`_
+		and the `Bugs <https://answers.launchpad.net/sikuli>`_.
 
 .. _LowLevelMouseAndKeyboardActions:
 
@@ -1207,9 +1179,9 @@ Low-level Mouse and Keyboard Actions
 Exception FindFailed
 --------------------
 
-As a default, find operations (:ref:`explicit
-<FindinginsideaRegionandWaitingforaVisualEvent>` and :ref:`implicit
-<ActingonaRegion>`) when not successful raise an exception FindFailed, that will
+As a default, find operations (:ref:`explicit <FindinginsideaRegionandWaitingforaVisualEvent>` 
+and :ref:`implicit <ActingonaRegion>`) when not successful 
+raise an ``Exception FindFailed``, that will
 stop the script immediately. This is of great help, when developing a script, to
 step by step adjust timing and similarity. When the script runs perfectly, then an
 exception FindFailed signals, that something is not as it should be.
@@ -1219,12 +1191,33 @@ To implement some checkpoints, where you want to asure your workflow, use
 FindFailed (returns False instead).
 
 To run all or only parts of your script without FindFailed exceptions to be raised,
-use :py:meth:`Region.setThrowException` to switch it on and off as needed.
+use :py:meth:`Region.setThrowException` or :py:meth:`Region.setFindFailedResponse`
+to switch it on and off as needed.
 
 For more sophisticated concepts, you can implement your own exception handling using
-the standard Python construct ``try: ... except:``.
+the standard Python construct ``try: ... except: ...`` .
 
-Example: 3 solutions for a case, where you want to decide how to proceed in a
+.. versionadded:: X1.0-rc2
+
+These are the possibilities to handle "not found" situations:
+	* generally abort a script, if not handled with ``try: ... except: ...``
+		(the default setting or using :py:meth:`setThrowException(True) <Region.setThrowException>` 
+		or :py:meth:`setFindFailedResponse(ABORT) <Region.setFindFailedResponse>`) 
+	* generally ignore all "not found" situations 
+		(using :py:meth:`setThrowException(False) <Region.setThrowException>` 
+		or :py:meth:`setFindFailedResponse(SKIP) <Region.setFindFailedResponse>`), 
+	* want to be prompted in such a case 
+		(using :py:meth:`setFindFailedResponse(PROMPT) <Region.setFindFailedResponse>`)
+	* advise Sikuli to wait forever (be careful with that!)
+		(using :py:meth:`setFindFailedResponse(RETRY) <Region.setFindFailedResponse>`)
+
+.. _FindFailedPrompt:
+
+*comments on using PROMPT*: 
+
+*under construction*
+
+**Examples**: 3 solutions for a case, where you want to decide how to proceed in a
 workflow based on the fact that a specific image can be found. (pass is the python
 statement, that does nothing, but maintains indentation to form the blocks)::
 
@@ -1242,40 +1235,101 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 	except FindFailed:
 		pass # we miss it
 
+	# --- using setFindFailedResponse
+	setFindFailedResponse(SKIP) # no exception raised, not found returns None
+	if find("path-to-image"):
+		setFindFailedResponse(ABORT) # reset to default
+		pass # it is there
+	else:
+		setFindFailedResponse(ABORT) # reset to default
+		pass # we miss it
+
 	# --- using setThrowException
 	setThrowException(False) # no exception raised, not found returns None
 	if find("path-to-image"):
 		setThrowException(True) # reset to default
 		pass # it is there
 	else:
-		setThrowException(True)
-		# reset to default
+		setThrowException(True) # reset to default
 		pass # we miss it
-
 
 .. py:class:: Region
 
+	**Reminder** If used without specifying a region, the default/primary screen
+	(default region SCREEN) is used. 
+
+	.. versionadded:: X1.0-rc2
+	
+	.. py:method:: setFindFailedResponse(ABORT | SKIP | PROMPT | RETRY)
+	
+		For the specified region set the option, how Sikuli should handle 
+		"not found" situations. The option stays in effect until changed 
+		by another ``setFindFailedResponse()``.
+	
+		:param ABORT: all subsequent find failed operations (explicit or
+			implicit) will raise exception FindFailed (which is the default when a
+			script is started). 
+
+		:param SKIP: all subsequent find operations will not raise
+			exception FindFailed. Instead, explicit find operations such as
+			:py:meth:`Region.find` will return *None*. Implicit find operations 
+			(action functions) such as :py:meth:`Region.click` will do
+			nothing and return 0.
+		
+		:param PROMPT: all subsequent find operations will not raise
+			exception FindFailed. Instead you will be prompted for the way 
+			to handle the situation (see :ref:`using PROMPT <FindFailedPrompt>`). Only the current 
+			find operation is affected by your response to the prompt. 
+	
+		:param RETRY: all subsequent find operations will not raise
+			exception FindFailed. Instead, Sikuli will try to find the target 
+			until it gets visible. This is equivalent to using ``wait( ... , FOREVER)``
+			instead of ``find()`` or using setAutoWaitTimeout(FOREVER).
+			
+	.. py:method:: getFindFailedResponse()
+	
+		Get the current setting in this region.
+	
+		:return: ABORT or SKIP or PROMPT or RETRY
+		
+		Usage::
+		
+			val = getFindFailedResponse()
+			if val == ABORT:
+				print "not found will stop script with Exception FindFailed"
+			elif val == SKIP:
+				print "not found will be ignored"
+			elif val == PROMPT:
+				print "when not found you will be prompted"
+			elif val == RETRY:
+				print "we will always wait forever"
+			else:
+				print val, ": this is a bug :-("
+
+	**Note**: It is recommended to use ``set/getFindFailedResponse()`` instead of 
+	``set/getThrowException()`` since the latter ones might be deprecated in the future.
+	
 	.. py:method:: setThrowException(False | True)
 	
 		By using this method you control, how Sikuli should handle not found
-		situations. If used without specifying a region, the default/primary screen
-		(default region SCREEN) is used. 
+		situations in this region.
 
-		If set to *True*, all subsequent failed find operations (explicit or
-		implicit) will raise exception FindFailed (which is the default when a
-		script is started).
+		:param True: all subsequent find operations (explicit or
+			implicit) will raise exception FindFailed (which is the default when a
+			script is started) in case of not found.
 
-		If set to *False*, all subsequent failed find operations will not raise
-		exception FindFailed. Instead, explicit find operations such as
-		:py:meth:`Region.find` will return *None*. Implicit find operations as
-		byproduct of action functions such as :py:meth:`Region.click` will do
-		nothing and return 0.
+		:param False: all subsequent find operations will not raise
+			exception FindFailed. Instead, explicit find operations such as
+			:py:meth:`Region.find` will return *None*. Implicit find operations 
+			(action functions) such as :py:meth:`Region.click` will do
+			nothing and return 0.
 
 	.. py:method:: getThrowException()
+	
+		:return: ``True`` or ``False``
 
 		Get the current setting as True or False (after start of script, this is True by
-		default). If used without specifying a region, the default/primary screen
-		(default region SCREEN) is used. 
+		default) in this region.
 
 .. _GroupingMethodCallsWithRegion:
 

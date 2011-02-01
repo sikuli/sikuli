@@ -49,6 +49,7 @@ apply.
 		the click point is the center of the matched region. If an offset was given,
 		the click point is the offset relative to the center.
 
+.. _IteratingMatches:
 
 Iterating over Matches after findAll()
 --------------------------------------

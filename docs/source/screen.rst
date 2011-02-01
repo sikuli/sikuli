@@ -64,6 +64,8 @@ Screen: Setting, Getting Attributes and Information
 		represented by the screen object. These attributes are obtained from the
 		operating system. They can not be modified using Sikuli script.
 
+.. _DefaultScreen:
+
 Screen as (Default) Region
 --------------------------
 

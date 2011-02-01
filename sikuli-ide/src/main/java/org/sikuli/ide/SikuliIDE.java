@@ -15,8 +15,20 @@ import java.text.MessageFormat;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
+import javax.swing.undo.*;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.event.UndoableEditEvent;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+import org.jdesktop.swingx.JXCollapsiblePane;
+import org.jdesktop.swingx.JXSearchField;
+import org.jdesktop.swingx.JXTaskPaneContainer;
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXMultiSplitPane;
+import org.jdesktop.swingx.MultiSplitLayout;
+
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.CapturePrompt;
@@ -27,19 +39,36 @@ import org.sikuli.script.Subject;
 
 import org.apache.commons.cli.CommandLine;
 
+import com.explodingpixels.macwidgets.MacUtils;
+
 
 public class SikuliIDE extends JFrame {
-   boolean ENABLE_RECORDING = false;
+   final static boolean ENABLE_RECORDING = false;
+   final static boolean ENABLE_UNIFIED_TOOLBAR = true;
+
+   final static Color COLOR_SEARCH_FAILED = Color.red;
+   final static Color COLOR_SEARCH_NORMAL = Color.white;
+
+   final static String MAIN_LAYOUT_DEF = 
+      "(ROW " +
+         "(LEAF name=cmds weight=0.15) " +
+         "(COLUMN weight=0.85" + 
+            "(LEAF name=code weight=0.9)" +
+            "(LEAF name=msg weight=0.1)))";
 
    private static NativeLayer _native;
 
    private ConsolePane _console;
-   private CloseableTabbedPane _mainPane, _sidePane;
-   private JSplitPane _codeAndUnitPane;
+   private CloseableTabbedPane _mainPane;
+   private JXCollapsiblePane  _sidePane;
+   private JXMultiSplitPane _mainSplitPane;
+
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
    private StatusBar _status;
-   private JToolBar _cmdToolBar;
+   private JComponent _cmdList;
+   private JXSearchField _searchField;
+   private FindAction _findHelper;
 
    private CaptureButton _btnCapture;
    private ButtonRun _btnRun, _btnRunViz;
@@ -53,6 +82,9 @@ public class SikuliIDE extends JFrame {
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
+
+   private UndoAction _undoAction = new UndoAction();
+   private RedoAction _redoAction = new RedoAction();
 
    private static CommandLine _cmdLine;
    private static boolean _useStderr = false;
@@ -123,11 +155,16 @@ public class SikuliIDE extends JFrame {
 
    boolean checkDirtyPanes(){
       for(int i=0;i<_mainPane.getComponentCount();i++){
-         JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-         SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-         if(codePane.isDirty()){
-            getRootPane().putClientProperty("Window.documentModified", true);
-            return true;
+         try{
+            JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
+            SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+            if(codePane.isDirty()){
+               getRootPane().putClientProperty("Window.documentModified", true);
+               return true;
+            }
+         }
+         catch(Exception e){
+            Debug.log(7, "checkDirtyPanes: " + e.getMessage());
          }
       }
       getRootPane().putClientProperty("Window.documentModified", false);
@@ -198,6 +235,14 @@ public class SikuliIDE extends JFrame {
    private void initEditMenu() throws NoSuchMethodException{
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
+      JMenuItem undoItem = _editMenu.add( _undoAction );
+      undoItem.setAccelerator(
+         KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, scMask));
+      JMenuItem redoItem = _editMenu.add( _redoAction );
+      redoItem.setAccelerator(
+         KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, scMask|InputEvent.SHIFT_MASK));
+      _editMenu.addSeparator();
+
       _editMenu.add( createMenuItem(_I("menuEditCut"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, scMask),
                new EditAction(EditAction.CUT)));
@@ -211,17 +256,19 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
                new EditAction(EditAction.SELECT_ALL)));
       _editMenu.addSeparator();
+
       JMenu findMenu = new JMenu(_I("menuFind"));
+      _findHelper = new FindAction();
       findMenu.setMnemonic(KeyEvent.VK_F);
       findMenu.add( createMenuItem(_I("menuFindFind"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, scMask),
-               new EditAction(EditAction.FIND)));
+               new FindAction(FindAction.FIND)));
       findMenu.add( createMenuItem(_I("menuFindFindNext"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask),
-               new EditAction(EditAction.FIND_NEXT)));
+               new FindAction(FindAction.FIND_NEXT)));
       findMenu.add( createMenuItem(_I("menuFindFindPrev"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, scMask | InputEvent.SHIFT_MASK),
-               new EditAction(EditAction.FIND_PREV)));
+               new FindAction(FindAction.FIND_PREV)));
       _editMenu.add(findMenu);
       _editMenu.addSeparator();
       _editMenu.add( createMenuItem(_I("menuEditIndent"), 
@@ -299,6 +346,13 @@ public class SikuliIDE extends JFrame {
       frame.setJMenuBar(_menuBar);
    }
 
+   private String[] CommandCategories = {
+      _I("cmdListFind"),
+      _I("cmdListMouse"),
+      _I("cmdListKeyboard"),
+      _I("cmdListObserver")
+   };
+   
    private String[][] CommandsOnToolbar = {
       {"find"}, {"PATTERN"},
       {_I("cmdFind")},
@@ -325,6 +379,7 @@ public class SikuliIDE extends JFrame {
       {"drag"}, {"PATTERN"},
       {"dropAt"}, {"PATTERN", "[delay]"},
 */
+      {"----"},{},{},
       {"type"}, {"_text", "[modifiers]"},
       {_I("cmdType")},
       {"type"}, {"PATTERN", "_text", "[modifiers]"},
@@ -344,8 +399,9 @@ public class SikuliIDE extends JFrame {
       {_I("cmdObserve")},
    };
 
-   private JToolBar initCmdToolbar(){
-      JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
+   private JComponent createCommandPane(){
+      JXTaskPaneContainer con = new JXTaskPaneContainer();
+
       UserPreferences pref = UserPreferences.getInstance();
       JCheckBox chkAutoCapture = 
          new JCheckBox(_I("cmdListAutoCapture"), 
@@ -357,21 +413,41 @@ public class SikuliIDE extends JFrame {
             pref.setAutoCaptureForCmdButtons(flag);
          }
       });
-      toolbar.add(new JLabel(_I("cmdListCommandList")));
-      toolbar.add(chkAutoCapture);
+      JXTaskPane setPane = new JXTaskPane();
+      setPane.setTitle(_I("cmdListSettings"));
+      setPane.add(chkAutoCapture);
+      int cat = 0;
+      JXTaskPane taskPane = new JXTaskPane();
+      taskPane.setTitle(CommandCategories[cat++]);
+      con.add(taskPane);
       for(int i=0;i<CommandsOnToolbar.length;i++){
          String cmd = CommandsOnToolbar[i++][0];
          String[] params = CommandsOnToolbar[i++];
          String[] desc = CommandsOnToolbar[i];
-         if( cmd.equals("----") )
-            toolbar.addSeparator();
+         if( cmd.equals("----") ){
+            taskPane = new JXTaskPane();
+            taskPane.setTitle(CommandCategories[cat++]);
+            con.add(taskPane);
+         }
          else
-            toolbar.add(new ButtonGenCommand(cmd, desc[0], params));
+            taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
       }
+      con.add(setPane);
+      _cmdList =  new JScrollPane(con);
+      return _cmdList;
+   }
+
+   private JToolBar initCmdToolbar(){
+      JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
+      toolbar.add(createCommandPane());
       return toolbar;
    }
 
+
    private JToolBar initToolbar(){
+      if(ENABLE_UNIFIED_TOOLBAR)
+         MacUtils.makeWindowLeopardStyle(this.getRootPane());
+
       JToolBar toolbar = new JToolBar();
       _btnRun = new ButtonRun();
       JButton btnInsertImage = new ButtonInsertImage();
@@ -381,34 +457,86 @@ public class SikuliIDE extends JFrame {
       toolbar.add(_btnCapture);
       toolbar.add(btnInsertImage);
       toolbar.add(btnSubregion);
-      toolbar.addSeparator();
+      toolbar.add(Box.createHorizontalGlue());
+      /*
       if( ENABLE_RECORDING ){
          JToggleButton btnRecord = new ButtonRecord();
          toolbar.add(btnRecord);
       }
+      */
       toolbar.add(_btnRun);
       toolbar.add(_btnRunViz);
+      toolbar.add(Box.createHorizontalGlue());
+      toolbar.add( createSearchField() );
+      toolbar.add(Box.createRigidArea(new Dimension(7,0)));
       toolbar.setFloatable(false);
+      //toolbar.setMargin(new Insets(0, 0, 0, 5));
       return toolbar;
+   }
+
+   private JComponent createSearchField(){
+      /*
+      if(Utils.isMacOSX()){
+         _searchField = new JTextField();
+         _searchField.putClientProperty("JTextField.variant", "search");
+      }
+      else{
+         _searchField = new JXSearchField();
+      }
+      */
+      _searchField = new JXSearchField("Find");
+      _searchField.setUseNativeSearchFieldIfPossible(true);
+      //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      _searchField.setPreferredSize(new Dimension(220,30));
+      _searchField.setMaximumSize(new Dimension(380,30));
+
+      _searchField.setCancelAction(new ActionListener(){
+         public void actionPerformed(ActionEvent evt) {    
+            getCurrentCodePane().requestFocus();
+            _findHelper.setFailed(false);
+         }
+      });
+      _searchField.setFindAction(new ActionListener(){
+         public void actionPerformed(ActionEvent evt) {    
+            _searchField.selectAll();
+            boolean ret = _findHelper.findNext(_searchField.getText());
+            _findHelper.setFailed(!ret);
+         }
+      });
+      _searchField.addKeyListener(new KeyAdapter(){
+         public void keyReleased(java.awt.event.KeyEvent ke) {
+            boolean ret;
+            if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
+               _searchField.selectAll();
+               ret = _findHelper.findNext(_searchField.getText());
+            }
+            else
+               ret = _findHelper.findStr(_searchField.getText());
+            _findHelper.setFailed(!ret);
+         }
+      });
+      return _searchField;
    }
 
 
    private void initTabPane(){
       _mainPane = new CloseableTabbedPane();
+      _mainPane.setUI(new AquaCloseableTabbedPaneUI());
       _mainPane.addCloseableTabbedPaneListener(
                 new CloseableTabbedPaneListener(){
          public boolean closeTab(int i){
             try{
                JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
                SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-               Debug.log(3, "close tab: " + _mainPane.getComponentCount());
+               Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                boolean ret = codePane.close();
-               Debug.log(3, "close tab after: " + _mainPane.getComponentCount());
+               Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
                checkDirtyPanes();
                return ret;
             }
             catch(Exception e){
                Debug.info("Can't close this tab: " + e.getStackTrace());
+               e.printStackTrace();
                return false;
             }
          }
@@ -421,7 +549,7 @@ public class SikuliIDE extends JFrame {
             int i = tab.getSelectedIndex();
             if(i>=0)
                SikuliIDE.this.setTitle(tab.getTitleAt(i));
-
+            updateUndoRedoStates();
          }
       });
             
@@ -437,22 +565,25 @@ public class SikuliIDE extends JFrame {
       _testRunner = new UnitTestRunner();
       _unitPane = _testRunner.getPanel();
       _chkShowUnitTest.setState(false);
-      (new ViewAction()).toggleUnitTest(null);
       addAuxTab(_I("paneTestTrace"), _testRunner.getTracePane());
    }
 
    private void initSidePane(){
-      _sidePane = new CloseableTabbedPane();
-      _sidePane.addChangeListener(new ChangeListener(){
-         public void stateChanged(javax.swing.event.ChangeEvent e){
-            JTabbedPane pane = (JTabbedPane)e.getSource();
-            int sel = pane.getSelectedIndex();
-            if( sel == -1 ) { // all tabs closed
-               _codeAndUnitPane.setDividerLocation(1.0D);
-               _chkShowUnitTest.setState(false);
-            }
+      initUnitPane();
+      _sidePane = new JXCollapsiblePane(JXCollapsiblePane.Direction.RIGHT);
+      _sidePane.setMinimumSize(new Dimension(0,0));
+      CloseableTabbedPane tabPane = new CloseableTabbedPane();
+      _sidePane.getContentPane().add(tabPane);
+      tabPane.setMinimumSize(new Dimension(0,0));
+      tabPane.addTab(_I("tabUnitTest"), _unitPane);
+      tabPane.addCloseableTabbedPaneListener(new CloseableTabbedPaneListener(){
+         public boolean closeTab(int tabIndexToClose){
+            _sidePane.setCollapsed(true);
+            _chkShowUnitTest.setState(false);
+            return false;
          }
       });
+      _sidePane.setCollapsed(true);
    }
 
    private StatusBar initStatusbar(){
@@ -531,23 +662,27 @@ public class SikuliIDE extends JFrame {
       initTabPane();
       initAuxPane();
       initSidePane();
-      initUnitPane();
 
-      _codeAndUnitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT, true, _mainPane, _sidePane);
-      JSplitPane mainAndConsolePane = new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT, true, _codeAndUnitPane, _auxPane);
-      _cmdToolBar = initCmdToolbar();
+      _mainSplitPane = new JXMultiSplitPane();
+      //_mainSplitPane.setDividerPainter(new BevelDividerPainter(_mainSplitPane));
+      _mainSplitPane.getMultiSplitLayout().setModel( 
+            MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
+
+      _mainSplitPane.add(createCommandPane(), "cmds");
+      JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
+      codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
+      codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
+      codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
+      _mainSplitPane.add(codeAndUnitPane, "code");
+      _mainSplitPane.add(_auxPane, "msg");
+
 
       c.add(initToolbar(), BorderLayout.NORTH);
-      c.add(_cmdToolBar, BorderLayout.WEST);
-      c.add(mainAndConsolePane, BorderLayout.CENTER);
+      c.add(_mainSplitPane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
       setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
-      adjustCodePaneWidth();
-      mainAndConsolePane.setDividerLocation(450);
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -639,13 +774,6 @@ public class SikuliIDE extends JFrame {
       catch(IOException e){
          e.printStackTrace();
       }
-   }
-
-   private void adjustCodePaneWidth(){
-      int pos = getWidth() - _sidePane.getMinimumSize().width-15 
-                           - _cmdToolBar.getWidth();
-      if(_codeAndUnitPane != null && pos >= 0)
-         _codeAndUnitPane.setDividerLocation(pos);
    }
 
 
@@ -953,16 +1081,32 @@ public class SikuliIDE extends JFrame {
       }
 
       public void toggleCmdList(ActionEvent ae){
-         _cmdToolBar.setVisible(!_cmdToolBar.isVisible());
+         /*
+         MultiSplitLayout.Node cmdNode = _mainSplitPane.getMultiSplitLayout().getNodeForName("cmds");
+         MultiSplitLayout.Node divider = cmdNode.nextSibling();
+         MultiSplitLayout.Node codeNode = 
+             _mainSplitPane.getMultiSplitLayout().getNodeForName("code");
+
+         Rectangle b = divider.getBounds();
+         b.x = 0;
+         divider.setBounds(b);
+
+         Rectangle codeBound = codeNode.getBounds();
+         Rectangle cmdBound = cmdNode.getBounds();
+         codeBound.width += cmdBound.width;
+         cmdBound.width = 0;
+         codeNode.setBounds(codeBound);
+         cmdNode.setBounds(cmdBound);
+
+         _mainSplitPane.revalidate();
+         */
       }
 
       public void toggleUnitTest(ActionEvent ae){
-         if( _chkShowUnitTest.getState() ){
-            _sidePane.addTab(_I("tabUnitTest"), _unitPane);
-            adjustCodePaneWidth();
-         }
+         if(_chkShowUnitTest.getState())
+            _sidePane.setCollapsed(false);
          else
-            _sidePane.remove(_unitPane);
+            _sidePane.setCollapsed(true);
       }
    }
 
@@ -1039,6 +1183,70 @@ public class SikuliIDE extends JFrame {
       }
    }
 
+   class FindAction extends MenuAction {
+      static final String FIND = "doFind";
+      static final String FIND_NEXT = "doFindNext";
+      static final String FIND_PREV = "doFindPrev";
+
+      public FindAction(){
+         super();
+      }
+
+      public FindAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+
+      public void doFind(ActionEvent ae){
+         _searchField.requestFocus();
+      }
+
+      public void doFindNext(ActionEvent ae){
+         findNext(_searchField.getText());
+      }
+
+      public void doFindPrev(ActionEvent ae){
+         findPrev(_searchField.getText());
+      }
+
+      private boolean _find(String str, int begin, boolean forward){
+         SikuliPane codePane = getCurrentCodePane();
+         int pos = codePane.search(str, begin, forward);
+         Debug.log(7, "find \"" + str + "\" at " + begin + ", found: " + pos);
+         if(pos < 0)
+            return false;
+         return true;
+      }
+
+      public boolean findStr(String str){
+         if(getCurrentCodePane() != null)
+            return _find(str, getCurrentCodePane().getCaretPosition(), true);
+         return false;
+      }
+
+      public boolean findPrev(String str){
+         if(getCurrentCodePane() != null)
+            return _find(str, getCurrentCodePane().getCaretPosition(), false);
+         return false;
+      }
+
+      public boolean findNext(String str){
+         if(getCurrentCodePane() != null)
+            return _find(str, 
+                         getCurrentCodePane().getCaretPosition()+str.length(),
+                         true);
+         return false;
+      }
+
+      public void setFailed(boolean failed){
+         Debug.log(7, "search failed: " + failed);
+         if(failed)
+            _searchField.setBackground(COLOR_SEARCH_FAILED);
+         else
+            _searchField.setBackground(COLOR_SEARCH_NORMAL);
+      }
+
+   }
+
    class EditAction extends MenuAction {
       static final String CUT = "doCut";
       static final String COPY = "doCopy";
@@ -1046,9 +1254,6 @@ public class SikuliIDE extends JFrame {
       static final String SELECT_ALL = "doSelectAll";
       static final String INDENT = "doIndent";
       static final String UNINDENT = "doUnindent";
-      static final String FIND = "doFind";
-      static final String FIND_NEXT = "doFindNext";
-      static final String FIND_PREV = "doFindPrev";
 
       public EditAction(){
          super();
@@ -1062,15 +1267,6 @@ public class SikuliIDE extends JFrame {
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliPane pane = ide.getCurrentCodePane();
          pane.getActionMap().get(action).actionPerformed(ae);
-      }
-
-      public void doFind(ActionEvent ae){
-      }
-
-      public void doFindNext(ActionEvent ae){
-      }
-
-      public void doFindPrev(ActionEvent ae){
       }
 
       public void doCut(ActionEvent ae){
@@ -1279,9 +1475,10 @@ public class SikuliIDE extends JFrame {
    class ButtonRunViz extends ButtonRun {
       public ButtonRunViz(){
          super();
-         URL imageURL = SikuliIDE.class.getResource("/icons/runviz.png");
+         URL imageURL = SikuliIDE.class.getResource("/icons/run_big_yl.png");
          setIcon(new ImageIcon(imageURL));
          setToolTipText(_I("menuRunRunAndShowActions"));
+         setText(_I("btnRunSlowMotionLabel"));
       }
 
       protected void runPython(File f) throws Exception{
@@ -1300,18 +1497,18 @@ public class SikuliIDE extends JFrame {
       }
    }
 
-   class ButtonRun extends JButton implements ActionListener {
+   class ButtonRun extends ToolbarButton implements ActionListener {
       private Thread _runningThread = null;
 
       public ButtonRun(){
          super();
 
-         URL imageURL = SikuliIDE.class.getResource("/icons/run.png");
+         URL imageURL = SikuliIDE.class.getResource("/icons/run_big_green.png");
          setIcon(new ImageIcon(imageURL));
-         setMaximumSize(new Dimension(26,26));
-         setBorderPainted(false);
          initTooltip();
          addActionListener(this);
+         setText(_I("btnRunLabel"));
+         //setMaximumSize(new Dimension(45,45));
       }
 
       protected void runPython(File f) throws Exception{
@@ -1458,15 +1655,71 @@ public class SikuliIDE extends JFrame {
          _runningThread.start();
       }
    }
+
+   class UndoAction extends AbstractAction{ 
+      public UndoAction(){ 
+         super(_I("menuEditUndo")); 
+         setEnabled(false); 
+      } 
+      public void updateUndoState(){ 
+         if (getCurrentCodePane() != null && 
+             getCurrentCodePane().getUndoManager().canUndo()){
+            setEnabled(true); 
+         } 
+         else { 
+            setEnabled(false); 
+         } 
+      } 
+      public void actionPerformed(ActionEvent e){ 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         try{ 
+            undo.undo(); 
+         } 
+         catch (CannotUndoException ex){} 
+         updateUndoState(); 
+         _redoAction.updateRedoState(); 
+      } 
+   }
+
+   class RedoAction extends AbstractAction{ 
+      public RedoAction() { 
+         super(_I("menuEditRedo")); 
+         setEnabled(false); 
+      } 
+      public void actionPerformed(ActionEvent e){ 
+         UndoManager undo = getCurrentCodePane().getUndoManager();
+         try{ 
+            undo.redo(); 
+         }
+         catch(CannotRedoException ex){} 
+         updateRedoState(); 
+         _undoAction.updateUndoState(); 
+      } 
+      protected void updateRedoState() { 
+         if (getCurrentCodePane() != null && 
+             getCurrentCodePane().getUndoManager().canRedo()){
+            setEnabled(true); 
+         } 
+         else { 
+            setEnabled(false); 
+         } 
+      }
+   }
+
+   public void updateUndoRedoStates(){
+      _undoAction.updateUndoState();
+      _redoAction.updateRedoState();
+   }
+
 }
 
-class ButtonInsertImage extends JButton implements ActionListener{
+class ButtonInsertImage extends ToolbarButton implements ActionListener{
    public ButtonInsertImage(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/insert-image.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/insert-image-icon.png");
       setIcon(new ImageIcon(imageURL));
-      setMaximumSize(new Dimension(26,26));
-      setBorderPainted(false);
+      setText(SikuliIDE._I("btnInsertImageLabel"));
+      //setMaximumSize(new Dimension(26,26));
       setToolTipText(SikuliIDE._I("btnInsertImageHint"));
       addActionListener(this);
    }
@@ -1484,13 +1737,13 @@ class ButtonInsertImage extends JButton implements ActionListener{
    }
 }
 
-class ButtonSubregion extends JButton implements ActionListener, Observer{
+class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
    public ButtonSubregion(){
       super();
-      URL imageURL = SikuliIDE.class.getResource("/icons/subregion.png");
+      URL imageURL = SikuliIDE.class.getResource("/icons/region-icon.png");
       setIcon(new ImageIcon(imageURL));
-      setMaximumSize(new Dimension(26,26));
-      setBorderPainted(false);
+      setText(SikuliIDE._I("btnRegionLabel"));
+      //setMaximumSize(new Dimension(26,26));
       setToolTipText( SikuliIDE._I("btnRegionHint") );
       addActionListener(this);
    }
@@ -1505,6 +1758,7 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
          Rectangle roi = r.getROI();
          complete((int)roi.getX(), (int)roi.getY(),
                   (int)roi.getWidth(), (int)roi.getHeight());
+         SikuliIDE.getInstance().setVisible(true);
       }
    }
 
@@ -1514,7 +1768,6 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt(500);
-      ide.setVisible(true);
    }
 
    public void complete(int x, int y, int w, int h){
@@ -1527,5 +1780,7 @@ class ButtonSubregion extends JButton implements ActionListener, Observer{
       ide.setVisible(true);
       codePane.requestFocus();
    }
+
+ 
 
 }

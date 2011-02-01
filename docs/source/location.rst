@@ -25,6 +25,9 @@ denote the click point. It contains methods, to *move* a point around on the scr
 		It is possible to get the values directly by ``location.x`` or ``location.y``.
 		It is also possible to set these values directly by ``location.x = value``
 		or ``location.y = value``.
+		
+		**Note:** ``getX()``and ``getY()`` currently (versions 0.10.2 and X 1.0rc2) return float
+		values (Java: double), whereas ``location.x`` and ``location.y`` return integer values.
 
 	.. py:method:: offset(dx, dy)
 

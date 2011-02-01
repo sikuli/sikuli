@@ -9,7 +9,6 @@ from org.sikuli.script import SikuliScript
 from org.sikuli.script import Match
 from org.sikuli.script import Pattern
 from org.sikuli.script import FindFailed
-from org.sikuli.script import FindFailedResponse
 from org.sikuli.script import SikuliEvent
 import __builtin__
 import __main__
@@ -59,9 +58,10 @@ def load(jar):
    if _load(jarInExtPath):
       return True
    path = getBundlePath()
-   jarInBundle = path + java.io.File.separator + jar
-   if _load(jarInBundle):
-      return True
+   if path:
+      jarInBundle = path + java.io.File.separator + jar
+      if _load(jarInBundle):
+         return True
    return False
 
 def addImagePath(path):

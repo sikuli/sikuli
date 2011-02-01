@@ -158,7 +158,8 @@ public class EventManager {
 
    public void update(ScreenImage img){
       checkPatterns(img);
-      checkChanges(img);
+      if(_changeOb.size()>0)
+         checkChanges(img);
    }
 
    protected void finalize() throws Throwable {

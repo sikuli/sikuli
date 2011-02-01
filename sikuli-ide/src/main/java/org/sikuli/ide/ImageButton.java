@@ -211,7 +211,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       String ret = "";
       if(_exact)
          ret += ".exact()";
-      if(_similarity != DEFAULT_SIMILARITY)
+      if(_similarity != DEFAULT_SIMILARITY && !_exact)
          ret += String.format(Locale.ENGLISH, ".similar(%.2f)", _similarity);
       if(_offset != null && (_offset.x!=0 || _offset.y!=0))
          ret += ".targetOffset(" + _offset.x + "," + _offset.y +")";

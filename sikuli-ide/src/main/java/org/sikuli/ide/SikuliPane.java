@@ -14,6 +14,8 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+//import javax.swing.undo.*;
+
 import javax.imageio.*;
 
 import org.python.util.PythonInterpreter; 
@@ -23,6 +25,7 @@ import org.sikuli.script.ImageLocator;
 import org.sikuli.script.ScriptRunner;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Location;
+
 
 public class SikuliPane extends JTextPane implements KeyListener, 
                                                      CaretListener{
@@ -34,6 +37,12 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private ImageLocator _imgLocator;
 
    private String _tabString = "   ";
+
+   private Pattern _lastSearchPattern = null;
+   private String _lastSearchString = null;
+   private Matcher _lastSearchMatcher;
+
+   private UndoManager _undo = new UndoManager();
 
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
@@ -48,9 +57,17 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);
-      getDocument().addDocumentListener(new DirtyHandler());
+      updateDocumentListeners();
    }
 
+   private void updateDocumentListeners(){
+      getDocument().addDocumentListener(new DirtyHandler());
+      getDocument().addUndoableEditListener(_undo);
+   }
+
+   public UndoManager getUndoManager(){
+      return _undo;
+   }
 
    private void initKeyMap(){
       InputMap map = this.getInputMap();
@@ -312,7 +329,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _editingFilename = getSourceFilename(filename);
       this.read( new BufferedReader(new InputStreamReader(
                   new FileInputStream(_editingFilename), "UTF8")), null);
-      getDocument().addDocumentListener(new DirtyHandler());
+      updateDocumentListeners();
       setDirty(false);
    }
 
@@ -717,6 +734,97 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
    }
 
+   // search forward
+   /*
+   public int search(Pattern pattern){
+      return search(pattern, true);
+   }
+
+   public int search(Pattern pattern, boolean forward){
+      if(!pattern.equals(_lastSearchPattern)){
+         _lastSearchPattern = pattern;
+         Document doc = getDocument();
+         int pos = getCaretPosition();
+         Debug.log("caret: "  + pos);
+         try{
+            String body = doc.getText(pos, doc.getLength()-pos);
+            _lastSearchMatcher = pattern.matcher(body);
+         }
+         catch(BadLocationException e){
+            e.printStackTrace();
+         }
+      }
+      return continueSearch(forward);
+   }
+   */
+
+   /*
+   public int search(String str){
+      return search(str, true);
+   }
+   */
+
+   public int search(String str, int pos, boolean forward){
+      int ret = -1;
+      Document doc = getDocument();
+      Debug.log(9, "search caret: "  + pos + ", " + doc.getLength());
+      try{
+         String body;
+         int begin;
+         if(forward){
+            int len = doc.getLength()-pos;
+            body = doc.getText(pos, len>0?len:0);
+            begin = pos;
+         }
+         else{
+            body = doc.getText(0, pos);
+            begin = 0;
+         }
+         Pattern pattern = Pattern.compile(str);
+         Matcher matcher = pattern.matcher(body);
+         ret = continueSearch(matcher, begin, forward);
+         if(ret < 0){
+            if(forward && pos != 0) // search from beginning
+               return search(str, 0, forward);
+            if(!forward && pos != doc.getLength()) // search from end
+               return search(str, doc.getLength(), forward);
+         }
+      }
+      catch(BadLocationException e){
+         Debug.log(7, "search caret: "  + pos + ", " + doc.getLength() + 
+               e.getStackTrace());
+      }
+      return ret;
+   }
+
+   protected int continueSearch(Matcher matcher, int pos, boolean forward){
+      boolean hasNext = false;
+      int start=0, end=0;
+      if(!forward){
+         while(matcher.find()){
+            hasNext = true;
+            start = matcher.start();
+            end = matcher.end();
+         }
+      }
+      else{
+         hasNext = matcher.find();
+         if(!hasNext)
+            return -1;
+         start = matcher.start();
+         end = matcher.end();
+      }
+      if(hasNext){
+         Document doc = getDocument();
+         getCaret().setDot(pos+end);
+         getCaret().moveDot(pos+start);
+         getCaret().setSelectionVisible(true);
+         return pos+start;
+      }
+      return -1;
+   }
+
+
 
 
    private class DirtyHandler implements DocumentListener {
@@ -733,6 +841,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setDirty(true);
       }
    }
+
+
 
 }
 

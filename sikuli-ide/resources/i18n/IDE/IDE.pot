@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-13 13:56-0400\n"
+"POT-Creation-Date: 2011-01-27 21:36-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,6 +66,14 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr ""
@@ -91,6 +99,7 @@ msgid "Un-Indent"
 msgstr ""
 
 #: menuFind
+msgctxt "menuFind"
 msgid "Find"
 msgstr ""
 
@@ -112,6 +121,7 @@ msgid "Run"
 msgstr ""
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr ""
 
@@ -125,7 +135,6 @@ msgid "Unit Test"
 msgstr ""
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr ""
 
@@ -173,13 +182,29 @@ msgstr ""
 msgid "No update is available."
 msgstr ""
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr ""
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
 msgstr ""
 
 #: paneMessage
@@ -203,12 +228,30 @@ msgstr ""
 msgid "Run ({0})"
 msgstr ""
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr ""
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
+msgstr ""
+
+#: btnCaptureLabel
+msgid "Take screenshot"
 msgstr ""
 
 #: btnCaptureHint
@@ -217,6 +260,10 @@ msgstr ""
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
+msgstr ""
+
+#: btnInsertImageLabel
+msgid "Insert image "
 msgstr ""
 
 #: msgRunningSklError
