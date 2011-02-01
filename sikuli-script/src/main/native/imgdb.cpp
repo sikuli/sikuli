@@ -9,6 +9,10 @@
 
 #include "imgdb.h"
 
+#ifdef WIN32
+typedef INT32 int32_t;
+#endif
+
 void
 ImageRecord::write(ostream& output_stream){   
    output_stream.write((char *) this, sizeof(class ImageRecord));
