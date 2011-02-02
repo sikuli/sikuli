@@ -960,8 +960,6 @@ application for accepting the action.
 		:param PSMRL: a pattern, a string, a match, a region or a location that
 			evaluates to a click point.
 
-		:param modifiers: one or more key modifiers
-
 		:return: the number 1 if the operation could be performed. A 0 (integer null) returned
 			means that because of some reason, no move could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
 			
@@ -980,7 +978,7 @@ application for accepting the action.
 		:param PSMRL: a pattern, a string, a match, a region or a location that
 			evaluates to a click point.
 
-		:param modifiers: one or more key modifiers
+		:param delay: time to wait after in seconds as decimal value
 
 		:return: the number 1 if the operation could be performed. A 0 (integer null) returned
 			means that because of some reason, no move could be performed (in case of *PS* may be :ref:`not Found <PatternNotFound>`).
