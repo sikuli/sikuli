@@ -51,8 +51,10 @@
     <ROW Component="Microsoft.VC90.CRT.manifest" ComponentId="{5C74E887-3170-4EF1-94F5-44660E60CCA2}" Directory_="Microsoft.VC90.CRT_DIR" Attributes="0" KeyPath="Microsoft.VC90.CRT.manifest" Type="0"/>
     <ROW Component="Microsoft.VC90.OpenMP.manifest" ComponentId="{5F4AB3F5-A7A7-4BBF-AE38-A1A8E7811B7A}" Directory_="Microsoft.VC90.OPENMP_DIR" Attributes="0" KeyPath="Microsoft.VC90.OpenMP.manifest" Type="0"/>
     <ROW Component="Quick_Launch" ComponentId="{206AE3B6-A0C7-4C46-A6B9-711CAD7AB614}" Directory_="Quick_Launch_DIR" Attributes="0"/>
-    <ROW Component="SHORTCUTDIR" ComponentId="{D63A31E0-CCF1-4405-A928-9B0532727831}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{2DAD45EE-B5EF-41E4-96E8-5C1A5764A93A}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="Sikuli_IDE.bat" ComponentId="{2142EBD5-E4BE-40F3-A5BE-A174A613FA54}" Directory_="APPDIR" Attributes="0" KeyPath="Sikuli_IDE.bat"/>
     <ROW Component="Sikuli_IDE.exe" ComponentId="{DC5E53EB-D35D-4A64-9C44-9864C41C25A3}" Directory_="APPDIR" Attributes="0" KeyPath="Sikuli_IDE.exe"/>
+    <ROW Component="Sikuli_IDE_w.bat" ComponentId="{4A4A38A2-E3D4-4C48-AC7A-A74DFF277F4F}" Directory_="APPDIR" Attributes="0" KeyPath="Sikuli_IDE_w.bat"/>
     <ROW Component="VDictProxy.dll" ComponentId="{D6C15DE0-EDE4-4CE5-8EFB-57BD525D3E42}" Directory_="tmplib_DIR" Attributes="0" KeyPath="VDictProxy.dll"/>
     <ROW Component="VisionProxy.dll" ComponentId="{A1F81DB9-C55A-4174-A1DE-8CC1E41D36AE}" Directory_="tmplib_DIR" Attributes="0" KeyPath="VisionProxy.dll"/>
     <ROW Component="Win32Util.dll" ComponentId="{4B4A225B-6B1B-4E88-B51B-BF3093ABF6F6}" Directory_="tmplib_DIR" Attributes="0" KeyPath="Win32Util.dll"/>
@@ -69,15 +71,16 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="Java_Runtime_Environment" Title="Java Runtime Environment" Description="Java Runtime Environment" Display="3" Level="1" Attributes="0" Components="Java_Runtime_Environ AI_CustomARPName AI_DisableModify"/>
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Sikuli_IDE.exe swing_layout_1.0.1.jar Microsoft.VC90.CRT.manifest msvcm90.dll msvcp90.dll msvcr90.dll Microsoft.VC90.OpenMP.manifest vcomp90.dll AIShRegAnswer AI_CustomARPName AI_ExePath AI_DisableModify SHORTCUTDIR Quick_Launch Win32Util.dll cv210.dll cvaux210.dll cxcore210.dll highgui210.dll JIntellitype.dll ml210.dll VDictProxy.dll VisionProxy.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Sikuli_IDE.exe swing_layout_1.0.1.jar Microsoft.VC90.CRT.manifest msvcm90.dll msvcp90.dll msvcr90.dll Microsoft.VC90.OpenMP.manifest vcomp90.dll AIShRegAnswer AI_CustomARPName AI_ExePath AI_DisableModify Quick_Launch Win32Util.dll cv210.dll cvaux210.dll cxcore210.dll highgui210.dll JIntellitype.dll ml210.dll VDictProxy.dll VisionProxy.dll SHORTCUTDIR Sikuli_IDE.bat Sikuli_IDE_w.bat"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
     <ROW File="JIntellitype.dll" Component_="JIntellitype.dll" FileName="JIntel~1.dll|JIntellitype.dll" Attributes="0" SourcePath="Sikuli-IDE\libs\JIntellitype.dll" SelfReg="false" Sequence="20"/>
     <ROW File="Microsoft.VC90.CRT.manifest" Component_="Microsoft.VC90.CRT.manifest" FileName="Micros~1.man|Microsoft.VC90.CRT.manifest" Attributes="0" SourcePath="Sikuli-IDE\libs\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" SelfReg="false" Sequence="7"/>
     <ROW File="Microsoft.VC90.OpenMP.manifest" Component_="Microsoft.VC90.OpenMP.manifest" FileName="Micros~1.man|Microsoft.VC90.OpenMP.manifest" Attributes="0" SourcePath="Sikuli-IDE\libs\Microsoft.VC90.OPENMP\Microsoft.VC90.OpenMP.manifest" SelfReg="false" Sequence="11"/>
-    <ROW File="Sikuli_IDE.bat" Component_="swing_layout_1.0.1.jar" FileName="Sikuli~1.bat|Sikuli-IDE.bat" Attributes="0" SourcePath="Sikuli-IDE\Sikuli-IDE.bat" SelfReg="false" Sequence="13"/>
+    <ROW File="Sikuli_IDE.bat" Component_="Sikuli_IDE.bat" FileName="Sikuli~1.bat|Sikuli-IDE.bat" Attributes="0" SourcePath="Sikuli-IDE\Sikuli-IDE.bat" SelfReg="false" Sequence="13"/>
     <ROW File="Sikuli_IDE.exe" Component_="Sikuli_IDE.exe" FileName="Sikuli~1.exe|Sikuli-IDE.exe" Attributes="0" SourcePath="Sikuli-IDE\Sikuli-IDE.exe" SelfReg="false" Sequence="1" DigSign="true"/>
+    <ROW File="Sikuli_IDE_w.bat" Component_="Sikuli_IDE_w.bat" FileName="Sikuli~2.bat|Sikuli-IDE-w.bat" Attributes="0" SourcePath="Sikuli-IDE\Sikuli-IDE-w.bat" SelfReg="false" Sequence="29"/>
     <ROW File="VDictProxy.dll" Component_="VDictProxy.dll" FileName="VDictP~1.dll|VDictProxy.dll" Attributes="0" SourcePath="Sikuli-IDE\libs\VDictProxy.dll" SelfReg="false" Sequence="22"/>
     <ROW File="VisionProxy.dll" Component_="VisionProxy.dll" FileName="Vision~1.dll|VisionProxy.dll" Attributes="0" SourcePath="Sikuli-IDE\libs\VisionProxy.dll" SelfReg="false" Sequence="23"/>
     <ROW File="Win32Util.dll" Component_="Win32Util.dll" FileName="Win32U~1.dll|Win32Util.dll" Attributes="0" SourcePath="Sikuli-IDE\libs\Win32Util.dll" SelfReg="false" Sequence="15"/>
@@ -238,8 +241,8 @@
     <ROW Environment="SIKULI_HOME" Name="=-SIKULI_HOME" Value="[APPDIR]" Component_="AIShRegAnswer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiExtComponent">
-    <ROW Extension="skl" Component_="Sikuli_IDE.exe" ProgId_="[|Manufacturer].[|ProductName].skl" Feature_="MainFeature"/>
-    <ROW Extension="sikuli" Component_="Sikuli_IDE.exe" ProgId_="[|Manufacturer].[|ProductName].sikuli" Feature_="MainFeature"/>
+    <ROW Extension="skl" Component_="Sikuli_IDE_w.bat" ProgId_="[|Manufacturer].[|ProductName].skl" Feature_="MainFeature"/>
+    <ROW Extension="sikuli" Component_="Sikuli_IDE_w.bat" ProgId_="[|Manufacturer].[|ProductName].sikuli" Feature_="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="SystemFolder_msiexec.exe" SourcePath="..\..\..\..\Program Files\Caphyon\Advanced Installer 7.6\resources\uninstall.ico" Index="0"/>
@@ -257,8 +260,8 @@
     <ROW IniFile="Minimum_Version" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Minimum Version" Value="1.6" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="Override_WorkingDir" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Override WorkingDir" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="System_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="System Path" Value="[tmplib_DIR];" Action="0" Component_="Sikuli_IDE.exe"/>
-    <ROW IniFile="URL" FileName="Sikuli~1.url|Sikuli&apos;s Homepage.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org" Action="0" Component_="SHORTCUTDIR"/>
-    <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/documentation.shtml" Action="0" Component_="SHORTCUTDIR"/>
+    <ROW IniFile="URL" FileName="Sikuli~1.url|Sikuli&apos;s Homepage.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org" Action="0" Component_="AIShRegAnswer"/>
+    <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/documentation.shtml" Action="0" Component_="AIShRegAnswer"/>
     <ROW IniFile="Virtual_Machine_Parameters" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Virtual Machine Parameters" Value="-Xms64M -Xmx512M -Dpython.path=sikuli-script.jar/ -Dfile.encoding=utf-8 " Action="0" Component_="Sikuli_IDE.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
@@ -330,11 +333,13 @@
     <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode]" Component_="AI_CustomARPName"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="Sikuli_IDE" Directory_="SHORTCUTDIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Sikuli_IDE_1" Directory_="DesktopFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Sikuli_IDE_2" Directory_="Quick_Launch_DIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Sikuli_IDE_3" Directory_="StartMenuFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="SHORTCUTDIR" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1" WkDir="SystemFolder"/>
+    <ROW Shortcut="Sikuli_IDE" Directory_="SHORTCUTDIR" Name="Sikuli~1.exe|Sikuli IDE.exe" Component_="Sikuli_IDE.exe" Target="[#Sikuli_IDE.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_1" Directory_="Quick_Launch_DIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE_w.bat" Target="[#Sikuli_IDE_w.bat]" Hotkey="0" Icon_="ide_icon_1.exe" IconIndex="0" ShowCmd="7" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_1_1" Directory_="DesktopFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE_w.bat" Target="[#Sikuli_IDE_w.bat]" Hotkey="0" Icon_="ide_icon_1.exe" IconIndex="0" ShowCmd="7" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_2" Directory_="APPDIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE_w.bat" Target="[#Sikuli_IDE_w.bat]" Hotkey="0" Icon_="ide_icon_1.exe" IconIndex="0" ShowCmd="7" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_for_64bit_Windows" Directory_="SHORTCUTDIR" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE_w.bat" Target="[#Sikuli_IDE_w.bat]" Hotkey="0" Icon_="ide_icon_1.exe" IconIndex="0" ShowCmd="7" WkDir="APPDIR"/>
+    <ROW Shortcut="Sikuli_IDE_for_64bit_Windows_1" Directory_="StartMenuFolder" Name="Sikuli~1|Sikuli IDE" Component_="Sikuli_IDE_w.bat" Target="[#Sikuli_IDE_w.bat]" Hotkey="0" Icon_="ide_icon_1.exe" IconIndex="0" ShowCmd="7" WkDir="APPDIR"/>
+    <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="AIShRegAnswer" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1" WkDir="SystemFolder"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -344,8 +349,8 @@
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiVerbComponent">
-    <ROW Extension_="skl" Component_="Sikuli_IDE.exe" Verb="run" Sequence="0" Command="&amp;Run" Argument="&quot;%1&quot;"/>
-    <ROW Extension_="sikuli" Component_="Sikuli_IDE.exe" Verb="&amp;Open" Sequence="0" Command="&amp;Open" Argument="&quot;%1&quot;"/>
+    <ROW Extension_="skl" Component_="Sikuli_IDE_w.bat" Verb="run" Sequence="0" Command="&amp;Run" Argument="&quot;%1&quot;"/>
+    <ROW Extension_="sikuli" Component_="Sikuli_IDE_w.bat" Verb="&amp;Open" Sequence="0" Command="&amp;Open" Argument="&quot;%1&quot;"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
     <ROW PrereqKey="Java_Runtime_Environ" DisplayName="Java Runtime Environment" SetupFileUrl="http://www.java.com" Location="1" ExactSize="0" Operator="1" Type="1" Feature="Java_Runtime_Environment"/>
