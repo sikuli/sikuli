@@ -50,11 +50,9 @@ public class SikuliIDE extends JFrame {
    final static Color COLOR_SEARCH_NORMAL = Color.white;
 
    final static String MAIN_LAYOUT_DEF = 
-      "(ROW " +
-         "(LEAF name=cmds weight=0.15) " +
-         "(COLUMN weight=0.85" + 
-            "(LEAF name=code weight=0.9)" +
-            "(LEAF name=msg weight=0.1)))";
+      "(COLUMN " +
+         "(LEAF name=code weight=0.9)" +
+         "(LEAF name=msg weight=0.1))";
 
    private static NativeLayer _native;
 
@@ -66,7 +64,7 @@ public class SikuliIDE extends JFrame {
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
    private StatusBar _status;
-   private JComponent _cmdList;
+   private JXCollapsiblePane _cmdList;
    private JXSearchField _searchField;
    private FindAction _findHelper;
 
@@ -433,7 +431,12 @@ public class SikuliIDE extends JFrame {
             taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
       }
       con.add(setPane);
-      _cmdList =  new JScrollPane(con);
+      Dimension conDim = con.getSize();
+      con.setPreferredSize(new Dimension(250,850));
+      _cmdList = new JXCollapsiblePane(JXCollapsiblePane.Direction.LEFT);
+      _cmdList.setMinimumSize(new Dimension(0,0));
+      _cmdList.add(new JScrollPane(con));
+      _cmdList.setCollapsed(false);
       return _cmdList;
    }
 
@@ -668,7 +671,6 @@ public class SikuliIDE extends JFrame {
       _mainSplitPane.getMultiSplitLayout().setModel( 
             MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
 
-      _mainSplitPane.add(createCommandPane(), "cmds");
       JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
       codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
@@ -676,9 +678,13 @@ public class SikuliIDE extends JFrame {
       _mainSplitPane.add(codeAndUnitPane, "code");
       _mainSplitPane.add(_auxPane, "msg");
 
+      JPanel editPane = new JPanel(new BorderLayout(0,0));
+      editPane.add(createCommandPane(), BorderLayout.WEST);
+      editPane.add(_mainSplitPane, BorderLayout.CENTER);
+
 
       c.add(initToolbar(), BorderLayout.NORTH);
-      c.add(_mainSplitPane, BorderLayout.CENTER);
+      c.add(editPane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
@@ -992,7 +998,7 @@ public class SikuliIDE extends JFrame {
       public void actionPerformed(ActionEvent e) {
          if(actMethod != null){
             try{
-               Debug.log(2, "MenuAction." + action);
+               Debug.log(3, "MenuAction." + action);
                Object[] params = new Object[1];
                params[0] = e;
                actMethod.invoke(this, params);
@@ -1081,25 +1087,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void toggleCmdList(ActionEvent ae){
-         /*
-         MultiSplitLayout.Node cmdNode = _mainSplitPane.getMultiSplitLayout().getNodeForName("cmds");
-         MultiSplitLayout.Node divider = cmdNode.nextSibling();
-         MultiSplitLayout.Node codeNode = 
-             _mainSplitPane.getMultiSplitLayout().getNodeForName("code");
-
-         Rectangle b = divider.getBounds();
-         b.x = 0;
-         divider.setBounds(b);
-
-         Rectangle codeBound = codeNode.getBounds();
-         Rectangle cmdBound = cmdNode.getBounds();
-         codeBound.width += cmdBound.width;
-         cmdBound.width = 0;
-         codeNode.setBounds(codeBound);
-         cmdNode.setBounds(cmdBound);
-
-         _mainSplitPane.revalidate();
-         */
+         _cmdList.setCollapsed(!_cmdList.isCollapsed());
       }
 
       public void toggleUnitTest(ActionEvent ae){
