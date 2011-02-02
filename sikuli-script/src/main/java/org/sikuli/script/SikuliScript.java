@@ -80,7 +80,8 @@ public class SikuliScript {
    }
 
    private static void startInteractiveMode(String[] args){
-      jython.main(args);
+      String [] jy_args = {"-i", "-c", "from sikuli import *"};
+      jython.main(jy_args);
    }
 
    public static void main(String[] args){
