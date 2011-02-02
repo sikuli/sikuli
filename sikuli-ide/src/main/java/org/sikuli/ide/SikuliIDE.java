@@ -1752,12 +1752,12 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage r = cp.getSelection();
-         if(r==null)
-            return;
-         cp.close();
-         Rectangle roi = r.getROI();
-         complete((int)roi.getX(), (int)roi.getY(),
-                  (int)roi.getWidth(), (int)roi.getHeight());
+         if(r!=null){
+            cp.close();
+            Rectangle roi = r.getROI();
+            complete((int)roi.getX(), (int)roi.getY(),
+                     (int)roi.getWidth(), (int)roi.getHeight());
+         }
          SikuliIDE.getInstance().setVisible(true);
       }
    }
@@ -1767,7 +1767,7 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
       SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
-      prompt.prompt(500);
+      prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
    }
 
    public void complete(int x, int y, int w, int h){

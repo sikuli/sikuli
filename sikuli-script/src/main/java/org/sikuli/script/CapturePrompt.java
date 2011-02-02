@@ -185,9 +185,11 @@ public class CapturePrompt extends TransparentWindow implements Subject{
             if (_scr_img == null) return;
             if( e.getButton() == java.awt.event.MouseEvent.BUTTON3 ){
                _canceled = true;
+               notifyObserver();
                close();
             }
-            notifyObserver();
+            else
+               notifyObserver();
          }
       });
 
