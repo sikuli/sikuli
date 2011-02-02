@@ -543,15 +543,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
 
-   public File getFileInBundle(String filename){
-      try{
-         String fullpath = _imgLocator.locate(filename);
-         return new File(fullpath);
-      }
-      catch(IOException e){
-         return null;
-      }
-/*
+   public File copyFileToBundle(String filename){
       File f = new File(filename);
       String bundlePath = getSrcBundle();
       if(f.exists()){
@@ -568,7 +560,16 @@ public class SikuliPane extends JTextPane implements KeyListener,
       f = new File(filename);
       if(f.exists()) return f;
       return null;
-*/
+   }
+
+   public File getFileInBundle(String filename){
+      try{
+         String fullpath = _imgLocator.locate(filename);
+         return new File(fullpath);
+      }
+      catch(IOException e){
+         return null;
+      }
    }
    
    boolean replaceWithImage(int startOff, int endOff) 

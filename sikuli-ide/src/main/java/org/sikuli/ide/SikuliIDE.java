@@ -1732,7 +1732,7 @@ class ButtonInsertImage extends ToolbarButton implements ActionListener{
       String path = Utils.slashify(file.getAbsolutePath(), false);
       System.out.println("load: " + path);
       ImageButton icon = new ImageButton(codePane, 
-                                         codePane.getFileInBundle(path).getAbsolutePath());
+                                         codePane.copyFileToBundle(path).getAbsolutePath());
       codePane.insertComponent(icon);
    }
 }
