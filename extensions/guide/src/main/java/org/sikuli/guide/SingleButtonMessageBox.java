@@ -39,12 +39,12 @@ public class SingleButtonMessageBox extends TransparentWindow {
 
       Container panel = this.getContentPane();
       panel.setBackground(null);
-      Color transparentColor = new Color(0F,0F,0F,0.2F);
+      Color transparentColor = new Color(0F,0F,0F,0.4F);
       setBackground(transparentColor);  
 
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-      String html = "<html><div style='color:white;font-size:15px;padding:3px;'>" + message + "</div></html>";
+      String html = "<html><div style='color:white;font-size:15px;padding:3px;width:300px;'>" + message + "</div></html>";
       messageLabel = new JLabel(html);
 
       Box row1 = new Box(BoxLayout.X_AXIS);

@@ -50,7 +50,10 @@ public class ClickTarget extends JWindow implements MouseListener {
       setAlwaysOnTop(true);
       
       // This paints a transparent black window on top the target
-      Color transparentColor = new Color(0F,0F,0F,0.2F);
+      //Color transparentColor = new Color(0F,0F,0F,0F);
+      
+      // add a little shade otherwise the window can't be clicked
+      Color transparentColor = new Color(1F,0F,0F,0.1F);
       setBackground(transparentColor);
 
      // toBack();
