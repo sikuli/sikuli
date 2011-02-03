@@ -48,7 +48,7 @@ public class DefaultJniExtractor implements JniExtractor {
           "Sikuli-IDE.app/Contents/Frameworks", 
           "libs",
           "/Applications/Sikuli-IDE.app/Contents/Frameworks", 
-          System.getenv("SIKULI_HOME") + File.separator + "libs"
+          System.getenv("SIKULI_HOME") + "libs"
        };
        if(jniDir == null) {
           for(int i=0;i<libPaths.length;i++){
