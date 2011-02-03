@@ -101,6 +101,10 @@ add_custom_target(doc
    javadoc -windowtitle "Javadoc of Sikuli Script" -sourcepath ${JAVA_SRC_DIR}
     -d ${DOC_DIR} -classpath ${CLASSPATH}  ${PACKAGE}
 )
+
+add_custom_target(run
+   java -jar ${BINARY_DIR}/${JAR_FILE} -i
+)
 # Dependencies
 
 add_dependencies(${JAR_FILE} 

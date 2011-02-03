@@ -212,7 +212,7 @@ IF(LINUX)
 ENDIF(LINUX)
 
 IF(WIN32)
-   SET(APP_FILES Sikuli-IDE.bat Sikuli-IDE.exe ide-icon.ico)
+   SET(APP_FILES Sikuli-IDE-w.bat Sikuli-IDE.bat Sikuli-IDE.exe ide-icon.ico)
    SET(WIN32_LIBS ${COMMON_LIB_DIR}/win32)
    SET(OPENCV_LIBS cv210 cvaux210 cxcore210 highgui210 ml210)
 

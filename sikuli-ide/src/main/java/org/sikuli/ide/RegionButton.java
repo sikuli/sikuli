@@ -14,6 +14,7 @@ import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
+import org.sikuli.script.Debug;
 
 class RegionButton extends JButton implements ActionListener, Observer{
    SikuliPane _pane;
@@ -55,8 +56,8 @@ class RegionButton extends JButton implements ActionListener, Observer{
             setIcon(new ImageIcon(img));
             setToolTipText( this.toString() );
          }
-         SikuliIDE.getInstance().setVisible(true);
       }
+      SikuliIDE.getInstance().setVisible(true);
    }
 
    public void actionPerformed(ActionEvent ae){
