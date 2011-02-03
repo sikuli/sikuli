@@ -90,6 +90,17 @@ public class Env {
       return _osUtil;
    }
 
+   static boolean isLockOn(char key){
+      Toolkit tk = Toolkit.getDefaultToolkit();
+      switch(key){
+         case '\ue025': return tk.getLockingKeyState(KeyEvent.VK_SCROLL_LOCK);
+         case '\ue027': return tk.getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+         case '\ue03B': return tk.getLockingKeyState(KeyEvent.VK_NUM_LOCK);
+         default:
+            return false;
+      }
+   }
+
    static int getHotkeyModifier(){
       if(getOS() == OS.MAC)
          return KeyEvent.VK_META;
