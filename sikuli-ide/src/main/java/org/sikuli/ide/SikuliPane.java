@@ -53,7 +53,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _highlighter = new CurrentLineHighlighter(this);
       addCaretListener(_highlighter);
       addCaretListener(this);
-      setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
+      setFont(new Font("Courier", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);
