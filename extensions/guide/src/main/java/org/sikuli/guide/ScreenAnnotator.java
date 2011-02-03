@@ -22,8 +22,10 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.FindFailedResponse;
 import org.sikuli.script.Location;
 import org.sikuli.script.OS;
+import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
+import org.sikuli.script.SikuliRobot;
 import org.sikuli.script.TransparentWindow;
 
 /** TODO:
@@ -39,6 +41,7 @@ import org.sikuli.script.TransparentWindow;
 
 - Dialog
    - auto-advance if used with clickable targets
+   - add the ability to customize the position to dislay the dialog box
    - always-on-top? this can be tricky because it will complicate Sikuli's screen capture.
       - solution 1: prompt users to move the dialog box somewhere else when find fails
       - solution 2: automatically position the dialog box outside of the application bounds
@@ -46,6 +49,14 @@ import org.sikuli.script.TransparentWindow;
 - how should clickable targets and the dialog box co-exist?
    - (done) option 1: all clickable targets don't hide until the box is dismissed. but the clicks are passed through
 
+
+- automatically check whether ui changes have become stable enough to run the next step
+
+- error handling
+
+- ability to update the positions of the annotations when the screen content changes (e.g., scrolled)
+
+- a way to specify pre-conditions, what images must be present to start
 
 - (done) get it to work with multi-screen
 - (done) inherit directly from TransparentWindow
@@ -160,6 +171,17 @@ public class ScreenAnnotator extends TransparentWindow {
       addAnnotation(new AnnotationArrow(from1, to1, Color.black));
    }
 
+   // Draw an oval containing the given region
+   public void addCircle(Region region){
+      //Location o = region.getTopLeft();
+      Location o = region.getCenter();
+      Location p = region.getTopLeft();
+      o.translate(-_region.x, -_region.y);
+      
+      p.translate((int)((p.x-o.x)*0.44), (int) ((p.y-o.y)*0.44));
+      addAnnotation(new AnnotationOval(o.x,o.y,p.x,p.y));
+   }
+   
    public void addHighlight(Region region){	
       Rectangle rect = new Rectangle(region.getRect());
       rect.translate(-_region.x, -_region.y);
@@ -183,7 +205,7 @@ public class ScreenAnnotator extends TransparentWindow {
       final int margin = 5;
 
       //String tooltipStyle = "font-size:16px;background-color:#FFFFDD;padding:3px;";
-      String bwStyle = "font-size:16px;color:white;background-color:#333333;padding:3px";
+      String bwStyle = "width:300px;font-size:16px;color:white;background-color:#333333;padding:3px";
 
       String htmltxt = 
          "<html><div style='" + bwStyle + "'>"
@@ -338,6 +360,66 @@ public class ScreenAnnotator extends TransparentWindow {
       }
       closeNow();
    }
+   
+   public static void testICDLSimpleSearch() throws FindFailed{
+      App a = new App("Firefox");
+      a.focus();
+      
+      Screen s = new Screen();
+      Region r;
+      ScreenAnnotator sa = new ScreenAnnotator();
+      
+      Location o = s.getTopLeft();
+      o.translate(10,10);
+      sa.addText(o,"1. All the different categories we see in the " +
+            "Simple Search are like the shelves in a regular library. Today, " +
+            "we are looking for Fairy Tales, so, we are going to look for " +
+            "them by clicking on the Fairy Tales button!");
+
+      
+      r = s.find(new Pattern("fairy.png").similar(0.95f));
+      sa.addClickTarget(r,"");
+      sa.addCircle(r);
+      sa.showNow();
+      
+      
+      sa.addText(o,"2. If we want to refine our search further, we can select other categories as well. " +
+      		"If we only want Fairy Tales that are for ages three to five, we can select " +
+      		"the Three to Five button as well. To remove a category from the search," +
+      		" click it again to unselect it.");
+      r = s.find(new Pattern("three2five.png").similar(0.95f));
+      sa.addClickTarget(r,"");
+      sa.addCircle(r);
+      sa.showNow();
+      
+      Robot robot=null;
+      try {
+         robot = new Robot();
+      } catch (AWTException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      robot.delay(2000);
+      //SikuliRobot robot = new SikuliRobot();
+      //rdelay(3);
+      
+      sa.addDialog("Next","3. Now we can see all the Fairy Tale books for age Three to Five in the library. " +
+      		"We can use the arrows in the results section to page through " +
+      		"all the different books. ");
+      r = s.find(new Pattern("right.png").similar(0.95f));
+      sa.addCircle(r);
+      r = s.find(new Pattern("left.png").similar(0.95f));
+      sa.addCircle(r);
+      sa.showNow();
+      
+      
+      sa.addDialog("Finish", "4. To start over with and do a new search, " +
+      		"we can click the Trash Can button. To learn how to read a book" +
+      		" go to the reading books section.");
+      r = s.find(new Pattern("trashcan.png").similar(0.95f));
+      sa.addCircle(r);
+      sa.showNow();
+   }
 
    public static void testICDL() throws FindFailed{
 
@@ -376,16 +458,6 @@ public class ScreenAnnotator extends TransparentWindow {
       sa.addClickTarget(r,"Tiger");
       sa.showNow();
       
-      //      sa.showWaitForButtonClick("Continue", "Use these to select books suitable for your age.");
-      //      
-      //      r = s.find("booksizes.png");
-      //      sa.addHighlight(r);      
-      //      sa.showWaitForButtonClick("Continue", "Use these to select the size of <br> the book you want to read.");
-      //      
-      //      r = s.find("colors.png");
-      //      sa.addHighlight(r);      
-      //      sa.showWaitForButtonClick("Continue", "Use these to select the color of <br> the book's cover.");
-
    }
 
 
@@ -422,7 +494,7 @@ public class ScreenAnnotator extends TransparentWindow {
    public static void main(String[] args) throws AWTException, FindFailed {
       //testFirefox();
 
-      testICDL();
+      testICDLSimpleSearch();
       //      
       //
       //      //		Screen screen = new Screen();
