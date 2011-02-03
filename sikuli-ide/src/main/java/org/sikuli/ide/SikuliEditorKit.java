@@ -455,11 +455,11 @@ public class SikuliEditorKit extends StyledEditorKit {
 
             // FIXME: examine the previous line and do auto-indent if 
             // 'if', 'while', 'for', or 'with' is seen.
-            /*
-            if (txt.getShouldIndentNextLine(lineNum)) {
-               txt.replaceSelection("\t");
+            if (txt instanceof SikuliPane) {
+               if (((SikuliPane)txt).getShouldIndentNextLine(lineNum)) {
+                  txt.replaceSelection("\t");
+               }
             }
-            */
 
          } catch (BadLocationException ble) { 
             txt.replaceSelection("\n");

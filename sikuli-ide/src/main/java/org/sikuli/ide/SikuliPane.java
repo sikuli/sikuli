@@ -53,7 +53,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _highlighter = new CurrentLineHighlighter(this);
       addCaretListener(_highlighter);
       addCaretListener(this);
-      setFont(new Font("Osaka-Mono", Font.PLAIN, 18));
+      setFont(new Font("Monospaced", Font.PLAIN, 15));
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);
@@ -92,8 +92,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
       TabSet tabSet = new TabSet(tabs);
       SimpleAttributeSet attributes = new SimpleAttributeSet();
-      StyleConstants.setFontSize(attributes, 18);
-      StyleConstants.setFontFamily(attributes, "Osaka-Mono");
+      StyleConstants.setFontSize(attributes, 15);
+      StyleConstants.setFontFamily(attributes, "Monospaced");
       StyleConstants.setTabSet(attributes, tabSet);
       int length = getDocument().getLength();
       getStyledDocument().setParagraphAttributes(0, length, attributes, true);
@@ -825,7 +825,9 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return -1;
    }
 
-
+   public boolean getShouldIndentNextLine(int linenum) {
+      return false;
+   }
 
 
    private class DirtyHandler implements DocumentListener {

@@ -9,6 +9,8 @@ ${LIB_DIR}/commons-cli-1.2.jar
 ${LIB_DIR}/junit-3.8.1.jar
 ${LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar
 ${LIB_DIR}/swing-layout-1.0.1.jar
+${LIB_DIR}/swingx-core-1.6.2.jar
+${LIB_DIR}/mac_widgets.jar
 "
 #${LIB_DIR}/mx-native-loader-1.2/target/mx-native-loader-1.2.jar
 #${LIB_DIR}/lib-sikuli.jar
