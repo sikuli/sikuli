@@ -562,6 +562,8 @@ public class SikuliIDE extends JFrame {
       _auxPane = new JTabbedPane();
       _console = new ConsolePane();
       _auxPane.addTab(_I("paneMessage"), _console);
+      if(Utils.isWindows())
+         _auxPane.setBorder(BorderFactory.createEmptyBorder(5,8,5,8)); 
    }
 
    private void initUnitPane(){
