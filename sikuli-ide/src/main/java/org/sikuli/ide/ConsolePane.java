@@ -13,11 +13,16 @@ package org.sikuli.ide;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.regex.*;
 import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.text.html.*;
+
 
 import org.python.util.PythonInterpreter;
 
 import org.sikuli.script.ScriptRunner;
+import org.sikuli.script.Debug;
 
 public class ConsolePane extends JPanel implements Runnable
 {
@@ -29,7 +34,7 @@ public class ConsolePane extends JPanel implements Runnable
    }
 
    final static int NUM_PIPES = 2;
-   private JTextArea textArea;
+   private JTextPane textArea;
    private Thread[] reader = new Thread[NUM_PIPES];
    private boolean quit;
                
@@ -40,7 +45,10 @@ public class ConsolePane extends JPanel implements Runnable
    public ConsolePane()
    {
       super();
-      textArea=new JTextArea();
+      textArea=new JTextPane();
+      textArea.setContentType("text/html");
+      String css = UserPreferences.getInstance().getConsoleCSS();
+      ((HTMLEditorKit)textArea.getEditorKit()).getStyleSheet().addRule(css);
       textArea.setEditable(false);
       
       setLayout(new BorderLayout());
@@ -49,7 +57,7 @@ public class ConsolePane extends JPanel implements Runnable
       if(ENABLE_IO_REDIRECT){
          for(int i=0;i<NUM_PIPES;i++)
             pin[i] = new PipedInputStream();
-         System.out.println("Redirect stdout/stderr to console.");
+         Debug.log(2,"Redirect stdout/stderr to console.");
 
 
          PythonInterpreter py = 
@@ -63,11 +71,11 @@ public class ConsolePane extends JPanel implements Runnable
          } 
          catch (java.io.IOException io)
          {
-            textArea.append("Couldn't redirect STDOUT to this console\n"+io.getMessage());
+            appendMsg("Couldn't redirect STDOUT to this console\n"+io.getMessage());
          }
          catch (SecurityException se)
          {
-            textArea.append("Couldn't redirect STDOUT to this console\n"+se.getMessage());
+            appendMsg("Couldn't redirect STDOUT to this console\n"+se.getMessage());
          } 
 
          try 
@@ -79,11 +87,11 @@ public class ConsolePane extends JPanel implements Runnable
          } 
          catch (java.io.IOException io)
          {
-            textArea.append("Couldn't redirect STDERR to this console\n"+io.getMessage());
+            appendMsg("Couldn't redirect STDERR to this console\n"+io.getMessage());
          }
          catch (SecurityException se)
          {
-            textArea.append("Couldn't redirect STDERR to this console\n"+se.getMessage());
+            appendMsg("Couldn't redirect STDERR to this console\n"+se.getMessage());
          }       
 
 
@@ -97,6 +105,17 @@ public class ConsolePane extends JPanel implements Runnable
          }
       }
             
+   }
+
+   private void appendMsg(String msg){
+      HTMLDocument doc = (HTMLDocument)textArea.getDocument();
+      HTMLEditorKit kit = (HTMLEditorKit)textArea.getEditorKit();
+      try{
+         kit.insertHTML(doc, doc.getLength(), msg, 0, 0, null);
+      }
+      catch(Exception e){
+         e.printStackTrace();
+      }
    }
    
         /*
@@ -116,6 +135,20 @@ public class ConsolePane extends JPanel implements Runnable
    }
         */
    
+   private String htmlize(String msg){
+      StringBuffer sb = new StringBuffer();
+      Pattern patMsgCat = Pattern.compile("\\[(.+?)\\].*");
+      for(String line : msg.split("[\r\n]")){
+         Matcher m = patMsgCat.matcher(line);
+         if(m.matches()){
+            String cls = m.group(1);
+            line = "<span class='"+cls+"'>" + line + "</span>";
+         }
+         sb.append(line + "<br>");
+      }
+      return sb.toString();
+   }
+
    public synchronized void run()
    {
       try
@@ -127,8 +160,8 @@ public class ConsolePane extends JPanel implements Runnable
                if (pin[i].available()!=0)
                {
                   String input=this.readLine(pin[i]);
-                  textArea.append(input);
-                  textArea.setCaretPosition(textArea.getText().length());
+                  appendMsg(htmlize(input));
+                  textArea.setCaretPosition(textArea.getDocument().getLength()-1);
                }
                if (quit) return;
             }
@@ -137,8 +170,8 @@ public class ConsolePane extends JPanel implements Runnable
       } 
       catch (Exception e)
       {
-         textArea.append("\nConsole reports an Internal error.");
-         textArea.append("The error is: "+e);         
+         appendMsg("\nConsole reports an Internal error.");
+         appendMsg("The error is: "+e);         
       }
       
    }

@@ -122,6 +122,15 @@ public class UserPreferences {
       pref.putBoolean("CHECK_UPDATE", flag);
    }
 
+   public void setConsoleCSS(String css){
+      pref.put("CONSOLE_CSS", css);
+   }
+
+   public String getConsoleCSS(){
+      return pref.get("CONSOLE_CSS", 
+            ".debug{ color:blue; }");
+   }
+
 
    public void put(String key, String val){
       pref.put(key, val);
