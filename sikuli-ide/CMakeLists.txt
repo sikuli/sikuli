@@ -7,7 +7,7 @@ PROJECT (sikuli-ide Java)
 
 ENABLE_TESTING()
 
-SET(CMAKE_VERBOSE_MAKEFILE 1)
+SET(CMAKE_VERBOSE_MAKEFILE 0)
 
 FIND_PACKAGE(Java)
 SET( NON_NATIVE_TARGET TRUE)
@@ -53,9 +53,11 @@ SET(MAIN_CLASS org.sikuli.ide.SikuliIDE)
 SET(RUN_ARGS -Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
+   CACHE STRING 
+   "The arguments for running Sikuli IDE with 'make run'"
 )
 IF(APPLE)
-   SET(RUN_ARGS ${RUN_ARGS} -Xdock:name='Sikuli IDE') 
+   LIST(APPEND RUN_ARGS -Xdock:name='Sikuli IDE') 
 ENDIF()
 
 SET(ARGS "")

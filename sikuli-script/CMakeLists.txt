@@ -3,7 +3,7 @@ PROJECT (sikuli-script Java)
 
 ENABLE_TESTING()
 
-SET(CMAKE_VERBOSE_MAKEFILE 1)
+SET(CMAKE_VERBOSE_MAKEFILE 0)
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/")
 INCLUDE("${CMAKE_MODULE_PATH}/common.cmake")
 
@@ -102,8 +102,12 @@ add_custom_target(doc
     -d ${DOC_DIR} -classpath ${CLASSPATH}  ${PACKAGE}
 )
 
-add_custom_target(run
-   java -jar ${BINARY_DIR}/${JAR_FILE} -i
+SET(RUN_SCRIPT_ARGS 
+   "-i"
+   CACHE STRING 
+   "The arguments for running Sikuli Script with 'make run-script'")
+add_custom_target(run-script
+   java -jar ${BINARY_DIR}/${JAR_FILE} ${RUN_SCRIPT_ARGS}
 )
 
 file(READ ${BASE_DIR}/../sikuli-ide/latest-ver VERSION)
