@@ -60,7 +60,12 @@ public class ScriptRunner {
       Settings.BundlePath = fullpath;
       py.execfile(pyFile.getAbsolutePath());
       _tmp_headers.clear();
-      py.exec("exit(0)");
+      try{
+         py.exec("exit(0)");
+      }
+      catch(Exception e){
+         // exit normally
+      }
       py.cleanup();
    }
 
