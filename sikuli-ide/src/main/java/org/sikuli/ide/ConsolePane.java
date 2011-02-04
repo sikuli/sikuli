@@ -46,7 +46,6 @@ public class ConsolePane extends JPanel implements Runnable
       setLayout(new BorderLayout());
       add(new JScrollPane(textArea),BorderLayout.CENTER);
       
-      
       if(ENABLE_IO_REDIRECT){
          for(int i=0;i<NUM_PIPES;i++)
             pin[i] = new PipedInputStream();
