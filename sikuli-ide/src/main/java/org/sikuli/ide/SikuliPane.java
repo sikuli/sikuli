@@ -57,6 +57,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);
+      if(!Utils.isMacOSX())
+         setSelectionColor(new Color(170, 200, 255));
       updateDocumentListeners();
    }
 
