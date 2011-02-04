@@ -105,6 +105,15 @@ add_custom_target(doc
 add_custom_target(run
    java -jar ${BINARY_DIR}/${JAR_FILE} -i
 )
+
+file(READ ${BASE_DIR}/../sikuli-ide/latest-ver VERSION)
+STRING(STRIP ${VERSION} VERSION)
+
+add_custom_target( update-version
+      COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/org/sikuli/script/Env.java "${VERSION}"
+      COMMENT "Update version number to ${VERSION}"
+)
+
 # Dependencies
 
 add_dependencies(${JAR_FILE} 
