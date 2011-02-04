@@ -26,8 +26,6 @@ import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXMultiSplitPane;
-import org.jdesktop.swingx.MultiSplitLayout;
 
 
 import org.sikuli.script.Debug;
@@ -49,17 +47,12 @@ public class SikuliIDE extends JFrame {
    final static Color COLOR_SEARCH_FAILED = Color.red;
    final static Color COLOR_SEARCH_NORMAL = Color.white;
 
-   final static String MAIN_LAYOUT_DEF = 
-      "(COLUMN " +
-         "(LEAF name=code weight=0.9)" +
-         "(LEAF name=msg weight=0.1))";
-
    private static NativeLayer _native;
 
    private ConsolePane _console;
    private CloseableTabbedPane _mainPane;
    private JXCollapsiblePane  _sidePane;
-   private JXMultiSplitPane _mainSplitPane;
+   private JSplitPane _mainSplitPane;
 
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
@@ -564,6 +557,7 @@ public class SikuliIDE extends JFrame {
       _auxPane.addTab(_I("paneMessage"), _console);
       if(Utils.isWindows())
          _auxPane.setBorder(BorderFactory.createEmptyBorder(5,8,5,8)); 
+      _auxPane.setMinimumSize(new Dimension(0, 100));
    }
 
    private void initUnitPane(){
@@ -668,17 +662,15 @@ public class SikuliIDE extends JFrame {
       initAuxPane();
       initSidePane();
 
-      _mainSplitPane = new JXMultiSplitPane();
-      //_mainSplitPane.setDividerPainter(new BevelDividerPainter(_mainSplitPane));
-      _mainSplitPane.getMultiSplitLayout().setModel( 
-            MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
 
       JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
       codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
       codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
-      _mainSplitPane.add(codeAndUnitPane, "code");
-      _mainSplitPane.add(_auxPane, "msg");
+      _mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+            codeAndUnitPane, _auxPane);
+      _mainSplitPane.setResizeWeight(1.0);
+      _mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 
       JPanel editPane = new JPanel(new BorderLayout(0,0));
       editPane.add(createCommandPane(), BorderLayout.WEST);
