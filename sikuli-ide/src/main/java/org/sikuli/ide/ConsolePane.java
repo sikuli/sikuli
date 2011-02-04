@@ -140,10 +140,10 @@ public class ConsolePane extends JPanel implements Runnable
       Pattern patMsgCat = Pattern.compile("\\[(.+?)\\].*");
       for(String line : msg.split("[\r\n]")){
          Matcher m = patMsgCat.matcher(line);
-         if(m.matches()){
-            String cls = m.group(1);
-            line = "<span class='"+cls+"'>" + line + "</span>";
-         }
+         String cls = "normal";
+         if(m.matches())
+            cls = m.group(1);
+         line = "<span class='"+cls+"'>" + line + "</span>";
          sb.append(line + "<br>");
       }
       return sb.toString();

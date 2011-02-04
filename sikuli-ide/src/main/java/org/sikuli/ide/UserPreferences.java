@@ -128,7 +128,13 @@ public class UserPreferences {
 
    public String getConsoleCSS(){
       return pref.get("CONSOLE_CSS", 
-            ".debug{ color:blue; }");
+            "body   { font-family:serif; font-size: 12px; }" +
+            ".normal{ color: black; }" +
+            ".debug { color:#505000; }" +
+            ".info  { color: blue; }" + 
+            ".log   { color: #09806A; }" + 
+            ".error { color: red; }"
+      );
    }
 
 

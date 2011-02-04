@@ -1614,17 +1614,17 @@ public class SikuliIDE extends JFrame {
                         Debug.info(_I("msgExit", matcher.group(1)));
                      }
                      else{
-                        Debug.info(_I("msgStopped"));
+                        Debug.error(_I("msgStopped"));
                         int srcLine = findErrorSource(e, 
                                           tmpFile.getAbsolutePath());
                         if(srcLine != -1){
-                           Debug.info( _I("msgErrorLine", srcLine) );
+                           Debug.error( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
                            try{ codePane.jumpTo(srcLine); }
                            catch(BadLocationException be){}
                            codePane.requestFocus();
                         }
-                        Debug.info( _I("msgErrorMsg", e.toString()) );
+                        Debug.error( _I("msgErrorMsg", e.toString()) );
                      }
                   } 
                   finally{
