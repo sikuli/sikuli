@@ -706,6 +706,7 @@ public class SikuliIDE extends JFrame {
       _inited = true;
       setVisible(true);
       autoCheckUpdate();
+      getCurrentCodePane().requestFocus();
    }
 
    private void initTooltip(){
