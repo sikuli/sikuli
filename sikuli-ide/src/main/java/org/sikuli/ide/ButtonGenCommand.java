@@ -62,7 +62,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
             ret += "<td valign=\"middle\" style=\""+style+"\">" + item;
          count++;
       }
-      ret += "<td>)></table>";
+      ret += "<td>)</table>";
       if(showOptParam){
          ret += "<p> " + desc;
       }

@@ -135,10 +135,11 @@ public class ConsolePane extends JPanel implements Runnable
    }
         */
    
+   static final String lineSep = System.getProperty("line.separator");
    private String htmlize(String msg){
       StringBuffer sb = new StringBuffer();
       Pattern patMsgCat = Pattern.compile("\\[(.+?)\\].*");
-      for(String line : msg.split("[\r\n]")){
+      for(String line : msg.split(lineSep)){
          Matcher m = patMsgCat.matcher(line);
          String cls = "normal";
          if(m.matches())
