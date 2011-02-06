@@ -782,6 +782,18 @@ below:
 		else:
 			print "Sorry, not a Mac"
 
+.. py:method:: Env.getSikuliVersion()
+		
+	Get the version of Sikuli.
+	
+	:return: a string containing the version text of the IDE window title without "Sikuli "
+	
+	An example for Sikuli X-1.0rc2::
+
+		if not Env.getSikuliVersion() == "X-1.0rc2":
+			print "This script needs Sikuli X-1.0rc2"
+			exit(1)
+	
 .. py:method:: Env.getClipboard()
 
 	Get the content of the clipboard if it is text, otherwise an empty string.
