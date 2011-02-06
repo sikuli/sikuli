@@ -782,6 +782,7 @@ below:
 		else:
 			print "Sorry, not a Mac"
 
+.. versionadded:: X1.0-rc2
 .. py:method:: Env.getSikuliVersion()
 		
 	Get the version of Sikuli.
@@ -809,3 +810,12 @@ below:
 	inside your text, that you did not expect. In this case, you can use
 	``Env.getClipboard().strip()`` to get rid of surrounding white spaces.
 
+.. versionadded:: X1.0-rc2
+.. py:method:: Env.isLockOn(key-constant)
+
+	Get the current status ( on / off ) off the respective key. Only one key can be specified.
+	
+	:parameter key-constant: one of the key constants ``Key.CAPS_LOCK``, ``Key.NUM_LOCK``, ``Key.SCROLL_LOCK``
+	:return: True if the specified key is on, False otherwise
+	
+	Further information about key constants can be found in Class :py:class:`Key`.
