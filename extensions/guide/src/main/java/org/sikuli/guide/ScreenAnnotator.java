@@ -70,7 +70,7 @@ import org.sikuli.script.TransparentWindow;
 public class ScreenAnnotator extends TransparentWindow {
 
 
-   static final float DEFAULT_SHOW_DURATION = 3.0f;
+   static final float DEFAULT_SHOW_DURATION = 10.0f;
 
    Robot robot;
 
@@ -272,6 +272,10 @@ public class ScreenAnnotator extends TransparentWindow {
    }
 
    public void showNow(){
+      showNow(DEFAULT_SHOW_DURATION);
+   }
+
+   public void showNow(float secs){
 
       // do these to allow static elements to be drawn
       setVisible(true);
@@ -339,17 +343,8 @@ public class ScreenAnnotator extends TransparentWindow {
 
          // if there's no interactive element
 
-         closeAfter(DEFAULT_SHOW_DURATION);
+         closeAfter(secs);
       }
-
-   }
-
-   public void showNow(float secs){
-
-      setVisible(true);
-      toFront();
-
-      closeAfter(secs);
    }
 
    private void closeNow(){

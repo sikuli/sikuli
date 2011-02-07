@@ -29,5 +29,8 @@ def tooltip(target, text):
 	_sa.addHighlight(r)
 	_sa.addToolTip(r.getBottomLeft().below(5), text)
 
-def show(secs = 3.0):
-	_sa.showNow(secs)
+def show(secs = None):
+	if secs:
+		_sa.showNow(secs)
+	else:
+		_sa.showNow()
