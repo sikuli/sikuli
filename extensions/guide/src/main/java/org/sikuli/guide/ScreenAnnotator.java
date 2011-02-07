@@ -205,7 +205,7 @@ public class ScreenAnnotator extends TransparentWindow {
       final int margin = 5;
 
       //String tooltipStyle = "font-size:16px;background-color:#FFFFDD;padding:3px;";
-      String bwStyle = "width:300px;font-size:16px;color:white;background-color:#333333;padding:3px";
+      String bwStyle = "font-size:16px;color:white;background-color:#333333;padding:3px";
 
       String htmltxt = 
          "<html><div style='" + bwStyle + "'>"
@@ -213,6 +213,14 @@ public class ScreenAnnotator extends TransparentWindow {
 
       JLabel textbox = new JLabel(htmltxt);
       Dimension size = textbox.getPreferredSize();
+      if (size.width > 300){
+         // hack to limit the width of the text to 300px
+         htmltxt = 
+            "<html><div style='width:300;" + bwStyle + "'>"
+            + message + "</div></html>";
+         textbox = new JLabel(htmltxt);
+      }
+      size = textbox.getPreferredSize();
 
       int x_origin = location.x;
       int y_origin = location.y;
@@ -482,8 +490,8 @@ public class ScreenAnnotator extends TransparentWindow {
       ScreenAnnotator sa = new ScreenAnnotator(s);
 
       r = s.find("tools.png");
-      sa.addHighlight(r);
-
+      sa.addText(r.getBottomLeft().below(5),"Tools");
+      sa.showNow();
 
 
 
@@ -492,9 +500,11 @@ public class ScreenAnnotator extends TransparentWindow {
 
 
    public static void main(String[] args) throws AWTException, FindFailed {
-      //testFirefox();
+      testFirefox();
 
-      testICDLSimpleSearch();
+      //testICDLSimpleSearch();
+      
+      
       //      
       //
       //      //		Screen screen = new Screen();
