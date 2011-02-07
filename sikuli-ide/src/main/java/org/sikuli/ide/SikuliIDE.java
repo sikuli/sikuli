@@ -45,7 +45,7 @@ public class SikuliIDE extends JFrame {
    final static boolean ENABLE_UNIFIED_TOOLBAR = true;
 
    final static Color COLOR_SEARCH_FAILED = Color.red;
-   final static Color COLOR_SEARCH_NORMAL = Color.white;
+   final static Color COLOR_SEARCH_NORMAL = Color.black;
 
    private static NativeLayer _native;
 
@@ -483,8 +483,10 @@ public class SikuliIDE extends JFrame {
       _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
       //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      _searchField.setMinimumSize(new Dimension(220,30));
       _searchField.setPreferredSize(new Dimension(220,30));
       _searchField.setMaximumSize(new Dimension(380,30));
+      _searchField.setMargin(new Insets(0, 3, 0, 3));
 
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
@@ -494,7 +496,9 @@ public class SikuliIDE extends JFrame {
       });
       _searchField.setFindAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
-            _searchField.selectAll();
+            //FIXME: On Linux the found selection disappears somehow
+            if(!Utils.isLinux())  //HACK
+               _searchField.selectAll();
             boolean ret = _findHelper.findNext(_searchField.getText());
             _findHelper.setFailed(!ret);
          }
@@ -503,7 +507,9 @@ public class SikuliIDE extends JFrame {
          public void keyReleased(java.awt.event.KeyEvent ke) {
             boolean ret;
             if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
-               _searchField.selectAll();
+               //FIXME: On Linux the found selection disappears somehow
+               if(!Utils.isLinux())  //HACK
+                  _searchField.selectAll();
                ret = _findHelper.findNext(_searchField.getText());
             }
             else
@@ -555,7 +561,7 @@ public class SikuliIDE extends JFrame {
       _auxPane = new JTabbedPane();
       _console = new ConsolePane();
       _auxPane.addTab(_I("paneMessage"), _console);
-      if(Utils.isWindows())
+      if(Utils.isWindows() || Utils.isLinux())
          _auxPane.setBorder(BorderFactory.createEmptyBorder(5,8,5,8)); 
       _auxPane.setMinimumSize(new Dimension(0, 100));
    }
@@ -1180,6 +1186,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void doFind(ActionEvent ae){
+         _searchField.selectAll();
          _searchField.requestFocus();
       }
 
@@ -1222,10 +1229,12 @@ public class SikuliIDE extends JFrame {
 
       public void setFailed(boolean failed){
          Debug.log(7, "search failed: " + failed);
-         if(failed)
-            _searchField.setBackground(COLOR_SEARCH_FAILED);
+         _searchField.setBackground(Color.white);
+         if(failed){
+            _searchField.setForeground(COLOR_SEARCH_FAILED);
+         }
          else
-            _searchField.setBackground(COLOR_SEARCH_NORMAL);
+            _searchField.setForeground(COLOR_SEARCH_NORMAL);
       }
 
    }

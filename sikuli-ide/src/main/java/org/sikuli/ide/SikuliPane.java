@@ -55,7 +55,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       addCaretListener(this);
       if(Utils.isMacOSX())
          setFont(new Font("Courier", Font.PLAIN, 18));
-      else if(Utils.isWindows())
+      else 
          setFont(new Font("monospaced", Font.PLAIN, 18));
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
