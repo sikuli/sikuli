@@ -41,7 +41,6 @@ class ExtensionItem extends JPanel implements ActionListener {
       return false;
    }
    
-   JLabel _description;
    
    JButton _installCtrl;
    JButton _infoCtrl;
@@ -50,10 +49,17 @@ class ExtensionItem extends JPanel implements ActionListener {
    String _infourl;
    String _jarurl;
    String _version;
+   String _description;
    boolean _installed;
+   
+   final int NOT_INSTALLED = 0;
+   final int INSTALLED = 1;
+   final int OUT_OF_DATE = 2;
+   int _status = NOT_INSTALLED;
    
    JPanel _controls;
    JPanel _content;
+   JLabel _htmlLabel;
    public ExtensionItem(String name, String version, String description, 
          String imgurl, String infourl, String jarurl){
       this._name = name;
@@ -61,7 +67,8 @@ class ExtensionItem extends JPanel implements ActionListener {
       this._infourl = infourl;
       this._infourl = infourl;
       this._jarurl = jarurl;
-      this._installed = isInstalled(name);
+      this._description = description;
+      this._status = getStatus();
 
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       
@@ -85,8 +92,11 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       _content.setLayout(new BorderLayout());
       _content.add(iconLabel, BorderLayout.LINE_START);
-      JLabel htmlLabel = new JLabel(renderHTML(name,description,version));
-      _content.add(htmlLabel);
+      
+      
+      
+      _htmlLabel = new JLabel(renderHTML());
+      _content.add(_htmlLabel);
       
       add(_content);
       
@@ -113,7 +123,7 @@ class ExtensionItem extends JPanel implements ActionListener {
       add(_controls);
       
       _controls.setVisible(false);
-      updateControlls();
+      updateControls();
       
       
       addMouseListener(new MouseAdapter(){
@@ -150,20 +160,45 @@ class ExtensionItem extends JPanel implements ActionListener {
    }
    
    
-   public String renderHTML(String name, String description, String version){
-      return "<html><b>" + name + "</b> " + "(" + version + ")" + "<br>"
-         + description + "</html>";
+   public String renderHTML(){      
+      String installed_version =  ExtensionManager.getInstance().getVersion(_name);
+      if (installed_version == null)
+         installed_version = "Not installed";
+      return "<html><div style='width:300px'><b>" + _name + "</b> " + "(" + installed_version + ")" + "<br>"
+         + _description + "</div></html>";
    }
    
-   public void updateControlls(){
+   
+   public int getStatus(){
       
-      if (_installed){
-         _installCtrl.setEnabled(false);
-         _installCtrl.setText("Already installed");
-      }else{
-         _installCtrl.setEnabled(true);
-         _installCtrl.setText("Install");
+      ExtensionManager extMgr = ExtensionManager.getInstance();
+      
+      if (!extMgr.isInstalled(_name)){
+         return NOT_INSTALLED;          
+      }else if (extMgr.isOutOfDate(_name,_version)){
+         return OUT_OF_DATE;        
+      }else {
+         return INSTALLED;
       }
+      
+   }
+   
+   public void updateControls(){
+      
+      int status = getStatus();
+      
+      if (status == INSTALLED){
+         _installCtrl.setEnabled(false);
+         _installCtrl.setText("Installed");
+      }else if (status == NOT_INSTALLED){
+         _installCtrl.setEnabled(true);
+         _installCtrl.setText("Install " + _version);
+      }else if (status == OUT_OF_DATE){
+         _installCtrl.setEnabled(true);
+         _installCtrl.setText("Update to " + _version);         
+      }
+      
+      _htmlLabel.setText(renderHTML());
    }
    
 
@@ -187,11 +222,11 @@ class ExtensionItem extends JPanel implements ActionListener {
          ExtensionManager extMgr = ExtensionManager.getInstance();
 
          // try to install the extension
-         if (extMgr.install(_name, _jarurl)){
+         if (extMgr.install(_name, _jarurl,_version)){
             
             // if successful, change the item's status to installed
-            _installed = true;
-            updateControlls();
+            //_installed = true;
+            updateControls();
          }
          
       }else if (cmd.equals("Info")){
