@@ -483,6 +483,7 @@ public class SikuliIDE extends JFrame {
       _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
       //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      _searchField.setMinimumSize(new Dimension(220,30));
       _searchField.setPreferredSize(new Dimension(220,30));
       _searchField.setMaximumSize(new Dimension(380,30));
 
@@ -555,7 +556,7 @@ public class SikuliIDE extends JFrame {
       _auxPane = new JTabbedPane();
       _console = new ConsolePane();
       _auxPane.addTab(_I("paneMessage"), _console);
-      if(Utils.isWindows())
+      if(Utils.isWindows() || Utils.isLinux())
          _auxPane.setBorder(BorderFactory.createEmptyBorder(5,8,5,8)); 
       _auxPane.setMinimumSize(new Dimension(0, 100));
    }
