@@ -180,17 +180,19 @@ class ExtensionItem extends JPanel implements ActionListener {
    
    @Override
    public void actionPerformed(ActionEvent e) {
-      // TODO Implement actions
       String cmd = e.getActionCommand();
       if (cmd.equals("Install")){
          Debug.log("Installing " + _name + " at " + _jarurl);
          
          ExtensionManager extMgr = ExtensionManager.getInstance();
-         extMgr.install(_name, _jarurl);
-         
-         // upon completion
-         _installed = true;
-         updateControlls();
+
+         // try to install the extension
+         if (extMgr.install(_name, _jarurl)){
+            
+            // if successful, change the item's status to installed
+            _installed = true;
+            updateControlls();
+         }
          
       }else if (cmd.equals("Info")){
          
