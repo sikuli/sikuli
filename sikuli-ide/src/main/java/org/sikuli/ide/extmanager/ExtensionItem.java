@@ -49,13 +49,16 @@ class ExtensionItem extends JPanel implements ActionListener {
    String _name;
    String _infourl;
    String _jarurl;
+   String _version;
    boolean _installed;
    
    JPanel _controls;
    JPanel _content;
-   public ExtensionItem(String name, String description, 
+   public ExtensionItem(String name, String version, String description, 
          String imgurl, String infourl, String jarurl){
       this._name = name;
+      this._version = version;
+      this._infourl = infourl;
       this._infourl = infourl;
       this._jarurl = jarurl;
       this._installed = isInstalled(name);
@@ -82,7 +85,7 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       _content.setLayout(new BorderLayout());
       _content.add(iconLabel, BorderLayout.LINE_START);
-      JLabel htmlLabel = new JLabel(renderHTML(name,description));
+      JLabel htmlLabel = new JLabel(renderHTML(name,description,version));
       _content.add(htmlLabel);
       
       add(_content);
@@ -147,8 +150,8 @@ class ExtensionItem extends JPanel implements ActionListener {
    }
    
    
-   public String renderHTML(String name, String description){
-      return "<html><b>" + name + "</b><br>"
+   public String renderHTML(String name, String description, String version){
+      return "<html><b>" + name + "</b> " + "(" + version + ")" + "<br>"
          + description + "</html>";
    }
    
