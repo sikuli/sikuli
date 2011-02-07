@@ -45,7 +45,7 @@ public class SikuliIDE extends JFrame {
    final static boolean ENABLE_UNIFIED_TOOLBAR = true;
 
    final static Color COLOR_SEARCH_FAILED = Color.red;
-   final static Color COLOR_SEARCH_NORMAL = Color.white;
+   final static Color COLOR_SEARCH_NORMAL = Color.black;
 
    private static NativeLayer _native;
 
@@ -495,7 +495,9 @@ public class SikuliIDE extends JFrame {
       });
       _searchField.setFindAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
-            _searchField.selectAll();
+            //FIXME: On Linux the found selection disappears somehow
+            if(!Utils.isLinux())  //HACK
+               _searchField.selectAll();
             boolean ret = _findHelper.findNext(_searchField.getText());
             _findHelper.setFailed(!ret);
          }
@@ -504,7 +506,9 @@ public class SikuliIDE extends JFrame {
          public void keyReleased(java.awt.event.KeyEvent ke) {
             boolean ret;
             if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
-               _searchField.selectAll();
+               //FIXME: On Linux the found selection disappears somehow
+               if(!Utils.isLinux())  //HACK
+                  _searchField.selectAll();
                ret = _findHelper.findNext(_searchField.getText());
             }
             else
@@ -1181,6 +1185,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void doFind(ActionEvent ae){
+         _searchField.selectAll();
          _searchField.requestFocus();
       }
 
@@ -1223,10 +1228,12 @@ public class SikuliIDE extends JFrame {
 
       public void setFailed(boolean failed){
          Debug.log(7, "search failed: " + failed);
-         if(failed)
-            _searchField.setBackground(COLOR_SEARCH_FAILED);
+         _searchField.setBackground(Color.white);
+         if(failed){
+            _searchField.setForeground(COLOR_SEARCH_FAILED);
+         }
          else
-            _searchField.setBackground(COLOR_SEARCH_NORMAL);
+            _searchField.setForeground(COLOR_SEARCH_NORMAL);
       }
 
    }
