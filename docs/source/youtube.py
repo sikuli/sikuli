@@ -21,8 +21,8 @@ def youtube(name, args, options, content, lineno,
         return
     string_vars = {
         'yid': content[0],
-        'width': 425,
-        'height': 344,
+        'width': 640,
+        'height': 385,
         'extra': ''
         }
     extra_args = content[1:] # Because content[0] is ID

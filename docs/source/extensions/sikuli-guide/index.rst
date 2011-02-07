@@ -53,9 +53,9 @@ text) for the duration specified by ``secs``.
 Below is a YouTube video of this example.
 
 
-.. youtube:: ELNWxVjVb7Y
-      width:: 300
-      height: 200
+.. youtube:: ELNWxVjVb7Y?hd=1
+      width:: 640
+      height: 390
 
 
 
