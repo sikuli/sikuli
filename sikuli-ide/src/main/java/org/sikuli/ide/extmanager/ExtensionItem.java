@@ -138,6 +138,7 @@ class ExtensionItem extends JPanel implements ActionListener {
    
    public void setSelected(boolean selected){
       _controls.setVisible(selected);
+      /*
       
       
       Color darkRed = new Color(0.5f,0.0f,0.0f);
@@ -156,6 +157,7 @@ class ExtensionItem extends JPanel implements ActionListener {
       for (Component comp : _content.getComponents()){
          comp.setForeground(fg);
       }
+      */
       
    }
    
