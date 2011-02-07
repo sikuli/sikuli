@@ -135,6 +135,27 @@ Painter::drawRects(Mat& image, vector<Rect>& rects, Scalar color){
    }
 }
 
+
+
+void 
+Painter::drawBlobsRandomShading(Mat& image, vector<Blob>& blobs){
+
+   
+   Mat blank = image.clone();
+   blank = 0.0;
+   
+   Mat shading = blank;
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){   
+      Blob& box = *it;      
+      rectangle(shading, Point(box.x,box.y), Point(box.x+box.width,box.y+box.height), Color::RANDOM(), CV_FILLED);
+   }
+   
+   image = image * 0.5 + shading * 0.7;
+   
+   Painter::drawBlobs(image, blobs, Color::WHITE);
+}
+
 void 
 Painter::drawRects(Mat& image, vector<Rect>& rects){
    drawRects(image, rects, Scalar(0,0,255));
@@ -721,8 +742,215 @@ void getLeafBlobs(vector<Blob>& blobs, vector<Blob>& leaf_blobs){
    }
 }
 
+
+Mat
+cvgui::findBoxesByVoting(const Mat& screen, 
+                         int bw, int bh,
+                         vector<Blob>& output_blobs){
+
+   Mat dark;
+   Util::rgb2grayC3(screen,dark);
+   dark = dark * 0.5;
+   
+   
+   VLOG("Input", screen);
+   
+   Mat gray;
+   cvtColor(screen,gray,CV_RGB2GRAY);
+   
+   
+   // Code for experimenting differenty parameters for Canny
+   //   for (int c=10;c<=100;c=c+10){
+   //      char buf[50];
+   //      Mat test;
+   //      sprintf(buf,"Canny%d",c);
+   //      Canny(gray,test,0.66*c,1.33*c,3,true);  
+   //      VLOG(buf, test);       
+   //   }
+
+   Mat canny;
+   int s = 200;
+   Canny(gray,canny,0.66*s,1.33*s,3,true);  
+   VLOG("Canny", canny); 
+   
+   Mat edges;
+   Mat v = Mat::ones(2,2,CV_8UC1);
+   
+   dilate(canny, edges, v);
+   erode(edges, edges, v);   
+   
+   dilate(edges, edges, Mat::ones(3,3,CV_8UC1));
+   VLOG("Dilated", edges); 
+   
+   double k = 0.85;
+   double tol = 0.10;
+   Mat q = Mat::ones(5,5,CV_8UC1);
+   
+   Mat h1,h2,hvotes;
+   voteCenter_Horizontal(edges, h1, bw*k, bw*tol, bh/2);
+   dilate(h1, h1, q);
+   voteCenter_Horizontal(edges, h2, bw*k, bw*tol, -bh/2);
+   dilate(h2, h2, q);
+   
+   bitwise_and(h1,h2,hvotes);
+   VLOG("H-votes", hvotes); 
+   
+   
+   Mat v1,v2,vvotes;
+   voteCenter_Vertical(edges, v1, bh*k, bh*tol, bw/2);
+   dilate(v1, v1, q);
+   
+   voteCenter_Vertical(edges, v2, bh*k, bh*tol, -bw/2);
+   dilate(v2, v2, q);
+   
+   bitwise_and(v1,v2,vvotes);
+   VLOG("V-votes", vvotes); 
+   
+   Mat hvvotes;
+   bitwise_and(vvotes,hvotes,hvvotes);
+   VLOG("HV-votes", hvvotes); 
+   
+   
+
+   
+   Mat copy = hvvotes.clone();
+   
+   
+   vector<vector<Point> > contours;
+   vector<Vec4i> hierarchy;
+   
+   findContours( copy, contours, hierarchy,
+                CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+   
+   vector<Blob> blobs;
+   
+   Mat blank = dark.clone();
+   blank = 0.0;
+   
+   Mat contour_shading = blank;
+
+   
+   // define a perfect box for back-proj verification
+   Mat pbox = Mat::zeros(bh,bw,CV_8UC1); 
+   pbox.row(0).setTo(255);
+   pbox.row(bh-1).setTo(255);
+   pbox.col(0).setTo(255);
+   pbox.col(bw-1).setTo(255);
+   int pscore = countNonZero(pbox);
+   
+   for (vector<vector<Point> >::iterator it = contours.begin();
+        it != contours.end(); ++it){
+      
+      vector<Point>& contour = *it;
+      
+      Rect r = boundingRect(Mat(contour));
+      
+      double a1 = contourArea(Mat(contour));
+      double a2 = r.height * r.width;
+      
+      int cx = r.x + r.width/2;
+      int cy = r.y + r.height/2;
+      
+      
+      Rect box(cx-bw/2,cy-bh/2,bw,bh);
+      
+      Mat e(edges, box);
+      // calculate the score by comparing each hypothesized box to the ideal box
+      Mat sc;
+      bitwise_and(e,pbox,sc);
+      int score = countNonZero(sc);
+      
+      // ignore those boxes with fewer than this percentage 
+      // of edge pixels
+      if ((1.0 * score) / (1.0 * pscore) < 0.90)
+         continue;
+      
+     // rectangle(contour_shading, Point(box.x,box.y), Point(box.x+box.width,box.y+box.height), Color::RANDOM(), CV_FILLED);
+      
+
+      Blob blob(box);
+      blob.score = score;
+      blobs.push_back(blob);
+      
+   }
+   
+   
+   Mat blobs_image = dark.clone();
+   
+   Painter::drawBlobsRandomShading(blobs_image, blobs);
+   VLOG("BlobHypotheses", blobs_image); 
+   
+   
+   // remove overlapping blobs
+   // and do non-maximal suppression
+   vector<Blob> nonoverlapping_blobs;
+   
+   for (vector<Blob>::iterator it = blobs.begin();
+        it != blobs.end(); ++it){
+      
+      Blob& b = *it;
+      
+      bool not_overlap = true;
+      int tolerance = 3;
+      vector<Blob>::iterator ito;
+      for (ito = nonoverlapping_blobs.begin();
+           ito != nonoverlapping_blobs.end(); ++ito){
+         
+         Blob& bo = *ito;
+         
+         not_overlap = b.x >= bo.x + bo.width - tolerance || b.y >= bo.y + bo.height - tolerance||
+            b.x + b.width <= bo.x + tolerance|| b.y + b.height <= bo.y + tolerance;
+         
+         if (!not_overlap)
+            break;
+         
+      }
+      
+      if (not_overlap){
+         
+         nonoverlapping_blobs.push_back(b);
+         
+      }else{
+         // replace it if the score is better
+      
+         if (it->score > ito->score){
+          
+            (*ito) = (*it);
+         }
+         
+      }
+      
+   }
+   
+   
+   vector<Blob>& result_blobs = nonoverlapping_blobs;
+   
+   
+   Mat result_blobs_image = dark.clone();
+   Painter::drawBlobsRandomShading(result_blobs_image, result_blobs);
+   VLOG("OutputBlobs", result_blobs_image);
+   
+   // print output to stdout
+   for (vector<Blob>::iterator it = result_blobs.begin();
+        it != result_blobs.end(); ++it){
+      Blob& b = *it;
+      cout << b.x << " " << b.y << " " << b.width << " " << b.height << " " << b.score << endl;
+   }
+   
+   
+   return result_blobs_image;
+}
+
 Mat
 cvgui::findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs){
+   
+   
+   //return findBoxesByVoting(screen, 70, 90, output_blobs);
+   return findBoxesByVoting(screen, 40, 50, output_blobs);
+   
+   
+// old algorithm
+#if 0   
    Mat dark;
    Util::rgb2grayC3(screen,dark);
    dark = dark * 0.5;
@@ -758,6 +986,55 @@ cvgui::findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs){
    erode(edges, edges, v);
 
    VLOG("Dilated", edges); 
+   
+   // experimental
+   Mat hlines,vlines;
+   dilate(edges, edges, Mat::ones(3,2,CV_8UC1));
+   
+   
+   findLongLines_Vertical(edges,vlines, 50, 2);
+   VLOG("V-lines", vlines); 
+   
+   findLongLines_Horizontal(edges,hlines, 50, 2);
+   VLOG("H-lines", hlines);
+
+   
+   int bw = 70;
+   int bh = 20;
+   double k = 0.90;
+   
+   Mat q = Mat::ones(5,5,CV_8UC1);
+   
+   Mat h1,h2,hvotes;
+   voteCenter_Horizontal(edges, h1, bw*k, 2, bh/2);
+   dilate(h1, h1, q);
+   voteCenter_Horizontal(edges, h2, bw*k, 2, -bh/2);
+   dilate(h2, h2, q);
+
+   bitwise_and(h1,h2,hvotes);
+   VLOG("H-votes", hvotes); 
+
+   
+   Mat v1,v2,vvotes;
+   voteCenter_Vertical(edges, v1, bh*k, 2, bw/2);
+   dilate(v1, v1, q);
+
+   voteCenter_Vertical(edges, v2, bh*k, 2, -bw/2);
+   dilate(v2, v2, q);
+
+   bitwise_and(v1,v2,vvotes);
+   VLOG("V-votes", vvotes); 
+
+   Mat hvvotes;
+   bitwise_and(vvotes,hvotes,hvvotes);
+   VLOG("HV-votes", hvvotes); 
+   
+   
+//   Mat hvlines;
+//   bitwise_or(hlines, vlines, hvlines);
+//   VLOG("HV-lines", hvlines);
+   
+   // 
 
    Mat lines;
    findLongLines(edges, lines, 15);
@@ -841,22 +1118,54 @@ cvgui::findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs){
    VLOG("ColoredSelectedContours", contours_image); 
    
    
-   Mat blobs_result = dark.clone();
-   Painter::drawBlobs(blobs_result, blobs, Color::RED);
+
    
-   VLOG("OutputBlobs", blobs_result);
-   
+   vector<Blob> nonoverlapping_blobs;
+
    // print output to stdout
    for (vector<Blob>::iterator it = blobs.begin();
         it != blobs.end(); ++it){
       
       Blob& b = *it;
+      bool not_overlap = true;
+      for (vector<Blob>::iterator ito = nonoverlapping_blobs.begin();
+           ito != nonoverlapping_blobs.end(); ++ito){
+            
+         Blob& bo = *ito;
+         
+         not_overlap = b.x >= bo.x + bo.width || b.y >= bo.y + bo.height ||
+         b.x + b.width <= bo.x || b.y + b.height <= bo.y;
+            
+         if (!not_overlap)
+            break;
+         
+      }
       
+      if (not_overlap){
+         nonoverlapping_blobs.push_back(b);
+      }
+      
+   }
+   
+   
+   vector<Blob>& result_blobs = nonoverlapping_blobs
+   
+   
+   Mat blobs_result = dark.clone();
+   Painter::drawBlobs(blobs_result, result_blobs, Color::RED);
+   
+   VLOG("OutputBlobs", blobs_result);
+   
+   // print output to stdout
+   for (vector<Blob>::iterator it = result_blobs.begin();
+        it != result_blobs.end(); ++it){
+   
       cout << b.x << " " << b.y << " " << b.width << " " << b.height << endl;
    }
+
       
    return contours_image;
-         
+#endif     
 }
 
 void
@@ -894,6 +1203,8 @@ cvgui::findBoxes(const Mat& screen, vector<Blob>& output_blobs){
    dilate(edges, edges, Mat::ones(2,2,CV_8UC1));
    VLOG("Dilated", edges); 
 
+
+   
    
    Mat result = dark.clone();
    Mat copy = edges.clone();
@@ -1863,26 +2174,207 @@ cvgui::extractRects(const Mat& src,
    
 }
 
-
 void
-cvgui::findLongLines(const Mat& src, Mat& dest, int min_length, int extension){
-   
+cvgui::findLongLines_Vertical(const Mat& src, Mat& dest, int min_length, int extension){
    dest = src.clone();
-   
-   Mat mask;
-   cvgui::findLongLines_Horizontal(dest,mask, min_length, extension);
-   
+
    Mat maskT, destT;
    transpose(dest,destT);
    cvgui::findLongLines_Horizontal(destT,maskT,min_length, extension);
    
    Mat maskTT;
-   transpose(maskT,maskTT);
+   transpose(maskT,maskTT);   
+   dest = maskTT;
+}
+
+
+void
+cvgui::findLongLines(const Mat& src, Mat& dest, int min_length, int extension){
    
-   bitwise_or(mask,maskTT,dest);
+   Mat copy = src.clone();
+   Mat v,h;
+  
+   cvgui::findLongLines_Horizontal(copy, h, min_length, extension);
+
+   
+   cvgui::findLongLines_Vertical(copy, v, min_length, extension);
+
+//   Mat maskT, destT;
+//   transpose(dest,destT);
+//   cvgui::findLongLines_Horizontal(destT,maskT,min_length, extension);
+//   
+//   Mat maskTT;
+//   transpose(maskT,maskTT);
+   
+   
+   bitwise_or(v,h,dest);
    
 }
 
+
+//void
+//cvgui::filterLineSegments(const Mat& src, Mat& dest,
+//                          int min_length, int max_length){
+//   
+//   typedef uchar T;
+//   
+//   int extension = 5;
+//   
+//  	dest = Mat::zeros(src.rows,src.cols,CV_8UC1);
+//   
+//	Size size = src.size();
+//	for( int i = 0; i < size.height; i +=1 ){
+//      
+//		const T* ptr1 = src.ptr<T>(i);
+//		T* ptr2 = dest.ptr<T>(i);	
+//		
+//		bool has_previous_baseline = false;
+//		int previous_baseline_endpoint = 0;
+//		int current_baseline_startpoint = 0;
+//      
+//      
+//      for( int j = 1; j < size.width; j += 1 ){			
+//			
+//         
+//         if (ptr1[j] > 0 && ptr1[j-1] == 0){
+//            current_baseline_startpoint = j;
+//         }
+//         
+//         if (ptr1[j-1] > 0 &&  (ptr1[j] == 0 || j == size.width - 1)){
+//            
+//            
+//				// check for the condition of a baseline hypothesis
+//				// the length of the baseline must be > 15
+//				if ((j - current_baseline_startpoint) > min_length){// || j == size.width - 1){
+//					
+//               //					int closeness_threshold = 1; 					
+//               //					if (has_previous_baseline && 
+//               //                   (current_baseline_startpoint - previous_baseline_endpoint) 
+//               //						 <= closeness_threshold){
+//               //						
+//               //						
+//               //						// merge the current baseline with the previously baseline
+//               //						for (int k=previous_baseline_endpoint; 
+//               //                       k < current_baseline_startpoint; k += 1){
+//               //	                     ptr2[k] = ptr1[j];
+//               //						}
+//               //					}
+//					
+//               //	has_previous_baseline = true;
+//					//previous_baseline_endpoint = j;
+//					
+//               
+//					for (int k=current_baseline_startpoint; k < j; ++k){
+//                  ptr2[k] = 255;
+//					}	
+//               
+//               for (int k=j; k < min(j+extension,size.width-1); ++k){
+//                  ptr2[k] = 255;
+//					}	
+//               
+//					
+//				}
+//				
+//				// forming a new baseline hypothesis
+//				//current_baseline_startpoint = j+1;
+//			}
+//      }
+//   }	 
+//   
+//}
+
+
+void
+cvgui::voteCenter_Vertical(const Mat& binary, Mat& dest,
+                             int min_length, int tolerance, int distance){
+
+   dest = binary.clone();
+   
+   Mat maskT, destT;
+   transpose(dest,destT);
+   cvgui::voteCenter_Horizontal(destT,maskT,min_length,tolerance,distance);
+   
+   Mat maskTT;
+   transpose(maskT,maskTT);   
+   dest = maskTT;
+}
+
+void
+cvgui::voteCenter_Horizontal(const Mat& binary, Mat& dest,
+                             int min_length, int tolerance, int distance){
+   
+   typedef uchar T;
+   
+  	dest = Mat::zeros(binary.rows,binary.cols,CV_8UC1);
+   
+	Size size = binary.size();
+	for( int i = 0; i < size.height; i +=1 ){
+      
+		const T* ptr1 = binary.ptr<T>(i);
+		T* ptr2 = 0;
+      //dest.ptr<T>(i);
+//      
+//      
+//      T* ptru = 0;
+//      T* ptrb = 0;
+//      
+      int grid = 5;
+      
+      
+      int gi = grid*(i+distance)/grid;
+      
+      if (gi >= 0 && gi < size.height){
+         ptr2 = dest.ptr<T>(i+distance);
+      }
+      
+//      if (grid*(i+distance)/grid<size.height){
+//         ptrb = dest.ptr<T>(i+distance);
+//      }
+		
+		bool has_previous_baseline = false;
+		int previous_baseline_endpoint = 0;
+		int current_baseline_startpoint = 0;
+      
+      
+      for( int j = 1; j < size.width; j += 1 ){			
+			
+         
+         if (ptr1[j] > 0 && ptr1[j-1] == 0){
+            current_baseline_startpoint = j;
+         }
+         
+         if (ptr1[j-1] > 0 &&  (ptr1[j] == 0 || j == size.width - 1)){
+            
+            
+				// check for the condition of a baseline hypothesis
+				// the length of the baseline must be > 15
+				if ((j - current_baseline_startpoint) > min_length){// || j == size.width - 1){
+		
+					
+               
+					for (int k=current_baseline_startpoint+min_length/2; k < j-min_length/2; ++k){
+                  
+                  if (ptr2)
+                     ptr2[k] = 255;                  
+					}	
+
+               for (int k=j-min_length/2; k < min(j-min_length/2+tolerance,size.width-1); ++k){
+                 
+                  if (ptr2)
+                     ptr2[k] = 255;
+                  
+					}	
+               
+					
+				}
+				
+				// forming a new baseline hypothesis
+				//current_baseline_startpoint = j+1;
+			}
+      }
+   }	 
+   
+}  
 
 void
 cvgui::findLongLines_Horizontal(const Mat& binary, Mat& dest,
