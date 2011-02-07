@@ -486,6 +486,7 @@ public class SikuliIDE extends JFrame {
       _searchField.setMinimumSize(new Dimension(220,30));
       _searchField.setPreferredSize(new Dimension(220,30));
       _searchField.setMaximumSize(new Dimension(380,30));
+      _searchField.setMargin(new Insets(0, 3, 0, 3));
 
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
