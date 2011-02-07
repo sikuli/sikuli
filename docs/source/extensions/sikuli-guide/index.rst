@@ -88,7 +88,7 @@ through the three links and show the tooltip of each link one at a time.
 .. sikulicode::
 
 	from guide import *
-	while True():
+	while True:
 		tooltip("previous.png","Previous") 
 		show(3) 
 		tooltip("next.png","Next")
