@@ -106,6 +106,14 @@ public class ExtensionManager {
       return e != null;
    }
 
+   private String getExtName(String nameWithVer){
+      int verSep = nameWithVer.lastIndexOf("-");
+      if(verSep>=0){
+         return nameWithVer.substring(0, verSep) + ".jar";
+      }
+      return nameWithVer;
+   }
+
    /**
     *  install a Sikuli extension (.JAR)
     */
@@ -115,7 +123,8 @@ public class ExtensionManager {
       try{
          URL url = new URL(url_);
          File localFile = new File(Util.downloadURL(url, tmpdir));
-         if( !localFile.renameTo(new File(extPath,localFile.getName())) ){
+         String extName = getExtName(localFile.getName());
+         if( !localFile.renameTo(new File(extPath, extName)) ){
             Debug.error("Failed to install " + localFile.getName() + " to " + extPath);
             return false;
          }
