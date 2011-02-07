@@ -11,7 +11,7 @@ def rectangle(target):
 def text(target, text):
 	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
-	_sa.addText(r.getBottomLeft(), text)
+	_sa.addText(r.getBottomLeft().below(5), text)
 
 def clickable(target, name = ""):
 	r = s.getRegionFromPSRM(target)
@@ -29,8 +29,5 @@ def tooltip(target, text):
 	_sa.addHighlight(r)
 	_sa.addToolTip(r.getBottomLeft().below(5), text)
 
-def show(secs):
+def show(secs = 3.0):
 	_sa.showNow(secs)
-
-def show():
-	_sa.showNow()
