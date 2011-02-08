@@ -38,9 +38,9 @@ Technical Details
 
 Extensions are Java jar-files containing some Java classes (usually the core functions) and at least one Python module, that defines the API to be used in a script.
 
-Sikuli maintains a local extensions directory, where downloaded extensions are stored together with a hidden list of the installed extensions (Windows: , Mac: , Linux: ).
+Sikuli maintains a local extensions directory, where downloaded extensions are stored together with a hidden list of the installed extensions (Windows: , Mac: ``~/Library/Application Support/Sikuli/extensions``, Linux: ).
 
-At time of usage ( ``from extension-name import *`` ) the Sikuli Import Manager makes the jar-file available in the current context using the :py:func:``load(path-to-jar-file)``.
+At time of usage ( ``from extension-name import *`` ) the Sikuli Import Manager makes the jar-file available in the current context using the :py:func:`load(path-to-jar-file) <load>`.
 
 The information about features, usage and API of an extension is available in this documentation (accessible via menu **Tools** -> **Extensions** -> button **More Info** in the IDE).
 
