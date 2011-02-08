@@ -48,7 +48,7 @@ def load(jar):
       if os.path.exists(abspath):
          if not abspath in sys.path:
             sys.path.append(abspath)
-            return True
+         return True
       return False
 
    if _load(jar):
