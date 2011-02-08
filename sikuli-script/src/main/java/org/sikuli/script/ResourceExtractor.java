@@ -29,14 +29,24 @@ public class ResourceExtractor {
          String fullpath = outPath + line;
          File outf = new File(fullpath);
          outf.getParentFile().mkdirs();
-         try{
-            InputStream in = cl.getResourceAsStream(fromPath + line);
-            OutputStream out = new FileOutputStream(outf);
-            copy(in, out);
-            out.close();
+         InputStream in = cl.getResourceAsStream(fromPath + line);
+         if(in != null){
+            OutputStream out = null;
+            try{
+               out = new FileOutputStream(outf);
+               copy(in, out);
+            }
+            catch(IOException e){
+               Debug.log("Can't extract " + fromPath + line + ": " + e.getMessage());
+            }
+            finally{
+               if(out != null){
+                  out.close();
+               }
+            }
          }
-         catch(Exception e){
-            Debug.log("Can't extract " + fromPath + line);
+         else{
+            Debug.log("Resource not found: " + fromPath + line);
          }
       }
    }
