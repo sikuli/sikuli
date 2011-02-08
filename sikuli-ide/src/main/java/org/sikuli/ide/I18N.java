@@ -23,7 +23,7 @@ public class I18N {
       i18nRB_en = ResourceBundle.getBundle("i18n/IDE",locale_en);
    }
 
-   static String _I(String key, Object... args){ 
+   public static String _I(String key, Object... args){ 
       String ret;
       if(i18nRB==null)
          ret = i18nRB_en.getString(key); 

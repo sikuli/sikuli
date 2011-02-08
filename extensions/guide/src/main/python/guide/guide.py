@@ -4,40 +4,33 @@ from org.sikuli.script import UnionScreen
 s = UnionScreen()
 _sa = ScreenAnnotator(s);
 
-def addHighlight(target):
+def rectangle(target):
 	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
 
-def addText(target, text):
+def text(target, text):
 	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
-	_sa.addText(r.getBottomLeft(), text)
+	_sa.addText(r.getBottomLeft().below(5), text)
 
-def addClickTarget(target, name = ""):
+def clickable(target, name = ""):
 	r = s.getRegionFromPSRM(target)
 	_sa.addClickTarget(r, name)
 
-def addDialog(text):
+def dialog(text):
 	_sa.addDialog("Next", text)
 
-def addCircle(target):
+def circle(target):
 	r = s.getRegionFromPSRM(target)
 	_sa.addCircle(r)
 
-def addTooltip(target, text):
+def tooltip(target, text):
 	r = s.getRegionFromPSRM(target)
 	_sa.addHighlight(r)
 	_sa.addToolTip(r.getBottomLeft().below(5), text)
 
-
-
-def showNow():
-	_sa.showNow()
-
-def show(secs):
-	_sa.show(secs)
-
-def nextStep(text):
-	_sa.showWaitForButtonClick("Next", text)
-
-
+def show(secs = None):
+	if secs:
+		_sa.showNow(secs)
+	else:
+		_sa.showNow()

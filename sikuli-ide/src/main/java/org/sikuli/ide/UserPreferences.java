@@ -122,6 +122,21 @@ public class UserPreferences {
       pref.putBoolean("CHECK_UPDATE", flag);
    }
 
+   public void setConsoleCSS(String css){
+      pref.put("CONSOLE_CSS", css);
+   }
+
+   public String getConsoleCSS(){
+      return pref.get("CONSOLE_CSS", 
+            "body   { font-family:serif; font-size: 12px; }" +
+            ".normal{ color: black; }" +
+            ".debug { color:#505000; }" +
+            ".info  { color: blue; }" + 
+            ".log   { color: #09806A; }" + 
+            ".error { color: red; }"
+      );
+   }
+
 
    public void put(String key, String val){
       pref.put(key, val);

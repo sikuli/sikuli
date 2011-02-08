@@ -92,6 +92,7 @@ public:
    int mb;
    int mg;
    int mr;
+   int score;
 };
 
 
@@ -147,6 +148,8 @@ public:
    static void drawBlobs(Mat& image, vector<Blob>& blobs);
    static void drawBlobs(Mat& image, vector<Blob>& blobs, Scalar color);
    
+   static void drawBlobsRandomShading(Mat& image, vector<Blob>& blobs);
+   
    static void drawLineBlobs(Mat& image, vector<LineBlob>& lineblobs, Scalar color);
    static void drawParagraphBlobs(Mat& image, vector<ParagraphBlob> blobs, Scalar color);
   
@@ -179,6 +182,8 @@ public:
    static void findBoxes(const Mat& screen, vector<Blob>& output_blobs);
    static Mat findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs);
 
+   static Mat findBoxesByVoting(const Mat& screen, int box_width, int box_height, vector<Blob>& output_blobs);
+
    
 private:
    
@@ -189,6 +194,9 @@ private:
 
    static void findLongLines(const Mat& binary, Mat& dest, int min_length = 100, int extension = 0);
    static void findLongLines_Horizontal(const Mat& binary, Mat& dest, int min_length = 100, int extension = 0);
+   static void findLongLines_Vertical(const Mat& binary, Mat& dest, int min_length = 100, int extension = 0);
+   
+   static void filterLineSegments(const Mat& src, Mat& dest, int min_length, int max_length);
    
    static void extractRects(const Mat& src, vector<Rect>& rects);
    static void extractBlobs(const Mat& src, vector<Blob>& blobs);
@@ -201,6 +209,10 @@ private:
    static bool hasMoreThanNUniqueColors(const Mat& src, int n);
    static bool areHorizontallyAligned(const vector<Rect>& rects);
    
+   
+   // voting
+   static void voteCenter_Horizontal(const Mat& binary, Mat& dest, int min_length, int tolerance, int distance);
+   static void voteCenter_Vertical(const Mat& binary, Mat& dest, int min_length, int tolerance, int distance);
    
    
    

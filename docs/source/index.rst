@@ -119,3 +119,10 @@ Academic Papers
 * `Sikuli: Using GUI Screenshots for Search and Automation <http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-uist2009.pdf>`_, UIST 2009 (PDF).
 * `GUI Testing Using Computer Vision <http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-chi2010.pdf>`_, CHI 2010 (PDF).
 
+
+Great 3rd-Party Articles 
+------------------------
+
+* `How-To: Sikuli and Robot Framework Integration <http://blog.mykhailo.com/2011/02/how-to-sikuli-and-robot-framework.html>`_.
+* `Automating Flash, AJAX, Popups and more using Ruby, Watir and Sikuli <http://www.software-testing.com.au/blog/2010/08/16/automating-flash-ajax-popups-and-more-using-ruby-watir-and-sikuli/>`_.
+

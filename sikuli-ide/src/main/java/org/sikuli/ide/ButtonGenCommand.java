@@ -12,9 +12,9 @@ public class ButtonGenCommand extends JButton implements ActionListener,
    String _cmd;
    String[] _params;
    String _desc;
-   final static String DefaultStyle = "color:black;font-weight:normal", 
-                       HoverStyle = "color:#3333ff;font-weight:bold;",
-                       PressedStyle = "color:#3333ff;font-weight:bold;text-decoration:underline;";
+   final static String DefaultStyle = "color:black;font-family:monospace;font-size:10px; font-weight:normal", 
+                       HoverStyle = "color:#3333ff;font-family:monospace;font-size:10px; font-weight:bold;",
+                       PressedStyle = "color:#3333ff;font-family:monospace;font-size:10px; font-weight:bold;text-decoration:underline;";
 
    public ButtonGenCommand(String cmd, String desc, String... params){
       super(getRichRepresentation(DefaultStyle, cmd, desc, params, false));
@@ -54,12 +54,12 @@ public class ButtonGenCommand extends JButton implements ActionListener,
 
    static String getRichRepresentation(String style, String cmd, String desc, String[] params, boolean showOptParam){
       String ret = "<html><table><tr><td valign=\"middle\">"+
-                   "<span style=\""+style+"\">" + cmd + "</span>(";
+                   "<span style=\""+style+"\">" + cmd + "(";
       int count = 0;
       for(String p : params){
          String item = getParamHTML(p, count==0, showOptParam);
          if(!item.equals(""))
-            ret += "<td valign=\"middle\">" + item;
+            ret += "<td valign=\"middle\" style=\""+style+"\">" + item;
          count++;
       }
       ret += "<td>)</table>";

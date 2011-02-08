@@ -1,7 +1,9 @@
 Sikuli Guide
 ============
 
-(Coming Soon in Sikuli X 1.0-rc2)
+.. _sikuliguide:
+
+.. versionadded:: X1.0-rc2
 
 Sikuli Guide is an extension to Sikuli that provides a revolutionary way to
 create guided tours or tutorials for GUI applications. The revolutionary aspect
@@ -25,12 +27,14 @@ write the following script to accomplish this:
 .. sikulicode::
 
 	from guide import *
-	addText("sikuli-logo.png", "This is Sikuli's logo")
+	text("sikuli-logo.png", "This is Sikuli's logo")
 	show(5)
 
 When you run this script, Sikuli Guide will search for the logo's image on the
 screen, highlight it, and display the text ''This is Sikuli's logo'' below the
 image, like the figure below: 
+
+
 
 .. image:: sikuli-logo-highlight.png
 
@@ -40,7 +44,7 @@ users can click on.
 
 Let's explain the script line by line. The first line is an ``import``
 statement that tells Sikuli to load the Sikuli Guide extension. The secod line
-uses the :py:func:`addText(pattern, text) <guide.addText>` function to add ``text``
+uses the :py:func:`text(pattern, text) <guide.text>` function to add ``text``
 next to a given ``pattern``, in this case, the logo image. Note that by default
 the text added is not displayed immediately, it is only internally added 
 to the visual element. In the third line, we call
@@ -48,22 +52,32 @@ to the visual element. In the third line, we call
 all registerd annotation elements (in this case only the
 text) for the duration specified by ``secs``. 
 
+Below is a YouTube video of this example.
+
+
+.. youtube:: ELNWxVjVb7Y?hd=1
+      width:: 640
+      height: 390
+
+
+
+
 Adding Multiple Annotations
 ---------------------------
 
 It is possible to add text or other annotations to multiple visual elements before
-calling ``show()`` in order to show them on the screen at the same time.
+calling :py:func:`show(secs) <guide.show>` in order to show them on the screen at the same time.
 
 .. sikulicode::
 
 	from guide import *
-	addText("sikuli-logo.png", "This is Sikuli's logo")
-	addTooltip("previous.png","Previous")
-	addTooltip("next.png","Next")
-	addTooltip("index.png","Index")
+	text("sikuli-logo.png", "This is Sikuli's logo")
+	tooltip("previous.png","Previous")
+	tooltip("next.png","Next")
+	tooltip("index.png","Index")
 	show(5)
 
-The script above uses the function :py:func:`addTooltip` to add tooltips to
+The script above uses the function :py:func:`tooltip(text) <guide.tooltip>` to add tooltips to
 three links in addition to the text annotation. The result of running this
 script is shown below: 
 
@@ -76,12 +90,12 @@ through the three links and show the tooltip of each link one at a time.
 .. sikulicode::
 
 	from guide import *
-	while True():
-		addTooltip("previous.png","Previous") 
+	while True:
+		tooltip("previous.png","Previous") 
 		show(3) 
-		addTooltip("next.png","Next")
+		tooltip("next.png","Next")
 		show(3)
-		addTooltip("index.png","Index")
+		tooltip("index.png","Index")
 		show(3)
 
 The result of running this script is shown below (3x speed-up):
@@ -91,37 +105,57 @@ The result of running this script is shown below (3x speed-up):
 Adding Interaction
 ------------------
 
-Another way to control the flow of a guided tour is to display a message box
-and let users click on the button to continue to the next part of the tour.
-Sikuli Guide provides a function :py:func:`nextStep(message) <guide.nextStep>`
+Another way to control the flow of a guided tour is to display a dialog box
+and let users click on a button to continue to the next part of the tour.
+Sikuli Guide provides a function :py:func:`dialog(message) <guide.dialog>`
 to accomplish this easily. Below is an example using this function to create a
 two-part guided tour.
 
 .. sikulicode::
 
 	from guide import *
-	addText("links.png","Use these to jump to other parts")
-	nextStep("Part 1: Navigation Links")
-	addText("sikuli-logo.png","Use this to go back to Home")
-	nextStep("Part 2: Logo")
+	text("links.png","Use these to jump to other parts")
+	dialog("Part 1: Navigation Links")
+        show()
+	text("sikuli-logo.png","Use this to go back to Home")
+	dialog("Part 2: Logo")
+        show()
 
 The tour presented by the script above introduces the navigation links above
 and the Sikuli's logo as a shortcut to go back to the documentation's HOME
-page. The function call ``nextStep("Part 1")`` indicates the tour is about to
-move to the next part. At this point, Sikuli Guide shows all pending
-annotations and displays a message box. The caption of this message box is
-the string (i.e., Part 1) passed to the function. Users can spend as much
-time as they want in the current part. When they are ready to move on, they
-can click on the *Next* button.
+page. The function call ``dialog("Part 1")`` indicates the tour will show
+a dialog that displays the message specified by the string argument 
+(i.e., Part 1: Navigation Links). The following call to ``show()`` will
+actually display the dialog along with the text elements spcified earlier.
 
 The figure below shows what happens after Line 3:
 
 .. image:: step1.png
 
-After users click on the *Next* button, the tour moves to the next part. The
+After users click on the **Next** button, the tour moves to the next part. The
 screen will look like below:
 
 .. image:: step2.png
+
+Making a Region clickable
+-------------------------
+
+You might use the feature :py:func:`clickable(PSRM) <guide.clickable>`, to make a region sensitive for clicks. 
+
+.. sikulicode::
+
+	from guide import *
+	logo = find("sikuli-logo.png")
+	text(logo, "To proceed click this red ...")
+	clickable(logo)
+	index = logo.above().right().find("index.png")
+	text(index, "... or click this red")
+	clickable(index)
+	show()
+	
+The script waits until the user clicks one of the two highlighted areas.
+
+.. image:: annotation-clickable.png
 
 .. py:module:: guide
 
@@ -133,48 +167,66 @@ Function References
 or **M** a Match object. With **PS** an implicit find operation takes place. 
 (More information: :ref:`Finding inside a Region ... <FindinginsideaRegionandWaitingforaVisualEvent>`)
 
-Annotations
------------
+Static Annotations
+------------------
 	
-.. py:function:: addHighlight(PSRM)
 
-	The specified target is highlighted with a light red overlay.
+.. py:function:: rectangle(PSRM)
+
+	Add a rectangular overlay in red on the specified target's region.
 	
 	:param PSRM: a pattern, string, region or match 
 
-.. py:function:: addText(PSRM, text)
 
-	Add some text (white large letters on dark grey background) left justified below the specified target, which is additionally highlighted.
+.. py:function:: circle(PSRM)
+
+	Add a red circle around the specified target's region.
+	
+	:param PSRM: a pattern, string, region or match 
+
+
+
+.. py:function:: text(PSRM, text)
+
+	Add some text (white large letters on dark grey background) left justified below the specified target's region, which is additionally highlighted.
 
 	:param PSRM: a pattern, string, region or match 
 	:param text: a string as text to display
 
-.. py:function:: addTooltip(PSRM, text)
+.. py:function:: tooltip(PSRM, text)
 
-	Add a tooltip (small text in a light yellow box) left justified below the specified target
+	Add a tooltip (small text in a light yellow box) left justified below the specified target's region.
 
 	:param PSRM: a pattern, string, region or match 
 	:param text: a string as text to display
 
+
+Interactive Elements
+--------------------
+
+.. py:function:: dialog(text)
+
+      Add a dialog box displaying the given text in the middle of the screen above all othe windows.
+
+      :param text: a string as text to display
+
+.. py:function:: clickable(PSRM)
+
+      Add a clickable element corresponding to the specified target's region. 
+
+      :param PSRM: a pattern, string, region or match
 
 
 Control
 -------
 	
-.. py:function:: show(seconds)
+.. py:function:: show([seconds])
 
-	Show annotations added so far for the specified amount of time.
+	Show static and interactive components added so far for the specified amount of time. 
+        The default duration is 3 seconds. If interactive elements (either one or more clicable elements or 
+        a dialog box) were previously added, it waits until the user interacts with one of these elements. 
 
 	:param seconds: a decimal number as display duration in seconds
-
-.. py:function:: nextStep(text)
-
-	Show annotations added so far and display a confirmation message box
-	(white large letters on dark grey background with a "Next" button below) 
-	in the middle of the screen for users to interactively move to the next step.
-
-	:param text: a string as text to display
-
 
 
 

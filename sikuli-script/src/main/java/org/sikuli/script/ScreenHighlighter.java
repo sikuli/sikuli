@@ -197,7 +197,7 @@ public class ScreenHighlighter extends TransparentWindow implements MouseListene
    }
 
    public static void closeAll(){
-      Debug.log(1, "close all ScreenHighlighter");
+      Debug.log(3, "close all ScreenHighlighter");
       for(ScreenHighlighter s : _opened){
          if(s.isVisible()){
             s.setVisible(false);

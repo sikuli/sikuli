@@ -69,6 +69,11 @@ String concatenation with with other text or other key constants is possible usi
 
 	PRINTSCREEN, PAUSE, CAPS_LOCK, SCROLL_LOCK, NUM_LOCK
 
+.. versionadded:: X1.0-rc2
+	
+**Note:** The status ( on / off ) of the keys ``Key.CAPS_LOCK``, ``Key.NUM_LOCK`` and ``Key.SCROLL_LOCK`` can 
+be evaluated with the method :py:meth:`Env.isLockOn() <Env.isLockOn>`.
+
 **numpad keys** ::
 
 	NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9

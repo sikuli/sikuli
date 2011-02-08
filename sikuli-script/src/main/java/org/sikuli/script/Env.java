@@ -10,6 +10,8 @@ import java.lang.reflect.Constructor;
 
 
 public class Env {
+   final static String SikuliVersion = "X-1.0rc2";
+
    public static Location getMouseLocation() throws HeadlessException{
       Point loc = MouseInfo.getPointerInfo().getLocation();
       return new Location(loc.x, loc.y);
@@ -90,6 +92,17 @@ public class Env {
       return _osUtil;
    }
 
+   static boolean isLockOn(char key){
+      Toolkit tk = Toolkit.getDefaultToolkit();
+      switch(key){
+         case '\ue025': return tk.getLockingKeyState(KeyEvent.VK_SCROLL_LOCK);
+         case '\ue027': return tk.getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+         case '\ue03B': return tk.getLockingKeyState(KeyEvent.VK_NUM_LOCK);
+         default:
+            return false;
+      }
+   }
+
    static int getHotkeyModifier(){
       if(getOS() == OS.MAC)
          return KeyEvent.VK_META;
@@ -115,4 +128,9 @@ public class Env {
       File fHome = new File(home, sikuliPath);
       return fHome.getAbsolutePath();
    }
+
+   static String getSikuliVersion(){
+      return SikuliVersion;
+   }
+
 }

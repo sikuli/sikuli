@@ -120,12 +120,13 @@ public class ExtensionManagerFrame extends JFrame {
          Map ext = (Map) o;
 
          String name = (String) ext.get("name");
+         String version = (String) ext.get("version");
          String description = (String) ext.get("description");
          String imgurl = (String) ext.get("imgurl");
          String infourl = (String) ext.get("infourl");
          String jarurl = (String) ext.get("jarurl");
 
-         extensions.add(new ExtensionItem(name,description,imgurl,infourl,jarurl));
+         extensions.add(new ExtensionItem(name,version, description,imgurl,infourl,jarurl));
       }
 
       return extensions;

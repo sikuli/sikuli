@@ -5,6 +5,7 @@ package org.sikuli.ide.extmanager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -28,7 +29,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.MouseInputListener;
 
-import org.sikuli.ide.SikuliIDE;
+import org.sikuli.ide.I18N;
 import org.sikuli.script.Debug;
 import org.sikuli.script.ExtensionManager;
 
@@ -41,7 +42,6 @@ class ExtensionItem extends JPanel implements ActionListener {
       return false;
    }
    
-   JLabel _description;
    
    JButton _installCtrl;
    JButton _infoCtrl;
@@ -49,16 +49,27 @@ class ExtensionItem extends JPanel implements ActionListener {
    String _name;
    String _infourl;
    String _jarurl;
+   String _version;
+   String _description;
    boolean _installed;
+   
+   final int NOT_INSTALLED = 0;
+   final int INSTALLED = 1;
+   final int OUT_OF_DATE = 2;
+   int _status = NOT_INSTALLED;
    
    JPanel _controls;
    JPanel _content;
-   public ExtensionItem(String name, String description, 
+   JLabel _htmlLabel;
+   public ExtensionItem(String name, String version, String description, 
          String imgurl, String infourl, String jarurl){
       this._name = name;
+      this._version = version;
+      this._infourl = infourl;
       this._infourl = infourl;
       this._jarurl = jarurl;
-      this._installed = isInstalled(name);
+      this._description = description;
+      this._status = getStatus();
 
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       
@@ -82,26 +93,30 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       _content.setLayout(new BorderLayout());
       _content.add(iconLabel, BorderLayout.LINE_START);
-      JLabel htmlLabel = new JLabel(renderHTML(name,description));
-      _content.add(htmlLabel);
+      
+      
+      
+      _htmlLabel = new JLabel(renderHTML());
+      _content.add(_htmlLabel);
       
       add(_content);
       
-      JButton btn = new JButton("Install");
+      JButton btn = new JButton(I18N._I("extBtnInstall"));
       btn.addActionListener(this);
       btn.setActionCommand("Install"); 
       _installCtrl = btn;
       _installCtrl.setFocusable(false);
       
-      btn = new JButton("More info");
+      btn = new JButton(I18N._I("extBtnInfo"));
       btn.addActionListener(this);
       btn.setActionCommand("Info");
       _infoCtrl = btn;
       _infoCtrl.setFocusable(false);
 
       
+      //setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
       _controls = new JPanel();
-      _controls.setLayout(new BorderLayout());
+      _controls.setLayout(new BorderLayout(5, 5));
 
       _controls.add(_infoCtrl,BorderLayout.LINE_START);
       _controls.add(_installCtrl,BorderLayout.LINE_END);
@@ -110,7 +125,7 @@ class ExtensionItem extends JPanel implements ActionListener {
       add(_controls);
       
       _controls.setVisible(false);
-      updateControlls();
+      updateControls();
       
       
       addMouseListener(new MouseAdapter(){
@@ -125,6 +140,7 @@ class ExtensionItem extends JPanel implements ActionListener {
    
    public void setSelected(boolean selected){
       _controls.setVisible(selected);
+      /*
       
       
       Color darkRed = new Color(0.5f,0.0f,0.0f);
@@ -143,24 +159,50 @@ class ExtensionItem extends JPanel implements ActionListener {
       for (Component comp : _content.getComponents()){
          comp.setForeground(fg);
       }
+      */
       
    }
    
    
-   public String renderHTML(String name, String description){
-      return "<html><b>" + name + "</b><br>"
-         + description + "</html>";
+   public String renderHTML(){      
+      String installed_version =  ExtensionManager.getInstance().getVersion(_name);
+      if (installed_version == null)
+         installed_version = "Not installed";
+      return "<html><div style='width:300px'><b>" + _name + "</b> " + "(" + installed_version + ")" + "<br>"
+         + _description + "</div></html>";
    }
    
-   public void updateControlls(){
+   
+   public int getStatus(){
       
-      if (_installed){
-         _installCtrl.setEnabled(false);
-         _installCtrl.setText("Already installed");
-      }else{
-         _installCtrl.setEnabled(true);
-         _installCtrl.setText("Install");
+      ExtensionManager extMgr = ExtensionManager.getInstance();
+      
+      if (!extMgr.isInstalled(_name)){
+         return NOT_INSTALLED;          
+      }else if (extMgr.isOutOfDate(_name,_version)){
+         return OUT_OF_DATE;        
+      }else {
+         return INSTALLED;
       }
+      
+   }
+   
+   public void updateControls(){
+      
+      int status = getStatus();
+      
+      if (status == INSTALLED){
+         _installCtrl.setEnabled(false);
+         _installCtrl.setText(I18N._I("extMsgInstalled"));
+      }else if (status == NOT_INSTALLED){
+         _installCtrl.setEnabled(true);
+         _installCtrl.setText(I18N._I("extBtnInstallVer",_version));
+      }else if (status == OUT_OF_DATE){
+         _installCtrl.setEnabled(true);
+         _installCtrl.setText(I18N._I("extBtnUpdateVer",_version));
+      }
+      
+      _htmlLabel.setText(renderHTML());
    }
    
 
@@ -177,17 +219,19 @@ class ExtensionItem extends JPanel implements ActionListener {
    
    @Override
    public void actionPerformed(ActionEvent e) {
-      // TODO Implement actions
       String cmd = e.getActionCommand();
       if (cmd.equals("Install")){
          Debug.log("Installing " + _name + " at " + _jarurl);
          
          ExtensionManager extMgr = ExtensionManager.getInstance();
-         extMgr.install(_name, _jarurl);
-         
-         // upon completion
-         _installed = true;
-         updateControlls();
+
+         // try to install the extension
+         if (extMgr.install(_name, _jarurl,_version)){
+            
+            // if successful, change the item's status to installed
+            //_installed = true;
+            updateControls();
+         }
          
       }else if (cmd.equals("Info")){
          

@@ -3,6 +3,11 @@ package org.sikuli.script;
 import java.awt.Point;
 
 public class Location extends Point{
+
+   public Location(float _x, float _y){
+      super((int)_x, (int)_y);
+   }
+
    public Location(int _x, int _y){
       super(_x, _y); 
    }
@@ -10,6 +15,7 @@ public class Location extends Point{
    public Location(Location loc){
       super(loc.x, loc.y);
    }
+
 
    public Location negative(){
       return new Location(-x, -y);

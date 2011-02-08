@@ -16,6 +16,7 @@ Python/Jython features of module support - for your scripts too.
 This is possible with Sikuli X:
 
 * import other .sikuli in a way that is fully compatible with Python import
+* import a python modul structure including underlying Java classes from a jar-file, that is dynamically loaded using the function :py:func:`load(jar-file) <load>`
 * automatically access images contained in the imported .sikuli (no need to use
   :py:func:`setBundlePath`) 
 
@@ -95,6 +96,21 @@ distributed as a zipped file::
 
 	# now you can import every .sikuli in the same directory
 	import myLib
+
+**Loading a jar-file containing Python modules**
+	
+.. py:function:: load(jar-file)
+
+	Loads a jar-file and puts its absolute path into sys.path, so a contained 
+	Python module structure can be imported afterwards.
+	
+	:param jar-file: either a ``filename.jar`` without any path or the absolute 
+		path to ``filename.jar``
+	:return: ``True`` if the file was found, otherwise ``False``
+	
+	**Note:** if no path is specified, Sikuli first looks into the bundle (the
+	Sikuli folder of the running script) and then into the extensions folder
+	(more information: :ref:`Sikuli Extensions <sikuliextensions>`)
 
 .. _ControllingSikuliScriptsandtheirBehavior:
 
@@ -782,6 +798,19 @@ below:
 		else:
 			print "Sorry, not a Mac"
 
+.. versionadded:: X1.0-rc2
+.. py:method:: Env.getSikuliVersion()
+		
+	Get the version of Sikuli.
+	
+	:return: a string containing the version text of the IDE window title without "Sikuli "
+	
+	An example for Sikuli X-1.0rc2::
+
+		if not Env.getSikuliVersion() == "X-1.0rc2":
+			print "This script needs Sikuli X-1.0rc2"
+			exit(1)
+	
 .. py:method:: Env.getClipboard()
 
 	Get the content of the clipboard if it is text, otherwise an empty string.
@@ -797,3 +826,12 @@ below:
 	inside your text, that you did not expect. In this case, you can use
 	``Env.getClipboard().strip()`` to get rid of surrounding white spaces.
 
+.. versionadded:: X1.0-rc2
+.. py:method:: Env.isLockOn(key-constant)
+
+	Get the current status ( on / off ) off the respective key. Only one key can be specified.
+	
+	:parameter key-constant: one of the key constants ``Key.CAPS_LOCK``, ``Key.NUM_LOCK``, ``Key.SCROLL_LOCK``
+	:return: True if the specified key is on, False otherwise
+	
+	Further information about key constants can be found in Class :py:class:`Key`.

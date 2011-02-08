@@ -26,8 +26,6 @@ import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXMultiSplitPane;
-import org.jdesktop.swingx.MultiSplitLayout;
 
 
 import org.sikuli.script.Debug;
@@ -47,19 +45,14 @@ public class SikuliIDE extends JFrame {
    final static boolean ENABLE_UNIFIED_TOOLBAR = true;
 
    final static Color COLOR_SEARCH_FAILED = Color.red;
-   final static Color COLOR_SEARCH_NORMAL = Color.white;
-
-   final static String MAIN_LAYOUT_DEF = 
-      "(COLUMN " +
-         "(LEAF name=code weight=0.9)" +
-         "(LEAF name=msg weight=0.1))";
+   final static Color COLOR_SEARCH_NORMAL = Color.black;
 
    private static NativeLayer _native;
 
    private ConsolePane _console;
    private CloseableTabbedPane _mainPane;
    private JXCollapsiblePane  _sidePane;
-   private JXMultiSplitPane _mainSplitPane;
+   private JSplitPane _mainSplitPane;
 
    private JTabbedPane _auxPane;
    private JPanel _unitPane;
@@ -302,7 +295,7 @@ public class SikuliIDE extends JFrame {
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
       _toolMenu.add( createMenuItem(_I("menuToolExtensions"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, scMask),
+               null,
                new ToolAction(ToolAction.EXTENSIONS)));
 
    }
@@ -490,8 +483,10 @@ public class SikuliIDE extends JFrame {
       _searchField = new JXSearchField("Find");
       _searchField.setUseNativeSearchFieldIfPossible(true);
       //_searchField.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+      _searchField.setMinimumSize(new Dimension(220,30));
       _searchField.setPreferredSize(new Dimension(220,30));
       _searchField.setMaximumSize(new Dimension(380,30));
+      _searchField.setMargin(new Insets(0, 3, 0, 3));
 
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
@@ -501,7 +496,9 @@ public class SikuliIDE extends JFrame {
       });
       _searchField.setFindAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
-            _searchField.selectAll();
+            //FIXME: On Linux the found selection disappears somehow
+            if(!Utils.isLinux())  //HACK
+               _searchField.selectAll();
             boolean ret = _findHelper.findNext(_searchField.getText());
             _findHelper.setFailed(!ret);
          }
@@ -510,7 +507,9 @@ public class SikuliIDE extends JFrame {
          public void keyReleased(java.awt.event.KeyEvent ke) {
             boolean ret;
             if(ke.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
-               _searchField.selectAll();
+               //FIXME: On Linux the found selection disappears somehow
+               if(!Utils.isLinux())  //HACK
+                  _searchField.selectAll();
                ret = _findHelper.findNext(_searchField.getText());
             }
             else
@@ -562,6 +561,9 @@ public class SikuliIDE extends JFrame {
       _auxPane = new JTabbedPane();
       _console = new ConsolePane();
       _auxPane.addTab(_I("paneMessage"), _console);
+      if(Utils.isWindows() || Utils.isLinux())
+         _auxPane.setBorder(BorderFactory.createEmptyBorder(5,8,5,8)); 
+      _auxPane.setMinimumSize(new Dimension(0, 100));
    }
 
    private void initUnitPane(){
@@ -666,17 +668,15 @@ public class SikuliIDE extends JFrame {
       initAuxPane();
       initSidePane();
 
-      _mainSplitPane = new JXMultiSplitPane();
-      //_mainSplitPane.setDividerPainter(new BevelDividerPainter(_mainSplitPane));
-      _mainSplitPane.getMultiSplitLayout().setModel( 
-            MultiSplitLayout.parseModel(MAIN_LAYOUT_DEF));
 
       JPanel codeAndUnitPane = new JPanel(new BorderLayout(10,10));
       codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
       codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
-      _mainSplitPane.add(codeAndUnitPane, "code");
-      _mainSplitPane.add(_auxPane, "msg");
+      _mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+            codeAndUnitPane, _auxPane);
+      _mainSplitPane.setResizeWeight(1.0);
+      _mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 
       JPanel editPane = new JPanel(new BorderLayout(0,0));
       editPane.add(createCommandPane(), BorderLayout.WEST);
@@ -706,6 +706,7 @@ public class SikuliIDE extends JFrame {
       _inited = true;
       setVisible(true);
       autoCheckUpdate();
+      getCurrentCodePane().requestFocus();
    }
 
    private void initTooltip(){
@@ -1185,6 +1186,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void doFind(ActionEvent ae){
+         _searchField.selectAll();
          _searchField.requestFocus();
       }
 
@@ -1227,10 +1229,12 @@ public class SikuliIDE extends JFrame {
 
       public void setFailed(boolean failed){
          Debug.log(7, "search failed: " + failed);
-         if(failed)
-            _searchField.setBackground(COLOR_SEARCH_FAILED);
+         _searchField.setBackground(Color.white);
+         if(failed){
+            _searchField.setForeground(COLOR_SEARCH_FAILED);
+         }
          else
-            _searchField.setBackground(COLOR_SEARCH_NORMAL);
+            _searchField.setForeground(COLOR_SEARCH_NORMAL);
       }
 
    }
@@ -1619,17 +1623,17 @@ public class SikuliIDE extends JFrame {
                         Debug.info(_I("msgExit", matcher.group(1)));
                      }
                      else{
-                        Debug.info(_I("msgStopped"));
+                        Debug.error(_I("msgStopped"));
                         int srcLine = findErrorSource(e, 
                                           tmpFile.getAbsolutePath());
                         if(srcLine != -1){
-                           Debug.info( _I("msgErrorLine", srcLine) );
+                           Debug.error( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
                            try{ codePane.jumpTo(srcLine); }
                            catch(BadLocationException be){}
                            codePane.requestFocus();
                         }
-                        Debug.info( _I("msgErrorMsg", e.toString()) );
+                        Debug.error( _I("msgErrorMsg", e.toString()) );
                      }
                   } 
                   finally{
