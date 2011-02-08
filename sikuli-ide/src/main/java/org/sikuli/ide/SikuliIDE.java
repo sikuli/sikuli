@@ -295,7 +295,7 @@ public class SikuliIDE extends JFrame {
       int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
       _toolMenu.add( createMenuItem(_I("menuToolExtensions"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, scMask),
+               null,
                new ToolAction(ToolAction.EXTENSIONS)));
 
    }

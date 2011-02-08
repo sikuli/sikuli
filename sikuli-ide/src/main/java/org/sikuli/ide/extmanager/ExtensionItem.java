@@ -5,6 +5,7 @@ package org.sikuli.ide.extmanager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -28,7 +29,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.MouseInputListener;
 
-import org.sikuli.ide.SikuliIDE;
+import org.sikuli.ide.I18N;
 import org.sikuli.script.Debug;
 import org.sikuli.script.ExtensionManager;
 
@@ -100,21 +101,22 @@ class ExtensionItem extends JPanel implements ActionListener {
       
       add(_content);
       
-      JButton btn = new JButton("Install");
+      JButton btn = new JButton(I18N._I("extBtnInstall"));
       btn.addActionListener(this);
       btn.setActionCommand("Install"); 
       _installCtrl = btn;
       _installCtrl.setFocusable(false);
       
-      btn = new JButton("More info");
+      btn = new JButton(I18N._I("extBtnInfo"));
       btn.addActionListener(this);
       btn.setActionCommand("Info");
       _infoCtrl = btn;
       _infoCtrl.setFocusable(false);
 
       
+      //setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
       _controls = new JPanel();
-      _controls.setLayout(new BorderLayout());
+      _controls.setLayout(new BorderLayout(5, 5));
 
       _controls.add(_infoCtrl,BorderLayout.LINE_START);
       _controls.add(_installCtrl,BorderLayout.LINE_END);
@@ -191,13 +193,13 @@ class ExtensionItem extends JPanel implements ActionListener {
       
       if (status == INSTALLED){
          _installCtrl.setEnabled(false);
-         _installCtrl.setText("Installed");
+         _installCtrl.setText(I18N._I("extMsgInstalled"));
       }else if (status == NOT_INSTALLED){
          _installCtrl.setEnabled(true);
-         _installCtrl.setText("Install " + _version);
+         _installCtrl.setText(I18N._I("extBtnInstallVer",_version));
       }else if (status == OUT_OF_DATE){
          _installCtrl.setEnabled(true);
-         _installCtrl.setText("Update to " + _version);         
+         _installCtrl.setText(I18N._I("extBtnUpdateVer",_version));
       }
       
       _htmlLabel.setText(renderHTML());
