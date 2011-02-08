@@ -1211,11 +1211,21 @@ These are the possibilities to handle "not found" situations:
 
 .. _FindFailedPrompt:
 
-*comments on using PROMPT*: 
+**Comment on using PROMPT**: 
 
-*under construction*
+This feature is helpful in following situations:
 
-**Examples**: 3 solutions for a case, where you want to decide how to proceed in a
+* you are developing something, that needs an application with it's windows to be in place, but this workflow you want to script later. If it comes to that point, you get the prompt, arrange the app and click *Retry*. Your workflow should continue.
+* you have a workflow, where the user might do some corrective actions, if you get a FindFailed
+* guess you find more ;-)
+
+In case of a FindFailed, you get the following prompt:
+
+.. image:: findfailed-prompt.png
+
+Clicking *Retry* would again try to find the image. *Skip* would continue the script and *Abort* would end the script.
+
+**Examples**: 4 solutions for a case, where you want to decide how to proceed in a
 workflow based on the fact that a specific image can be found. (pass is the python
 statement, that does nothing, but maintains indentation to form the blocks)::
 
