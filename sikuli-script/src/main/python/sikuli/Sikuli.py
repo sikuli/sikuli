@@ -53,15 +53,15 @@ def load(jar):
 
    if _load(jar):
       return True
-   path = ExtensionManager.getInstance().getUserExtPath()
-   jarInExtPath = path + java.io.File.separator + jar
-   if _load(jarInExtPath):
-      return True
    path = getBundlePath()
    if path:
       jarInBundle = path + java.io.File.separator + jar
       if _load(jarInBundle):
          return True
+   path = ExtensionManager.getInstance().getUserExtPath()
+   jarInExtPath = path + java.io.File.separator + jar
+   if _load(jarInExtPath):
+      return True
    return False
 
 def addImagePath(path):
