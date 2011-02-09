@@ -111,12 +111,14 @@ While developing your extensions, you can put the JAR file in Sikuli's
 extension directory or in the same .sikuli folder as your test script.
 The JAR file should not have a version number in its file name, 
 e.g. ``extension-name.jar``.
-Because Sikuli searches extensions the .sikuli folder first, and then
-the Sikuli extension folder, it is usually a good idea to put your
-developing extensions in the .sikuli folder.
+Because Sikuli starts to search extensions in the .sikuli folder of the running script and then
+in the Sikuli extensions folder, it is usually a good idea to put your
+developing extensions in the .sikuli folder of your test script.
 
-The option that always works is to use the :py:func:`<load>` function with an absolute path to your ``extension-name.jar``, which is the first in the row. 
-If load() succeed, it returns ``True`` and puts 
+Another option is to use the :py:func:`load() <load>` function with 
+an absolute path to your ``extension-name.jar``. If this fails, Sikuli
+goes on searching in the current .sikuli folder and then in the Sikuli extensions folder. 
+If load() succeeds, it returns ``True`` and puts 
 ``absolute-path-to-your-extension-name.jar`` into ``sys.path``, 
 so you can use ``import extension-name`` afterwards.
 
