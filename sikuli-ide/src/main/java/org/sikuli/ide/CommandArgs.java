@@ -1,6 +1,7 @@
 package org.sikuli.ide;
 
 import org.apache.commons.cli.*;
+import org.sikuli.script.Debug;
 
 public class CommandArgs {
    Options _options;
@@ -16,7 +17,7 @@ public class CommandArgs {
          cmd = parser.parse( _options, args, false );
       }
       catch( ParseException exp ) {
-         System.out.println( exp.getMessage() );
+         Debug.error( exp.getMessage() );
       }
       return cmd;
    }
