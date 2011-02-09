@@ -1,5 +1,5 @@
-General Information
-===================
+General Information About Sikuli Extensions
+===========================================
 
 .. _sikuliextensions:
 
@@ -10,39 +10,42 @@ Extensions allow to implement new Sikuli features by adding packages to your cur
 How to Download and use an Extension
 ------------------------------------
 
-The download of an extension is supported by the IDE through the menu **Tools** -> **Extensions**. You get a popup, that lists the available and already installed extensions and allows to download new packages or updates for installed ones.
+The download of an extension is supported by the IDE through the menu 
+:menuselection:`Tools -> Extensions`.
+You get a popup, that lists the available and already installed extensions and allows to download new packages or updates for installed ones.
 
 This popup shows a new **package not yet installed**:
 
 .. image:: extension-new.png
 
-If you need more information about the features of the extension, just click **More Info** - this will open the related documentation from the web in a browser window.
+If you need more information about the features of the extension, just click :guilabel:`More Info` - this will open the related documentation from the web in a browser window.
 
-If you want to install the extension, just click the **Install ...** button. The package will be downloaded and added to your extensions repository (see **Info** for details).
+If you want to install the extension, just click the :guilabel:`Install...` button. The package will be downloaded and added to your extensions repository. 
 
 This popup shows an **installed package**:
 
 .. image:: extension-installed.png
 
-If a new version would be available at that time, the **Install ...** button would be active again, showing the new version number. Now you could click and download the new version.
+If a new version would be available at that time, the :guilabel:`Install...` button would be active again, showing the new version number. Now you could click and download the new version.
 
 **How to Use an Extension**
 
 To use the features of an installed extension in one of your scripts, just say ``from extension-name import *``. For an usage example read :ref:`Sikuli Guide <sikuliguide>`.
 
-For information about features, usage and API use menu **Tools** -> **Extensions** -> button **More Info** in the IDE.
+For information about features, usage and API use menu :menuselection:`Tools -> Extensions -> More Info` in the IDE.
 
 
 Technical Details
 -----------------
 
-Extensions are Java jar-files containing some Java classes (usually the core functions) and at least one Python module, that defines the API to be used in a script.
+Extensions are Java JAR files containing some Java classes (usually the core functions) and/or Python modules, which define the API to be used in a script.
 
-Sikuli maintains a local extensions directory, where downloaded extensions are stored together with a hidden list of the installed extensions (Windows: , Mac: ``~/Library/Application Support/Sikuli/extensions``, Linux: ).
+Sikuli maintains a local extensions directory, where downloaded extensions are stored together with a hidden list of the installed extensions (Windows: ``%APPDATA%\Sikuli\extensions``, Mac: ``~/Library/Application Support/Sikuli/extensions``, Linux: ``~/.sikuli/extensions``).
 
-At time of usage ( ``from extension-name import *`` ) the Sikuli Import Manager makes the jar-file available in the current context using the :py:func:`load(path-to-jar-file) <load>`.
+Once an extension is imported using ``import extension-name``,
+Sikuli automatically searches and loads the JAR file of that extension
+into the current context with :py:func:`load(path-to-jar-file) <load>`.
 
-The information about features, usage and API of an extension is available in this documentation (accessible via menu **Tools** -> **Extensions** -> button **More Info** in the IDE).
 
 How to develop an extension
 ---------------------------
@@ -50,8 +53,8 @@ How to develop an extension
 The **source structure** of an extension named ``extension-name`` looks like this: ::
 
 	Java
-	- org
-	-- sikuli
+	- org/com
+	-- your-organization-or-company
 	--- extension-name
 	---- yourClass1.java
 	---- yourClass2.java
@@ -61,10 +64,10 @@ The **source structure** of an extension named ``extension-name`` looks like thi
 	-- __init__.py
 	-- extension-name.py
 	
-The **final jar-structure** (filename ``extension-name-X.Y`` where X.Y is the version string) looks like this: ::
+The **final structure of a JAR** (filename ``extension-name-X.Y`` where X.Y is the version string) looks like this: ::
 	
-	org
-	- sikuli
+	org/com
+	- your-organization-or-company
 	-- extension-name
 	--- yourClass1.class
 	--- yourClass2.class
@@ -91,16 +94,34 @@ The file ``extension-name.py`` contains the classes and methods, that represent 
 
 As an example you may take the source of the extension Sikuli Guide.
 
+Name your extensions properly
+-----------------------------
+
+Sikuli extensions can be Python/Jython modules or Java classes.
+
+For Java classes, following the reverse URL convention of Java is a good idea (for example, org.foo.your-extension). However, **DO NOT use Java's convention for Python/Jython modules**. You need to come up with a unique extension name that does not conflict with existing Python modules and other Sikuli extensions.
+
+Please read `Naming Python Modules and Packages <http://jythonpodcast.hostjava.net/jythonbook/en/1.0/ModulesPackages.html#naming-python-modules-and-packages>`_ to learn the details for naming a Python module.
+
+
 How to test your extension
 --------------------------
 
-The final jar-file (during developement the filename has to be ``extension-name.jar`` without a version string) can be placed in the extensions directory, if it is a new one, with a name that is currently not present in this folder. Then saying ``import extension-name`` is sufficient.
+While developing your extensions, you can put the JAR file in Sikuli's 
+extension directory or in the same .sikuli folder as your test script.
+The JAR file should not have a version number in its file name, 
+e.g. ``extension-name.jar``.
+Because Sikuli searches extensions the .sikuli folder first, and then
+the Sikuli extension folder, it is usually a good idea to put your
+developing extensions in the .sikuli folder.
 
-If it is already there in the extensions directory, because you are developing a new version, you might put it in the same .sikuli folder as your test script. Then again saying ``import extension-name`` is sufficient, because of the internal search precedence.
-
-The option that always works is to use the :py:func:`<load>` function with an absolute path to your ``extension-name.jar``, which is the first in the row. The load() function returns ``True``, if successful - otherwise False and puts ``absolute-path-to-your-extension-name.jar`` into ``sys.path``, so you can do your ``import extension-name`` afterwards.
+The option that always works is to use the :py:func:`<load>` function with an absolute path to your ``extension-name.jar``, which is the first in the row. 
+If load() succeed, it returns ``True`` and puts 
+``absolute-path-to-your-extension-name.jar`` into ``sys.path``, 
+so you can use ``import extension-name`` afterwards.
 
 How to contribute your extension
 --------------------------------
 
-Currently you have to contact the developers and agree on how to proceed.
+Currently you have to contact the developers of Sikuli 
+and agree on how to proceed.
