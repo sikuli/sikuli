@@ -124,4 +124,5 @@ Great 3rd-Party Articles
 ------------------------
 
 * `How-To: Sikuli and Robot Framework Integration <http://blog.mykhailo.com/2011/02/how-to-sikuli-and-robot-framework.html>`_.
+* `Automating Flash, AJAX, Popups and more using Ruby, Watir and Sikuli <http://www.software-testing.com.au/blog/2010/08/16/automating-flash-ajax-popups-and-more-using-ruby-watir-and-sikuli/>`_.
 

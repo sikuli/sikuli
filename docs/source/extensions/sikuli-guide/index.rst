@@ -1,7 +1,9 @@
 Sikuli Guide
 ============
 
-(Coming Soon in Sikuli X 1.0-rc2)
+.. _sikuliguide:
+
+.. versionadded:: X1.0-rc2
 
 Sikuli Guide is an extension to Sikuli that provides a revolutionary way to
 create guided tours or tutorials for GUI applications. The revolutionary aspect
@@ -64,7 +66,7 @@ Adding Multiple Annotations
 ---------------------------
 
 It is possible to add text or other annotations to multiple visual elements before
-calling ``show()`` in order to show them on the screen at the same time.
+calling :py:func:`show(secs) <guide.show>` in order to show them on the screen at the same time.
 
 .. sikulicode::
 
@@ -75,7 +77,7 @@ calling ``show()`` in order to show them on the screen at the same time.
 	tooltip("index.png","Index")
 	show(5)
 
-The script above uses the function :py:func:`addTooltip` to add tooltips to
+The script above uses the function :py:func:`tooltip(text) <guide.tooltip>` to add tooltips to
 three links in addition to the text annotation. The result of running this
 script is shown below: 
 
@@ -130,10 +132,30 @@ The figure below shows what happens after Line 3:
 
 .. image:: step1.png
 
-After users click on the *Next* button, the tour moves to the next part. The
+After users click on the **Next** button, the tour moves to the next part. The
 screen will look like below:
 
 .. image:: step2.png
+
+Making a Region clickable
+-------------------------
+
+You might use the feature :py:func:`clickable(PSRM) <guide.clickable>`, to make a region sensitive for clicks. 
+
+.. sikulicode::
+
+	from guide import *
+	logo = find("sikuli-logo.png")
+	text(logo, "To proceed click this red ...")
+	clickable(logo)
+	index = logo.above().right().find("index.png")
+	text(index, "... or click this red")
+	clickable(index)
+	show()
+	
+The script waits until the user clicks one of the two highlighted areas.
+
+.. image:: annotation-clickable.png
 
 .. py:module:: guide
 
@@ -151,14 +173,14 @@ Static Annotations
 
 .. py:function:: rectangle(PSRM)
 
-	Add a rectangular overlay in red on the specified target.
+	Add a rectangular overlay in red on the specified target's region.
 	
 	:param PSRM: a pattern, string, region or match 
 
 
 .. py:function:: circle(PSRM)
 
-	Add a red circle around the specified target.
+	Add a red circle around the specified target's region.
 	
 	:param PSRM: a pattern, string, region or match 
 
@@ -166,31 +188,31 @@ Static Annotations
 
 .. py:function:: text(PSRM, text)
 
-	Add some text (white large letters on dark grey background) left justified below the specified target, which is additionally highlighted.
+	Add some text (white large letters on dark grey background) left justified below the specified target's region, which is additionally highlighted.
 
 	:param PSRM: a pattern, string, region or match 
 	:param text: a string as text to display
 
 .. py:function:: tooltip(PSRM, text)
 
-	Add a tooltip (small text in a light yellow box) left justified below the specified target
+	Add a tooltip (small text in a light yellow box) left justified below the specified target's region.
 
 	:param PSRM: a pattern, string, region or match 
 	:param text: a string as text to display
 
 
-Interctive Elements
--------------------
+Interactive Elements
+--------------------
 
 .. py:function:: dialog(text)
 
-      Add a dialog box displaying the given text
+      Add a dialog box displaying the given text in the middle of the screen above all othe windows.
 
       :param text: a string as text to display
 
 .. py:function:: clickable(PSRM)
 
-      Add a clickable element corresponding to the specified target. 
+      Add a clickable element corresponding to the specified target's region. 
 
       :param PSRM: a pattern, string, region or match
 
@@ -201,8 +223,8 @@ Control
 .. py:function:: show([seconds])
 
 	Show static and interactive components added so far for the specified amount of time. 
-        The default duration is 3 seconds. If an interactive element such as a clicable element or 
-        a dialog box is previously added, it waits until the user interacts with one of the element. 
+        The default duration is 3 seconds. If interactive elements (either one or more clicable elements or 
+        a dialog box) were previously added, it waits until the user interacts with one of these elements. 
 
 	:param seconds: a decimal number as display duration in seconds
 
