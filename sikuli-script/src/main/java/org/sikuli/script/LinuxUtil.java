@@ -9,7 +9,7 @@ public class LinuxUtil implements OSUtil {
    public int switchApp(String appName, int winNum){
       try{
          String cmd[] = {"wmctrl", "-a", appName};
-         System.out.println("switchApp: " + appName);
+         Debug.history("switchApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
          return p.exitValue();
@@ -25,7 +25,7 @@ public class LinuxUtil implements OSUtil {
 
    public int openApp(String appName){
       try{
-         System.out.println("openApp: " + appName);
+         Debug.history("openApp: " + appName);
          String cmd[] = {"sh", "-c", appName + " &"};
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
@@ -40,7 +40,7 @@ public class LinuxUtil implements OSUtil {
    public int closeApp(String appName){
       try{
          String cmd[] = {"killall", appName};
-         System.out.println("closeApp: " + appName);
+         Debug.history("closeApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
          return p.exitValue();

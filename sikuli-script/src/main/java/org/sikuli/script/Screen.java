@@ -32,7 +32,7 @@ public class Screen extends Region implements Observer {
          }
       }
       catch(AWTException e){
-         System.err.println("Can't initiate Java Robot: " + e);
+         Debug.error("Can't initiate Java Robot: " + e);
       }
    }
 

@@ -50,6 +50,11 @@ FILE(MAKE_DIRECTORY ${JAR_DIR})
 ## Sikuli IDE
 
 SET(MAIN_CLASS org.sikuli.ide.SikuliIDE)
+SET(RUN_USER_ARGS -Dsikuli.console=true -Dfile.encoding=UTF-8 
+             -Xms64m -Xmx512m 
+   CACHE STRING 
+   "The arguments for running Sikuli IDE with 'make run-user'"
+)
 SET(RUN_ARGS -Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
@@ -95,6 +100,12 @@ add_custom_target( ${JAR_FILE}.resources
 
 add_custom_target( ${JAR_FILE}.prepare
    COMMENT "Preparing ${JAR_FILE}"
+)
+
+add_custom_target( run-user
+   COMMAND ${JAVA_RUNTIME} ${RUN_USER_ARGS} 
+                        -classpath "${CLASSPATH}${SEP}${JAR_DIR}"
+                        ${MAIN_CLASS} ${ARGS}
 )
 
 add_custom_target( run

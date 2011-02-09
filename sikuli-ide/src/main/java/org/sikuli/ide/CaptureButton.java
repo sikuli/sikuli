@@ -74,7 +74,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
    public void captureCompleted(String imgFullPath){
       _isCapturing = false;
       if(imgFullPath == null) return;
-      Debug.log("captureCompleted: " + imgFullPath);
+      Debug.log(2, "captureCompleted: " + imgFullPath);
       Element src = getSrcElement();
       if( src == null ){
          if(_codePane == null)
@@ -91,7 +91,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
       try{
          StyledDocument doc = (StyledDocument)src.getDocument();
          String text = doc.getText(start, end-start);
-         Debug.log(text);
+         Debug.log(3, text);
          for(int i=start;i<end;i++){
             Element elm = doc.getCharacterElement(i);
             if(elm.getName().equals(StyleConstants.ComponentElementName)){
@@ -195,7 +195,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
    }
 
    public void actionPerformed(ActionEvent e) {
-      Debug.log("capture!");
+      Debug.log(2, "capture!");
       captureWithAutoDelay();
    }
 }

@@ -26,7 +26,7 @@ public class Finder implements Iterator<Match>{
    static {
       try{
          NativeLoader.loadLibrary("VisionProxy");
-         System.out.println("Sikuli vision engine loaded.");
+         Debug.info("Sikuli vision engine loaded.");
       }
       catch(IOException e){
          e.printStackTrace();
