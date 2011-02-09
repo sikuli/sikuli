@@ -21,7 +21,7 @@ class AnnotationRectangle extends Annotation {
 	public AnnotationRectangle(Rectangle rectangle){
 		super();
 		this.rectangle = rectangle;
-		this.color = Color.green;
+		this.color = Color.red;
 		this.width = 3.0F;
 	}
 	

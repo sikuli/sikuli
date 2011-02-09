@@ -1,5 +1,6 @@
 package org.sikuli.guide;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -8,6 +9,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JWindow;
 
 import org.sikuli.script.Env;
+import org.sikuli.script.TransparentWindow;
 
 
 
@@ -17,7 +19,7 @@ import org.sikuli.script.Env;
 // is actually cliable, users may click on the edge of the region and dismiss the window
 // errorneously. This needs to be fixed.
 
-public class ClickTarget extends JWindow implements MouseListener {
+public class ClickTarget extends TransparentWindow implements MouseListener {
    
    // object to notify when this target is clicked
    Object owner;
@@ -54,10 +56,15 @@ public class ClickTarget extends JWindow implements MouseListener {
       
       // add a little shade otherwise the window can't be clicked
       Color transparentColor = new Color(1F,0F,0F,0.1F);
-      setBackground(transparentColor);
+      //setBackground(transparentColor);
+      
+      Container panel = this.getContentPane();
+      panel.setBackground(Color.red);
+      setBackground(Color.red);
+      setOpacity(0.1f);
 
      // toBack();
-   
+      setFocusableWindowState(false);
       addMouseListener(this);
    }
    

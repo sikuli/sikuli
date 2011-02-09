@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -30,14 +31,29 @@ import org.sikuli.script.TransparentWindow;
 
 /** TODO:
 
+- Google Doc Help
+   - addBookmark(orientation)
+   - addCallout()
+   - dialog with previous/next/dismiss
+        - move PSRLM to the java layer so it can be stored in the history stack
+   - dialog with title and arbitrary html content
+   - the html content can be specified as an external http document, so the content
+        can be modified without changing the script
+   - addBracket()
+   - find region with multiple patterns
+   - find container relative to an invariant pattern, for instance, the box container above the ok button
+
 - allow users to specify alignment properties explicitly
 - dimming highlight effect
 - rename to SikuliGuide
 - (done) make add[X] uniform. The first argument is always a location.
 
+
 - Clickable targets
    - allow other kinds of clicks (i.e., double-click, right-click)
+   - make sure it works on Windows
    - (done) allow multiple targets
+   
 
 - Dialog
    - auto-advance if used with clickable targets
@@ -53,6 +69,8 @@ import org.sikuli.script.TransparentWindow;
 - automatically check whether ui changes have become stable enough to run the next step
 
 - error handling
+   - ignore the pattern not found on the screen
+   - re-find the pattern on the screen to update its position
 
 - ability to update the positions of the annotations when the screen content changes (e.g., scrolled)
 
@@ -100,7 +118,8 @@ public class ScreenAnnotator extends TransparentWindow {
          e1.printStackTrace();
       }
 
-
+      
+      
       _region = region;      
       Rectangle rect = _region.getRect();
       content.setPreferredSize(rect.getSize());
@@ -111,27 +130,34 @@ public class ScreenAnnotator extends TransparentWindow {
 
       Color transparentColor = new Color(0F,0F,0F,0.0F);
       setBackground(transparentColor);
+      content.setBackground(transparentColor);
 
+
+      if(Env.getOS() == OS.WINDOWS){
+         Env.getOSUtil().setWindowOpaque(this, false);
+      }
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       ((JPanel)getContentPane()).setDoubleBuffered(true);
 
       setVisible(false);
       setAlwaysOnTop(true);
-
+      setFocusableWindowState(false);
    }
 
 
    public void paint(Graphics g){
 
+//    // clear the screen
       Graphics2D g2d = (Graphics2D)g;
 
-      // clear the screen
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-      g2d.fillRect(0,0,getWidth(),getHeight());	
-
-
-
+      //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+      //g2d.fillRect(0,0,getWidth(),getHeight());  
+      
+      super.paint(g);
+      
+      //content.paint(g2d);
+      
       for (Annotation an : _annotations){
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
@@ -140,11 +166,13 @@ public class ScreenAnnotator extends TransparentWindow {
       }
 
 
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-            RenderingHints.VALUE_ANTIALIAS_ON);
+//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+//      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+//            RenderingHints.VALUE_ANTIALIAS_ON);
 
-      super.paint(g);
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
+      //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
+     
    }
 
    public void clear(){
@@ -173,10 +201,10 @@ public class ScreenAnnotator extends TransparentWindow {
 
    // Draw an oval containing the given region
    public void addCircle(Region region){
-      //Location o = region.getTopLeft();
       Location o = region.getCenter();
       Location p = region.getTopLeft();
       o.translate(-_region.x, -_region.y);
+      p.translate(-_region.x, -_region.y);
       
       p.translate((int)((p.x-o.x)*0.44), (int) ((p.y-o.y)*0.44));
       addAnnotation(new AnnotationOval(o.x,o.y,p.x,p.y));
@@ -186,6 +214,12 @@ public class ScreenAnnotator extends TransparentWindow {
       Rectangle rect = new Rectangle(region.getRect());
       rect.translate(-_region.x, -_region.y);
       addAnnotation(new AnnotationHighlight(rect));
+   }
+   
+   public void addRectangle(Region region){  
+      Rectangle rect = new Rectangle(region.getRect());
+      rect.translate(-_region.x, -_region.y);
+      addAnnotation(new AnnotationRectangle(rect));
    }
 
    ClickTarget _clickTarget = null;
@@ -226,6 +260,7 @@ public class ScreenAnnotator extends TransparentWindow {
       int y_origin = location.y;
 
       Screen screen = _region.getScreen();
+      //textbox.paint()
 
       Location screen_br = screen.getBottomRight();
       Location region_br = _region.getBottomRight();
@@ -464,6 +499,37 @@ public class ScreenAnnotator extends TransparentWindow {
    }
 
 
+   public static void testMute() throws FindFailed{
+      App a = new App("System Preferences");
+      a.focus();
+      
+      Region s = new Screen(0);
+
+      Debug.log("s=" + s);
+      s.getCenter();
+
+      s.setFindFailedResponse(FindFailedResponse.PROMPT);
+
+
+      Region r = null;
+
+      ScreenAnnotator sa = new ScreenAnnotator(s);
+      r = s.find("sound.png");
+      sa.addText(r.getBottomLeft().below(5),"Click this");
+      sa.addRectangle(r);
+      sa.addClickTarget(r, "");
+      //sa.addDialog("Next", "Hello");
+      sa.showNow();
+      
+      sa.addDialog("Next", "Another step");
+      sa.showNow();
+      
+      sa.addDialog("Next", "Yet another step");
+      sa.showNow();
+      
+      
+   }
+   
    public static void testFirefox() throws FindFailed{
       App a = new App("Firefox");
       a.focus();
@@ -484,122 +550,51 @@ public class ScreenAnnotator extends TransparentWindow {
 
       ScreenAnnotator sa = new ScreenAnnotator(s);
 
-      r = s.find("tools.png");
-      sa.addText(r.getBottomLeft().below(5),"Tools");
+      //r = s.find("tools.png");
+      //r = s.find("google.png");
+      //sa.addText(r.getBottomLeft().below(5),"Tools");
+      //sa.addClickTarget(r,"");
+      //sa.addCircle(r);
+      sa.addDialog("Next", "Hello");
+      sa.showNow();
+      
+      
+      //r = s.find("tools.png");
+      //sa.addText(r.getBottomLeft().below(5),"Tools");
+      //sa.addClickTarget(r,"");
+      sa.addDialog("Next", "Hello1");
       sa.showNow();
 
 
+      sa.addText(r.getBottomLeft().below(5),"Tools");     
+      sa.addDialog("Next", "Step 2");
+      sa.showNow();
+      
+      sa.addDialog("Next", "Step 3");
+      sa.showNow();
 
+      sa.addDialog("Next", "Step 4");
+      sa.showNow();
+
+      sa.addDialog("Next", "Step 5");
+      sa.showNow();
       // sa.showWaitForButtonClick("Continue", "Tools");
    }
 
+   
+   static public void testXP(){
+      ScreenAnnotator sa = new ScreenAnnotator();
+      sa.addDialog("Next"," Hello");
+      sa.showNow();
+   }
 
    public static void main(String[] args) throws AWTException, FindFailed {
       testFirefox();
-
-      //testICDLSimpleSearch();
-      
-      
-      //      
-      //
-      //      //		Screen screen = new Screen();
-      //      //
-      //      //		ScreenAnnotator sa = new ScreenAnnotator(screen);
-      //      //		
-      //      //		Screen s = new Screen();
-      //      //		Region r = null;
-      //      //		
-      //
-      //      //r = s.find(new Pattern("http://sikuli.org/images/puzzle.png"));
-      //      // = s.find(new Pattern("http://udn.com/2010MAIN/photonews/6048009-2482714_small.jpg"));
-      //
-      //      //r = s.find(new Pattern("puzzle.png"));
-      //      //		sh.addToolTip("Text recog", new Point(r.x,r.y+r.h+5));
-      //      //		sh.addHighlight(r);
-      //      //		sh.drawNow(3.0f);
-      //
-      //      //		sh.clear();
-      //
-      //
-      //      //Screen s = new UnionScreen();
-      //      //Screen s = new Screen(0);
-      //
-      //      App a = new App("Firefox");
-      //      a.focus();
-      //      
-      //      Region s = a.window();
-      //      s.getCenter();
-      //      
-      //      
-      //      
-      //      
-      //      Settings.ShowActions = true;
-      //     // s.setFindFailedResponse(FindFailedResponse.PROMPT);
-      //      //s.waitVanish("play.png",5);
-      //      //s.wait("tools.png",5);
-      //      
-      //      
-      //     // s.click("play.png",0);
-      //      
-      //      //s.click("tools.png",0);
-      //
-      //      Region r = null;
-      //
-      //      //ScreenAnnotator sa = new ScreenAnnotator(s);
-      //      ScreenAnnotator sa = new ScreenAnnotator();
-      //
-      //      s.setFindFailedResponse(FindFailedResponse.PROMPT);
-      ////      r = s.find("tools.png");
-      ////   
-      ////      sa.addHighlight(r);
-      ////      sa.showWaitForButtonClick("Tools", "Step 1");
-      ////      
-      //      r = s.find("play.png");
-      //      Debug.log("r:" + r);
-      //      sa.addHighlight(r);
-      //      sa.addToolTip("Run", new Point(r.x,r.y+r.h+5));
-      //
-      //      //sa.show(3.0f);
-      //      sa.showWaitForButtonClick("Continue", "Step 1");
-      //
-      //      //		r = s.find("Package Explorer");
-      //      //		sa.addHighlight(r);
-      //      //	
-      //      r = s.find("addjava.png");
-      //      sa.addHighlight(r);
-      //      Point x = new Point(r.x,r.y);
-      //      Point x1 = new Point(x);
-      //      x1.translate(0, r.h+5);
-      //
-      //      Point c =  r.getCenter();
-      //
-      //      sa.addText("Click this to create a Java class", x1);
-      //      sa.addArrow(x1,c);
-      //
-      ////      r = s.find("tools.png");
-      ////      sa.addHighlight(r);
-      //
-      //      //sa.show(3.0f);
-      //      sa.showWaitForButtonClick("Finish", "Step 2");
-      //      
-      //      //
-      //      //
-      //      //		
-      //      //		r = s.find("new.png");
-      //      //		sa.addHighlight(r);
-      //      //		sa.addToolTip("Create a new project", new Point(r.x,r.y+r.h+5));
-      //      //		//sa.addText("Click this to create <br>a new project", new Point(r.x,r.y+r.h+20));
-      //      //		
-      //      //		
-      //      //		sa.show(3.0f);
-      //
-
-
-
+      //testMute();
+      //testXP();
+      //testICDLSimpleSearch();   
    }
 
-
-   // send focus to the application right below the current mouse cusor
    public void focusBelow(){
       if(Env.getOS() == OS.MAC){
          // TODO: replace this hack with a more robust method
@@ -608,30 +603,27 @@ public class ScreenAnnotator extends TransparentWindow {
          // this hack works on the assumption that the caller has
          // the input focus but no interaction area at the current
          // mouse cursor position
-         robot.mousePress(InputEvent.BUTTON1_MASK);            
-         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         // This hack does not work well with applications that
+         // can receive mouse clicks without having the input focus
+         // (e.g., finder, system preferences)
+//         robot.mousePress(InputEvent.BUTTON1_MASK);            
+//         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         
+         // Another temporary hack to switch to the previous window on Mac
+         robot.keyPress(KeyEvent.VK_META);
+         robot.keyPress(KeyEvent.VK_TAB);
+         robot.keyRelease(KeyEvent.VK_META);
+         robot.keyRelease(KeyEvent.VK_TAB);
       }
-      
-      // TODO: Verify its correctness on Windows
-      // on Windows, it seems we don't have to do any additional thing
-      
 
    }
-
 
    @Override
    public void toFront(){
       if(Env.getOS() == OS.MAC){
          // this call is necessary to allow clicks to go through the window (ignoreMouse == true)
          Env.getOSUtil().bringWindowToFront(this, true);
-         //FIXME: windows?
-      }
-      /*
-      else if(Env.getOS() == OS.WINDOWS){
-         Win32Util.bringWindowToFront(this, true);
-      }
-      else
-       */
+      }     
       super.toFront();
    }
 

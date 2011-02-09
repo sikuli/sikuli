@@ -6,11 +6,11 @@ _sa = ScreenAnnotator(s);
 
 def rectangle(target):
 	r = s.getRegionFromPSRM(target)
-	_sa.addHighlight(r)
+	_sa.addRectangle(r)
 
 def text(target, text):
 	r = s.getRegionFromPSRM(target)
-	_sa.addHighlight(r)
+	#_sa.addRectangle(r)
 	_sa.addText(r.getBottomLeft().below(5), text)
 
 def clickable(target, name = ""):
