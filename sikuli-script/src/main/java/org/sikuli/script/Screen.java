@@ -200,12 +200,6 @@ public class Screen extends Region implements Observer {
    }
 
    boolean useFullscreen(){
-      if( Env.getOS() == OS.MAC || Env.getOS() == OS.WINDOWS )
-         return false;
-      if( Env.getOS() == OS.LINUX )
-         return false;
-      if( _curID == 0 )
-         return true;
       return false;
    }
 
