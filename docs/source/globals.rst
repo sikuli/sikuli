@@ -99,6 +99,7 @@ distributed as a zipped file::
 
 **Loading a jar-file containing Java/Python modules**
 	
+.. versionadded:: X1.0-rc2
 .. py:function:: load(jar-file)
 
 	Loads a jar-file and puts the absolute path to it into sys.path, so 
@@ -131,6 +132,13 @@ Controlling Sikuli Scripts and their Behavior
 
 .. py:class:: Settings
 
+.. versionadded:: X1.0-rc2
+.. py:attribute:: Settings.ActionLogs
+	Settings.InfoLogs
+	Settings.DebugLogs
+	
+	Either option might be switched on (True) or off (False), to show or hide the respective message type in the IDE console or on command line ([log], [info], [debug]).
+	
 .. py:attribute:: Settings.MinSimilarity
 
 	The default minimum similiarty of find operations.

@@ -81,7 +81,7 @@ public class ClickTarget extends TransparentWindow implements MouseListener {
 
       synchronized(owner){
          owner.notify();
-         ((ScreenAnnotator) owner).setLastClickedTarget(this);
+         ((SikuliGuide) owner).setLastClickedTarget(this);
       }
    }
 

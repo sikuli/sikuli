@@ -15,9 +15,11 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.sikuli.script.TransparentWindow;
@@ -60,13 +62,14 @@ public class SingleButtonMessageBox extends TransparentWindow {
 
       Container panel = this.getContentPane();
       panel.setBackground(Color.BLACK);
+      ((JPanel)panel).setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
       // this makes the dialogbox semi-transparent
       setOpacity(0.9f);
 
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-      String html = "<html><div style='color:white;font-size:15px;padding:3px;width:300px;'>" + message + "</div></html>";
+      String html = "<html><div style='color:white;font-size:15px;padding:5px;width:300px;'>" + message + "</div></html>";
       messageLabel = new JLabel(html);
 
       Box row1 = new Box(BoxLayout.X_AXIS);
