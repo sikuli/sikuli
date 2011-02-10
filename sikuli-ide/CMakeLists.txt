@@ -353,6 +353,7 @@ add_dependencies( ${JAR_FILE}.prepare
 )
 
 add_dependencies( ${JAR_FILE} ${JAR_FILE}.prepare )
+add_dependencies( run-user ${JAR_FILE})
 add_dependencies( run ${JAR_FILE})
 add_dependencies( app ${APP_FILE}) 
 
