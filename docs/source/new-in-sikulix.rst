@@ -21,9 +21,9 @@ In the documentation sections you might look for the above marker to identify ne
 * RC2: Extensions (jar-files containing complementary Sikuli features) can be downloaded from a repository managed by the Sikuli developers. As the first extension **Sikuli Guide** (an annotation tool - Windows and Mac only) is available. You may contribute your own extensions. 
 	(see: :ref:`Extensions <sikuliextensions>`).
 
-* RC2: sikuli-script.jar together with the native libraries can now be used really standalone (only a few standards have to be followed), so it is easier now to integrate Sikuli with other IDE's, frameworks or applications and run scripts from commandline. 
+* RC2: sikuli-script.jar together with the native libraries can now be used really standalone (only a few standards have to be followed), so it is easier now to integrate Sikuli with other IDE's, frameworks or applications and :ref:`run scripts from commandline <runsikuliscript>`. 
 
-* RC2: sikuli-script.jar on commandline now accepts a new option -i, that starts up the interactive Jython with the Sikuli environment already initialized (for tests on the fly from commandline without the IDE). 
+* RC2: sikuli-script.jar on commandline now accepts a :ref:`new option -i <sikuliscriptinteractive>`, that starts up the interactive Jython with the Sikuli environment already initialized (for tests on the fly from commandline without the IDE). 
 
 * RC2: :py:meth:`Env.getSikuliVersion` returns the Sikuli version string.
 
