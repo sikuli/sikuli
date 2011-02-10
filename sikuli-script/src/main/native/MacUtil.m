@@ -59,7 +59,7 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_MacUtil_bringWindowToFront
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
    NSWindow *win = GetWindowFromComponent(jwin, env);
-   NSLog(@"bringWindowToFront: %@", win); 
+   //NSLog(@"bringWindowToFront: %@", win); 
    [win setIgnoresMouseEvents:ignoreMouse];
    /*
    [win setBackgroundColor:[NSColor blackColor]];
