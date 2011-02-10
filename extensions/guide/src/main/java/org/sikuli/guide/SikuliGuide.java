@@ -29,63 +29,7 @@ import org.sikuli.script.Screen;
 import org.sikuli.script.SikuliRobot;
 import org.sikuli.script.TransparentWindow;
 
-/** TODO:
-
-- Google Doc Help
-   - addBookmark(orientation)
-   - addCallout()
-   - dialog with previous/next/dismiss
-        - move PSRLM to the java layer so it can be stored in the history stack
-   - dialog with title and arbitrary html content
-   - the html content can be specified as an external http document, so the content
-        can be modified without changing the script
-   - addBracket()
-   - find region with multiple patterns
-   - find container relative to an invariant pattern, for instance, the box container above the ok button
-
-- allow users to specify alignment properties explicitly
-- dimming highlight effect
-- rename to SikuliGuide
-- (done) make add[X] uniform. The first argument is always a location.
-
-
-- Clickable targets
-   - allow other kinds of clicks (i.e., double-click, right-click)
-   - make sure it works on Windows
-   - (done) allow multiple targets
-   
-
-- Dialog
-   - auto-advance if used with clickable targets
-   - add the ability to customize the position to dislay the dialog box
-   - always-on-top? this can be tricky because it will complicate Sikuli's screen capture.
-      - solution 1: prompt users to move the dialog box somewhere else when find fails
-      - solution 2: automatically position the dialog box outside of the application bounds
-
-- how should clickable targets and the dialog box co-exist?
-   - (done) option 1: all clickable targets don't hide until the box is dismissed. but the clicks are passed through
-
-
-- automatically check whether ui changes have become stable enough to run the next step
-
-- error handling
-   - ignore the pattern not found on the screen
-   - re-find the pattern on the screen to update its position
-
-- ability to update the positions of the annotations when the screen content changes (e.g., scrolled)
-
-- a way to specify pre-conditions, what images must be present to start
-
-- (done) get it to work with multi-screen
-- (done) inherit directly from TransparentWindow
-- (done) take a Region object to construct
-- (done) default to the primary screen (i.e., Screen(0))
-- (done) all annotation objects take global screen locations and internally convert to relative screen locations.
-- (done) automatically position text so that it won't run outside the screen boundary
-
- */
-
-public class ScreenAnnotator extends TransparentWindow {
+public class SikuliGuide extends TransparentWindow {
 
 
    static final float DEFAULT_SHOW_DURATION = 10.0f;
@@ -102,11 +46,11 @@ public class ScreenAnnotator extends TransparentWindow {
    
    ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
 
-   public ScreenAnnotator(){
+   public SikuliGuide(){
       init(new Screen());
    }
 
-   public ScreenAnnotator(Region region) {
+   public SikuliGuide(Region region) {
       init(region);
    }
 
@@ -148,31 +92,17 @@ public class ScreenAnnotator extends TransparentWindow {
 
    public void paint(Graphics g){
 
-//    // clear the screen
       Graphics2D g2d = (Graphics2D)g;
-
-      //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-      //g2d.fillRect(0,0,getWidth(),getHeight());  
-      
       super.paint(g);
       
-      //content.paint(g2d);
       
       for (Annotation an : _annotations){
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                RenderingHints.VALUE_ANTIALIAS_ON);			
          an.paintAnnotation(g2d);
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
       }
-
-
-//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-//      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-//            RenderingHints.VALUE_ANTIALIAS_ON);
-
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
-      //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-     
    }
 
    public void clear(){
@@ -260,7 +190,6 @@ public class ScreenAnnotator extends TransparentWindow {
       int y_origin = location.y;
 
       Screen screen = _region.getScreen();
-      //textbox.paint()
 
       Location screen_br = screen.getBottomRight();
       Location region_br = _region.getBottomRight();
@@ -350,7 +279,6 @@ public class ScreenAnnotator extends TransparentWindow {
             target.setVisible(true);
          }
 
-
          synchronized(this){
             try {
                wait();
@@ -367,17 +295,15 @@ public class ScreenAnnotator extends TransparentWindow {
          Debug.log("Last clicked:" + _lastClickedTarget.getName());
 
          closeNow();
-
-         
          focusBelow();
-
+  
          robot.mousePress(InputEvent.BUTTON1_MASK);            
          robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
       }else{
 
          // if there's no interactive element
-
+         // just close it after the timeout
          closeAfter(secs);
       }
    }
@@ -397,202 +323,6 @@ public class ScreenAnnotator extends TransparentWindow {
          e.printStackTrace();
       }
       closeNow();
-   }
-   
-   public static void testICDLSimpleSearch() throws FindFailed{
-      App a = new App("Firefox");
-      a.focus();
-      
-      Screen s = new Screen();
-      Region r;
-      ScreenAnnotator sa = new ScreenAnnotator();
-      
-      Location o = s.getTopLeft();
-      o.translate(10,10);
-      sa.addText(o,"1. All the different categories we see in the " +
-            "Simple Search are like the shelves in a regular library. Today, " +
-            "we are looking for Fairy Tales, so, we are going to look for " +
-            "them by clicking on the Fairy Tales button!");
-
-      
-      r = s.find(new Pattern("fairy.png").similar(0.95f));
-      sa.addClickTarget(r,"");
-      sa.addCircle(r);
-      sa.showNow();
-      
-      
-      sa.addText(o,"2. If we want to refine our search further, we can select other categories as well. " +
-      		"If we only want Fairy Tales that are for ages three to five, we can select " +
-      		"the Three to Five button as well. To remove a category from the search," +
-      		" click it again to unselect it.");
-      r = s.find(new Pattern("three2five.png").similar(0.95f));
-      sa.addClickTarget(r,"");
-      sa.addCircle(r);
-      sa.showNow();
-      
-      Robot robot=null;
-      try {
-         robot = new Robot();
-      } catch (AWTException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      robot.delay(2000);
-      //SikuliRobot robot = new SikuliRobot();
-      //rdelay(3);
-      
-      sa.addDialog("Next","3. Now we can see all the Fairy Tale books for age Three to Five in the library. " +
-      		"We can use the arrows in the results section to page through " +
-      		"all the different books. ");
-      r = s.find(new Pattern("right.png").similar(0.95f));
-      sa.addCircle(r);
-      r = s.find(new Pattern("left.png").similar(0.95f));
-      sa.addCircle(r);
-      sa.showNow();
-      
-      
-      sa.addDialog("Finish", "4. To start over with and do a new search, " +
-      		"we can click the Trash Can button. To learn how to read a book" +
-      		" go to the reading books section.");
-      r = s.find(new Pattern("trashcan.png").similar(0.95f));
-      sa.addCircle(r);
-      sa.showNow();
-   }
-
-   public static void testICDL() throws FindFailed{
-
-      App a = new App("Firefox");
-      a.focus();
-
-      Region s = a.window(0);
-      Region r = null;
-
-      ScreenAnnotator sa = new ScreenAnnotator(s);
-
-      sa.addDialog("Next","Welcome!");  
-      sa.showNow();
-
-      r = s.find("tiger.png");
-      //sa.addHighlight(r);
-
-      Location o = r.getTopLeft().above(100);
-
-      sa.addText(o,"Click on the Tiger or the Unicorn");
-
-
-//      sa.addDialog("Next","Click here");  
-
-      sa.addClickTarget(r,"Tiger");
-
-      sa.addClickTarget(s.find("unicorn.png"),"Unicorn");
-      sa.showNow();
-
-
-      sa.addText(o, "You just clicked on the " + sa.getLastClickedTarget().getName());
-
-      sa.showNow();
-
-      r = s.find("tiger.png");
-      sa.addClickTarget(r,"Tiger");
-      sa.showNow();
-      
-   }
-
-
-   public static void testMute() throws FindFailed{
-      App a = new App("System Preferences");
-      a.focus();
-      
-      Region s = new Screen(0);
-
-      Debug.log("s=" + s);
-      s.getCenter();
-
-      s.setFindFailedResponse(FindFailedResponse.PROMPT);
-
-
-      Region r = null;
-
-      ScreenAnnotator sa = new ScreenAnnotator(s);
-      r = s.find("sound.png");
-      sa.addText(r.getBottomLeft().below(5),"Click this");
-      sa.addRectangle(r);
-      sa.addClickTarget(r, "");
-      //sa.addDialog("Next", "Hello");
-      sa.showNow();
-      
-      sa.addDialog("Next", "Another step");
-      sa.showNow();
-      
-      sa.addDialog("Next", "Yet another step");
-      sa.showNow();
-      
-      
-   }
-   
-   public static void testFirefox() throws FindFailed{
-      App a = new App("Firefox");
-      a.focus();
-
-      Region s = a.window(0);
-
-      Debug.log("s=" + s);
-      s.getCenter();
-
-      s.setFindFailedResponse(FindFailedResponse.PROMPT);
-
-
-      //      Settings.ShowActions = true;
-
-      Region r = null;
-
-      //      s.click("tools.png",0);
-
-      ScreenAnnotator sa = new ScreenAnnotator(s);
-
-      //r = s.find("tools.png");
-      //r = s.find("google.png");
-      //sa.addText(r.getBottomLeft().below(5),"Tools");
-      //sa.addClickTarget(r,"");
-      //sa.addCircle(r);
-      sa.addDialog("Next", "Hello");
-      sa.showNow();
-      
-      
-      //r = s.find("tools.png");
-      //sa.addText(r.getBottomLeft().below(5),"Tools");
-      //sa.addClickTarget(r,"");
-      sa.addDialog("Next", "Hello1");
-      sa.showNow();
-
-
-      sa.addText(r.getBottomLeft().below(5),"Tools");     
-      sa.addDialog("Next", "Step 2");
-      sa.showNow();
-      
-      sa.addDialog("Next", "Step 3");
-      sa.showNow();
-
-      sa.addDialog("Next", "Step 4");
-      sa.showNow();
-
-      sa.addDialog("Next", "Step 5");
-      sa.showNow();
-      // sa.showWaitForButtonClick("Continue", "Tools");
-   }
-
-   
-   static public void testXP(){
-      ScreenAnnotator sa = new ScreenAnnotator();
-      sa.addDialog("Next"," Hello");
-      sa.showNow();
-   }
-
-   public static void main(String[] args) throws AWTException, FindFailed {
-      testFirefox();
-      //testMute();
-      //testXP();
-      //testICDLSimpleSearch();   
    }
 
    public void focusBelow(){
@@ -614,6 +344,9 @@ public class ScreenAnnotator extends TransparentWindow {
          robot.keyPress(KeyEvent.VK_TAB);
          robot.keyRelease(KeyEvent.VK_META);
          robot.keyRelease(KeyEvent.VK_TAB);
+         
+         // wait a little bit for the switch to complete
+         robot.delay(1000);
       }
 
    }
