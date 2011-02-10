@@ -320,8 +320,8 @@ add_custom_target( update-prop
 ## Packaging
 
 if(APPLE)
-   #   SET(CPACK_GENERATOR DragNDrop )
-      SET(CPACK_GENERATOR ZIP )
+      SET(CPACK_GENERATOR DragNDrop )
+      #   SET(CPACK_GENERATOR ZIP )
 else(APPLE)
    SET(CPACK_GENERATOR 
       ZIP
