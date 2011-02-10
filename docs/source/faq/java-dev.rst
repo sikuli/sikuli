@@ -15,10 +15,19 @@ Sikuli Script is packed in a JAR file - sikuli-script.jar. Depending on the oper
 
 2. Make the native libraries available
 --------------------------------------
-Sikuli Script uses OpenCV as its computer vision engine and, depending on the system environment, needs some other native libraries. These libraries are packaged with the distribution (except Linux). 
- * **Windows:** follow the instructions at `FAQ Using sikuli-script.jar standalone ... <https://answers.launchpad.net/sikuli/+faq/1436>`_.
- * **Mac OS X:** follow the instructions at `FAQ Using sikuli-script.jar standalone ... <https://answers.launchpad.net/sikuli/+faq/1436>`_.
- * **Linux:** no additional requirements, when Sikuli-IDE works as expected.
+
+.. versionadded:: X1.0-rc2
+
+If you follow these standards, you can use sikuli-script.jar out of the box:
+
+* **Windows:** install Sikuli X using the installer (the system %PATH% will be set as needed)
+	There is a new environment variable **%SIK_HOME%** that is expected to contain the directory, where Sikuli X is installed. You have to set it, if you have Sikuli X in a different place.
+		
+	**Be aware:** using the zipped version, you have to take care for %PATH% and %SIK_HOME% yourself.
+
+* **Mac:** have Sikuli-IDE.app in its standard place /Applications. There is generally no need to put it elsewhere.
+
+* **Linux:** you generally have to take care for the environment yourself.
 
 3. Include sikuli-script.jar in the CLASSPATH of your Java project.
 ------------------------------------------------------------------- 
