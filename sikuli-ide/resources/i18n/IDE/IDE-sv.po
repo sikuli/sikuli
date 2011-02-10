@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
 "PO-Revision-Date: 2010-12-07 13:01+0000\n"
 "Last-Translator: Henrik <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "Kör"
 #: menuView
 msgid "View"
 msgstr "Visa"
+
+#: menuTool
+msgid "Tools"
+msgstr ""
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Stäng flik"
 msgid "Quit"
 msgstr "Avsluta"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Klipp ut"
@@ -91,12 +103,30 @@ msgstr "Gör indrag"
 msgid "Un-Indent"
 msgstr "Ta bort indrag"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr ""
+
+#: menuFindFind
+msgid "Find..."
+msgstr ""
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr ""
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr ""
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Kör"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr ""
 
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "Enhetstest"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "Kommandolista"
+msgstr ""
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr ""
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "Ställ frågor och hitta svar"
 msgid "Report a Bug"
 msgstr "Rapportera en bugg"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr ""
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Sikulis hemsida"
@@ -150,14 +187,30 @@ msgstr "Sikuli {0} är tillgängligt!"
 msgid "No update is available."
 msgstr "Det finns inga nya uppdateringar."
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr ""
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Kommandolista"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
@@ -180,12 +233,30 @@ msgstr "Enhetstest"
 msgid "Run ({0})"
 msgstr "Kör ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Tryck {0} för att stoppa"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
+msgstr ""
+
+#: btnCaptureLabel
+msgid "Take screenshot"
 msgstr ""
 
 #: btnCaptureHint
@@ -195,6 +266,10 @@ msgstr "Ta en skärmbild ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Lägg till en bild från disk"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
@@ -454,3 +529,31 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandolista"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandolista"

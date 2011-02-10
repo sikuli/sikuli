@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-17 15:32+0000\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-02-09 19:20+0000\n"
 "Last-Translator: Luiz Carlos <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "Executar"
 #: menuView
 msgid "View"
 msgstr "Exibir"
+
+#: menuTool
+msgid "Tools"
+msgstr "Ferramentas"
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Fechar aba"
 msgid "Quit"
 msgstr "Sair"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr "Desfazer"
+
+#: menuEditRedo
+msgid "Redo"
+msgstr "Refazer"
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Recortar"
@@ -91,12 +103,30 @@ msgstr "Indentar"
 msgid "Un-Indent"
 msgstr "Desindentar"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "Localizar"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "Localizar..."
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "Localizar Próximo"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "Localizar Anterior"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Executar"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr "Executar em câmera lenta"
 
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "Teste de unidade"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "Lista de comandos"
+msgstr "Lista de Comandos"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr "Extensões"
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "Faça Perguntas & Encontre Respostas"
 msgid "Report a Bug"
 msgstr "Reportar uma falha"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "Participe do nosso projeto de tradução!"
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Página oficial do Sikuli"
@@ -150,14 +187,30 @@ msgstr "Sikuli {0} está disponível!"
 msgid "No update is available."
 msgstr "Não há atualizações disponíveis"
 
+#: cmdListSettings
+msgid "Settings"
+msgstr "Preferências"
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "Captura automática"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Lista de comandos"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr "Localizar"
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr "Ações do mouse"
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr "Ações do teclado"
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
@@ -180,21 +233,43 @@ msgstr "Teste de unidade"
 msgid "Run ({0})"
 msgstr "Executar ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr "Executar"
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr "Executar em câmera lenta"
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Aperte {0} para parar"
+
+#: btnRegionLabel
+msgid "Create Region"
+msgstr "Criar uma região"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "Criar uma região para restringir a comparação de tela"
 
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr "Capturar imagem da tela"
+
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "Capturar a tela"
+msgstr "Capturar imagem da tela ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Inserir uma imagem dos discos"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr "Inserir uma imagem "
 
 #: msgRunningSklError
 msgid ""
@@ -234,15 +309,15 @@ msgstr "Preferências"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "Capturar a tela"
+msgstr "Capturando a tela"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
-msgstr "Atalho para capturar a tela"
+msgstr "Tecla de atalho para captura:"
 
 #: prefCaptureDelay
 msgid "Delay before capture:"
-msgstr "Espera antes de capturar"
+msgstr "Espera, antes de capturar"
 
 #: prefSeconds
 msgid "seconds"
@@ -250,19 +325,19 @@ msgstr "segundos"
 
 #: prefAutoNaming
 msgid "Automatic Naming:"
-msgstr "Nomeação automática"
+msgstr "Nomear automaticamente:"
 
 #: prefTimestamp
 msgid "time stamp"
-msgstr "timestamp"
+msgstr "Em segundos"
 
 #: prefRecognizedText
 msgid "text in the image"
-msgstr "texto na imagem"
+msgstr "Em texto"
 
 #: prefManualInput
 msgid "off (manual input)"
-msgstr "desligado (entrada manual)"
+msgstr "Manualmente"
 
 #: prefTabGeneralSettings
 msgid "General Settings"
@@ -351,7 +426,7 @@ msgstr "Tem certeza que quer substituir este arquivo \"{0}\"?"
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
-msgstr ""
+msgstr "Nome da Imagem Capturada"
 
 #: msgEnterScreenshotFilename
 msgid "Enter the screen shot's file name:"
@@ -478,3 +553,34 @@ msgid ""
 msgstr ""
 "Começa a observar a tela ou a região, até o <i>tempo</i> informado. A "
 "observação ocorre em background se <i>background</i> está definido como True."
+
+#: extBtnInstall
+msgid "Install"
+msgstr "Instalar"
+
+#: extBtnInfo
+msgid "More Info"
+msgstr "Mais informações"
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr "Instalado"
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr "Instalar {0}"
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr "Atualizar para {0}"
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Lista de comandos"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Lista de comandos"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "Executar em câmera lenta"

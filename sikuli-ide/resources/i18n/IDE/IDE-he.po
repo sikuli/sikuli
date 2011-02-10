@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-13 23:03+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-02-08 20:04+0000\n"
+"Last-Translator: wizzra <Unknown>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -24,16 +24,20 @@ msgstr "קובץ"
 
 #: menuEdit
 msgid "Edit"
-msgstr "עריכה"
+msgstr "ערוך"
 
 #: menuRun
 msgctxt "menuRun"
 msgid "Run"
-msgstr "הרצה"
+msgstr "הרץ"
 
 #: menuView
 msgid "View"
-msgstr "הצגה"
+msgstr "הצג"
+
+#: menuTool
+msgid "Tools"
+msgstr "כלים"
 
 #: menuFileNew
 msgid "New"
@@ -45,7 +49,7 @@ msgstr "פתח..."
 
 #: menuFileSave
 msgid "Save"
-msgstr "שמירה"
+msgstr "שמור"
 
 #: menuFileSaveAs
 msgid "Save as..."
@@ -66,6 +70,14 @@ msgstr "סגור לשונית"
 #: menuFileQuit
 msgid "Quit"
 msgstr "יציאה"
+
+#: menuEditUndo
+msgid "Undo"
+msgstr "בטל שינוי"
+
+#: menuEditRedo
+msgid "Redo"
+msgstr "בצע מחדש"
 
 #: menuEditCut
 msgid "Cut"
@@ -91,18 +103,36 @@ msgstr "הרחק"
 msgid "Un-Indent"
 msgstr "החזר"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "מצא"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "מצא..."
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "מצא את הבא"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "מצא את הקודם"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "הרץ"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr "הרץ בהילוך איטי"
 
 #: menuRunStop
 msgid "Stop"
-msgstr "עצור"
+msgstr "הפסק"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "בדוק יחידה"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr "רשימת פקודות"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr "תוספים..."
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "שאל שאלות & מצא תשובות"
 msgid "Report a Bug"
 msgstr "דווח על תקלה"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "הצטרף לפרויקט התרגום שלנו!"
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "דף הבית של סיקולי"
@@ -150,14 +187,30 @@ msgstr "סיקולי {0} זמין!"
 msgid "No update is available."
 msgstr "עדכון לא זמין"
 
+#: cmdListSettings
+msgid "Settings"
+msgstr "הגדרות"
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "לכידה אוטומטית"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "רשימת פקודות"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr "מצא"
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr "פעולות עכבר"
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr "פעולות מקלדת"
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr "הבחנת מאורעות"
 
 #: paneMessage
 msgid "Message"
@@ -180,13 +233,31 @@ msgstr "בדוק יחידה"
 msgid "Run ({0})"
 msgstr "הרץ ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr "הרץ"
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr "הרץ בהילוך איטי"
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "לחץ {0} כדי לעצור"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr "צור תחום"
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "צור איזור כדי להגביל תאימות מסך"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr "צלם תמונת מסך"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -196,6 +267,10 @@ msgstr "צלם תמונת מסף ({0})"
 msgid "Insert an image from disks"
 msgstr "הכנס תמונה מדיסק מקומי"
 
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr "הכנס תמונה "
+
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
@@ -204,15 +279,15 @@ msgstr "שגיאת מערכת בזמן הרצה {0} {1}"
 
 #: msgExit
 msgid "Exited with code {0}"
-msgstr "יצא עם קוד {0}"
+msgstr "הסתיים עם קוד {0}"
 
 #: msgStopped
 msgid "Stopped"
-msgstr "הפסיק"
+msgstr "נעצר"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr "שגיאה קרתה בשורה {0}"
+msgstr "התרחשה שגיאה בשורה {0}"
 
 #: msgErrorMsg
 msgid ""
@@ -222,7 +297,7 @@ msgstr "הודעת שגיאה {0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
-msgstr "בחר איזור במסך"
+msgstr "בחר אזור על המסך"
 
 #: winPreferences
 msgid "Preferences"
@@ -230,7 +305,7 @@ msgstr "מאפיינים"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
-msgstr "צילום מסך"
+msgstr "לכידת מסך"
 
 #: prefCaptureHotkey
 msgid "Quick capture hotkey:"
@@ -266,15 +341,15 @@ msgstr "הגדרות כלליות"
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
-msgstr "בדוק עידכונים אוטומטיים"
+msgstr "בדוק עדכונים אוטומטית"
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
-msgstr "אתה מעוניין לסגור את הלשונית?"
+msgstr "האם אתה רוצה לסגור את הכרטיסיה?"
 
 #: msgAskSaveChanges
 msgid "{0} has been modified. Save changes?"
-msgstr "{0} שונה. לשמור שינויים?"
+msgstr "{0} שונה. לשמור שינויים? {0}"
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
@@ -291,7 +366,7 @@ msgstr "קובץ"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
-msgstr "תאימות תצוגה מקדמת"
+msgstr "התאמת תצוגה"
 
 #: tabTargetOffset
 msgid "Target Offset"
@@ -307,11 +382,11 @@ msgstr "שם קובץ:"
 
 #: lblSimilarity
 msgid "Similarity:"
-msgstr "דימיון"
+msgstr "דמיון"
 
 #: lblNumberOfMatches
 msgid "Number of matches:"
-msgstr "כמות התאמות:"
+msgstr "מספר התאמות"
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
@@ -343,11 +418,11 @@ msgstr "קובץ קיים"
 
 #: msgFileExists
 msgid "Are you sure to overwrite this file \"{0}\"?"
-msgstr "האם אתה בטוח לשמור את הקובץ \"{0}\"?"
+msgstr "האם אתה בטוח לכתוב על הקובץ הזה  \"{0}\"?"
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
-msgstr "תן שם לתמונות המסך"
+msgstr "שם צילום מסך"
 
 #: msgEnterScreenshotFilename
 msgid "Enter the screen shot's file name:"
@@ -416,23 +491,24 @@ msgstr "גרור את הרכיב הראשון, והפל על הרכיב השני
 
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."
-msgstr "כותב את ה <i>טקסט</ן> על החלון הפעיל."
+msgstr "כותב את ה <i>טקסט</i> על החלון הפעיל."
 
 #: cmdType2
 msgid ""
 "Clicks on the given component to gain the focus and then types the given "
 "<i>text</i>."
-msgstr "לחץ על הרכיב בכדי לקבל פוקוס ואז כתוב <i>טקסט</ן>."
+msgstr "לוחץ על הרכיב ניתן להשיג את המוקד ולאחר מכן סוגי הנתון <i>טקסט</i>."
 
 #: cmdPaste
 msgid "Pastes the given <i>text</i> to the current focused window."
-msgstr "הדבק את ה <i>טקסט</ן> על החלון הפעיל."
+msgstr "הדבק את ה <i>טקסט</i> על החלון הפעיל."
 
 #: cmdPaste2
 msgid ""
 "Clicks on the given component to gain the focus and then pastes the given "
 "<i>text</i>."
-msgstr "לחץ על הרכיב בכדי לקבל פוקוס ואז הדבק <i>טקסט</ן>."
+msgstr ""
+"לוחץ על הרכיב ניתן להשיג את המוקד ולאחר מכן מדביק את הנתון <i>טקסט</i>."
 
 #: cmdOnAppear
 msgid ""
@@ -461,3 +537,34 @@ msgid ""
 msgstr ""
 "הפעל את תוכנה הצפייה כדי לנטר את המסך או האיזור הנבחר עד <i>זמן</i> "
 "בשניות.<br>תוכנת הצפייה תרוץ ברקע אם <i>הרקע</i> נבחר כאמת."
+
+#: extBtnInstall
+msgid "Install"
+msgstr "הַתקן"
+
+#: extBtnInfo
+msgid "More Info"
+msgstr "מידע נוסף"
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr "הותקן"
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr "התקן {0}"
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr "עדכן ל {0}"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "הרץ בהילוך איטי"
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "רשימת פקודות"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "רשימת פקודות"

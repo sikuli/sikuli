@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-20 09:50+0000\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-02-09 07:26+0000\n"
 "Last-Translator: RaiMan <rmhdevelop@me.com>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -40,11 +40,6 @@ msgctxt "menuViewUnitTest"
 msgid "Unit Test"
 msgstr "Unit Test"
 
-#: menuViewCommandList
-msgctxt "menuViewCommandList"
-msgid "Command List"
-msgstr "Kommandoliste"
-
 #: menuHelp
 msgid "Help"
 msgstr "Hilfe"
@@ -56,6 +51,14 @@ msgstr "Prüfe auf neue Version..."
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
 msgstr "Der umfassende Leitfaden zu Sikuli Script"
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandoliste"
+
+#: menuTool
+msgid "Tools"
+msgstr "Werkzeuge"
 
 #: menuFileNew
 msgid "New"
@@ -89,6 +92,14 @@ msgstr "Tab schließen"
 msgid "Quit"
 msgstr "Beenden"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr "Rückgängig"
+
+#: menuEditRedo
+msgid "Redo"
+msgstr "Wiederholen"
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Ausschneiden"
@@ -113,18 +124,44 @@ msgstr "Einrücken"
 msgid "Un-Indent"
 msgstr "Ausrücken"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "Suchen"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "Suchen..."
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "Weitersuchen"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "Rückwärtssuchen"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Ausführen"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr "Ausführen in Zeitlupe"
 
 #: menuRunStop
 msgid "Stop"
 msgstr "Abbrechen"
+
+#: menuViewCommandList
+msgid "Command List"
+msgstr "Kommandoliste"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr "Erweiterungen..."
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
@@ -138,6 +175,10 @@ msgstr "Fragen stellen & Antworten finden"
 msgid "Report a Bug"
 msgstr "Einen Fehler (Bug) melden"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "Mach mit bei der Übersetzung!"
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Sikuli's Homepage"
@@ -150,14 +191,30 @@ msgstr "Sikuli {0} ist verfügbar!"
 msgid "No update is available."
 msgstr "Es gibt keine neuere Version."
 
+#: cmdListSettings
+msgid "Settings"
+msgstr "Einstellungen"
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "Bildschirmfoto sofort"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Kommandoliste"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr "Finden"
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr "Maus-Aktionen"
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr "Tastatur-Actionen"
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr "Ereignis-Überwachung"
 
 #: paneMessage
 msgid "Message"
@@ -180,13 +237,31 @@ msgstr "Unit Test"
 msgid "Run ({0})"
 msgstr "Ausführen ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr "Ausführen"
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr "Ausführen in Zeitlupe"
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Drücke {0} zum Abbrechen"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr "Ausschnitt erzeugen"
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "Einen Ausschnitt erzeugen um die Suche einzuschränken"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr "Bildschirmfoto"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -195,6 +270,10 @@ msgstr "Ein Bildschirmfoto machen ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Ein Bild aus einer Datei einfügen"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr "Bild einfügen "
 
 #: msgRunningSklError
 msgid ""
@@ -485,3 +564,33 @@ msgstr ""
 "Startet die Überwachung des Bildschirms oder des Ausschnitts für maximal "
 "<i>Dauer</i> Sekunden,<br>Die Überwachung läuft im Hintergrund, wenn "
 "<i>background</i> auf True gesetzt ist."
+
+#: extBtnInstall
+msgid "Install"
+msgstr "Installieren"
+
+#: extBtnInfo
+msgid "More Info"
+msgstr "Mehr Info"
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr "Installiert"
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr "Installiere"
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr "Neue Version"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandoliste"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "Ausführen in Zeitlupe"
+
+#~ msgid "Find"
+#~ msgstr "Suchen"
