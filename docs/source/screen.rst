@@ -130,13 +130,21 @@ Both features are available in the IDE via the buttons in the toolbar.
 		to this image. It can be used directly in cases, where a parameter PS is
 		allowed (e.g. :py:meth:`Region.find`, :py:meth:`Region.click`, ...). 
 
-	.. py:method:: selectRegion()
+	.. py:method:: selectRegion([text])
 
-		Enter the interactive mode to allow the user of a script to select a
-		rectangle on the screen. 
+		Select a region on the screen interactively 
 
-		:return: a new :py:class:`Region` object or *None* if the user cancels the
-			capturing process.
+		:param text: Text to display in the middle of the screen.
+		:return: a new :py:class:`Region` object or None, if the user cancels the capturing process.
+		
+		**text**  is displayed for about 2 seconds in the middle of the screen.
+		If **text** is omitted, the default "Select a region on the screen" is
+		displayed. 
+
+		The interactive capture mode is entered and allows the user to select a
+		region the same way as using the selection tool in the IDE. 
+		
+		**Note:** You should check the result, since the user may cancel the capturing.
 
 .. _MultimonitorEnvironments:
 

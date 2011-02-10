@@ -102,24 +102,8 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 			
 			reg.h = theWidth # equivalent to
 			reg.setH(theWidth) 
-
-	.. py:method:: selectRegion([text])
-
-		Select a region on the screen interactively 
-
-		:param text: Text to display in the middle of the screen.
-		:return: a new region object or None, if the user cancels the capturing process.
-
-		In fact it is a method of class Screen,
-		but since it creates a region, it is mentioned here too.
-
-		**text**  is displayed for about 2 seconds in the middle of the screen.
-		If **text** is omitted, the default "Select a region on the screen" is
-		displayed. 
-
-		The interactive capture mode is entered and allows the user to select a
-		region the same way as using the selection tool in the IDE. You should
-		check the result, since the user may cancel the capturing.
+	
+		**Note:** Additionally you might use :py:meth:`selectRegion() <Screen.selectRegion>` to interactively create a new region.
 
 	.. py:method:: setX(number)
 		 setY(number)
@@ -1391,6 +1375,8 @@ These two methods might help to implement more generic functions than just find(
 
 .. py:class:: Region
 
+
+	.. versionadded:: X1.0-rc2
 	.. py:method:: getRegionFromPSRM( PSRM )
 	
 		Returns a new Region object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match is returned. In case RM, just a copy of the given region is returned.
@@ -1398,6 +1384,7 @@ These two methods might help to implement more generic functions than just find(
 		:params PSRM: a Pattern, String, Region or Match object
 		:return: a new Region object
 		
+	.. versionadded:: X1.0-rc2
 	.. py:method:: getLocationFromPSRML( PSRML )
 	
 		Returns a new Location object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match's target offset position is returned. In case RM, just a copy of the given region's respective location (center or target offset) is returned.
