@@ -128,13 +128,14 @@ public class ExtensionManager {
          if(targetFile.exists())
             targetFile.delete();
          if( !localFile.renameTo(targetFile) ){
-            Debug.error("Failed to install " + localFile.getName() + " to " + extPath);
+            Debug.error("Failed to install " + localFile.getName() + " to " + targetFile.getAbsolutePath());
             return false;
          }
          addExtension(name, url_, version_);
       }
       catch(IOException e){
          Debug.error("Failed to download " + url_);
+         e.printStackTrace();
          return false;
       }
       return true;
