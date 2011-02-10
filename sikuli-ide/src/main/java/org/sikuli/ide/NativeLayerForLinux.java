@@ -37,7 +37,7 @@ public class NativeLayerForLinux implements NativeLayer {
       txtMod = txtMod.replace("META","WIN");
       txtMod = txtMod.replace("WINDOWS","WIN");
       String txtCode = KeyEvent.getKeyText(key).toUpperCase();
-      Debug.log(1, "[Linux] install hotkey: " + txtMod + "+" + txtCode + 
+      Debug.info("install hotkey: " + txtMod + "+" + txtCode + 
                    " for " + callbackMethod);
 
       JXGrabKey grabKey = JXGrabKey.getInstance();
@@ -65,7 +65,7 @@ public class NativeLayerForLinux implements NativeLayer {
       if(_callbackIdMap.size()==1){
          HotkeyListener hotkeyListener = new jxgrabkey.HotkeyListener(){
             public void onHotkey(int id) {
-               Debug.log(1, "onHotkey: " + id);
+               Debug.log(2, "onHotkey: " + id);
                String callbackFunc = _idCallbackMap.get(id);
                Class params[] = {};
                Object paramsObj[] = {};
