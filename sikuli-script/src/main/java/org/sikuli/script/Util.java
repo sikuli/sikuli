@@ -10,7 +10,7 @@ public class Util {
       InputStream reader = url.openStream();
       String[] path = url.getPath().split("/");
       String filename = path[path.length-1];
-      String fullpath =  localPath + filename;
+      File fullpath =  new File(localPath, filename);
       FileOutputStream writer = new FileOutputStream(fullpath);
       byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
       int totalBytesRead = 0;
@@ -22,6 +22,6 @@ public class Util {
       reader.close();
       writer.close();
 
-      return fullpath;
+      return fullpath.getAbsolutePath();
    }
 }
