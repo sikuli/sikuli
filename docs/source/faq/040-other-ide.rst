@@ -3,7 +3,7 @@ How to use Sikuli together with other IDE's
 
 .. versionadded:: X1.0-rc2
 
-**draft - to be completed**
+**Draft - to be completed**
 
 In this section we want to talk about requirements and todos, when you want to develop Sikuli scripts in other IDE's than the one that comes with the distribution. 
 
