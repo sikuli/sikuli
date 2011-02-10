@@ -27,7 +27,7 @@ public class NativeLayerForWindows implements NativeLayer {
       txtMod = txtMod.replace("META","WIN");
       txtMod = txtMod.replace("WINDOWS","WIN");
       String txtCode = KeyEvent.getKeyText(key).toUpperCase();
-      Debug.log(1, "[WIN] install hotkey: " + txtMod + "+" + txtCode + 
+      Debug.info("install hotkey: " + txtMod + "+" + txtCode + 
                    " for " + callbackMethod);
 
       int id;
@@ -47,7 +47,7 @@ public class NativeLayerForWindows implements NativeLayer {
       if(_callbackIdMap.size()==1){
          itype.addHotKeyListener(new HotkeyListener(){
             public void onHotKey(int id){
-               Debug.log(1, "Hotkey pressed");
+               Debug.log(2, "Hotkey pressed");
                String callbackFunc = _idCallbackMap.get(id);
                Class params[] = {};
                Object paramsObj[] = {};
