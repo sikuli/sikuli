@@ -106,7 +106,7 @@ public class ExtensionManagerFrame extends JFrame {
 
       ArrayList<ExtensionItem> extensions = new ArrayList<ExtensionItem>();
 
-      Debug.log("Retrieving from " + EXTENSION_LIST_URL);
+      Debug.log(2, "Retrieving from " + EXTENSION_LIST_URL);
       
       String json = ExtensionManagerFrame.html2txt(EXTENSION_LIST_URL);
 
