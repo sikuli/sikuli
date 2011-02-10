@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT (guide Java)
-SET(VERSION 1.4)
+SET(VERSION 1.4.1)
 
 SET(PYTHON_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main/python)
 SET(JAVA_SOURCE_FILES    src/main/java/org/sikuli/guide/*.java)
