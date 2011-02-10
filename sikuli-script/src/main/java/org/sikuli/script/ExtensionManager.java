@@ -124,7 +124,10 @@ public class ExtensionManager {
          URL url = new URL(url_);
          File localFile = new File(Util.downloadURL(url, tmpdir));
          String extName = getExtName(localFile.getName());
-         if( !localFile.renameTo(new File(extPath, extName)) ){
+         File targetFile = new File(extPath, extName);
+         if(targetFile.exists())
+            targetFile.delete();
+         if( !localFile.renameTo(targetFile) ){
             Debug.error("Failed to install " + localFile.getName() + " to " + extPath);
             return false;
          }
