@@ -1355,8 +1355,8 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 
 .. _GroupingMethodCallsWithRegion:
 
-Grouping Method Class (with Region)
------------------------------------
+Grouping Method Calls ( with Region: )
+--------------------------------------
 
 Instead of::
 
@@ -1379,4 +1379,28 @@ you can group methods applied to the same region using Python's ``with`` syntax:
 All methods inside the ``with`` block that have the region omitted are redirected to the
 region object specified at the ``with`` statement.
 
+Special Methods for Developers
+------------------------------
 
+Here we document Region methods, that might be helpful, when developing complex scripts 
+with its own API, as it is the fact, when developing an :ref:`Extension <sikuliextensions>`.
+
+Be aware, that these might change without notice (should not be, but might be ;-).
+
+These two methods might help to implement more generic functions than just find() and click().
+
+.. py:class:: Region
+
+	.. py:method:: getRegionFromPSRM( PSRM )
+	
+		Returns a new Region object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match is returned. In case RM, just a copy of the given region is returned.
+	
+		:params PSRM: a Pattern, String, Region or Match object
+		:return: a new Region object
+		
+	.. py:method:: getLocationFromPSRML( PSRML )
+	
+		Returns a new Location object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match's target offset position is returned. In case RM, just a copy of the given region's respective location (center or target offset) is returned.
+	
+		:params PSRML: a Pattern, String, Region, Match or Location object
+		:return: a new Location object
