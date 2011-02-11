@@ -1,9 +1,10 @@
-package org.sikuli.script.guide.test;
+package org.sikuli.guide.test;
 
 import java.awt.AWTException;
 import java.awt.Robot;
 
 import org.junit.Test;
+import org.sikuli.guide.SikuliGuideDialog;
 import org.sikuli.guide.SikuliGuide;
 import org.sikuli.script.App;
 import org.sikuli.script.Debug;
@@ -17,6 +18,39 @@ import org.sikuli.script.Settings;
 
 
 public class SikuliGuideTest {
+   
+   
+   @Test
+   public void testDialog() {
+      
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      String cmd;
+      
+//      g.addDialog("next","Step 1");
+//      cmd = g.showNow();
+//      Debug.log("cmd=", cmd);
+//      
+//      g.addDialog("next","Step 2");
+//      cmd = g.showNow();
+//      Debug.log("cmd=", cmd);
+//
+//      g.addDialog("next","Step 3");
+//      cmd = g.showNow();
+//      Debug.log("cmd=", cmd);
+
+       g.addText(new Location(50,50),"Step 1");
+       g.showNowWithDialog(SikuliGuide.FIRST);
+       
+       g.addText(new Location(50,50),"Step 2");
+       g.showNowWithDialog(SikuliGuide.MIDDLE);
+
+       g.addText(new Location(50,50),"Step 3");
+       g.showNowWithDialog(SikuliGuide.LAST);
+
+   }
+   
    @Test
    public void testFirefox() throws FindFailed {
 
@@ -93,7 +127,7 @@ public class SikuliGuideTest {
       }
       robot.delay(2000);
 
-      sa.addDialog("Next","3. Now we can see all the Fairy Tale books for age Three to Five in the library. " +
+      sa.addDialog("3. Now we can see all the Fairy Tale books for age Three to Five in the library. " +
             "We can use the arrows in the results section to page through " +
       "all the different books. ");
       r = s.find(new Pattern("right.png").similar(0.95f));
@@ -103,7 +137,7 @@ public class SikuliGuideTest {
       sa.showNow();
 
 
-      sa.addDialog("Finish", "4. To start over with and do a new search, " +
+      sa.addDialog("4. To start over with and do a new search, " +
             "we can click the Trash Can button. To learn how to read a book" +
       " go to the reading books section.");
       r = s.find(new Pattern("trashcan.png").similar(0.95f));
@@ -134,10 +168,10 @@ public class SikuliGuideTest {
       //sa.addDialog("Next", "Hello");
       sa.showNow();
 
-      sa.addDialog("Next", "Another step");
+      sa.addDialog("Another step");
       sa.showNow();
 
-      sa.addDialog("Next", "Yet another step");
+      sa.addDialog("Yet another step");
       sa.showNow();
 
 
@@ -153,7 +187,7 @@ public class SikuliGuideTest {
       Screen s = new Screen();
       SikuliGuide sa = new SikuliGuide(s);
 
-      sa.addDialog("Next","Welcome!");  
+      sa.addDialog("Welcome!");  
       sa.showNow();
 
       r = s.find("tiger.png");

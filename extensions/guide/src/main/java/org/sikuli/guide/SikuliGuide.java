@@ -34,6 +34,13 @@ public class SikuliGuide extends TransparentWindow {
 
    static final float DEFAULT_SHOW_DURATION = 10.0f;
 
+   
+   static public final int FIRST = 0;
+   static public final int MIDDLE = 1;
+   static public final int LAST = 2;
+   static public final int SIMPLE = 4;
+   
+   
    Robot robot;
 
    // all the actions will be restricted to this region
@@ -216,12 +223,17 @@ public class SikuliGuide extends TransparentWindow {
       repaint();
    }
 
-   SingleButtonMessageBox dialog = null;
-   public void addDialog(String button_text, String message){
-      dialog = new SingleButtonMessageBox(this, button_text, message);    
+   NavigationDialog dialog = null;
+   public void addDialog(String message, int style){
+      //dialog = new SingleButtonMessageBox(this, button_text, message);  
+      dialog = new NavigationDialog(this, message, style);  
       dialog.setAlwaysOnTop(true);
       dialog.pack();
       dialog.setLocationRelativeTo(this);
+   }
+
+   public void addDialog(String message){
+      addDialog(message, SIMPLE);
    }
 
 
@@ -234,12 +246,25 @@ public class SikuliGuide extends TransparentWindow {
    public void setLastClickedTarget(ClickTarget lastClickedTarget) {
       this._lastClickedTarget = lastClickedTarget;
    }
-
-   public void showNow(){
-      showNow(DEFAULT_SHOW_DURATION);
+   
+  
+   public String showNowWithDialog(int style){
+      
+      // create the default dialog, unless the user
+      // has already added one
+      if (dialog == null){
+         addDialog("",style);
+      } else{
+         dialog.setStyle(style);
+      }
+      return showNow();        
    }
-
-   public void showNow(float secs){
+   
+   public String showNow(){
+      return showNow(DEFAULT_SHOW_DURATION);
+   }
+   
+   public String showNow(float secs){
 
       // do these to allow static elements to be drawn
       setVisible(true);
@@ -268,10 +293,13 @@ public class SikuliGuide extends TransparentWindow {
             target.dispose();
          }        
          dialog.dispose();
+         String cmd = dialog.getActionCommand();
 
          closeNow();
 
          focusBelow();
+         
+         return cmd;
 
       }else if (!_clickTargets.isEmpty()){
 
@@ -299,12 +327,16 @@ public class SikuliGuide extends TransparentWindow {
   
          robot.mousePress(InputEvent.BUTTON1_MASK);            
          robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         
+         return SikuliGuideDialog.NEXT;
 
       }else{
 
          // if there's no interactive element
          // just close it after the timeout
          closeAfter(secs);
+         
+         return SikuliGuideDialog.NEXT;
       }
    }
 
