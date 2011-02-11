@@ -21,9 +21,9 @@ Sikuli Script is packed in a JAR file - sikuli-script.jar. Depending on the oper
 If you follow these standards, you can use sikuli-script.jar out of the box:
 
 * **Windows:** install Sikuli X using the installer (the system %PATH% will be set as needed)
-	There is a new environment variable **%SIK_HOME%** that is expected to contain the directory, where Sikuli X is installed. You have to set it, if you have Sikuli X in a different place.
+	There is a new environment variable **%SIKULI_HOME%** that is expected to contain the directory, where Sikuli X is installed. You have to set it, if you have Sikuli X in a different place.
 		
-	**Be aware:** using the zipped version, you have to take care for %PATH% and %SIK_HOME% yourself.
+	**Be aware:** using the zipped version, you have to take care for %PATH% and %SIKULI_HOME% yourself.
 
 * **Mac:** have Sikuli-IDE.app in its standard place /Applications. There is generally no need to put it elsewhere.
 

@@ -98,9 +98,9 @@ Interested in the :ref:`Option -i (interactive Sikuli) <sikuliscriptinteractive>
 If you follow these standards, you can do the following out of the box:
 
 * **Windows:** install Sikuli X using the installer (the system %PATH% will be set as needed)
-	There is a new environment variable **%SIK_HOME%** that is expected to contain the directory, where Sikuli X is installed. You have to set it, if you have Sikuli X in a different place.
+	There is a new environment variable **%SIKULI_HOME%** that is expected to contain the directory, where Sikuli X is installed. You have to set it, if you have Sikuli X in a different place.
 		
-	**Be aware:** using the zipped version, you have to take care for %PATH% and %SIK_HOME% yourself.
+	**Be aware:** using the zipped version, you have to take care for %PATH% and %SIKULI_HOME% yourself.
 
 * **Mac:** have Sikuli-IDE.app in its standard place /Applications. There is generally no need to put it elsewhere.
 
@@ -116,13 +116,13 @@ On **Linux** it should be principally like on Mac, with your specific adjustment
 
 .. windows::
 
-	:command:`java -jar %SIK_HOME%\\sikuli-script.jar path-to-your-script\\yourScript.sikuli`
+	:command:`java -jar %SIKULI_HOME%\\sikuli-script.jar path-to-your-script\\yourScript.sikuli`
 	
 .. mac::
 	
-	:command:`SikHome=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
+	:command:`SIKULI_HOME=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
 	
-	:command:`java -jar $SikHome/sikuli-script.jar path-to-your-script/yourScript.sikuli`
+	:command:`java -jar $SIKULI_HOME/sikuli-script.jar path-to-your-script/yourScript.sikuli`
 	   
 **Run a script from Command line using the Sikuli contained Jython**
 
@@ -132,13 +132,13 @@ This option might be helpful in some cases, where you want to have access to the
 
 	:command:`set SCRIPT=path-to-your-script\\yourScript.sikuli\\yourScript.py`
 
-	:command:`java -cp %SIK_HOME%\\sikuli-script.jar org.python.util.jython %SCRIPT%`
+	:command:`java -cp %SIKULI_HOME%\\sikuli-script.jar org.python.util.jython %SCRIPT%`
 	
 .. mac::
 	
-	:command:`SikHome=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
+	:command:`SIKULI_HOME=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
 	
-	:command:`java -cp $SikHome/sikuli-script.jar org.python.util.jython path-to-your-script/yourScript.sikuli/yourScript.py`
+	:command:`java -cp $SIKULI_HOME/sikuli-script.jar org.python.util.jython path-to-your-script/yourScript.sikuli/yourScript.py`
 
 .. _sikuliscriptinteractive:
 	
@@ -155,13 +155,13 @@ This might be helpful to do some testing on commandline, without having to start
 
 .. windows::
 
-	:command:`java -jar %SIK_HOME%\\sikuli-script.jar -i`
+	:command:`java -jar %SIKULI_HOME%\\sikuli-script.jar -i`
 	
 .. mac::
 	
-	:command:`SikHome=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
+	:command:`SIKULI_HOME=/Applications/Sikuli-IDE.app/Contents/Resources/Java`
 	
-	:command:`java -jar $SikHome/sikuli-script.jar -i`
+	:command:`java -jar $SIKULI_HOME/sikuli-script.jar -i`
          
 This is a Mac sample session::
 

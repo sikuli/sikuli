@@ -79,6 +79,6 @@ def show(arg = None):
 	if isinstance(arg, list):
 		_show_steps(arg)
 	elif isinstance(arg, float) or isinstance(arg, int):
-		_g.showNow(secs)
+		_g.showNow(arg)
 	else:
 		_g.showNow()
