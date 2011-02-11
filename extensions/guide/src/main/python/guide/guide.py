@@ -1,9 +1,34 @@
 from org.sikuli.guide import SikuliGuide
 from org.sikuli.script import UnionScreen
+from org.sikuli.guide import Bookmark
+from org.sikuli.guide import Bracket
 
 s = UnionScreen()
 _g = SikuliGuide(s);
 
+def bookmark(target, text, side='left'):
+	r = s.getRegionFromPSRM(target)
+	if (side == 'right'):	
+		b = Bookmark(Location(r.x+r.w,r.y+r.h/2), text)	
+		b.setDirection(Bookmark.DIRECTION_WEST)
+	else: # left
+		b = Bookmark(Location(r.x,r.y+r.h/2), text)	
+		b.setDirection(Bookmark.DIRECTION_EAST)
+	_g.addComponent(b)
+
+def bracket(target, side='left'):
+	r = s.getRegionFromPSRM(target)
+	b = Bracket(r)
+	if (side == 'top'):
+		b.setSide(Bracket.SIDE_TOP)
+	elif (side == 'right'):
+		b.setSide(Bracket.SIDE_RIGHT)
+	elif (side == 'bottom'):
+		b.setSide(Bracket.SIDE_BOTTOM)
+	else: # left
+		b.setSide(Bracket.SIDE_LEFT)
+	_g.addComponent(b)
+	
 def rectangle(target):
 	r = s.getRegionFromPSRM(target)
 	_g.addRectangle(r)

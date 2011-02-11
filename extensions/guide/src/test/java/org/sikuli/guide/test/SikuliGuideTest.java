@@ -4,8 +4,10 @@ import java.awt.AWTException;
 import java.awt.Robot;
 
 import org.junit.Test;
-import org.sikuli.guide.SikuliGuideDialog;
+import org.sikuli.guide.Bookmark;
+import org.sikuli.guide.Bracket;
 import org.sikuli.guide.SikuliGuide;
+import org.sikuli.guide.SikuliGuide.Side;
 import org.sikuli.script.App;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FindFailed;
@@ -14,10 +16,59 @@ import org.sikuli.script.Location;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
-import org.sikuli.script.Settings;
 
 
 public class SikuliGuideTest {
+   
+ 
+   
+   @Test
+   public void testTextAlignment() {
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(200,200,100,150);
+      //g.addRectangle(r);
+      
+      g.addText(r,"TOP", Side.TOP);
+      g.addText(r,"BOTTOM", Side.BOTTOM);
+      g.addText(r,"LEFT", Side.LEFT);
+      g.addText(r,"RIGHT", Side.RIGHT);
+
+      g.addComponent(new Bookmark(r.getTopLeft(),"Top Left"));
+      g.addComponent(new Bookmark(r.getBottomLeft(),"Bottom Left"));
+      
+      Bookmark b = new Bookmark(r.getTopRight(),"Top Right");
+      b.setDirection(Bookmark.DIRECTION_WEST);
+      g.addComponent(b);
+      
+      b = new Bookmark(r.getBottomRight(),"Bottom Right");
+      b.setDirection(Bookmark.DIRECTION_WEST);
+      g.addComponent(b);
+
+      
+      r = new Region(500,200,300,450);
+      g.addRectangle(r);
+      
+      Bracket bracket = new Bracket(r);
+      g.addComponent(bracket);
+
+      bracket = new Bracket(r);
+      bracket.setSide(Bracket.SIDE_RIGHT);
+      g.addComponent(bracket);
+      
+      bracket = new Bracket(r);
+      bracket.setSide(Bracket.SIDE_TOP);
+      g.addComponent(bracket);
+      
+      bracket = new Bracket(r);
+      bracket.setSide(Bracket.SIDE_BOTTOM);
+      g.addComponent(bracket);
+      //g.addBookmark(r.getTopLeft(), "Hello");
+      
+      
+      
+      g.showNow(10);
+   }
    
    
    @Test
