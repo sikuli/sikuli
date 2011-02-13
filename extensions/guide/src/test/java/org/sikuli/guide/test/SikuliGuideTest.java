@@ -1,11 +1,13 @@
 package org.sikuli.guide.test;
 
 import java.awt.AWTException;
+import java.awt.Point;
 import java.awt.Robot;
 
 import org.junit.Test;
-import org.sikuli.guide.Bookmark;
+import org.sikuli.guide.Flag;
 import org.sikuli.guide.Bracket;
+import org.sikuli.guide.NavigationDialog;
 import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.SikuliGuide.Side;
 import org.sikuli.script.App;
@@ -33,18 +35,29 @@ public class SikuliGuideTest {
       g.addText(r,"BOTTOM", Side.BOTTOM);
       g.addText(r,"LEFT", Side.LEFT);
       g.addText(r,"RIGHT", Side.RIGHT);
-
-      g.addComponent(new Bookmark(r.getTopLeft(),"Top Left"));
-      g.addComponent(new Bookmark(r.getBottomLeft(),"Bottom Left"));
       
-      Bookmark b = new Bookmark(r.getTopRight(),"Top Right");
-      b.setDirection(Bookmark.DIRECTION_WEST);
+      
+      r = new Region(900,200,100,150);
+      g.addRectangle(r);
+
+      g.addComponent(new Flag(r.getTopLeft(),"Top Left"));
+      g.addComponent(new Flag(r.getBottomLeft(),"Bottom Left"));
+      
+      Flag b = new Flag(r.getTopRight(),"Top Right");
+      b.setDirection(Flag.DIRECTION_WEST);
       g.addComponent(b);
       
-      b = new Bookmark(r.getBottomRight(),"Bottom Right");
-      b.setDirection(Bookmark.DIRECTION_WEST);
+      b = new Flag(r.getBottomRight(),"Bottom Right");
+      b.setDirection(Flag.DIRECTION_WEST);
+      g.addComponent(b);
+      
+      b = new Flag(r.getCenter().above(r.h/2),"Top Flag");
+      b.setDirection(Flag.DIRECTION_SOUTH);
       g.addComponent(b);
 
+      b = new Flag(r.getCenter().below(r.h/2),"Bottom Flag");
+      b.setDirection(Flag.DIRECTION_NORTH);
+      g.addComponent(b);
       
       r = new Region(500,200,300,450);
       g.addRectangle(r);
@@ -65,7 +78,15 @@ public class SikuliGuideTest {
       g.addComponent(bracket);
       //g.addBookmark(r.getTopLeft(), "Hello");
       
+//      g.addDialog("This is a test dialog with really long message. hahaha. This is a " +
+//      		"test dialog with really long message ");
       
+      String dialogmsg = "This is a test dialog with really long message. hahaha. This is a " +
+      "test dialog with really long message ";
+      NavigationDialog dialog = new NavigationDialog(g,dialogmsg, SikuliGuide.SIMPLE);
+      dialog.setTitle("This is a test title");
+      //dialog.setLocation(new Point(100,100));
+      g.addDialog(dialog);
       
       g.showNow(10);
    }

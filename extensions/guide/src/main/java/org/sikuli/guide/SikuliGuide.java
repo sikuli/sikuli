@@ -191,7 +191,7 @@ public class SikuliGuide extends TransparentWindow {
    }
    
    public void addBookmark(Location location, String message){
-      Bookmark b = new Bookmark(location, message);
+      Flag b = new Flag(location, message);
    //   b.setLocation(location);
       //b.setBounds(_region.getRect());
       content.add(b);
@@ -346,13 +346,20 @@ public class SikuliGuide extends TransparentWindow {
       dialog = new NavigationDialog(this, message, style);  
       dialog.setAlwaysOnTop(true);
       dialog.pack();
-      dialog.setLocationRelativeTo(this);
+      //dialog.setLocationRelativeTo(this);
    }
 
    public void addDialog(String message){
       addDialog(message, SIMPLE);
+      dialog.setLocationRelativeTo(this);
    }
-
+   
+   public void addDialog(NavigationDialog dialog_){
+      dialog = dialog_;
+      dialog.setAlwaysOnTop(true);
+      dialog.pack();
+      //dialog.setLocationRelativeTo(this);
+   }
 
    ClickTarget _lastClickedTarget = null;
 
@@ -371,6 +378,7 @@ public class SikuliGuide extends TransparentWindow {
       // has already added one
       if (dialog == null){
          addDialog("",style);
+         dialog.setLocationRelativeTo(this);
       } else{
          dialog.setStyle(style);
       }

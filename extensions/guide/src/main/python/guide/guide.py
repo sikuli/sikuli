@@ -1,20 +1,24 @@
 from org.sikuli.guide import SikuliGuide
 from org.sikuli.script import UnionScreen
-from org.sikuli.guide import Bookmark
+from org.sikuli.guide import Flag
 from org.sikuli.guide import Bracket
+from org.sikuli.guide import NavigationDialog
+
 
 s = UnionScreen()
 _g = SikuliGuide(s);
 
-def bookmark(target, text, side='left'):
-	r = s.getRegionFromPSRM(target)
-	if (side == 'right'):	
-		b = Bookmark(Location(r.x+r.w,r.y+r.h/2), text)	
-		b.setDirection(Bookmark.DIRECTION_WEST)
-	else: # left
-		b = Bookmark(Location(r.x,r.y+r.h/2), text)	
-		b.setDirection(Bookmark.DIRECTION_EAST)
-	_g.addComponent(b)
+
+def dialog(text, title = None, location = None):	
+	d = NavigationDialog(_g, text, SikuliGuide.SIMPLE)
+	if title:
+		d.setTitle(title)
+	if location:		
+		d.setLocation(location)
+	else:
+		d.pack()
+		d.setLocationRelativeTo(_g)
+	_g.addDialog(d)
 
 def bracket(target, side='left'):
 	r = s.getRegionFromPSRM(target)
@@ -27,23 +31,40 @@ def bracket(target, side='left'):
 		b.setSide(Bracket.SIDE_BOTTOM)
 	else: # left
 		b.setSide(Bracket.SIDE_LEFT)
+	_g.addComponent(b)	
+
+def flag(target, text, side='left'):
+	r = s.getRegionFromPSRM(target)
+	if (side == 'right'):	
+		b = Flag(Location(r.x+r.w,r.y+r.h/2), text)	
+		b.setDirection(Flag.DIRECTION_WEST)
+	elif (side == 'top'):
+		b = Flag(Location(r.x+r.w/2,r.y), text)	
+		b.setDirection(Flag.DIRECTION_SOUTH)		
+	else: # left
+		b = Flag(Location(r.x,r.y+r.h/2), text)	
+		b.setDirection(Flag.DIRECTION_EAST)
 	_g.addComponent(b)
+
+def text(target, msg, side='bottom'):
+	r = s.getRegionFromPSRM(target)
+	if (side == 'top'):
+		_g.addText(r, msg, SikuliGuide.Side.TOP)
+	elif (side == 'left'):
+		_g.addText(r, msg, SikuliGuide.Side.LEFT)
+	elif (side == 'right'):
+		_g.addText(r, msg, SikuliGuide.Side.RIGHT)
+	else:
+		_g.addText(r, msg, SikuliGuide.Side.BOTTOM)
+
 	
 def rectangle(target):
 	r = s.getRegionFromPSRM(target)
 	_g.addRectangle(r)
 
-def text(target, text):
-	r = s.getRegionFromPSRM(target)
-	#_sa.addRectangle(r)
-	_g.addText(r.getBottomLeft().below(5), text)
-
 def clickable(target, name = ""):
 	r = s.getRegionFromPSRM(target)
 	_g.addClickTarget(r, name)
-
-def dialog(text):
-	_g.addDialog(text)
 
 def circle(target):
 	r = s.getRegionFromPSRM(target)

@@ -26,12 +26,17 @@ import org.sikuli.script.TransparentWindow;
 public class NavigationDialog extends SikuliGuideDialog implements ActionListener{
 
    String message;
+   String title = null;
    
    int response;
    JLabel messageLabel;
 
    String command = null;
    
+   public void setTitle(String title){
+      this.title = title;
+      updateMessageLabel();
+   }
    
    public String getActionCommand(){
       return command;
@@ -41,7 +46,7 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
 
       public Button(String text){
          super(text);
-         Font f = new Font("sansserif", Font.BOLD, 16);
+         Font f = new Font("sansserif", Font.BOLD, 14);
 //         setBackground(new Color(0.2F,0.2f,0.2f));
 //         setForeground(Color.white);
          setFont(f);
@@ -68,21 +73,14 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       this.owner = owner_;
       this.message = message_;
 
-      setMinimumSize(new Dimension(200,50));
+      //setMinimumSize(new Dimension(200,50));
 
       Container panel = this.getContentPane();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-      String html = "<html><div style='color:white;font-size:15px;padding:3px;'>" + message + "</div></html>";
-      messageLabel = new JLabel(html);
       
-      Dimension size = messageLabel.getPreferredSize();
-      if (size.width > 300){
-         // hack to limit the width of the text to 300px
-         html = "<html><div style='color:white;font-size:15px;padding:3px;width:300px;'>" + message + "</div></html>";
-         messageLabel = new JLabel(html);
-      }    
-
+      messageLabel = new JLabel();   
+      updateMessageLabel();
+      
       Box row1 = new Box(BoxLayout.X_AXIS);
       row1.add(messageLabel);
 
@@ -107,11 +105,52 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       close.addActionListener(this);
    }
    
+   void updateMessageLabel(){
+      String html = generateHTML(-1);
+     
+      messageLabel.setText(html);
+      
+      // hack to limit the width of the text to 300px      
+      Dimension size = messageLabel.getPreferredSize();
+      if (size.width > 300){
+         html = generateHTML(300);
+         messageLabel.setText(html);
+      }
+      
+      setAlwaysOnTop(true);
+      pack();
+      //setLocationRelativeTo((Component) owner);
+   }
+   
+   String generateHTML(int width){
+      
+      String html; 
+      
+      if (width < 0){         
+         html = "<html><div>";
+      }else{
+         html = "<html><div style='width:"+width+"'>";        
+      }
+      
+      if (title != null){
+         html += "<div style='font-size:10px;color:white;background-color:#333333;padding:2px;'>" + title + "</div>";
+      }      
+      
+      html += "<div style='font-size:12px;color:white;padding:2px;'>" + message + "</div>";
+      
+      html += "</div></html>";
+      
+      return html;
+   }
+   
    public void setStyle(int style){
       button_row.removeAll();
       setButtons(button_row, style);
+      setAlwaysOnTop(true);
       pack();
-      setLocationRelativeTo((Component) owner);
+      //setLocationRelativeTo((Component) owner);
+//      dialog.pack();
+//      dialog.setLocationRelativeTo(this);
    }
    
    private void setButtons(Container c, int style){
