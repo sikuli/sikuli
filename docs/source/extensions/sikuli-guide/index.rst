@@ -226,7 +226,7 @@ Control
 
 	:param seconds: a decimal number as display duration in seconds
 	
-	The default duration is 3 seconds. If interactive elements (either one or more clickable elements or 
+	The default duration is 10 seconds. If interactive elements (either one or more clickable elements or 
 	a dialog box) were previously added, it waits until the user interacts with one of these elements. 
 	At this time all elements vanish and are discarded.
 
