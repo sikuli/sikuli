@@ -123,6 +123,7 @@ public class SikuliGuide extends TransparentWindow {
       _annotations.clear();
       content.removeAll();
       dialog = null;
+      spotlight = null;
       _clickTargets.clear();
    }
 
