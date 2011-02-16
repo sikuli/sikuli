@@ -48,6 +48,10 @@ public class SikuliGuide extends TransparentWindow {
 
    // all the actions will be restricted to this region
    Region _region;
+   
+   public Region getRegion(){
+      return _region;
+   }
 
    // swing components will be drawn on this panel
    JPanel content = new JPanel(null);
@@ -119,6 +123,7 @@ public class SikuliGuide extends TransparentWindow {
       _annotations.clear();
       content.removeAll();
       dialog = null;
+      spotlight = null;
       _clickTargets.clear();
    }
 
@@ -197,6 +202,16 @@ public class SikuliGuide extends TransparentWindow {
       content.add(b);
    }
    
+   Spotlight spotlight = null;
+   public void addSpotlight(Region r){
+
+      //Region = new Region(100,100,20,20);
+      spotlight = new Spotlight(this, r);
+      
+    //  sh.run();
+      
+    
+   }
    
    class StaticText extends JLabel{
 
@@ -398,7 +413,24 @@ public class SikuliGuide extends TransparentWindow {
 
       // deal with interactive elements
 
-      if (dialog != null){
+      if (spotlight != null){
+
+         for (ClickTarget target : _clickTargets){
+            target.setVisible(true);        
+            target.setIgnoreMouse(true);
+         }
+         
+         String cmd = spotlight.waitUserAction();
+
+         for (ClickTarget target : _clickTargets){
+            target.dispose();
+         }        
+
+         closeNow();
+         focusBelow();
+         return cmd;
+      }
+      else if (dialog != null){
 
          for (ClickTarget target : _clickTargets){
             target.setVisible(true);        

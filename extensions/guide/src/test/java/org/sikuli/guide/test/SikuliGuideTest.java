@@ -5,8 +5,10 @@ import java.awt.Point;
 import java.awt.Robot;
 
 import org.junit.Test;
+import org.sikuli.guide.ClickTarget;
 import org.sikuli.guide.Flag;
 import org.sikuli.guide.Bracket;
+import org.sikuli.guide.Spotlight;
 import org.sikuli.guide.NavigationDialog;
 import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.SikuliGuide.Side;
@@ -91,6 +93,30 @@ public class SikuliGuideTest {
       g.showNow(10);
    }
    
+   
+   @Test
+   public void testAdvanced(){
+      
+      Screen screen = new Screen();
+      SikuliGuide guide = new SikuliGuide();
+
+      Region r = new Region(100,100,20,20);
+      guide.addText(r,"Move here", Side.TOP);
+      guide.addSpotlight(r);
+      guide.showNow();
+      
+      r = new Region(500,500,20,20);
+      guide.addText(r,"Move here", Side.TOP);      
+      guide.addSpotlight(r);
+      guide.showNow();
+
+      
+      Debug.log("Yes");
+
+      //sh.run(r, "click here to run");
+      
+      
+   }
    
    @Test
    public void testDialog() {

@@ -3,11 +3,16 @@ from org.sikuli.script import UnionScreen
 from org.sikuli.guide import Flag
 from org.sikuli.guide import Bracket
 from org.sikuli.guide import NavigationDialog
+from org.sikuli.script import Location
 
 
 s = UnionScreen()
 _g = SikuliGuide(s);
 
+
+def spotlight(target):
+	r = s.getRegionFromPSRM(target)
+	_g.addSpotlight(r)
 
 def dialog(text, title = None, location = None):	
 	d = NavigationDialog(_g, text, SikuliGuide.SIMPLE)
