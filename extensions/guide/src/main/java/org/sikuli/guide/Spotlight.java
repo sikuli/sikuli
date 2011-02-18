@@ -38,50 +38,25 @@ implements SingletonInteractionTarget{
    SikuliGuide guide;
    public Spotlight(SikuliGuide guide, Region target){
       this.guide = guide;
-      this.canvas = guide.getRegion();
       this.target = target;
 
-      setBackground(null);
-      getContentPane().setBackground(null);
-
-      Color transparentColor = new Color(0F,0F,0F,0.0F);
-      setBackground(transparentColor);
-
-      getContentPane().setBackground(transparentColor);
-
+      // when opaque is set to false, the content seems to get cleared properly
+      // this is tested on both Windows and Mac
+      Env.getOSUtil().setWindowOpaque(this, false);
+      
       setOpacity(0.7f);
    }
 
    public Point current = null;
    public Point to = null;
-   //public Rectangle target = null;
-
    Region target;
-   Region canvas;
 
    public void paint(Graphics g){
-      super.paint(g);
       Graphics2D g2d = (Graphics2D)g;
-
-      // need these to clear the content of the canvas for animation to work
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-      g2d.fillRect(0,0,getWidth(),getHeight());
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-            RenderingHints.VALUE_ANTIALIAS_ON);
-
-      drawRayPolygon(g, current, target.getRect());
-
-      //		 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-      //		g2d.setColor(new Color(0F,0F,0F,0.0F));
-      //		g2d.fillRect(0,0,1000,500);
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
-      //		if (target != null && message != null){
-      //			Point pt = new Point(target.x, target.y+target.height+4);
-      //			ToolTip o = new ToolTip(message,pt);
-      //			o.paint(g2d);
-      //		}
+      super.paint(g);
+      
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      drawRayPolygon(g, current, target.getRect());      
    }
 
    public void drawRayPolygon(Graphics g, Point p, Rectangle rect){
@@ -162,82 +137,6 @@ implements SingletonInteractionTarget{
 
    }
 
-
-   private void drawPolylineArrow(Graphics g, int[] xPoints, int[] yPoints, int headLength, int headwidth){
-
-      double theta1;
-
-      //calculate the length of the line - convert from Object to Integer to int value
-      Object tempX1 = ((Array.get(xPoints, ((xPoints.length)-2))) );
-      Object tempX2 = ((Array.get(xPoints, ((xPoints.length)-1))) );
-      Integer fooX1 = (Integer)tempX1;
-      int x1 = fooX1.intValue();
-      Integer fooX2 = (Integer)tempX2;
-      int x2 = fooX2.intValue();
-
-      Object tempY1 = ((Array.get(yPoints, ((yPoints.length)-2))) );
-      Object tempY2 = ((Array.get(yPoints, ((yPoints.length)-1))) );
-
-      Integer fooY1 = (Integer)tempY1;
-      int y1 = fooY1.intValue();
-      Integer fooY2 = (Integer)tempY2;
-      int y2 = fooY2.intValue();
-      int deltaX = (x2-x1);
-      int deltaY = (y2-y1);
-      double theta = Math.atan((double)(deltaY)/(double)(deltaX));
-      if (deltaX < 0.0){
-         theta1 = theta+Math.PI; //If theta is negative make it positive
-      }
-      else{
-         theta1 = theta; //else leave it alone
-      }
-
-      int lengthdeltaX =- (int)(Math.cos(theta1)*headLength);
-      int lengthdeltaY =- (int)(Math.sin(theta1)*headLength);
-      int widthdeltaX = (int)(Math.sin(theta1)*headwidth);
-      int widthdeltaY = (int)(Math.cos(theta1)*headwidth);
-      g.drawPolyline(xPoints, yPoints, xPoints.length);
-      g.drawLine(x2,y2,x2+lengthdeltaX+widthdeltaX,y2+lengthdeltaY-widthdeltaY);
-      g.drawLine(x2,y2,x2+lengthdeltaX-widthdeltaX,y2+lengthdeltaY+widthdeltaY);
-
-   }
-
-   public void setFullScreen(){
-      //		Screen s = new Screen();
-      //		setLocation(0,0);
-      //		setSize(s.w,s.h);
-      //		setVisible(true);
-      //		toFront();
-   }
-   //	
-   //	public void run(){
-   //	   UpdateMouseLocationThread t = new UpdateMouseLocationThread();
-   //	   t.run();	   
-   //	}
-   //
-   //	class UpdateMouseLocationThread extends Thread{
-
-   public void run(){
-
-      //	    setFullScreen();
-
-
-   }
-
-
-   //	}
-
-   private void closeAfter(float secs){
-      try{
-         Thread.sleep((int)secs*1000);
-      }
-      catch(InterruptedException e){
-         close();
-         e.printStackTrace();
-      }
-      close();
-   }
-
    @Override
    public void toFront(){
       if(Env.getOS() == OS.MAC){
@@ -252,7 +151,6 @@ implements SingletonInteractionTarget{
    public String waitUserAction() {
 
       setBounds(guide.getRegion().getRect());
-      //    setSize()
       setVisible(true);
       toFront();
 
@@ -263,7 +161,6 @@ implements SingletonInteractionTarget{
       boolean running = true;
       while (running){
 
-         //target = new Rectangle(r.x,r.y,r.w,r.h);
          Rectangle target_rect = target.getRect();
          Location m = Env.getMouseLocation();
 
@@ -273,8 +170,6 @@ implements SingletonInteractionTarget{
          if (target_rect.contains(current)){
             running = false;
             cursor = handCursor;
-
-            //closeAfter(1.0f);
 
             setVisible(false);
             dispose();

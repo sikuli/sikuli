@@ -20,10 +20,11 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import org.sikuli.script.Debug;
 import org.sikuli.script.TransparentWindow;
 
 
-public class NavigationDialog extends SikuliGuideDialog implements ActionListener{
+public class NavigationDialog extends SikuliGuideDialog implements ActionListener, SingletonInteractionTarget{
 
    String message;
    String title = null;
@@ -119,7 +120,6 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       
       setAlwaysOnTop(true);
       pack();
-      //setLocationRelativeTo((Component) owner);
    }
    
    String generateHTML(int width){
@@ -148,9 +148,6 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       setButtons(button_row, style);
       setAlwaysOnTop(true);
       pack();
-      //setLocationRelativeTo((Component) owner);
-//      dialog.pack();
-//      dialog.setLocationRelativeTo(this);
    }
    
    private void setButtons(Container c, int style){
@@ -169,13 +166,26 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       }
    }
    
+   public String waitUserAction(){
+      
+      setVisible(true);
+      toFront();
+      
+      synchronized(owner){
+         try {
+            owner.wait();
+         } catch (InterruptedException e) {
+         }
+      }
+      setVisible(false);      
+      return command;
+   }
+   
    
    @Override
-   public void actionPerformed(ActionEvent e) {
-      
+   public void actionPerformed(ActionEvent e) {      
       command = e.getActionCommand();
-      dismiss();
-      
+      dismiss();      
    }
    
 }

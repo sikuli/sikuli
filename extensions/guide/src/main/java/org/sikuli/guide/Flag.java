@@ -11,19 +11,30 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
+import org.sikuli.script.Debug;
 import org.sikuli.script.Location;
 
 public class Flag extends Component {
    
    
    Location location;
+   Location dest_location;
    String text;
+   public Animator anim = null;
+   public SikuliGuide guide = null;
+   
+   public void start(){
+      
+      anim = new TimeBasedAnimator(
+            new OutQuarticEase((float)30, (float)0, 1000));
+   }
 
    // which direction this bookmark is pointing
    public final static int DIRECTION_EAST = 1;
@@ -44,6 +55,7 @@ public class Flag extends Component {
    public Flag(Location location, String message){
       this.location = location;
       this.text = message;
+      this.dest_location = (Location) location.clone();
       
       
       font = new Font("sansserif", Font.BOLD, 16);
@@ -55,6 +67,11 @@ public class Flag extends Component {
       text_height += yspacing*2;
       
       setDirection(DIRECTION_EAST);
+   }
+   
+   public void setLocation(Location location){
+      this.location = location;
+      setDirection(direction);
    }
    
    public void setDirection(int direction){
@@ -73,6 +90,15 @@ public class Flag extends Component {
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D) g;
       
+//     if (anim == null)
+//        return;
+//      
+//     if (anim != null && anim.running()){         
+//         int dx = (int) anim.step();
+//         setLocation(new Location(dest_location.x - dx, dest_location.y));
+//         //g2d.translate(-dx,0);
+//      }
+
       g2d.translate(3,0);
      
       
@@ -200,7 +226,25 @@ public class Flag extends Component {
       g2d.drawString(text, to.x + xspacing, to.y - yspacing*2);
       
       
-      
+//      if (anim != null && anim.running()){
+////         
+////         int dx = (int) anim.step();
+////         location.x = dest_location.x - dx; 
+////         Debug.log("size:" + dx);
+////
+////         //         float size = anim.step();
+//////         Debug.log("size:" + size);
+//////         font = new Font("sansserif", Font.BOLD, (int)size);
+//////         FontMetrics fm = getFontMetrics(font);
+//////         text_width = fm.stringWidth(text);
+//////         text_height = fm.getHeight();
+//////         
+//////         text_width += xspacing*2;
+//////         text_height += yspacing*2;
+//////         
+////         setDirection(DIRECTION_EAST);
+//         guide.repaint();
+//      }
    }
    
 }
