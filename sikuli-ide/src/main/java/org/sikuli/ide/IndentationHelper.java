@@ -3,7 +3,7 @@ package org.sikuli.ide;
 /**
  * 
  */
-public interface Indentation {
+public interface IndentationHelper {
 
    public void setTabWidth(int tabWidth);
 

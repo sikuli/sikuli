@@ -22,6 +22,9 @@ public class SikuliDocument extends DefaultStyledDocument{
    public static int COMMENT_MODE = 13;
    private int mode = TEXT_MODE;
 
+   public static final int DEFAULT_TAB_WIDTH = 4;
+   private int tabWidth = DEFAULT_TAB_WIDTH;
+
     private static String[] arrKeywords = {
        "and",       "del",       "for",       "is",        "raise",    
        "assert",    "elif",      "from",      "lambda",    "return",   
@@ -354,6 +357,86 @@ public class SikuliDocument extends DefaultStyledDocument{
       currentPos = offs;
    }
 
+   // line starting from 0
+   public int getLineStartOffset(int linenum) throws BadLocationException { 
+      Element map = this.getDefaultRootElement(); 
+      if (linenum < 0) {
+         throw new BadLocationException("Negative line", -1); 
+      } else if (linenum >= map.getElementCount()) {
+         throw new BadLocationException("No such line", this.getLength()+1); 
+      } else {
+         Element lineElem = map.getElement(linenum);
+         return lineElem.getStartOffset(); 
+      }  
+   }   
+
+   public int getLineLength(int linenum) throws BadLocationException {
+      Element map = this.getDefaultRootElement();
+      if (linenum < 0) {
+         throw new BadLocationException("Negative line", -1); 
+      } else if (linenum >= map.getElementCount()) {
+         throw new BadLocationException("No such line", this.getLength()+1); 
+      } else {
+         Element lineElem = map.getElement(linenum);
+         return lineElem.getEndOffset() - lineElem.getStartOffset();
+      }  
+   }   
+
+   /**
+    * Change the indentation of a line. Any existing leading whitespace is replaced by
+    * the appropriate number of tab characters and padded with blank characters if
+    * necessary.
+    * @param linenum the line number (0-based)
+    * @param columns the number of columns by which to increase the indentation (if
+    *        columns is greater than 0) or decrease the indentation (if columns is
+    *        less than 0)
+    * @throws BadLocationException if the specified line does not exist
+    */
+   public void changeIndentation(int linenum, int columns) throws BadLocationException {
+      if (columns == 0) return;
+      int lineStart = getLineStartOffset(linenum);
+      int lineLength = getLineLength(linenum);
+      String line = this.getText(lineStart, lineLength);
+
+      // determine current indentation and number of whitespace characters
+      int wsChars;
+      int indentation = 0;
+      for (wsChars = 0; wsChars < line.length(); wsChars++) {
+         char c = line.charAt(wsChars);
+         if (c == ' ') {
+            indentation++;
+         } else if (c == '\t') {
+            indentation += tabWidth;
+         } else {
+            break;
+         }
+      }
+
+      int newIndentation = indentation + columns;
+      if (newIndentation <= 0) {
+         this.remove(lineStart, wsChars);
+         return;
+      }
+
+      // build whitespace string for new indentation
+      StringBuilder newWs = new StringBuilder(newIndentation / tabWidth + tabWidth - 1);
+      int ind = 0;
+      for (; ind + tabWidth <= newIndentation; ind += tabWidth) {
+         newWs.append('\t');
+      }
+      for (; ind < newIndentation; ind++) {
+         newWs.append(' ');
+      }
+      this.replace(lineStart, wsChars, newWs.toString(), null);
+   }
+
+   public int getTabWidth() {
+      return tabWidth;
+   }
+
+   public void setTabWidth(int tabWidth) {
+      this.tabWidth = tabWidth;
+   }
 
    public Vector getKeywords(){
       return this.keywords;

@@ -2,13 +2,13 @@ package org.sikuli.ide;
 
 import junit.framework.TestCase;
 
-public class PythonIndentationTest extends TestCase {
+public class PythonIndentationHelperTest extends TestCase {
 
-   private PythonIndentation indentation;
+   private PythonIndentationHelper indentation;
    private int tabsize;
 
    public void setUp(){
-      indentation = new PythonIndentation();
+      indentation = new PythonIndentationHelper();
       tabsize = indentation.getTabWidth();
    }
 
@@ -212,21 +212,21 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationParenthesis(){
       indentation.addText("print (0,\n");
-      assertEquals(
-            PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS * tabsize,
-            indentation.shouldChangeNextLineIndentation());
+      assertEquals(PythonIndentationHelper.PARENTHESIS_INDENTATION_TABSTOPS
+            * tabsize, indentation.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationNestedParenthesis(){
       indentation.addText("print (0,\n\t\t(1,\n");
-      assertEquals(PythonIndentation.NESTED_PARENTHESIS_INDENTATION_TABSTOPS
-            * tabsize, indentation.shouldChangeNextLineIndentation());
+      assertEquals(
+            PythonIndentationHelper.NESTED_PARENTHESIS_INDENTATION_TABSTOPS
+                  * tabsize, indentation.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationNestedParenthesisSameLine(){
       indentation.addText("print (0, (1,\n");
       assertEquals(
-            (PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS + PythonIndentation.NESTED_PARENTHESIS_INDENTATION_TABSTOPS)
+            (PythonIndentationHelper.PARENTHESIS_INDENTATION_TABSTOPS + PythonIndentationHelper.NESTED_PARENTHESIS_INDENTATION_TABSTOPS)
                   * tabsize, indentation.shouldChangeNextLineIndentation());
    }
 
@@ -242,7 +242,7 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationLongStringOpened(){
       indentation.addText("\"\"\"long\n");
-      assertEquals(PythonIndentation.LONG_STRING_INDENTATION_COLUMNS,
+      assertEquals(PythonIndentationHelper.LONG_STRING_INDENTATION_COLUMNS,
             indentation.shouldChangeNextLineIndentation());
    }
 
@@ -253,7 +253,7 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationLongStringClosed(){
       indentation.addText("\"\"\"long\n   string\"\"\"\n");
-      assertEquals(-PythonIndentation.LONG_STRING_INDENTATION_COLUMNS,
+      assertEquals(-PythonIndentationHelper.LONG_STRING_INDENTATION_COLUMNS,
             indentation.shouldChangeNextLineIndentation());
    }
 
@@ -264,13 +264,13 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationLongStringExplicitLineJoining(){
       indentation.addText("\"\"\"long\\\n");
-      assertEquals(PythonIndentation.LONG_STRING_INDENTATION_COLUMNS,
+      assertEquals(PythonIndentationHelper.LONG_STRING_INDENTATION_COLUMNS,
             indentation.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationParenthesisLongString(){
       indentation.addText("print (\"\"\"\n");
-      assertEquals(PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS
+      assertEquals(PythonIndentationHelper.PARENTHESIS_INDENTATION_TABSTOPS
             * indentation.getTabWidth(),
             indentation.shouldChangeNextLineIndentation());
    }
@@ -286,4 +286,31 @@ public class PythonIndentationTest extends TestCase {
       assertEquals(7, indentation.shouldChangeNextLineIndentation());
    }
 
+   private void addFunctionDefs(int num){
+      for( int i = 0; i < num; i++ ){
+         indentation.addText("def foo(arg1, arg2):\n");
+         indentation.addText("\t\"\"\"foo function\"\"\"\n");
+         indentation.addText("\tprint '%d,%d\\n' % (\n");
+         indentation.addText("\t\t\targ1, arg2)\n");
+         indentation.addText("\n");
+      }
+   }
+
+   public void testPerformance(){
+      System.out.println("Starting performance test");
+      for( int n = 1; n <= 10000; n *= 10 ){
+         indentation.reset();
+         System.out.print("adding " + n + " function definitions...");
+         long start = System.currentTimeMillis();
+         addFunctionDefs(n);
+         long end = System.currentTimeMillis();
+         System.out.println();
+         System.out.println("added " + (indentation.getLastLineNumber() + 1)
+               + " lines");
+         System.out.println("indentation change = "
+               + indentation.shouldChangeNextLineIndentation());
+         System.out.println(((end - start) / 1000.0) + " seconds");
+      }
+      System.out.println("Completed performance test");
+   }
 }

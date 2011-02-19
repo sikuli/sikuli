@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * Implements the logic of how indentation <i>should</i> change from one line to
  * the next in Python code.
  */
-public class PythonIndentation implements Indentation {
+public class PythonIndentationHelper implements IndentationHelper {
 
    public static final int PARENTHESIS_INDENTATION_TABSTOPS = 2;
    public static final int NESTED_PARENTHESIS_INDENTATION_TABSTOPS = 1;
@@ -32,7 +32,7 @@ public class PythonIndentation implements Indentation {
       return unindentStatementMatcher.reset(logicalLine).find();
    }
 
-   public PythonIndentation(){
+   public PythonIndentationHelper(){
       pythonState = new PythonState();
    }
 
