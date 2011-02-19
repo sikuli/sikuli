@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
 "PO-Revision-Date: 2010-12-07 15:48+0000\n"
 "Last-Translator: qurvel <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "実行"
 #: menuView
 msgid "View"
 msgstr "表示"
+
+#: menuTool
+msgid "Tools"
+msgstr ""
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "タブを閉じる"
 msgid "Quit"
 msgstr "終了"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr "切り取り"
@@ -91,14 +103,32 @@ msgstr "インデント"
 msgid "Un-Indent"
 msgstr "インデント解除"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr ""
+
+#: menuFindFind
+msgid "Find..."
+msgstr ""
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr ""
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr ""
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "実行"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr "スローモーションで実行"
+msgstr ""
 
 #: menuRunStop
 msgid "Stop"
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "単体テスト"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "コマンドリスト"
+msgstr ""
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr ""
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "質問をする & 答えを見つける"
 msgid "Report a Bug"
 msgstr "バグを報告する"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr ""
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Sikuli 公式サイト"
@@ -150,14 +187,30 @@ msgstr "Sikuli {0} が利用可能です!"
 msgid "No update is available."
 msgstr "最新版を使用しています"
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "自動的にキャプチャーモードへ移行"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "コマンドリスト"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
@@ -180,13 +233,31 @@ msgstr "単体テスト"
 msgid "Run ({0})"
 msgstr "実行 ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "停止するには {0} を押してください"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "スクリーンマッチを行う領域を制限する"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -195,6 +266,10 @@ msgstr "スクリーンショットを撮る ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "ディスク上に保存してある画像を挿入する"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
@@ -456,3 +531,34 @@ msgid ""
 msgstr ""
 "<i>time</i>秒間スクリーン又は領域を見張るオブザーバを開始する. <i>background</i> が True の場合, "
 "オブザーバはバックグラウンドで動作します"
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgid "Run in slow motion"
+#~ msgstr "スローモーションで実行"
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "コマンドリスト"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "コマンドリスト"

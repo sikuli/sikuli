@@ -7,20 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-05 23:27+0000\n"
-"Last-Translator: Nick <nickzam@gmail.com>\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-01-29 08:56+0000\n"
+"Last-Translator: Горобец Виктор (VikTHOR) <victhor@list.ru>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: menuEdit
 msgid "Edit"
@@ -34,6 +34,10 @@ msgstr "Запустити"
 #: menuView
 msgid "View"
 msgstr "Вигляд"
+
+#: menuTool
+msgid "Tools"
+msgstr "Інструменти"
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Закрити вкладку"
 msgid "Quit"
 msgstr "Вихід"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr "Відмінити"
+
+#: menuEditRedo
+msgid "Redo"
+msgstr "Відновити"
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Вирізати"
@@ -91,12 +103,30 @@ msgstr "Зробити відступ"
 msgid "Un-Indent"
 msgstr "Забрати відступ"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "Знайти"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "Знайти..."
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "Знайти наступний варіант"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "Знайти попередній варіант"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Запустити"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr ""
 
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "Юніт-тест"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr "Список команд"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr ""
 
 #: menuHelp
 msgid "Help"
@@ -128,64 +161,102 @@ msgstr "Повний довідник по Sikuli Script"
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
-msgstr ""
+msgstr "Приклади, навчальні посібники, рецепти"
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
-msgstr ""
+msgstr "Задайте запитання та знайдіть відповіді"
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr ""
+msgstr "Сповістити про помилку"
+
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "Приєднуйтесь до нашого проекту з перекладу!"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
-msgstr ""
+msgstr "Домашня сторінка Sikuli"
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
-msgstr ""
+msgstr "Можна скачати Sikuli {0} !"
 
 #: msgNoUpdate
 msgid "No update is available."
+msgstr "Немає оновлень."
+
+#: cmdListSettings
+msgid "Settings"
 msgstr ""
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
+msgstr "Автоматичний захват"
+
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
 msgstr ""
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
 msgstr ""
 
 #: paneMessage
 msgid "Message"
-msgstr ""
+msgstr "Повідомлення"
 
 #: paneTestTrace
 msgid "Test Trace"
-msgstr ""
+msgstr "Тестовий запуск"
 
 #: tabUntitled
 msgid "Untitled"
-msgstr ""
+msgstr "Без імені"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Юніт-тест"
 
 #: btnRun
 msgid "Run ({0})"
+msgstr "Запуск ({0})"
+
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
 msgstr ""
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
+msgstr "Натисніть {0} щоб зупинити"
+
+#: btnRegionLabel
+msgid "Create Region"
 msgstr ""
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
+msgstr ""
+
+#: btnCaptureLabel
+msgid "Take screenshot"
 msgstr ""
 
 #: btnCaptureHint
@@ -194,6 +265,10 @@ msgstr ""
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
+msgstr ""
+
+#: btnInsertImageLabel
+msgid "Insert image "
 msgstr ""
 
 #: msgRunningSklError
@@ -449,3 +524,34 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Список команд"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "Запустити у повільному темпі"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Перелік команд"

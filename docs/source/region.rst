@@ -102,24 +102,8 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 			
 			reg.h = theWidth # equivalent to
 			reg.setH(theWidth) 
-
-	.. py:method:: selectRegion([text])
-
-		Select a region on the screen interactively 
-
-		:param text: Text to display in the middle of the screen.
-		:return: a new region object or None, if the user cancels the capturing process.
-
-		In fact it is a method of class Screen,
-		but since it creates a region, it is mentioned here too.
-
-		**text**  is displayed for about 2 seconds in the middle of the screen.
-		If **text** is omitted, the default "Select a region on the screen" is
-		displayed. 
-
-		The interactive capture mode is entered and allows the user to select a
-		region the same way as using the selection tool in the IDE. You should
-		check the result, since the user may cancel the capturing.
+	
+		**Note:** Additionally you might use :py:meth:`selectRegion() <Screen.selectRegion>` to interactively create a new region.
 
 	.. py:method:: setX(number)
 		 setY(number)
@@ -252,7 +236,7 @@ Extending a Region
 ------------------
 
 These methods (exception ``inside()``) return a new region object, that is
-defined based on the specified region (sometimes called spatial operators).
+based on the specified region (sometimes called spatial operators).
 The range parameter, if given as positive integer number, restricts the
 dimension of the new region (width and/or height respectively) to that
 value. If range is not specified, the new region extends to the respective
@@ -264,10 +248,22 @@ which uses 50 as its default range.
 **Note**: In all cases the new region does not extend beyond any boundary of the
 screen that contains the given region. 
 
-.. image:: spatial.jpg
-
 .. py:class:: Region
 
+	.. py:method:: offset(location)
+	
+		Returns a new Region object, whose upper left corner is relocated 
+		adding the location's x and y value to the respective values of the given region.
+		Width and height are the same. So this clones a region at a different place.
+		
+		:param location: a :py:class:`Location` object
+		:return: a new :py:class:`Region` object 
+		
+		::
+		
+			new_reg = reg.offset(Location(xoff, yoff)) # same as
+			new_reg = Region(reg.x + xoff, reg.y + yoff, reg.w, reg.h)
+			
 	.. py:method:: inside()
 	
 		Returns the same object. Retained for upward compatibility.
@@ -276,6 +272,8 @@ screen that contains the given region.
 
 		This method can be used to make scripts more readable.
 		``region.inside().find()`` is totally equivalent to ``region.find()``.
+
+	.. image:: spatial.jpg
 
 	.. py:method:: nearby([range])
 
@@ -1341,8 +1339,8 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 
 .. _GroupingMethodCallsWithRegion:
 
-Grouping Method Class (with Region)
------------------------------------
+Grouping Method Calls ( with Region: )
+--------------------------------------
 
 Instead of::
 
@@ -1365,4 +1363,31 @@ you can group methods applied to the same region using Python's ``with`` syntax:
 All methods inside the ``with`` block that have the region omitted are redirected to the
 region object specified at the ``with`` statement.
 
+Special Methods for Developers
+------------------------------
 
+Here we document Region methods, that might be helpful, when developing complex scripts 
+with its own API, as it is the fact, when developing an :ref:`Extension <sikuliextensions>`.
+
+Be aware, that these might change without notice (should not be, but might be ;-).
+
+These two methods might help to implement more generic functions than just find() and click().
+
+.. py:class:: Region
+
+
+	.. versionadded:: X1.0-rc2
+	.. py:method:: getRegionFromPSRM( PSRM )
+	
+		Returns a new Region object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match is returned. In case RM, just a copy of the given region is returned.
+	
+		:params PSRM: a Pattern, String, Region or Match object
+		:return: a new Region object
+		
+	.. versionadded:: X1.0-rc2
+	.. py:method:: getLocationFromPSRML( PSRML )
+	
+		Returns a new Location object derived from the given parameter. In case of PS, internally a find() is done inside this region. If found, the match's target offset position is returned. In case RM, just a copy of the given region's respective location (center or target offset) is returned.
+	
+		:params PSRML: a Pattern, String, Region, Match or Location object
+		:return: a new Location object

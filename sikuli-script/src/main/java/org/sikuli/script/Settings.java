@@ -13,4 +13,7 @@ public class Settings {
    public static float MoveMouseDelay = 0.5f; // in seconds
    public static String OcrDataPath = null;
    public static int ObserveMinChangedPixels = 50; // in pixels
+   public static boolean ActionLogs = true;
+   public static boolean InfoLogs = true;
+   public static boolean DebugLogs = true;
 }

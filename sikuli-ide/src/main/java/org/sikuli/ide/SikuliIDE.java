@@ -100,7 +100,7 @@ public class SikuliIDE extends JFrame {
    public static ImageIcon getIconResource(String name) {
       URL url= SikuliIDE.class.getResource(name);
       if (url == null) {
-         System.err.println("Warning: could not load \""+name+"\" icon");
+         Debug.error("Warning: could not load \""+name+"\" icon");
          return null;
       }
       return new ImageIcon(url);
@@ -845,7 +845,7 @@ public class SikuliIDE extends JFrame {
             System.exit(0);
          }
          catch(Exception e){
-            System.err.println(e.getMessage());
+            Debug.error(e.getMessage());
             System.exit(2);
          }
       }
@@ -1439,7 +1439,7 @@ public class SikuliIDE extends JFrame {
                                                      */
          }
          catch(Exception e){
-            System.err.println("Error in starting up SikuliGenerator...");
+            Debug.error("Error in starting up SikuliGenerator...");
             e.printStackTrace();
          }
       }
@@ -1722,7 +1722,7 @@ class ButtonInsertImage extends ToolbarButton implements ActionListener{
       if(file == null)
          return;
       String path = Utils.slashify(file.getAbsolutePath(), false);
-      System.out.println("load: " + path);
+      Debug.info("load image: " + path);
       ImageButton icon = new ImageButton(codePane, 
                                          codePane.copyFileToBundle(path).getAbsolutePath());
       codePane.insertComponent(icon);

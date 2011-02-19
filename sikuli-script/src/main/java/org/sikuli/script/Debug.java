@@ -45,7 +45,8 @@ public class Debug {
    }
 
    public static void log(int level, String message, Object... args) {
-      log(level, "[debug] ", message, args);
+      if(Settings.DebugLogs)
+         log(level, "[debug] ", message, args);
    }
 
    /** @return true if level is being logged. */
@@ -64,11 +65,13 @@ public class Debug {
    }
 
    public static void history(String message, Object... args) {
-      log(-1, "[log] ", message, args);
+      if(Settings.ActionLogs)
+         log(-1, "[log] ", message, args);
    }
 
    public static void info(String message, Object... args) {
-      log(-1, "[info] ", message, args);
+      if(Settings.InfoLogs)
+         log(-1, "[info] ", message, args);
    }
 
    public static void error(String message, Object... args) {

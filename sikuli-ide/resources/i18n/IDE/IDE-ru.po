@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-07 04:09+0000\n"
-"Last-Translator: Sukochev Roman (Leolik) <leolikua@gmail.com>\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-01-16 11:30+0000\n"
+"Last-Translator: Danik <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "Выполнить"
 #: menuView
 msgid "View"
 msgstr "Вид"
+
+#: menuTool
+msgid "Tools"
+msgstr "Инструменты"
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Закрыть вкладку"
 msgid "Quit"
 msgstr "Выход"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Вырезать"
@@ -91,14 +103,32 @@ msgstr "Сделать отступ"
 msgid "Un-Indent"
 msgstr "Убрать отступ"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "Поиск"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "Найти…"
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "Найти Далее"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "Найти Предыдущее"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Выполнить"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr "Запустить в замедленном действии"
+msgstr ""
 
 #: menuRunStop
 msgid "Stop"
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "Юнит-тест"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
 msgstr "Список команд"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr "Расширения"
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "Задать вопросы и найти ответы"
 msgid "Report a Bug"
 msgstr "Сообщить об ошибке"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "Присоединяйтесь к нашему проекту по переводу программы!"
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Домашняя страница Sikuli"
@@ -150,14 +187,30 @@ msgstr "Доступен Sikuli {0}!"
 msgid "No update is available."
 msgstr "Нет доступных обновлений."
 
+#: cmdListSettings
+msgid "Settings"
+msgstr "Параметры"
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "Автоматический захват"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Список команд"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr "Поиск"
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr "Действия мыши"
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr "Действия клавиатурой"
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr "Наблюдение за событиями"
 
 #: paneMessage
 msgid "Message"
@@ -180,13 +233,31 @@ msgstr "Юнит-тест"
 msgid "Run ({0})"
 msgstr "Запустить ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Нажмите {0} для остановки"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "Создайте область для ограничения совпадений"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -195,6 +266,10 @@ msgstr "Сделать снимок экрана ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Вставить изображение с дисков"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
@@ -250,11 +325,11 @@ msgstr "секунд(ы)"
 
 #: prefAutoNaming
 msgid "Automatic Naming:"
-msgstr ""
+msgstr "Автоматическое именование:"
 
 #: prefTimestamp
 msgid "time stamp"
-msgstr ""
+msgstr "временная отметка"
 
 #: prefRecognizedText
 msgid "text in the image"
@@ -351,11 +426,11 @@ msgstr "Вы уверены, что хотите переписать этот �
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
-msgstr ""
+msgstr "Назовите снимок экрана"
 
 #: msgEnterScreenshotFilename
 msgid "Enter the screen shot's file name:"
-msgstr ""
+msgstr "Введите название для файла скриншота:"
 
 #: cmdFind
 msgid ""
@@ -479,3 +554,34 @@ msgstr ""
 "Запускает наблюдателя для слежения за экраном или областью до "
 "<i>секунд</i>.<br>Наблюдатель будет запущен в фоновом режиме, если "
 "<i>background</i> установлен в True."
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Список команд"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Список команд"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "Запустить в замедленном действии"

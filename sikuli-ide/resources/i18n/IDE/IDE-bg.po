@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
 "PO-Revision-Date: 2010-12-05 23:29+0000\n"
 "Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "Изпълнение"
 #: menuView
 msgid "View"
 msgstr "Изглед"
+
+#: menuTool
+msgid "Tools"
+msgstr ""
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Затваряне на подпрозореца"
 msgid "Quit"
 msgstr "Изход"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Изрязване"
@@ -91,12 +103,30 @@ msgstr "Отстъп"
 msgid "Un-Indent"
 msgstr "Махане на отстъп"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr ""
+
+#: menuFindFind
+msgid "Find..."
+msgstr ""
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr ""
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr ""
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Изпълнение"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr ""
 
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr ""
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "Списък с команди"
+msgstr ""
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr ""
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "Задайте въпроси и отрийте отговори"
 msgid "Report a Bug"
 msgstr "Докладване за грешка"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr ""
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Домашната страница на Sikuli"
@@ -150,14 +187,30 @@ msgstr "Налична е Sikuli версия {0}!"
 msgid "No update is available."
 msgstr "Няма налично обновление."
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "Автоматично прихващане"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Списък с команди"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
@@ -180,12 +233,30 @@ msgstr ""
 msgid "Run ({0})"
 msgstr "Изпълнение ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Натиснете {0} за спиране"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
+msgstr ""
+
+#: btnCaptureLabel
+msgid "Take screenshot"
 msgstr ""
 
 #: btnCaptureHint
@@ -195,6 +266,10 @@ msgstr "Снимка на екрана ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Вмъкване на изображение от дисковете"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
@@ -464,3 +539,31 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Списък с команди"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Списък с команди"

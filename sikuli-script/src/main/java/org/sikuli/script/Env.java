@@ -57,7 +57,7 @@ public class Env {
             return content.getTransferData(DataFlavor.stringFlavor).toString();
       }
       catch(UnsupportedFlavorException e){
-         System.out.println("UnsupportedFlavorException: " + content);
+         Debug.error("UnsupportedFlavorException: " + content);
       }
       catch(IOException e){
          e.printStackTrace();
@@ -72,7 +72,7 @@ public class Env {
          case WINDOWS:   return pkg+"Win32Util";
          case LINUX:     return pkg+"LinuxUtil";
          default:
-            System.err.println("Warning: Sikuli doesn't fully support your OS.");
+            Debug.error("Warning: Sikuli doesn't fully support your OS.");
             return pkg+"DummyUtil";
       }
    }

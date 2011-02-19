@@ -223,10 +223,14 @@ Control
 .. py:function:: show([seconds])
 
 	Show static and interactive components added so far for the specified amount of time. 
-        The default duration is 3 seconds. If interactive elements (either one or more clicable elements or 
-        a dialog box) were previously added, it waits until the user interacts with one of these elements. 
 
 	:param seconds: a decimal number as display duration in seconds
+	
+	The default duration is 10 seconds. If interactive elements (either one or more clickable elements or 
+	a dialog box) were previously added, it waits until the user interacts with one of these elements. 
+	At this time all elements vanish and are discarded.
+
+	**Note:** If a :py:func:`dialog` element is present, other interactive elements are visible, but not clickable. If the dialog element is clicked, all elements vanish and are discarded. 
 
 
 

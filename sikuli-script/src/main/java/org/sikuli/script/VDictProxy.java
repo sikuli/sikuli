@@ -18,7 +18,7 @@ public class VDictProxy<T> {
       //System.loadLibrary("ScreenMatchProxy");
       try{
          NativeLoader.loadLibrary("VDictProxy");
-         System.out.println("VDictProxy loaded.");
+         Debug.info("VDictProxy loaded.");
       }
       catch(IOException e){
          e.printStackTrace();

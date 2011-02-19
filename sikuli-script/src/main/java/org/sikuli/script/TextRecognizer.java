@@ -31,7 +31,7 @@ public class TextRecognizer {
    boolean _init_succeeded = false;
 
    public void init(){
-      System.out.println("Text Recgonizer inited.");
+      Debug.info("Text Recognizer inited.");
       try{
          String path = ResourceExtractor.extract("tessdata");
          // TESSDATA_PREFIX doesn't contain tessdata/

@@ -90,8 +90,9 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       JLabel iconLabel = new JLabel();
       iconLabel.setIcon(new ImageIcon(image));
+      iconLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
-      _content.setLayout(new BorderLayout());
+      _content.setLayout(new BorderLayout(5, 5));
       _content.add(iconLabel, BorderLayout.LINE_START);
       
       

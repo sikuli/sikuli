@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
-"PO-Revision-Date: 2010-12-05 23:27+0000\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
+"PO-Revision-Date: 2011-02-08 18:39+0000\n"
 "Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -29,6 +29,10 @@ msgstr "執行"
 #: menuView
 msgid "View"
 msgstr "檢視"
+
+#: menuTool
+msgid "Tools"
+msgstr "工具"
 
 #: menuFileNew
 msgid "New"
@@ -62,6 +66,14 @@ msgstr "關閉分頁"
 msgid "Quit"
 msgstr "結束"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr "復原"
+
+#: menuEditRedo
+msgid "Redo"
+msgstr "取消復原"
+
 #: menuEditCut
 msgid "Cut"
 msgstr "剪下"
@@ -86,12 +98,30 @@ msgstr "縮排"
 msgid "Un-Indent"
 msgstr "減少縮排"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr "搜尋"
+
+#: menuFindFind
+msgid "Find..."
+msgstr "搜尋..."
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr "找下一個"
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr "找上一個"
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "執行"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr "慢動作執行"
 
@@ -105,9 +135,12 @@ msgid "Unit Test"
 msgstr "單元測試"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "命令列表"
+msgstr "指令清單"
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr "擴充元件..."
 
 #: menuHelp
 msgid "Help"
@@ -133,6 +166,10 @@ msgstr "提問, 找答案"
 msgid "Report a Bug"
 msgstr "回報錯誤"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr "加入翻譯計畫!"
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Sikuli首頁"
@@ -145,14 +182,30 @@ msgstr "Sikuli {0} 已經釋出!"
 msgid "No update is available."
 msgstr "沒有任何更新。"
 
+#: cmdListSettings
+msgid "Settings"
+msgstr "設定"
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "自動截圖"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "命令列表"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr "搜尋"
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr "滑鼠動作"
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr "鍵盤動作"
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr "事件"
 
 #: paneMessage
 msgid "Message"
@@ -175,13 +228,31 @@ msgstr "單元測試"
 msgid "Run ({0})"
 msgstr "執行 ({0})"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr "執行"
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr "慢動作執行"
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "按下 {0} 中止"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr "建立搜尋區域"
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "建立一個「區域」限制螢幕比對範圍"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr "螢幕截圖"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -190,6 +261,10 @@ msgstr "抓取螢幕截圖 ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "插入磁碟中的圖片"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr "插入圖片 "
 
 #: msgRunningSklError
 msgid ""
@@ -449,3 +524,34 @@ msgid ""
 "is set to True."
 msgstr ""
 "開始監控螢幕或指定區域，最多 <i>time</i> 秒。如果 <i>background</i>設為True，監控將在背景與剩餘指令同時執行。"
+
+#: extBtnInstall
+msgid "Install"
+msgstr "安裝"
+
+#: extBtnInfo
+msgid "More Info"
+msgstr "更多資訊"
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr "已安裝"
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr "安裝 {0}"
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr "升級至 {0}"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "命令列表"
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "命令列表"
+
+#~ msgid "Run in slow motion"
+#~ msgstr "慢動作執行"

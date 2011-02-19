@@ -6,6 +6,7 @@ import javax.swing.text.*;
 import javax.swing.border.*;
 import java.net.URL;
 
+import org.sikuli.script.Debug;
 
 public class ButtonGenCommand extends JButton implements ActionListener, 
                                                          MouseListener {
@@ -134,7 +135,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
          pane.setCaretPosition(endPos);
          pane.setSelectionStart(endPos);
          pane.setSelectionEnd(endPos+endPosLen);
-         System.out.println("sel: " + pane.getSelectedText());
+         Debug.log(5, "sel: " + pane.getSelectedText());
       }
       pane.requestFocus();
    }

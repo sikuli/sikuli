@@ -261,8 +261,9 @@
     <ROW IniFile="Override_WorkingDir" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Application" Key="Override WorkingDir" Value="yes" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="System_Path" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="System Path" Value="[tmplib_DIR];" Action="0" Component_="Sikuli_IDE.exe"/>
     <ROW IniFile="URL" FileName="Sikuli~1.url|Sikuli&apos;s Homepage.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org" Action="0" Component_="AIShRegAnswer"/>
-    <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/documentation.shtml" Action="0" Component_="AIShRegAnswer"/>
+    <ROW IniFile="URL_1" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="URL" Value="http://sikuli.org/docx" Action="0" Component_="AIShRegAnswer"/>
     <ROW IniFile="Virtual_Machine_Parameters" FileName="Sikuli~2.ini|Sikuli-IDE.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Virtual Machine Parameters" Value="-Xms64M -Xmx512M -Dpython.path=sikuli-script.jar/ -Dfile.encoding=utf-8 " Action="0" Component_="Sikuli_IDE.exe"/>
+    <ROW IniFile="WorkingDirectory" FileName="Sikuli~2.url|Sikuli&apos;s Documentation.url" DirProperty="SHORTCUTDIR" Section="InternetShortcut" Key="WorkingDirectory" Value="[SHORTCUTDIR]" Action="0" Component_="AIShRegAnswer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>

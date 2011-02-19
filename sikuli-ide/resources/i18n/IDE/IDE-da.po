@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 16:10-0400\n"
+"POT-Creation-Date: 2011-02-08 09:24-0400\n"
 "PO-Revision-Date: 2010-12-05 23:29+0000\n"
 "Last-Translator: jesperfjoelner@hotmail.com <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-22 02:00+0000\n"
-"X-Generator: Launchpad (build 12093)\n"
+"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
+"X-Generator: Launchpad (build 12335)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -34,6 +34,10 @@ msgstr "Kør"
 #: menuView
 msgid "View"
 msgstr "Vis"
+
+#: menuTool
+msgid "Tools"
+msgstr ""
 
 #: menuFileNew
 msgid "New"
@@ -67,6 +71,14 @@ msgstr "Luk faneblad"
 msgid "Quit"
 msgstr "Luk"
 
+#: menuEditUndo
+msgid "Undo"
+msgstr ""
+
+#: menuEditRedo
+msgid "Redo"
+msgstr ""
+
 #: menuEditCut
 msgid "Cut"
 msgstr "Klip"
@@ -91,12 +103,30 @@ msgstr "Indryk"
 msgid "Un-Indent"
 msgstr "Fjern indrykninger"
 
+#: menuFind
+msgctxt "menuFind"
+msgid "Find"
+msgstr ""
+
+#: menuFindFind
+msgid "Find..."
+msgstr ""
+
+#: menuFindFindNext
+msgid "Find Next"
+msgstr ""
+
+#: menuFindFindPrev
+msgid "Find Previous"
+msgstr ""
+
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
 msgstr "Kør"
 
 #: menuRunRunAndShowActions
+msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
 msgstr ""
 
@@ -110,9 +140,12 @@ msgid "Unit Test"
 msgstr "Enhed test"
 
 #: menuViewCommandList
-msgctxt "menuViewCommandList"
 msgid "Command List"
-msgstr "Kommandoliste"
+msgstr ""
+
+#: menuToolExtensions
+msgid "Extensions..."
+msgstr ""
 
 #: menuHelp
 msgid "Help"
@@ -138,6 +171,10 @@ msgstr "Stil spørgsmål og find svar"
 msgid "Report a Bug"
 msgstr "Rapportér en fejl"
 
+#: menuHelpTranslation
+msgid "Join our translation project!"
+msgstr ""
+
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
 msgstr "Sikulis hjemmeside"
@@ -150,14 +187,30 @@ msgstr "Sikuli"
 msgid "No update is available."
 msgstr "Der er ingen tilgængelige opdateringer"
 
+#: cmdListSettings
+msgid "Settings"
+msgstr ""
+
 #: cmdListAutoCapture
 msgid "Auto Capture"
 msgstr "Auto-indfang"
 
-#: cmdListCommandList
-msgctxt "cmdListCommandList"
-msgid "Command List"
-msgstr "Kommandoliste"
+#: cmdListFind
+msgctxt "cmdListFind"
+msgid "Find"
+msgstr ""
+
+#: cmdListMouse
+msgid "Mouse Actions"
+msgstr ""
+
+#: cmdListKeyboard
+msgid "Keyboard Actions"
+msgstr ""
+
+#: cmdListObserver
+msgid "Event Observation"
+msgstr ""
 
 #: paneMessage
 msgid "Message"
@@ -180,13 +233,31 @@ msgstr "Enhedstest"
 msgid "Run ({0})"
 msgstr "Kør{0}"
 
+#: btnRunLabel
+msgctxt "btnRunLabel"
+msgid "Run"
+msgstr ""
+
+#: btnRunSlowMotionLabel
+msgctxt "btnRunSlowMotionLabel"
+msgid "Run in slow motion"
+msgstr ""
+
 #: btnRunStopHint
 msgid "Press {0} to stop"
 msgstr "Tryk {0} for at stoppe"
 
+#: btnRegionLabel
+msgid "Create Region"
+msgstr ""
+
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
 msgstr "Marker en region for at indskrænke skærm-matching"
+
+#: btnCaptureLabel
+msgid "Take screenshot"
+msgstr ""
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -195,6 +266,10 @@ msgstr "Tag et skærmbillede ({0})"
 #: btnInsertImageHint
 msgid "Insert an image from disks"
 msgstr "Indsæt et billede fra disk"
+
+#: btnInsertImageLabel
+msgid "Insert image "
+msgstr ""
 
 #: msgRunningSklError
 msgid ""
@@ -459,3 +534,31 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
+
+#: extBtnInstall
+msgid "Install"
+msgstr ""
+
+#: extBtnInfo
+msgid "More Info"
+msgstr ""
+
+#: extMsgInstalled
+msgid "Installed"
+msgstr ""
+
+#: extBtnInstallVer
+msgid "Install {0}"
+msgstr ""
+
+#: extBtnUpdateVer
+msgid "Update to {0}"
+msgstr ""
+
+#~ msgctxt "menuViewCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandoliste"
+
+#~ msgctxt "cmdListCommandList"
+#~ msgid "Command List"
+#~ msgstr "Kommandoliste"

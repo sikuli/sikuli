@@ -46,6 +46,8 @@ Here is `a complete example <http://sikuli.org/examples/TestJEdit.sikuli/TestJEd
 To run a unit testing script, you need to click on the :guilabel:`Run`
 button in the unit testing panel instead of the ordinary button. 
 
+**IMPORTANT:** Before you try to run your script in this test mode the first time, it has to be saved. Everytime you change something, you have to save it again, before the next test run.
+
 Alternatively, you also can run unit testing scripts from command line
 using the option :option:`-t test-script <-t>`.
 

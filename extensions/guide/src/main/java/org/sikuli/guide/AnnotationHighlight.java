@@ -42,8 +42,8 @@ class AnnotationHighlight extends Annotation {
 		//BufferedImage subimage = ImageUtil.getSubImageBounded(image, rectangle);
 		//g2d.drawImage(subimage, rectangle.x, rectangle.y, null);
 
-		g2d.setColor(Color.red);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));			
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));			
+      g2d.setColor(Color.black);
 		g2d.fillRect(rectangle.x,rectangle.y,rectangle.width,rectangle.height);
 
 //		Color oldcolor = g2d.getColor();

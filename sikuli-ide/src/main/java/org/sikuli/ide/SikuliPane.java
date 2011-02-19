@@ -484,7 +484,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
             strIndent += "  ";
       }
       else{
-         System.err.println("negative indentation not supported yet!!");
+         Debug.error("negative indentation not supported yet!!");
       }
       for(int i=startLine;i<endLine;i++){
          try{

@@ -15,7 +15,7 @@ public class MacUtil implements OSUtil {
    static {
       try{
          NativeLoader.loadLibrary("MacUtil");
-         System.out.println("Mac OS X utilities loaded.");
+         Debug.info("Mac OS X utilities loaded.");
       }
       catch(IOException e){
          e.printStackTrace();
@@ -48,7 +48,7 @@ public class MacUtil implements OSUtil {
       try{
          String cmd[] = {"sh", "-c", 
             "ps aux |  grep " + appName + " | awk '{print $2}' | xargs kill"};
-         System.out.println("closeApp: " + appName);
+         Debug.history("closeApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
          return p.exitValue();

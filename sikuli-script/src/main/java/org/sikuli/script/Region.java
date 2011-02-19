@@ -401,7 +401,7 @@ public class Region {
       
       while (true){         
          try {
-            Debug.log("waiting for " + target + " to appear");
+            Debug.log(2, "waiting for " + target + " to appear");
             RepeatableFind rf = new RepeatableFind(target);
             rf.repeat(timeout);
             _lastMatch = rf.getMatch();
@@ -411,11 +411,11 @@ public class Region {
          }  
          
          if (_lastMatch != null){
-            Debug.log("" + target + " has appeared.");
+            Debug.log(2, "" + target + " has appeared.");
             break;
          }
 
-         Debug.log("" + target + " has not appeared.");
+         Debug.log(2, "" + target + " has not appeared.");
          
          if (!handleFindFailed(target))
             return null;
@@ -461,15 +461,15 @@ public class Region {
     */
    public <PSC> boolean waitVanish(PSC target, double timeout) {
       try {
-         Debug.log("waiting for " + target + " to vanish");
+         Debug.log(2, "waiting for " + target + " to vanish");
          RepeatableVanish r = new RepeatableVanish(target);
          if (r.repeat(timeout)){
             // target has vanished before timeout
-            Debug.log("" + target + " has vanished");
+            Debug.log(2, "" + target + " has vanished");
             return true;
          }else{            
             // target has not vanished before timeout
-            Debug.log("" + target + " has not vanished before timeout");
+            Debug.log(2, "" + target + " has not vanished before timeout");
             return false;
          }
 
@@ -541,6 +541,9 @@ public class Region {
       int ret = 0;
       Location loc1 = getLocationFromPSRML(t1);
       Location loc2 = getLocationFromPSRML(t2);
+      Debug.history( 
+        (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
+        "DRAG "  + loc1 + " to " + loc2);
       if(loc1 != null && loc2 != null){
          pressModifiers(modifiers);
          if(drag(loc1)!=0){
@@ -582,9 +585,9 @@ public class Region {
                                                 throws  FindFailed{
       click(target, 0);
       if(text != null){
-         Debug.log("type \"" + text + "\", mod: " + 
-                   KeyEvent.getKeyModifiersText(modifiers) + 
-                   "(" + modifiers +")");
+         Debug.history(
+           (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
+               "TYPE \"" + text + "\"");
          for(int i=0; i < text.length(); i++){
             pressModifiers(modifiers);
             type_ch(text.charAt(i), PRESS_RELEASE); 
@@ -863,14 +866,18 @@ public class Region {
 
    private String getClickMsg(Location loc, int buttons, int modifiers, 
                               boolean dblClick){
-      String msg = "click";
-      if(dblClick)
-         msg = "double click";
+      String msg = "";
+      if(modifiers != 0)
+         msg += KeyEvent.getKeyModifiersText(modifiers) + "+";
+      if(buttons==InputEvent.BUTTON1_MASK && !dblClick)
+         msg += "CLICK";
+      if(buttons==InputEvent.BUTTON1_MASK && dblClick)
+         msg += "DOUBLE CLICK";
       if(buttons==InputEvent.BUTTON3_MASK)
-         msg = "right click";
+         msg += "RIGHT CLICK";
       else if(buttons==InputEvent.BUTTON2_MASK)
-         msg = "mid click";
-      msg += " on " + loc + ", MOD: " + modifiers;
+         msg += "MID CLICK";
+      msg += " on " + loc;
       return msg;
    }
 
@@ -878,7 +885,7 @@ public class Region {
                       boolean dblClick) {
       if(loc == null)
          return 0;
-      Debug.info( getClickMsg(loc, buttons, modifiers, dblClick) );
+      Debug.history( getClickMsg(loc, buttons, modifiers, dblClick) );
       pressModifiers(modifiers);
       smoothMove(loc);
       _scr.showClick(loc);

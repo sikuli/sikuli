@@ -97,19 +97,20 @@ distributed as a zipped file::
 	# now you can import every .sikuli in the same directory
 	import myLib
 
-**Loading a jar-file containing Python modules**
+**Loading a jar-file containing Java/Python modules**
 	
+.. versionadded:: X1.0-rc2
 .. py:function:: load(jar-file)
 
-	Loads a jar-file and puts its absolute path into sys.path, so a contained 
-	Python module structure can be imported afterwards.
+	Loads a jar-file and puts the absolute path to it into sys.path, so 
+        the Java or Python code in that jar-file can be imported afterwards.
 	
 	:param jar-file: either a ``filename.jar`` without any path or the absolute 
 		path to ``filename.jar``
 	:return: ``True`` if the file was found, otherwise ``False``
 	
 	**Note:** if no path is specified, Sikuli first looks into the bundle (the
-	Sikuli folder of the running script) and then into the extensions folder
+	Sikuli folder of the running script) and then into the extensions folder.
 	(more information: :ref:`Sikuli Extensions <sikuliextensions>`)
 
 .. _ControllingSikuliScriptsandtheirBehavior:
@@ -131,6 +132,13 @@ Controlling Sikuli Scripts and their Behavior
 
 .. py:class:: Settings
 
+.. versionadded:: X1.0-rc2
+.. py:attribute:: Settings.ActionLogs
+	Settings.InfoLogs
+	Settings.DebugLogs
+	
+	Either option might be switched on (True) or off (False), to show or hide the respective message type in the IDE console or on command line ([log], [info], [debug]).
+	
 .. py:attribute:: Settings.MinSimilarity
 
 	The default minimum similiarty of find operations.

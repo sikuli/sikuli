@@ -86,7 +86,7 @@ public class NativeLayerForMac implements NativeLayer {
                               String callbackMethod, String callbackType){
       int ckey = convertToCarbonKey(key);
       int cmod = convertToCarbonModifiers(mod);
-      Debug.log(1, "register hotkey Java:" + key + "(" +mod+ 
+      Debug.log(2, "register hotkey Java:" + key + "(" +mod+ 
                    ") Carbon: " + ckey + "(" + cmod + ")");
       installGlobalHotkey(ckey, cmod, ide, 
                           callbackMethod, callbackType);

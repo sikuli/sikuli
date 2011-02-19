@@ -5,6 +5,8 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.text.AbstractDocument;
 
+import org.sikuli.script.Debug;
+
 public class SikuliDocument extends DefaultStyledDocument{
    private String word = "";
    private SimpleAttributeSet keyword = new SimpleAttributeSet();
@@ -108,7 +110,8 @@ public class SikuliDocument extends DefaultStyledDocument{
       }
       catch(Exception ex){
          //whoops!
-         System.out.println("no text");
+         Debug.error("no text");
+         ex.printStackTrace();
       }
       int strLen = elementText.length();
       if (strLen == 0) {return;}
@@ -153,7 +156,8 @@ public class SikuliDocument extends DefaultStyledDocument{
       }
       catch(Exception ex){
          //whoops!
-         System.out.println("no text");
+         Debug.error("no text");
+         ex.printStackTrace();
       }
       int strLen = elementText.length();
       if (strLen == 0) {return;}
@@ -201,7 +205,8 @@ public class SikuliDocument extends DefaultStyledDocument{
       }
       catch(Exception ex){
          //whoops!
-         System.out.println("no text");
+         Debug.error("no text");
+         ex.printStackTrace();
       }
       int strLen = elementText.length();
       if (strLen == 0) {return;}
@@ -249,7 +254,8 @@ public class SikuliDocument extends DefaultStyledDocument{
       }
       catch(Exception ex){
          //whoops!
-         System.out.println("no text");
+         Debug.error("no text");
+         ex.printStackTrace();
       }
       int strLen = elementText.length();
       if (strLen == 0) {return;}
