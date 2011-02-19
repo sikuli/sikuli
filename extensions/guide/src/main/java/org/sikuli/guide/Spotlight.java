@@ -39,6 +39,8 @@ implements SingletonInteractionTarget{
    public Spotlight(SikuliGuide guide, Region target){
       this.guide = guide;
       this.target = target;
+      
+      setBackground(null);
 
       // when opaque is set to false, the content seems to get cleared properly
       // this is tested on both Windows and Mac

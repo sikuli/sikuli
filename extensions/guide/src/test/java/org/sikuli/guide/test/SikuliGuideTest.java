@@ -181,6 +181,25 @@ public class SikuliGuideTest {
    }
    
    @Test
+   public void testImage(){
+
+      SikuliGuide g = new SikuliGuide();
+      g.addImage(new Location(10,10),"tools.png");
+      g.showNow();      
+   }
+   
+   @Test
+   public void testMagnifier(){
+
+      SikuliGuide g = new SikuliGuide();
+      //g.addMagnifier(new Location(10,10),"tools.png");
+      g.addMagnifier(new Region(10,10,100,100));
+      g.addDialog("Test magnifiers");
+      g.showNow();   
+   }
+
+   
+   @Test
    public void testDialog() {
       
       

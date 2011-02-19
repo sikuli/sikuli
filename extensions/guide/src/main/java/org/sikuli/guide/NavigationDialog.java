@@ -171,6 +171,14 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       setVisible(true);
       toFront();
       
+      // force the dialog to paint right away before animation starts
+      repaint();
+      
+      // animation must start after the dialog is made visible
+      // otherwise, its content won't get completely drawn
+      // until the animation is complete
+      ((SikuliGuide)owner).startAnimation();
+      
       synchronized(owner){
          try {
             owner.wait();

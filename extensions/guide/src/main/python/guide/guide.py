@@ -9,6 +9,10 @@ from org.sikuli.script import Location
 s = UnionScreen()
 _g = SikuliGuide(s);
 
+def magnifier(target):
+	r = s.getRegionFromPSRM(target)
+	_g.addMagnifier(r)	
+
 def highlight(target):
 	r = s.getRegionFromPSRM(target)
 	_g.addHighlight(r)

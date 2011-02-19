@@ -11,8 +11,12 @@ import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.sikuli.script.Debug;
@@ -79,8 +83,15 @@ public class SikuliGuide extends TransparentWindow {
       add(content);
 
       setBounds(rect);
+      
+
+      // It turns out these are useful after all
+      // so that it works on Windows
+      ((JPanel)getContentPane()).setBackground(null);      
+      content.setBackground(null);
 
       Env.getOSUtil().setWindowOpaque(this, false);
+      //setOpacity(1.0f);
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       ((JPanel)getContentPane()).setDoubleBuffered(true);
@@ -225,6 +236,9 @@ public class SikuliGuide extends TransparentWindow {
    }
    
    public void addComponent(Component comp){
+      if (comp instanceof Flag){
+         ((Flag) comp).guide = this;
+      }
       content.add(comp);
    }
    
@@ -237,27 +251,16 @@ public class SikuliGuide extends TransparentWindow {
    
    Spotlight spotlight = null;
    public void addSpotlight(Region r){
-
-      //Region = new Region(100,100,20,20);
       spotlight = new Spotlight(this, r);
       spotlight.setAlwaysOnTop(true);
       interactionTarget = spotlight;
-    //  sh.run();
-      
-    
    }
    
    public void addText(Location location, String message, HorizontalAlignment horizontal_alignment, 
          VerticalAlignment vertical_alignment){
-
-     
-
       StaticText textbox = new StaticText(this, message);
-
       textbox.align(location, horizontal_alignment, vertical_alignment);
-      
       textbox.moveInside(_region);
-
       content.add(textbox);
       repaint();
    }
@@ -290,13 +293,8 @@ public class SikuliGuide extends TransparentWindow {
          p = new Location(r.x+r.w, r.y+r.h/2);
          h = HorizontalAlignment.LEFT;
          v = VerticalAlignment.MIDDLE; 
-      }
-      
-      
-      //loc.y = r.y;
-      
+      }      
       addText(p, message, h, v);
-      
    }
 
    NavigationDialog dialog = null;
@@ -315,7 +313,7 @@ public class SikuliGuide extends TransparentWindow {
    
    public void addDialog(NavigationDialog dialog_){
       dialog = dialog_;
-      dialog.setAlwaysOnTop(true);
+      //dialog.setAlwaysOnTop(true);
       dialog.pack();
       interactionTarget = dialog;
    }
@@ -331,6 +329,17 @@ public class SikuliGuide extends TransparentWindow {
    }
 
 
+   public void startAnimation(){
+      for (Component co : content.getComponents()){
+         if (co instanceof Flag){
+            ((Flag) co).start();
+         }
+         if (co instanceof Magnifier){
+            ((Magnifier) co).start();
+         }
+      }
+   }
+   
    public String showNowWithDialog(int style){
 
       // create the default dialog, unless the user
@@ -352,12 +361,6 @@ public class SikuliGuide extends TransparentWindow {
 
       // do these to allow static elements to be drawn
       setVisible(true);
-//      for (Component co : content.getComponents()){
-//         if (co instanceof Flag){
-//            ((Flag) co).start();
-//         }
-//      }
-//      
       toFront();
 
 
@@ -483,6 +486,34 @@ public class SikuliGuide extends TransparentWindow {
       super.toFront();
    }
 
+   public void addImage(Location location, String filename) {
+      BufferedImage bimage = null;
+      try {
+         File sourceimage = new File(filename);
+         bimage = ImageIO.read(sourceimage);
+         Image img = new Image(bimage);
+         img.setLocation(location);
+         content.add(img);
+      } catch (IOException ioe) {
+         ioe.printStackTrace();
+      }
+   }
+
+   public void addMagnifier(Region region) {
+       Magnifier mag = new Magnifier(this,region);
+       content.add(mag);
+
+//      BufferedImage bimage = null;
+//      try {
+//         File sourceimage = new File(filename);
+//         bimage = ImageIO.read(sourceimage);
+//         Magnifier mag = new Magnifier(this,bimage);
+//         mag.setLocation(location);
+//         content.add(mag);
+//      } catch (IOException ioe) {
+//         ioe.printStackTrace();
+//      }
+   }
 
 
 }
