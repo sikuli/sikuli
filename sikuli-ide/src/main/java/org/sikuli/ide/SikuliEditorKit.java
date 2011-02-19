@@ -456,15 +456,15 @@ public class SikuliEditorKit extends StyledEditorKit {
 
             // FIXME: examine the previous line and do auto-indent if 
             // 'if', 'while', 'for', or 'with' is seen.
-            if (txt instanceof SikuliPane) {
-               int indentDelta = ((SikuliPane)txt).shouldChangeNextLineIndentation(lineNum);
-               if (indentDelta > 0) {
-                  increaseCurrentLineIndentation(txt);
-               }
-               else if (indentDelta < 0) {
-                  decreaseCurrentLineIndentation(txt);
-               }
-            }
+//            if (txt instanceof SikuliPane) {
+//               int indentDelta = ((SikuliPane)txt).shouldChangeNextLineIndentation(lineNum);
+//               if (indentDelta > 0) {
+//                  increaseCurrentLineIndentation(txt, indentDelta);
+//               }
+//               else if (indentDelta < 0) {
+//                  decreaseCurrentLineIndentation(txt, -indentDelta);
+//               }
+//            }
 
          } catch (BadLocationException ble) { 
             txt.replaceSelection("\n");
@@ -473,73 +473,81 @@ public class SikuliEditorKit extends StyledEditorKit {
 
       }
 
-      private void increaseCurrentLineIndentation(JTextComponent txt) {
-         txt.replaceSelection("\t");
-      }
-
-      private void decreaseCurrentLineIndentation(JTextComponent txt) {
-         StyledDocument doc = (StyledDocument)txt.getDocument();
-         Element map = doc.getDefaultRootElement();
-         int caretPos = txt.getCaretPosition();
-         int lineNum = map.getElementIndex(caretPos);
-         Element line = map.getElement(lineNum);
-         int start = line.getStartOffset();
-         int tabsize = 4;
-
-         try {
-            // text in current line before caret
-            String s = doc.getText(start, caretPos - start);
-            // determine how much whitespace this text represents
-            int indent = 0;
-            int i;
-            for (i = 0; i < s.length(); i++) {
-               char c = s.charAt(i);
-               if (c == '\t') {
-                  // indent += tabsize - (indent % tabsize);
-                  // tabs are simply represented as tabsize blank characters, rather than
-                  // advancing to the next tabstop
-                  indent += tabsize;
-               }
-               else if (c == ' ') {
-                  indent++;
-               }
-               else {
-                  // text before caret contains non whitespace, do not unindent
-                  return;
-               }
-            }
-
-            // not enough indentation to unindent
-            if (indent < tabsize)
-               return;
-
-            // determine how many characters before caret to delete to reduce
-            // indentation by at least tabsize columns
-            int newindent = indent;
-            while (i > 0 && indent - newindent < tabsize) {
-               char c = s.charAt(--i);
-               if (c == '\t') {
-                  // newindent -= 1 + (newindent - 1) % tabsize;
-                  newindent -= tabsize;
-               }
-               // c == ' '
-               else {
-                  newindent--;
-               }
-            }
-
-            // remove whitespace, reduces indentation by at least tabsize columns
-            doc.remove(start + i, s.length() - i);
-
-            // increase indentation if it was reduced too much
-            if (indent - newindent > tabsize) {
-               char[] spaces = new char[indent - newindent - tabsize];
-               Arrays.fill(spaces, ' ');
-               txt.replaceSelection(new String(spaces));
-            }
-
-         } catch (BadLocationException e) {}
-      }
+//      private void increaseCurrentLineIndentation(JTextComponent txt, int tabstops) {
+//         char[] space = new char[tabstops];
+//         Arrays.fill(space, '\t');
+//         txt.replaceSelection(new String(space));
+//      }
+//
+//      private void decreaseCurrentLineIndentation(JTextComponent txt, int tabstops) {
+//         StyledDocument doc = (StyledDocument)txt.getDocument();
+//         Element map = doc.getDefaultRootElement();
+//         int caretPos = txt.getCaretPosition();
+//         int lineNum = map.getElementIndex(caretPos);
+//         Element line = map.getElement(lineNum);
+//         int start = line.getStartOffset();
+//         int tabsize = 4;
+//         int decreaseSpace = tabstops * tabsize;
+//
+//         try {
+//            // text in current line before caret
+//            String s = doc.getText(start, caretPos - start);
+//            // determine how much whitespace this text represents
+//            int indent = 0;
+//            int i;
+//            for (i = 0; i < s.length(); i++) {
+//               char c = s.charAt(i);
+//               if (c == '\t') {
+//                  // indent += tabsize - (indent % tabsize);
+//                  // tabs are simply represented as tabsize blank characters, rather than
+//                  // advancing to the next tabstop
+//                  indent += tabsize;
+//               }
+//               else if (c == ' ') {
+//                  indent++;
+//               }
+//               else {
+//                  // text before caret contains non whitespace, do not unindent
+//                  return;
+//               }
+//            }
+//
+//            // not enough indentation to unindent
+//            if (indent < decreaseSpace) {
+//               Debug.log(5, "cannot decrease indentation by %d", decreaseSpace);
+//               return;
+//            }
+//
+//            // determine how many characters before caret to delete to reduce
+//            // indentation by at least decreaseSpace columns
+//            int newindent = indent;
+//            while (i > 0 && indent - newindent < decreaseSpace) {
+//               char c = s.charAt(--i);
+//               if (c == '\t') {
+//                  // newindent -= 1 + (newindent - 1) % tabsize;
+//                  newindent -= tabsize;
+//               }
+//               // c == ' '
+//               else {
+//                  newindent--;
+//               }
+//            }
+//
+//            // remove whitespace, reduces indentation by at least decreaseSpace columns
+//            doc.remove(start + i, s.length() - i);
+//
+//            // increase indentation if it was reduced too much
+//            if (indent - newindent > decreaseSpace) {
+//               char[] spaces = new char[indent - newindent - decreaseSpace];
+//               Arrays.fill(spaces, ' ');
+//               txt.replaceSelection(new String(spaces));
+//            }
+//
+//         } catch (BadLocationException e) {
+//            Debug.error("could not get document text at %d, length %d", start,
+//                  caretPos - start);
+//         }
+//      }
 
    }
 
