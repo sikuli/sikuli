@@ -17,19 +17,32 @@ public class PythonIndentationHelper implements IndentationHelper {
    private static final Pattern ENDS_WITH_COLON = Pattern.compile(
          "^[^#]*:\\s*(?:#.*)?$", Pattern.DOTALL);
 
-   private static final Pattern UNINDENT_STATEMENT = Pattern
-         .compile("^\\s*(?:break|continue|pass|raise|return)");
+   private static final Pattern UNINDENT_NEXT_LINE_STATEMENT = Pattern
+         .compile("^\\s*(?:break|continue|pass|raise|return)\\b");
+
+   private static final Pattern UNINDENT_LAST_LINE_STATEMENT = Pattern
+         .compile("^\\s*(?:elif|else|except|finally)\\b");
 
    private PythonState pythonState;
    private Matcher endsWithColonMatcher = ENDS_WITH_COLON.matcher("");
-   private Matcher unindentStatementMatcher = UNINDENT_STATEMENT.matcher("");
+   private Matcher unindentNextLineStatementMatcher = UNINDENT_NEXT_LINE_STATEMENT
+         .matcher("");
+   private Matcher unindentLastLineStatementMatcher = UNINDENT_LAST_LINE_STATEMENT
+         .matcher("");
 
    public boolean endsWithColon(String logicalLine){
+      // not thread safe!
       return endsWithColonMatcher.reset(logicalLine).matches();
    }
 
-   public boolean isUnindentStatement(String logicalLine){
-      return unindentStatementMatcher.reset(logicalLine).find();
+   public boolean isUnindentNextLineStatement(String logicalLine){
+      // not thread safe!
+      return unindentNextLineStatementMatcher.reset(logicalLine).find();
+   }
+
+   public boolean isUnindentLastLineStatement(String logicalLine){
+      // not thread safe!
+      return unindentLastLineStatementMatcher.reset(logicalLine).find();
    }
 
    public PythonIndentationHelper(){
@@ -63,8 +76,22 @@ public class PythonIndentationHelper implements IndentationHelper {
 
    @Override
    public int shouldChangeLastLineIndentation(){
-      // TODO Auto-generated method stub
-      return 0;
+      // only change indentation of the first physical line of a logical line
+      if( pythonState.getPhysicalLineNumber() > pythonState
+            .getLogicalLinePhysicalStartLineNumber() )
+         return 0;
+      int change;
+      if( isUnindentLastLineStatement(pythonState.getLastPhysicalLine()) ){
+         change = -pythonState.getTabSize();
+      }else{
+         change = 0;
+      }
+      // avoid negative indentation
+      int physicalIndentation = pythonState.getLastPhysicalLineIndentation();
+      if( physicalIndentation + change < 0 ){
+         change = -physicalIndentation;
+      }
+      return change;
    }
 
    @Override
@@ -76,7 +103,7 @@ public class PythonIndentationHelper implements IndentationHelper {
          String logicalLine = pythonState.getLastLogicalLine();
          if( endsWithColon(logicalLine) ){
             change += pythonState.getTabSize();
-         }else if( isUnindentStatement(logicalLine) ){
+         }else if( isUnindentNextLineStatement(logicalLine) ){
             change -= pythonState.getTabSize();
          }
       }else if( pythonState.inLongString() ){

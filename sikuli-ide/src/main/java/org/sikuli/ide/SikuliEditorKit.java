@@ -460,9 +460,21 @@ public class SikuliEditorKit extends StyledEditorKit {
 
             IndentationHelper indentationHelper = ((SikuliPane)txt).getIndentationHelper();
             analyseDocument(doc, lineNum, indentationHelper);
-            int columns = indentationHelper.shouldChangeNextLineIndentation();
-            System.err.println("change line " + (lineNum + 2) + " indentation " + columns + " columns");
-            changeIndentation((DefaultStyledDocument)doc, lineNum + 1, columns);
+            int lastLineChange = indentationHelper.shouldChangeLastLineIndentation();
+            int nextLineChange = indentationHelper.shouldChangeNextLineIndentation();
+            if (lastLineChange != 0) {
+               Debug.log(5, "change line %d indentation by %d columns", lineNum + 1,
+                     lastLineChange);
+               changeIndentation((DefaultStyledDocument)doc, lineNum, lastLineChange);
+               // nextLineChange was determined based on indentation of last line before
+               // the change
+               nextLineChange += lastLineChange;
+            }
+            if (nextLineChange != 0) {
+               Debug.log(5, "change line %d indentation by %d columns", lineNum + 2,
+                     nextLineChange);
+               changeIndentation((DefaultStyledDocument)doc, lineNum + 1, nextLineChange);
+            }
 
          } catch (BadLocationException ble) { 
             txt.replaceSelection("\n");
