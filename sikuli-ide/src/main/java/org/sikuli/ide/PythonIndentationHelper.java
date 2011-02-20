@@ -87,7 +87,7 @@ public class PythonIndentationHelper implements IndentationHelper {
                   * pythonState.getTabSize();
          }else{
             if( pythonState.getPhysicalLineNumber() == pythonState
-                  .getLogicalLineNumber() ){
+                  .getLogicalLinePhysicalStartLineNumber() ){
                change = LONG_STRING_INDENTATION_COLUMNS;
             }else{
                change = 0;
@@ -100,7 +100,7 @@ public class PythonIndentationHelper implements IndentationHelper {
                * pythonState.getTabSize();
       }else if( pythonState.isExplicitLineJoining() ){
          if( pythonState.getPhysicalLineNumber() == pythonState
-               .getLogicalLineNumber() ){
+               .getLogicalLinePhysicalStartLineNumber() ){
             change = EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
                   * pythonState.getTabSize();
          }else{

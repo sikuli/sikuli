@@ -44,7 +44,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    private UndoManager _undo = new UndoManager();
 
-//   private Indenter _codeFormatter;
+   // TODO: move to SikuliDocument
+   private IndentationHelper _indentationHelper;
 
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
@@ -66,17 +67,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setSelectionColor(new Color(170, 200, 255));
       updateDocumentListeners();
 
-//      _codeFormatter = new PythonIndenter(new DocumentAccessor() {
-//
-//         @Override
-//         public String getLine(int linenum){
-//            try{
-//               return SikuliPane.this.getLine(linenum);
-//            }catch( BadLocationException e ){
-//               return null;
-//            }
-//         }
-//      });
+      _indentationHelper = new PythonIndentationHelper();
    }
 
    private void updateDocumentListeners(){
@@ -86,6 +77,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    public UndoManager getUndoManager(){
       return _undo;
+   }
+
+   public IndentationHelper getIndentationHelper(){
+      return _indentationHelper;
    }
 
    private void initKeyMap(){
@@ -112,7 +107,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       TabSet tabSet = new TabSet(tabs);
       SimpleAttributeSet attributes = new SimpleAttributeSet();
       StyleConstants.setFontSize(attributes, 15);
-      StyleConstants.setFontFamily(attributes, "Monospaced");
+      StyleConstants.setFontFamily(attributes, "Osaka-Mono");
       StyleConstants.setTabSet(attributes, tabSet);
       int length = getDocument().getLength();
       getStyledDocument().setParagraphAttributes(0, length, attributes, true);
@@ -844,53 +839,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return -1;
    }
 
-//   /**
-//    * Returns a line in this text pane as a string.
-//    * 
-//    * @param linenum
-//    *           the line number, 0-based.
-//    * @return the characters in line {@code linenum} as a string, including the
-//    *         trailing newline character
-//    * @throws BadLocationException
-//    *            if the specified line does not exist
-//    * @throws IllegalArgumentException
-//    *            if {@code linenum < 0}
-//    */
-//   public String getLine(int linenum) throws BadLocationException,
-//         IllegalArgumentException{
-//      if( linenum < 0 ){
-//         throw new IllegalArgumentException("linenum must be non-negative");
-//      }
-//      Element lineElement = getDocument().getDefaultRootElement().getElement(
-//            linenum);
-//      if( lineElement == null ){
-//         throw new BadLocationException("no such line", linenum);
-//      }
-//      int start = lineElement.getStartOffset();
-//      int end = lineElement.getEndOffset();
-//      return getText(start, end - start);
-//   }
-//
-//   /**
-//    * Tells whether the line after the specified line should have the same,
-//    * more, or less indentation than the specified line
-//    * 
-//    * @param linenum
-//    *           the line number, 0-based
-//    * @return the change in indentation for the line following the specified
-//    *         line, measured in tab stops. 0 means same indentation, a positive
-//    *         value means increase indentation, and a negative value means
-//    *         decrease indentation.
-//    * @throws IllegalArgumentException
-//    *            if {@code linenum} is negative
-//    */
-//   public int shouldChangeNextLineIndentation(int linenum)
-//         throws IllegalArgumentException{
-//      if( linenum < 0 ){
-//         throw new IllegalArgumentException("linenum must be non-negative");
-//      }
-//      return _codeFormatter.shouldChangeNextLineIndentation(linenum);
-//   }
+
+
 
    private class DirtyHandler implements DocumentListener {
       public void changedUpdate(DocumentEvent ev) {

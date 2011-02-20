@@ -191,11 +191,35 @@ public class PythonIndentationHelperTest extends TestCase {
    }
 
    public void testShouldChangeNextLineIndentationExplicitLineJoining(){
+      indentation.addText("print\\\n");
+      assertEquals(
+            PythonIndentationHelper.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
+                  * tabsize, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationExplicitLineJoiningRepeated(){
+      indentation.addText("print\\\n\t\t0,\\\n");
+      assertEquals(0, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationExplicitLineJoiningPhysicalLineOffset(){
+      indentation.addText("\"\"\"doc\n\"\"\"\nprint\\\n");
+      assertEquals(
+            PythonIndentationHelper.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
+                  * tabsize, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationExplicitLineJoiningPhysicalLineOffsetRepeated(){
+      indentation.addText("\"\"\"doc\n\"\"\"\nprint\\\n\t\t0,\\\n");
+      assertEquals(0, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationExplicitLineJoiningEnd(){
       indentation.addText("print\\\n\t0\n");
       assertEquals(-tabsize, indentation.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationExplicitLineJoiningIndented(){
+   public void testShouldChangeNextLineIndentationExplicitLineJoiningEndIndented(){
       indentation.addText("\tprint\\\n\t0\n");
       assertEquals(0, indentation.shouldChangeNextLineIndentation());
    }
@@ -260,6 +284,23 @@ public class PythonIndentationHelperTest extends TestCase {
    public void testShouldChangeNextLineIndentationLongStringSingleLine(){
       indentation.addText("\t\"\"\"long string\"\"\"\n");
       assertEquals(0, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongStringOpenedPhysicalLineOffset(){
+      indentation.addText("a=[0,\n\t\t1]\n\"\"\"long\n");
+      assertEquals(PythonIndentationHelper.LONG_STRING_INDENTATION_COLUMNS,
+            indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongStringContinuedPhysicalLineOffset(){
+      indentation.addText("a=[0,\n\t\t1]\n\"\"\"long\n   string\n");
+      assertEquals(0, indentation.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongStringClosedPhysicalLineOffset(){
+      indentation.addText("a=[0,\n\t\t1]\n\"\"\"long\n   string\"\"\"\n");
+      assertEquals(-PythonIndentationHelper.LONG_STRING_INDENTATION_COLUMNS,
+            indentation.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationLongStringExplicitLineJoining(){

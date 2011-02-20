@@ -456,15 +456,13 @@ public class SikuliEditorKit extends StyledEditorKit {
 
             // FIXME: examine the previous line and do auto-indent if 
             // 'if', 'while', 'for', or 'with' is seen.
-//            if (txt instanceof SikuliPane) {
-//               int indentDelta = ((SikuliPane)txt).shouldChangeNextLineIndentation(lineNum);
-//               if (indentDelta > 0) {
-//                  increaseCurrentLineIndentation(txt, indentDelta);
-//               }
-//               else if (indentDelta < 0) {
-//                  decreaseCurrentLineIndentation(txt, -indentDelta);
-//               }
-//            }
+            if (!(txt instanceof SikuliPane)) return;
+
+            IndentationHelper indentationHelper = ((SikuliPane)txt).getIndentationHelper();
+            analyseDocument(doc, lineNum, indentationHelper);
+            int columns = indentationHelper.shouldChangeNextLineIndentation();
+            System.err.println("change line " + (lineNum + 2) + " indentation " + columns + " columns");
+            changeIndentation((DefaultStyledDocument)doc, lineNum + 1, columns);
 
          } catch (BadLocationException ble) { 
             txt.replaceSelection("\n");
@@ -473,81 +471,75 @@ public class SikuliEditorKit extends StyledEditorKit {
 
       }
 
-//      private void increaseCurrentLineIndentation(JTextComponent txt, int tabstops) {
-//         char[] space = new char[tabstops];
-//         Arrays.fill(space, '\t');
-//         txt.replaceSelection(new String(space));
-//      }
-//
-//      private void decreaseCurrentLineIndentation(JTextComponent txt, int tabstops) {
-//         StyledDocument doc = (StyledDocument)txt.getDocument();
-//         Element map = doc.getDefaultRootElement();
-//         int caretPos = txt.getCaretPosition();
-//         int lineNum = map.getElementIndex(caretPos);
-//         Element line = map.getElement(lineNum);
-//         int start = line.getStartOffset();
-//         int tabsize = 4;
-//         int decreaseSpace = tabstops * tabsize;
-//
-//         try {
-//            // text in current line before caret
-//            String s = doc.getText(start, caretPos - start);
-//            // determine how much whitespace this text represents
-//            int indent = 0;
-//            int i;
-//            for (i = 0; i < s.length(); i++) {
-//               char c = s.charAt(i);
-//               if (c == '\t') {
-//                  // indent += tabsize - (indent % tabsize);
-//                  // tabs are simply represented as tabsize blank characters, rather than
-//                  // advancing to the next tabstop
-//                  indent += tabsize;
-//               }
-//               else if (c == ' ') {
-//                  indent++;
-//               }
-//               else {
-//                  // text before caret contains non whitespace, do not unindent
-//                  return;
-//               }
-//            }
-//
-//            // not enough indentation to unindent
-//            if (indent < decreaseSpace) {
-//               Debug.log(5, "cannot decrease indentation by %d", decreaseSpace);
-//               return;
-//            }
-//
-//            // determine how many characters before caret to delete to reduce
-//            // indentation by at least decreaseSpace columns
-//            int newindent = indent;
-//            while (i > 0 && indent - newindent < decreaseSpace) {
-//               char c = s.charAt(--i);
-//               if (c == '\t') {
-//                  // newindent -= 1 + (newindent - 1) % tabsize;
-//                  newindent -= tabsize;
-//               }
-//               // c == ' '
-//               else {
-//                  newindent--;
-//               }
-//            }
-//
-//            // remove whitespace, reduces indentation by at least decreaseSpace columns
-//            doc.remove(start + i, s.length() - i);
-//
-//            // increase indentation if it was reduced too much
-//            if (indent - newindent > decreaseSpace) {
-//               char[] spaces = new char[indent - newindent - decreaseSpace];
-//               Arrays.fill(spaces, ' ');
-//               txt.replaceSelection(new String(spaces));
-//            }
-//
-//         } catch (BadLocationException e) {
-//            Debug.error("could not get document text at %d, length %d", start,
-//                  caretPos - start);
-//         }
-//      }
+      private void analyseDocument(Document document, int lineNum,
+            IndentationHelper indentationHelper) throws BadLocationException {
+         Element map = document.getDefaultRootElement();
+         int endPos = map.getElement(lineNum).getEndOffset();
+         indentationHelper.reset();
+         indentationHelper.addText(document.getText(0, endPos));
+      }
+
+      /**
+       * Change the indentation of a line. Any existing leading whitespace is replaced by
+       * the appropriate number of tab characters and padded with blank characters if
+       * necessary.
+       * @param linenum the line number (0-based)
+       * @param columns the number of columns by which to increase the indentation (if
+       *        columns is greater than 0) or decrease the indentation (if columns is
+       *        less than 0)
+       * @throws BadLocationException if the specified line does not exist
+       */
+      // TODO: make this a method of SikuliDocument, no need to pass document as argument
+      private void changeIndentation(DefaultStyledDocument document, int linenum,
+            int columns) throws BadLocationException {
+         // TODO: make tabWidth a field with setter
+         int tabWidth = 4;
+
+         if (linenum < 0) {
+            throw new BadLocationException("Negative line", -1); 
+         }
+         Element map = document.getDefaultRootElement();
+         if (linenum >= map.getElementCount()) {
+            throw new BadLocationException("No such line", document.getLength() + 1); 
+         }
+         if (columns == 0) return;
+
+         Element lineElem = map.getElement(linenum);
+         int lineStart = lineElem.getStartOffset();
+         int lineLength = lineElem.getEndOffset() - lineStart;
+         String line = document.getText(lineStart, lineLength);
+
+         // determine current indentation and number of whitespace characters
+         int wsChars;
+         int indentation = 0;
+         for (wsChars = 0; wsChars < line.length(); wsChars++) {
+            char c = line.charAt(wsChars);
+            if (c == ' ') {
+               indentation++;
+            } else if (c == '\t') {
+               indentation += tabWidth;
+            } else {
+               break;
+            }
+         }
+
+         int newIndentation = indentation + columns;
+         if (newIndentation <= 0) {
+            document.remove(lineStart, wsChars);
+            return;
+         }
+
+         // build whitespace string for new indentation
+         StringBuilder newWs = new StringBuilder(newIndentation / tabWidth + tabWidth - 1);
+         int ind = 0;
+         for (; ind + tabWidth <= newIndentation; ind += tabWidth) {
+            newWs.append('\t');
+         }
+         for (; ind < newIndentation; ind++) {
+            newWs.append(' ');
+         }
+         document.replace(lineStart, wsChars, newWs.toString(), null);
+      }
 
    }
 
