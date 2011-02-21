@@ -4,8 +4,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Implements the logic of how indentation <i>should</i> change from one line to
- * the next in Python code.
+ * Implements the logic for giving hints about the (correct) indentation of new
+ * lines of Python code entered by a user, in order to automatically adjust the
+ * indentation.
+ * <p>
+ * This implementation determines the logical line structure of a Python
+ * document from the beginning of the document up to the line for which
+ * indentation hints are requested. The indentation of a line is based on the
+ * current indentation of the line and the indentation of the logical Python
+ * line that contains the line. See {@link PythonState} and <a href=
+ * "http://docs.python.org/reference/lexical_analysis.html#line-structure">line
+ * structure</a> in the <a href="http://docs.python.org/reference/">Python
+ * language reference</a> for information about logical lines.
+ * <p>
+ * This implementation provides indentation hints for the following contexts:
+ * <ul>
+ * <li>compound statements such as {@code if/elif/else}, {@code for},
+ * {@code while}, {@code try/except/finally}, function and class definitions
+ * <li>statements after which indentation is normally decreased: {@code break},
+ * {@code continue}, {@code pass}, {@code raise}, {@code return}
+ * <li>expressions in parentheses, square brackets and curly braces that extend
+ * over multiple lines (implicit line joining)
+ * <li>explicit line joining (backslash followed by end-of-line)
+ * <li>long strings
+ * </ul>
  */
 public class PythonIndentationLogic implements IndentationLogic {
 

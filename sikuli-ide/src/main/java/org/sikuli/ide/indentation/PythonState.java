@@ -8,14 +8,22 @@ import org.sikuli.script.Debug;
 
 /**
  * A python state is an object that you feed with chunks of text from a python
- * document. The text chunks must represent an increasing prefix of the python
- * document without gaps. Text chunks can be be any number of lines and can also
- * be incomplete lines. After each chunk, you can get the current state of the
- * python document seen so far. The state includes the nesting level of string
- * literals and parenthesis, the last physical and logical line seen, whether
- * the last logical line is complete, and the indentation of the last logical
- * line and the last physical line. See "line structure" in the python language
- * reference for information about physical and logical lines.
+ * document, in order to determine its logical line structure.
+ * <p>
+ * The text chunks must be fed in the same order in which they appear in the
+ * document, and there must not be any gaps between two chunks. Text chunks can
+ * be any number of lines and can also be incomplete lines.
+ * <p>
+ * After each chunk, you can get the current state of the python document seen
+ * so far. The state includes the nesting level of string literals and
+ * parenthesis, the last physical and logical line seen, whether the last
+ * physical and logical line is complete, and the indentation of the last
+ * physical and logical line.
+ * <p>
+ * See <a href=
+ * "http://docs.python.org/reference/lexical_analysis.html#line-structure">line
+ * structure</a> in the <a href="http://docs.python.org/reference/">python
+ * language reference</a> for information about physical and logical lines.
  */
 public class PythonState {
 
@@ -77,14 +85,31 @@ public class PythonState {
       reset();
    }
 
+   /**
+    * Sets the number of whitespace columns that equals a single tab. This is
+    * used to calculate the indentation of lines.
+    * 
+    * @param tabsize
+    *           the number of whitespace columns that equals a single tab
+    */
    public void setTabSize(int tabsize){
       this.tabsize = tabsize;
    }
 
+   /**
+    * Returns the number of whitespace columns equalling a single tab that is
+    * used to calculate the indentation of lines.
+    * 
+    * @return the number of whitespace columns that equals a single tab
+    */
    public int getTabSize(){
       return tabsize;
    }
 
+   /**
+    * Resets the state of this object. The new state is equivalent to an empty
+    * document.
+    */
    public void reset(){
       state.setSize(1);
       physicalLine.setLength(0);
@@ -111,6 +136,14 @@ public class PythonState {
       return s.length() == 2 && s.charAt(0) == '\\';
    }
 
+   /**
+    * Feeds a chunk of text to this object. The text will be (virtually)
+    * appended to any text that was fed to this object earlier since the last
+    * reset.
+    * 
+    * @param newChunk
+    *           a new chunk of text
+    */
    public void update(String newChunk){
       unmatchedChunk.append(newChunk);
       delimiterMatcher.reset(unmatchedChunk);
@@ -308,14 +341,41 @@ public class PythonState {
       Debug.log(9, "%s: unmatched: [%s]", state.peek().name(), unmatchedChunk);
    }
 
+   /**
+    * Returns the state of the python document seen so far.
+    * 
+    * @return the current state
+    */
    public PythonState.State getState(){
       return state.peek();
    }
 
+   /**
+    * Returns true if the state of the document seen by this object is not
+    * inside any parenthesis, string or comment.
+    * 
+    * @return true if the current state is the default state
+    */
    public boolean inDefaultState(){
       return state.peek() == State.DEFAULT;
    }
 
+   /**
+    * Returns true if the state of the document seen by this object is inside a
+    * parenthesis (including square brackets and curly braces).
+    * 
+    * @return true if the current state is inside a parenthesis
+    */
+   public boolean inParenthesis(){
+      return state.peek() == State.IN_PARENTHESIS;
+   }
+
+   /**
+    * Returns true if the state of the document seen by this object is inside a
+    * string (short string or long string).
+    * 
+    * @return true if the current state is inside a string
+    */
    public boolean inString(){
       switch( state.peek() ){
       case IN_DOUBLE_QUOTED_STRING:
@@ -326,32 +386,55 @@ public class PythonState {
       return false;
    }
 
+   /**
+    * Returns true if the state of the document seen by this object is inside a
+    * long string.
+    * 
+    * @return true if the current state is inside a long string
+    */
    public boolean inLongString(){
       return state.peek() == State.IN_LONG_STRING;
    }
 
+   /**
+    * Returns true if the state of the document seen by this object is inside a
+    * comment.
+    * 
+    * @return true if the current state is inside a comment
+    */
    public boolean inComment(){
       return state.peek() == State.IN_COMMENT;
    }
 
+   /**
+    * Returns the nesting level of parentheses and strings that the state of the
+    * document seen by this object is in. The nesting level in the default state
+    * is 0.
+    * <p>
+    * Note that parentheses can be nested at any depth, but only one level of
+    * string can be nested inside the innermost parentheses because anything
+    * inside a string is not interpreted.
+    * 
+    * @return the nesting level of parentheses and strings of the current state
+    */
    public int getDepth(){
       return state.size() - 1;
    }
 
    /**
-    * Returns the last physical line seen by this instance, including the
-    * terminating end-of-line sequence. If the last line seen by this instance
-    * is not a complete physical line, the return value is undefined.
+    * Returns the last physical line seen by this object, including the
+    * terminating end-of-line sequence. If the last line seen by this object is
+    * not a complete physical line, the return value is undefined.
     * 
-    * @return the last complete physical line seen by this instance
+    * @return the last complete physical line seen by this object
     */
    public String getLastPhysicalLine(){
       return physicalLine.toString();
    }
 
    /**
-    * Returns the last logical line seen by this instance, including the
-    * terminating end-of-line sequence. If the input seen by this instance does
+    * Returns the last logical line seen by this object, including the
+    * terminating end-of-line sequence. If the input seen by this object does
     * not end with a complete logical line, the return value is guaranteed to
     * include all complete physical lines seen of which the logical line is
     * comprised. If explicit line joining has occurred, any escaped end-of-line
@@ -365,7 +448,7 @@ public class PythonState {
 
    /**
     * Returns the physical line number of the last physical line seen by this
-    * instance.
+    * object.
     * 
     * @return the physical line number of the line returned by
     *         {@link #getLastPhysicalLine()} (0-based)
@@ -376,7 +459,7 @@ public class PythonState {
 
    /**
     * Returns the logical line number of the last logical line seen by this
-    * instance.
+    * object.
     * 
     * @return the logical line number of the line returned by
     *         {@link #getLastLogicalLine()} (0-based)
@@ -387,7 +470,7 @@ public class PythonState {
 
    /**
     * Returns the physical line number of the first physical line in the last
-    * logical line seen by this instance.
+    * logical line seen by this object.
     * 
     * @return the physical line number of the first physical line in the logical
     *         line returned by {@link #getLastLogicalLine()} (0-based)
@@ -397,9 +480,8 @@ public class PythonState {
    }
 
    /**
-    * Returns whether the last physical line seen by this instance is complete.
-    * A physical line is complete if it is terminated by an end-of-line
-    * sequence.
+    * Returns whether the last physical line seen by this object is complete. A
+    * physical line is complete if it is terminated by an end-of-line sequence.
     * 
     * @return true if the line returned by {@link #getLastPhysicalLine()} is
     *         complete
@@ -409,12 +491,12 @@ public class PythonState {
    }
 
    /**
-    * Returns whether the last logical line seen by this instance is complete. A
+    * Returns whether the last logical line seen by this object is complete. A
     * logical line is complete if all of the following are true:
     * <ul>
     * <li>the physical lines that it is comprised of are complete (i.e. it is
     * terminated by an end-of-line sequence)
-    * <li>it does not end with a physical line that is explicitely joined with
+    * <li>it does not end with a physical line that is explicitly joined with
     * the following line (i.e. the final end-of-line sequence is not preceded by
     * a backslash, unless the backslash is part of a comment)
     * <li>it does not contain any open parenthesis or string delimiter without
@@ -429,7 +511,7 @@ public class PythonState {
    }
 
    /**
-    * Returns whether the last physical line seen by this instance is explicitly
+    * Returns whether the last physical line seen by this object is explicitly
     * joined with the following line, i.e. whether its end-of-line sequence is
     * escaped with a backslash and the backslash is not inside a comment. If the
     * last physical line seen is not complete, the return value is undefined.
@@ -456,10 +538,29 @@ public class PythonState {
       return indentation;
    }
 
+   /**
+    * Returns the indentation (in columns of whitespace) of the last physical
+    * line seen by this object.
+    * <p>
+    * Any tab characters in the leading whitespace of the line are counted as
+    * the equivalent number of blank characters.
+    * 
+    * @return the indentation of the last physical line
+    */
    public int getLastPhysicalLineIndentation(){
       return getLineIndentation(physicalLine);
    }
 
+   /**
+    * Returns the indentation (in columns of whitespace) of the last logical
+    * line seen by this object. This is the indentation of the physical line
+    * which is the first line in the logical line.
+    * <p>
+    * Any tab characters in the leading whitespace of the line are counted as
+    * the equivalent number of blank characters.
+    * 
+    * @return the indentation of the last logical line
+    */
    public int getLastLogicalLineIndentation(){
       return getLineIndentation(logicalLine);
    }
