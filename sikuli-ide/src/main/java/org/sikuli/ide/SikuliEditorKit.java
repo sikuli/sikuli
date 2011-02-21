@@ -4,10 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
-import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.text.*;
+
+import org.sikuli.ide.indentation.IndentationLogic;
 
 import org.sikuli.script.Debug;
 
@@ -458,10 +459,10 @@ public class SikuliEditorKit extends StyledEditorKit {
             // 'if', 'while', 'for', or 'with' is seen.
             if (!(txt instanceof SikuliPane)) return;
 
-            IndentationHelper indentationHelper = ((SikuliPane)txt).getIndentationHelper();
-            analyseDocument(doc, lineNum, indentationHelper);
-            int lastLineChange = indentationHelper.shouldChangeLastLineIndentation();
-            int nextLineChange = indentationHelper.shouldChangeNextLineIndentation();
+            IndentationLogic indentationLogic = ((SikuliPane)txt).getIndentationLogic();
+            analyseDocument(doc, lineNum, indentationLogic);
+            int lastLineChange = indentationLogic.shouldChangeLastLineIndentation();
+            int nextLineChange = indentationLogic.shouldChangeNextLineIndentation();
             if (lastLineChange != 0) {
                Debug.log(5, "change line %d indentation by %d columns", lineNum + 1,
                      lastLineChange);
@@ -484,11 +485,11 @@ public class SikuliEditorKit extends StyledEditorKit {
       }
 
       private void analyseDocument(Document document, int lineNum,
-            IndentationHelper indentationHelper) throws BadLocationException {
+            IndentationLogic indentationLogic) throws BadLocationException {
          Element map = document.getDefaultRootElement();
          int endPos = map.getElement(lineNum).getEndOffset();
-         indentationHelper.reset();
-         indentationHelper.addText(document.getText(0, endPos));
+         indentationLogic.reset();
+         indentationLogic.addText(document.getText(0, endPos));
       }
 
       /**

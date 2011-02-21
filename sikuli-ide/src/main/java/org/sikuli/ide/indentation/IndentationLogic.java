@@ -1,9 +1,9 @@
-package org.sikuli.ide;
+package org.sikuli.ide.indentation;
 
 /**
  * 
  */
-public interface IndentationHelper {
+public interface IndentationLogic {
 
    public void setTabWidth(int tabWidth);
 

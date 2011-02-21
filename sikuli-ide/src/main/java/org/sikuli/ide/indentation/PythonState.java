@@ -1,4 +1,4 @@
-package org.sikuli.ide;
+package org.sikuli.ide.indentation;
 
 import java.util.Stack;
 import java.util.regex.Matcher;

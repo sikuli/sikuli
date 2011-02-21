@@ -1,4 +1,4 @@
-package org.sikuli.ide;
+package org.sikuli.ide.indentation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * Implements the logic of how indentation <i>should</i> change from one line to
  * the next in Python code.
  */
-public class PythonIndentationHelper implements IndentationHelper {
+public class PythonIndentationLogic implements IndentationLogic {
 
    public static final int PARENTHESIS_INDENTATION_TABSTOPS = 2;
    public static final int NESTED_PARENTHESIS_INDENTATION_TABSTOPS = 1;
@@ -45,7 +45,7 @@ public class PythonIndentationHelper implements IndentationHelper {
       return unindentLastLineStatementMatcher.reset(logicalLine).find();
    }
 
-   public PythonIndentationHelper(){
+   public PythonIndentationLogic(){
       pythonState = new PythonState();
    }
 

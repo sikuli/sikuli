@@ -1,4 +1,4 @@
-package org.sikuli.ide;
+package org.sikuli.ide.indentation;
 
 import junit.framework.TestCase;
 
