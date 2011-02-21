@@ -109,7 +109,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
       TabSet tabSet = new TabSet(tabs);
       SimpleAttributeSet attributes = new SimpleAttributeSet();
-      StyleConstants.setFontSize(attributes, 15);
+      StyleConstants.setFontSize(attributes, 18);
       StyleConstants.setFontFamily(attributes, "Osaka-Mono");
       StyleConstants.setTabSet(attributes, tabSet);
       int length = getDocument().getLength();
