@@ -73,7 +73,7 @@ public class LineNumberView extends JComponent
    private void viewChanged( int startLine, boolean structureChanged )
    {
       this.startLine = startLine;
-      this.structureChanged = structureChanged;
+      this.structureChanged |= structureChanged;
 
       revalidate();
       repaint();

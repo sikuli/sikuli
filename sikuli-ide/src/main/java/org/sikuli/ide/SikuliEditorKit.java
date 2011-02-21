@@ -8,6 +8,8 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import org.sikuli.ide.indentation.IndentationLogic;
+
 import org.sikuli.script.Debug;
 
 public class SikuliEditorKit extends StyledEditorKit {
@@ -455,11 +457,25 @@ public class SikuliEditorKit extends StyledEditorKit {
 
             // FIXME: examine the previous line and do auto-indent if 
             // 'if', 'while', 'for', or 'with' is seen.
-            /*
-            if (txt.getShouldIndentNextLine(lineNum)) {
-               txt.replaceSelection("\t");
+            if (!(txt instanceof SikuliPane)) return;
+
+            IndentationLogic indentationLogic = ((SikuliPane)txt).getIndentationLogic();
+            analyseDocument(doc, lineNum, indentationLogic);
+            int lastLineChange = indentationLogic.shouldChangeLastLineIndentation();
+            int nextLineChange = indentationLogic.shouldChangeNextLineIndentation();
+            if (lastLineChange != 0) {
+               Debug.log(5, "change line %d indentation by %d columns", lineNum + 1,
+                     lastLineChange);
+               changeIndentation((DefaultStyledDocument)doc, lineNum, lastLineChange);
+               // nextLineChange was determined based on indentation of last line before
+               // the change
+               nextLineChange += lastLineChange;
             }
-            */
+            if (nextLineChange != 0) {
+               Debug.log(5, "change line %d indentation by %d columns", lineNum + 2,
+                     nextLineChange);
+               changeIndentation((DefaultStyledDocument)doc, lineNum + 1, nextLineChange);
+            }
 
          } catch (BadLocationException ble) { 
             txt.replaceSelection("\n");
@@ -468,6 +484,75 @@ public class SikuliEditorKit extends StyledEditorKit {
 
       }
 
+      private void analyseDocument(Document document, int lineNum,
+            IndentationLogic indentationLogic) throws BadLocationException {
+         Element map = document.getDefaultRootElement();
+         int endPos = map.getElement(lineNum).getEndOffset();
+         indentationLogic.reset();
+         indentationLogic.addText(document.getText(0, endPos));
+      }
+
+      /**
+       * Change the indentation of a line. Any existing leading whitespace is replaced by
+       * the appropriate number of tab characters and padded with blank characters if
+       * necessary.
+       * @param linenum the line number (0-based)
+       * @param columns the number of columns by which to increase the indentation (if
+       *        columns is greater than 0) or decrease the indentation (if columns is
+       *        less than 0)
+       * @throws BadLocationException if the specified line does not exist
+       */
+      // TODO: make this a method of SikuliDocument, no need to pass document as argument
+      private void changeIndentation(DefaultStyledDocument document, int linenum,
+            int columns) throws BadLocationException {
+         // TODO: make tabWidth a field with setter
+         int tabWidth = 4;
+
+         if (linenum < 0) {
+            throw new BadLocationException("Negative line", -1); 
+         }
+         Element map = document.getDefaultRootElement();
+         if (linenum >= map.getElementCount()) {
+            throw new BadLocationException("No such line", document.getLength() + 1); 
+         }
+         if (columns == 0) return;
+
+         Element lineElem = map.getElement(linenum);
+         int lineStart = lineElem.getStartOffset();
+         int lineLength = lineElem.getEndOffset() - lineStart;
+         String line = document.getText(lineStart, lineLength);
+
+         // determine current indentation and number of whitespace characters
+         int wsChars;
+         int indentation = 0;
+         for (wsChars = 0; wsChars < line.length(); wsChars++) {
+            char c = line.charAt(wsChars);
+            if (c == ' ') {
+               indentation++;
+            } else if (c == '\t') {
+               indentation += tabWidth;
+            } else {
+               break;
+            }
+         }
+
+         int newIndentation = indentation + columns;
+         if (newIndentation <= 0) {
+            document.remove(lineStart, wsChars);
+            return;
+         }
+
+         // build whitespace string for new indentation
+         StringBuilder newWs = new StringBuilder(newIndentation / tabWidth + tabWidth - 1);
+         int ind = 0;
+         for (; ind + tabWidth <= newIndentation; ind += tabWidth) {
+            newWs.append('\t');
+         }
+         for (; ind < newIndentation; ind++) {
+            newWs.append(' ');
+         }
+         document.replace(lineStart, wsChars, newWs.toString(), null);
+      }
 
    }
 
