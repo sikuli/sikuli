@@ -4,10 +4,13 @@ import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.Robot;
 
+import javax.swing.JFrame;
+
 import org.junit.Test;
 import org.sikuli.guide.ClickTarget;
 import org.sikuli.guide.Flag;
 import org.sikuli.guide.Bracket;
+import org.sikuli.guide.SearchDialog;
 import org.sikuli.guide.Spotlight;
 import org.sikuli.guide.NavigationDialog;
 import org.sikuli.guide.SikuliGuide;
@@ -93,9 +96,38 @@ public class SikuliGuideTest {
       g.showNow(10);
    }
    
+   @Test
+   public void testMovingFlag(){
+      
+      SikuliGuide guide = new SikuliGuide();
+      Flag flag = new Flag(new Location(400,400),"Click here");
+      flag.guide = guide;
+      guide.addComponent(flag);
+      flag = new Flag(new Location(800,400),"or click here");
+      flag.guide = guide;
+      guide.addComponent(flag);
+
+      guide.addDialog("Animated flag");
+      guide.showNow(10);      
+   }
    
    @Test
-   public void testAdvanced(){
+   public void testHighlight(){
+      
+      SikuliGuide guide = new SikuliGuide();
+      guide.addHighlight(new Region(100,100,50,30));
+      guide.addHighlight(new Region(20,20,20,20));
+      guide.addDialog("Some Higlights");
+      guide.showNow(3);          
+
+      guide.addHighlight(new Region(300,300,50,30));
+      guide.addHighlight(new Region(420,420,20,20));
+      guide.showNow();
+   }
+   
+   
+   @Test
+   public void testSpotlight(){
       
       Screen screen = new Screen();
       SikuliGuide guide = new SikuliGuide();
@@ -114,9 +146,58 @@ public class SikuliGuideTest {
       Debug.log("Yes");
 
       //sh.run(r, "click here to run");
-      
-      
+     
    }
+   
+   @Test
+   public void testSearch(){
+//      JFrame frame = new JFrame();
+//      frame.setVisible(true);
+//      
+      SikuliGuide guide = new SikuliGuide();
+      
+      guide.addSearchDialog();
+      guide.addSearchEntry("run", new Region(20,20,50,50));
+      guide.addSearchEntry("debug", new Region(150,120,100,100));
+      guide.addSearchEntry("desk", new Region(550,120,100,100));
+      guide.addSearchEntry("running", new Region(300,40,100,150));
+      
+//      synchronized(this){
+//         try {
+//            wait();
+//         } catch (InterruptedException e) {
+//            e.printStackTrace();
+//         }
+//      }
+      
+      
+      
+     // guide.addHighlight(new Region(50,20,20,20));
+      //guide.addHighlight(new Region(100,20,20,20));
+      guide.setVisible(true);
+      Debug.log(guide.showNow(20));
+      
+  
+   }
+   
+   @Test
+   public void testImage(){
+
+      SikuliGuide g = new SikuliGuide();
+      g.addImage(new Location(10,10),"tools.png");
+      g.showNow();      
+   }
+   
+   @Test
+   public void testMagnifier(){
+
+      SikuliGuide g = new SikuliGuide();
+      //g.addMagnifier(new Location(10,10),"tools.png");
+      g.addMagnifier(new Region(10,10,100,100));
+      g.addDialog("Test magnifiers");
+      g.showNow();   
+   }
+
    
    @Test
    public void testDialog() {
@@ -124,7 +205,6 @@ public class SikuliGuideTest {
       
       SikuliGuide g = new SikuliGuide();
       
-      String cmd;
       
 //      g.addDialog("next","Step 1");
 //      cmd = g.showNow();
@@ -138,14 +218,19 @@ public class SikuliGuideTest {
 //      cmd = g.showNow();
 //      Debug.log("cmd=", cmd);
 
+         String cmd;
+      
        g.addText(new Location(50,50),"Step 1");
-       g.showNowWithDialog(SikuliGuide.FIRST);
+       cmd = g.showNowWithDialog(SikuliGuide.FIRST);
+       Debug.log("cmd=" + cmd);
        
        g.addText(new Location(50,50),"Step 2");
-       g.showNowWithDialog(SikuliGuide.MIDDLE);
+       cmd = g.showNowWithDialog(SikuliGuide.MIDDLE);
+       Debug.log("cmd=" + cmd);
 
        g.addText(new Location(50,50),"Step 3");
-       g.showNowWithDialog(SikuliGuide.LAST);
+       cmd = g.showNowWithDialog(SikuliGuide.LAST);
+       Debug.log("cmd=" + cmd);
 
    }
    
@@ -187,7 +272,7 @@ public class SikuliGuideTest {
 
    @Test
    public void testICDLSimpleSearch() throws FindFailed{
-      App a = new App("Firefox");
+      App a = new App("Chrome");
       //a.focus();
 
       Screen s = new Screen();

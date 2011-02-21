@@ -9,7 +9,28 @@ from org.sikuli.script import Location
 s = UnionScreen()
 _g = SikuliGuide(s);
 
+def magnifier(target):
+	r = s.getRegionFromPSRM(target)
+	_g.addMagnifier(r)	
 
+def highlight(target):
+	r = s.getRegionFromPSRM(target)
+	_g.addHighlight(r)
+
+def circle(target):
+	r = s.getRegionFromPSRM(target)
+	_g.addCircle(r)
+
+h = dict()
+def addEntry(target, keys):
+	for k in keys:
+		r = s.getRegionFromPSRM(target)
+		if isinstance(k, tuple):
+			h[k[0]] = k[1]
+			_g.addSearchEntry(k[0], r)
+		else:
+			_g.addSearchEntry(k, r)
+			
 def spotlight(target):
 	r = s.getRegionFromPSRM(target)
 	_g.addSpotlight(r)
@@ -49,6 +70,7 @@ def flag(target, text, side='left'):
 	else: # left
 		b = Flag(Location(r.x,r.y+r.h/2), text)	
 		b.setDirection(Flag.DIRECTION_EAST)
+	b.guide = _g
 	_g.addComponent(b)
 
 def text(target, msg, side='bottom'):
@@ -108,3 +130,10 @@ def show(arg = None):
 		_g.showNow(arg)
 	else:
 		_g.showNow()
+
+
+def search():
+	ret = _g.showNow()
+	print ret
+	if ret in h:
+		h[ret]()
