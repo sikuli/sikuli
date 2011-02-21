@@ -23,6 +23,12 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getDepth());
    }
 
+   public void testUpdateSingleQuoteEmpty(){
+      state.update("''");
+      assertEquals(PythonState.State.DEFAULT, state.getState());
+      assertEquals(0, state.getDepth());
+   }
+
    public void testUpdateSingleQuoteOpen(){
       state.update("'print (\"#");
       assertEquals(PythonState.State.IN_SINGLE_QUOTED_STRING, state.getState());
@@ -47,6 +53,12 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getDepth());
    }
 
+   public void testUpdateDoubleQuoteEmpty(){
+      state.update("\"\"");
+      assertEquals(PythonState.State.DEFAULT, state.getState());
+      assertEquals(0, state.getDepth());
+   }
+
    public void testUpdateDoubleQuoteOpen(){
       state.update("\"print ('#");
       assertEquals(PythonState.State.IN_DOUBLE_QUOTED_STRING, state.getState());
@@ -65,55 +77,123 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getDepth());
    }
 
-   public void testUpdateLongString(){
+   public void testUpdateLongSingleQuote(){
+      state.update("'''print ('#\" '' '''");
+      assertEquals(PythonState.State.DEFAULT, state.getState());
+      assertEquals(0, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteOpen(){
+      state.update("'''print ('#\" ''");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped1(){
+      state.update("'''print ('#\" \\'''");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped2(){
+      state.update("'''print ('#\" '\\''");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped3(){
+      state.update("'''print ('#\" ''\\'");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped12(){
+      state.update("'''print ('#\" \\'\\''");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped23(){
+      state.update("'''print ('#\" '\\'\\'");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscaped123(){
+      state.update("'''print ('#\" \\'\\'\\'");
+      assertEquals(PythonState.State.IN_LONG_SINGLE_QUOTED_STRING,
+            state.getState());
+      assertEquals(1, state.getDepth());
+   }
+
+   public void testUpdateLongSingleQuoteEscapedBackslash(){
+      state.update("'''print ('#\" \\\\'''");
+      assertEquals(PythonState.State.DEFAULT, state.getState());
+      assertEquals(0, state.getDepth());
+   }
+
+   public void testUpdateLongDoubleQuote(){
       state.update("\"\"\"print ('#\" \"\" \"\"\"");
       assertEquals(PythonState.State.DEFAULT, state.getState());
       assertEquals(0, state.getDepth());
    }
 
-   public void testUpdateLongStringOpen(){
+   public void testUpdateLongDoubleQuoteOpen(){
       state.update("\"\"\"print ('#\" \"\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped1(){
+   public void testUpdateLongDoubleQuoteEscaped1(){
       state.update("\"\"\"print ('#\" \\\"\"\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped2(){
+   public void testUpdateLongDoubleQuoteEscaped2(){
       state.update("\"\"\"print ('#\" \"\\\"\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped3(){
+   public void testUpdateLongDoubleQuoteEscaped3(){
       state.update("\"\"\"print ('#\" \"\"\\\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped12(){
+   public void testUpdateLongDoubleQuoteEscaped12(){
       state.update("\"\"\"print ('#\" \\\"\\\"\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped23(){
+   public void testUpdateLongDoubleQuoteEscaped23(){
       state.update("\"\"\"print ('#\" \"\\\"\\\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscaped123(){
+   public void testUpdateLongDoubleQuoteEscaped123(){
       state.update("\"\"\"print ('#\" \\\"\\\"\\\"");
-      assertEquals(PythonState.State.IN_LONG_STRING, state.getState());
+      assertEquals(PythonState.State.IN_LONG_DOUBLE_QUOTED_STRING,
+            state.getState());
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringEscapedBackslash(){
+   public void testUpdateLongDoubleQuoteEscapedBackslash(){
       state.update("\"\"\"print ('#\" \\\\\"\"\"");
       assertEquals(PythonState.State.DEFAULT, state.getState());
       assertEquals(0, state.getDepth());
@@ -197,7 +277,14 @@ public class PythonStateTest extends TestCase {
       assertEquals(1, state.getDepth());
    }
 
-   public void testUpdateLongStringExplicitJoining(){
+   public void testUpdateLongSingleQuoteExplicitJoining(){
+      state.update("'''long \\\n");
+      state.update("string'''");
+      assertEquals(PythonState.State.DEFAULT, state.getState());
+      assertEquals(0, state.getDepth());
+   }
+
+   public void testUpdateLongDoubleQuoteExplicitJoining(){
       state.update("\"\"\"long \\\n");
       state.update("string\"\"\"");
       assertEquals(PythonState.State.DEFAULT, state.getState());
@@ -455,7 +542,25 @@ public class PythonStateTest extends TestCase {
       assertEquals("{ 'a' :\n0 }\n", state.getLastLogicalLine());
    }
 
-   public void testIsLogicalLineCompleteLongString(){
+   public void testIsLogicalLineCompleteLongSingleQuote(){
+      state.update("'''long\n");
+      assertFalse(state.isLogicalLineComplete());
+      state.update("string\n");
+      assertFalse(state.isLogicalLineComplete());
+      state.update("'''\n");
+      assertTrue(state.isLogicalLineComplete());
+   }
+
+   public void testGetLastLogicalLineLongSingleQuote(){
+      state.update("'''long\n");
+      assertEquals("'''long\n", state.getLastLogicalLine());
+      state.update("string\n");
+      assertEquals("'''long\nstring\n", state.getLastLogicalLine());
+      state.update("'''\n");
+      assertEquals("'''long\nstring\n'''\n", state.getLastLogicalLine());
+   }
+
+   public void testIsLogicalLineCompleteLongDoubleQuote(){
       state.update("\"\"\"long\n");
       assertFalse(state.isLogicalLineComplete());
       state.update("string\n");
@@ -464,7 +569,7 @@ public class PythonStateTest extends TestCase {
       assertTrue(state.isLogicalLineComplete());
    }
 
-   public void testGetLastLogicalLineLongString(){
+   public void testGetLastLogicalLineLongDoubleQuote(){
       state.update("\"\"\"long\n");
       assertEquals("\"\"\"long\n", state.getLastLogicalLine());
       state.update("string\n");

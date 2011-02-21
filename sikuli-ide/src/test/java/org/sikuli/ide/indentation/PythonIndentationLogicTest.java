@@ -69,7 +69,8 @@ public class PythonIndentationLogicTest extends TestCase {
    }
 
    public void testIsUnindentNextLineStatementRaiseException(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\traise Exception()\n"));
+      assertTrue(indentlogic
+            .isUnindentNextLineStatement("\traise Exception()\n"));
    }
 
    public void testIsUnindentNextLineStatementReturn(){
@@ -375,46 +376,91 @@ public class PythonIndentationLogicTest extends TestCase {
       assertEquals(-tabsize, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringOpened(){
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringOpened(){
+      indentlogic.addText("'''long\n");
+      assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringContinued(){
+      indentlogic.addText("'''long\n   string\n");
+      assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringClosed(){
+      indentlogic.addText("'''long\n   string'''\n");
+      assertEquals(-PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringSingleLine(){
+      indentlogic.addText("\t'''long string'''\n");
+      assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringOpenedPhysicalLineOffset(){
+      indentlogic.addText("a=[0,\n\t\t1]\n'''long\n");
+      assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringContinuedPhysicalLineOffset(){
+      indentlogic.addText("a=[0,\n\t\t1]\n'''long\n   string\n");
+      assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringClosedPhysicalLineOffset(){
+      indentlogic.addText("a=[0,\n\t\t1]\n'''long\n   string'''\n");
+      assertEquals(-PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongSingleQuoteStringExplicitLineJoining(){
+      indentlogic.addText("'''long\\\n");
+      assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringOpened(){
       indentlogic.addText("\"\"\"long\n");
       assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
             indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringContinued(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringContinued(){
       indentlogic.addText("\"\"\"long\n   string\n");
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringClosed(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringClosed(){
       indentlogic.addText("\"\"\"long\n   string\"\"\"\n");
       assertEquals(-PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
             indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringSingleLine(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringSingleLine(){
       indentlogic.addText("\t\"\"\"long string\"\"\"\n");
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringOpenedPhysicalLineOffset(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringOpenedPhysicalLineOffset(){
       indentlogic.addText("a=[0,\n\t\t1]\n\"\"\"long\n");
       assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
             indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringContinuedPhysicalLineOffset(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringContinuedPhysicalLineOffset(){
       indentlogic.addText("a=[0,\n\t\t1]\n\"\"\"long\n   string\n");
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringClosedPhysicalLineOffset(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringClosedPhysicalLineOffset(){
       indentlogic.addText("a=[0,\n\t\t1]\n\"\"\"long\n   string\"\"\"\n");
       assertEquals(-PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
             indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationLongStringExplicitLineJoining(){
+   public void testShouldChangeNextLineIndentationLongDoubleQuoteStringExplicitLineJoining(){
       indentlogic.addText("\"\"\"long\\\n");
       assertEquals(PythonIndentationLogic.LONG_STRING_INDENTATION_COLUMNS,
             indentlogic.shouldChangeNextLineIndentation());
@@ -445,7 +491,12 @@ public class PythonIndentationLogicTest extends TestCase {
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationCommentLongString(){
+   public void testShouldChangeNextLineIndentationCommentLongSingleQuoteString(){
+      indentlogic.addText("#'''\n");
+      assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationCommentLongDoubleQuoteString(){
       indentlogic.addText("#\"\"\"\n");
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
@@ -455,7 +506,14 @@ public class PythonIndentationLogicTest extends TestCase {
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 
-   public void testShouldChangeNextLineIndentationParenthesisLongString(){
+   public void testShouldChangeNextLineIndentationParenthesisLongSingleQuoteString(){
+      indentlogic.addText("print ('''\n");
+      assertEquals(PythonIndentationLogic.PARENTHESIS_INDENTATION_TABSTOPS
+            * indentlogic.getTabWidth(),
+            indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationParenthesisLongDoubleQuoteString(){
       indentlogic.addText("print (\"\"\"\n");
       assertEquals(PythonIndentationLogic.PARENTHESIS_INDENTATION_TABSTOPS
             * indentlogic.getTabWidth(),

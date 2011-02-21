@@ -30,20 +30,22 @@ public class PythonState {
    public static final int DEFAULT_TABSIZE = 4;
 
    private static final Pattern START_DELIMITER = Pattern.compile(
-         "(\"\"\"|\"(?!\")|['(\\[{#]|\\\\?(?:\r|\n|\r\n)|\\\\.)",
+         "('''|\"\"\"|['\"(\\[{#]|\\\\?(?:\r|\n|\r\n)|\\\\.)",
          Pattern.MULTILINE);
    private static final Pattern DELIMITER = Pattern
-         .compile("(\"\"\"|\"(?!\")|['()\\[\\]{}#]|\\\\?(?:\r|\n|\r\n)|\\\\.)");
+         .compile("('''|\"\"\"|['\"()\\[\\]{}#]|\\\\?(?:\r|\n|\r\n)|\\\\.)");
    private static final Pattern SINGLE_QUOTE_DELIMITER = Pattern
          .compile("('|\\\\?(?:\r|\n|\r\n)|\\\\.)");
    private static final Pattern DOUBLE_QUOTE_DELIMITER = Pattern
          .compile("(\"|\\\\?(?:\r|\n|\r\n)|\\\\.)");
-   private static final Pattern LONG_STRING_DELIMITER = Pattern
+   private static final Pattern LONG_SINGLE_QUOTE_DELIMITER = Pattern
+         .compile("('''|\\\\?(?:\r|\n|\r\n)|\\\\.)");
+   private static final Pattern LONG_DOUBLE_QUOTE_DELIMITER = Pattern
          .compile("(\"\"\"|\\\\?(?:\r|\n|\r\n)|\\\\.)");
    private static final Pattern END_OF_LINE = Pattern.compile("(?:\n|\r\n?)");
 
    public static enum State{
-      DEFAULT, IN_SINGLE_QUOTED_STRING, IN_DOUBLE_QUOTED_STRING, IN_LONG_STRING, IN_PARENTHESIS, IN_COMMENT
+      DEFAULT, IN_SINGLE_QUOTED_STRING, IN_DOUBLE_QUOTED_STRING, IN_LONG_SINGLE_QUOTED_STRING, IN_LONG_DOUBLE_QUOTED_STRING, IN_PARENTHESIS, IN_COMMENT
    };
 
    private int tabsize = DEFAULT_TABSIZE;
@@ -58,8 +60,10 @@ public class PythonState {
          .useAnchoringBounds(true);
    private Matcher doubleQuoteMatcher = DOUBLE_QUOTE_DELIMITER.matcher("")
          .useAnchoringBounds(true);
-   private Matcher longStringMatcher = LONG_STRING_DELIMITER.matcher("")
-         .useAnchoringBounds(true);
+   private Matcher longSingleQuoteMatcher = LONG_SINGLE_QUOTE_DELIMITER
+         .matcher("").useAnchoringBounds(true);
+   private Matcher longDoubleQuoteMatcher = LONG_DOUBLE_QUOTE_DELIMITER
+         .matcher("").useAnchoringBounds(true);
    private Matcher endOfLineMatcher = END_OF_LINE.matcher("")
          .useAnchoringBounds(true);
 
@@ -146,12 +150,6 @@ public class PythonState {
     */
    public void update(String newChunk){
       unmatchedChunk.append(newChunk);
-      delimiterMatcher.reset(unmatchedChunk);
-      startDelimiterMatcher.reset(unmatchedChunk);
-      singleQuoteMatcher.reset(unmatchedChunk);
-      doubleQuoteMatcher.reset(unmatchedChunk);
-      longStringMatcher.reset(unmatchedChunk);
-      endOfLineMatcher.reset(unmatchedChunk);
       int i = 0;
       int j = 0;
       String m = null;
@@ -173,6 +171,7 @@ public class PythonState {
          explicitJoining = false;
          switch( state.peek() ){
          case DEFAULT:
+            startDelimiterMatcher.reset(unmatchedChunk);
             startDelimiterMatcher.region(i, unmatchedChunk.length());
             if( startDelimiterMatcher.find() ){
                m = startDelimiterMatcher.group(1);
@@ -180,8 +179,10 @@ public class PythonState {
                   state.push(State.IN_SINGLE_QUOTED_STRING);
                }else if( m.equals("\"") ){
                   state.push(State.IN_DOUBLE_QUOTED_STRING);
+               }else if( m.equals("'''") ){
+                  state.push(State.IN_LONG_SINGLE_QUOTED_STRING);
                }else if( m.equals("\"\"\"") ){
-                  state.push(State.IN_LONG_STRING);
+                  state.push(State.IN_LONG_DOUBLE_QUOTED_STRING);
                }else if( m.equals("(") || m.equals("[") || m.equals("{") ){
                   state.push(State.IN_PARENTHESIS);
                }else if( m.equals("#") ){
@@ -203,6 +204,7 @@ public class PythonState {
             }
             break;
          case IN_PARENTHESIS:
+            delimiterMatcher.reset(unmatchedChunk);
             delimiterMatcher.region(i, unmatchedChunk.length());
             if( delimiterMatcher.find() ){
                m = delimiterMatcher.group(1);
@@ -210,8 +212,10 @@ public class PythonState {
                   state.push(State.IN_SINGLE_QUOTED_STRING);
                }else if( m.equals("\"") ){
                   state.push(State.IN_DOUBLE_QUOTED_STRING);
+               }else if( m.equals("'''") ){
+                  state.push(State.IN_LONG_SINGLE_QUOTED_STRING);
                }else if( m.equals("\"\"\"") ){
-                  state.push(State.IN_LONG_STRING);
+                  state.push(State.IN_LONG_DOUBLE_QUOTED_STRING);
                }else if( m.equals("(") || m.equals("[") || m.equals("{") ){
                   state.push(State.IN_PARENTHESIS);
                }else if( m.equals(")") || m.equals("]") || m.equals("}") ){
@@ -235,6 +239,7 @@ public class PythonState {
             }
             break;
          case IN_SINGLE_QUOTED_STRING:
+            singleQuoteMatcher.reset(unmatchedChunk);
             singleQuoteMatcher.region(i, unmatchedChunk.length());
             if( singleQuoteMatcher.find() ){
                m = singleQuoteMatcher.group(1);
@@ -257,6 +262,7 @@ public class PythonState {
             }
             break;
          case IN_DOUBLE_QUOTED_STRING:
+            doubleQuoteMatcher.reset(unmatchedChunk);
             doubleQuoteMatcher.region(i, unmatchedChunk.length());
             if( doubleQuoteMatcher.find() ){
                m = doubleQuoteMatcher.group(1);
@@ -278,10 +284,34 @@ public class PythonState {
                break SCAN;
             }
             break;
-         case IN_LONG_STRING:
-            longStringMatcher.region(i, unmatchedChunk.length());
-            if( longStringMatcher.find() ){
-               m = longStringMatcher.group(1);
+         case IN_LONG_SINGLE_QUOTED_STRING:
+            longSingleQuoteMatcher.reset(unmatchedChunk);
+            longSingleQuoteMatcher.region(i, unmatchedChunk.length());
+            if( longSingleQuoteMatcher.find() ){
+               m = longSingleQuoteMatcher.group(1);
+               if( m.equals("'''") ){
+                  state.pop();
+               }else if( isEOL(m) ){
+                  completePhysicalLine = true;
+               }else if( isEscapedEOL(m) ){
+                  completePhysicalLine = true;
+                  explicitJoining = true;
+               }else if( isEscapedChar(m) ){
+                  // skip
+               }else{
+                  throw new Error("unexpected match");
+               }
+               j = i;
+               i = longSingleQuoteMatcher.end();
+            }else{
+               break SCAN;
+            }
+            break;
+         case IN_LONG_DOUBLE_QUOTED_STRING:
+            longDoubleQuoteMatcher.reset(unmatchedChunk);
+            longDoubleQuoteMatcher.region(i, unmatchedChunk.length());
+            if( longDoubleQuoteMatcher.find() ){
+               m = longDoubleQuoteMatcher.group(1);
                if( m.equals("\"\"\"") ){
                   state.pop();
                }else if( isEOL(m) ){
@@ -295,12 +325,13 @@ public class PythonState {
                   throw new Error("unexpected match");
                }
                j = i;
-               i = longStringMatcher.end();
+               i = longDoubleQuoteMatcher.end();
             }else{
                break SCAN;
             }
             break;
          case IN_COMMENT:
+            endOfLineMatcher.reset(unmatchedChunk);
             endOfLineMatcher.region(i, unmatchedChunk.length());
             if( endOfLineMatcher.find() ){
                m = endOfLineMatcher.group();
@@ -380,7 +411,8 @@ public class PythonState {
       switch( state.peek() ){
       case IN_DOUBLE_QUOTED_STRING:
       case IN_SINGLE_QUOTED_STRING:
-      case IN_LONG_STRING:
+      case IN_LONG_SINGLE_QUOTED_STRING:
+      case IN_LONG_DOUBLE_QUOTED_STRING:
          return true;
       }
       return false;
@@ -393,7 +425,8 @@ public class PythonState {
     * @return true if the current state is inside a long string
     */
    public boolean inLongString(){
-      return state.peek() == State.IN_LONG_STRING;
+      return state.peek() == State.IN_LONG_SINGLE_QUOTED_STRING
+            || state.peek() == State.IN_LONG_DOUBLE_QUOTED_STRING;
    }
 
    /**
