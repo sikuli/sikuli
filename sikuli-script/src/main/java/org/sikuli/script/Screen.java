@@ -178,7 +178,12 @@ public class Screen extends Region implements Observer {
    public void showMove(Location loc){
       showTarget(loc);
    }
-
+   
+   /**
+    * Show the click
+    *
+    * @param loc the location of the click
+    */
    public void showClick(Location loc){
       showTarget(loc);
    }

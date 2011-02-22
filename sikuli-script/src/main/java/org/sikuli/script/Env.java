@@ -129,7 +129,7 @@ public class Env {
       return fHome.getAbsolutePath();
    }
 
-   static String getSikuliVersion(){
+   public static String getSikuliVersion(){
       return SikuliVersion;
    }
 
