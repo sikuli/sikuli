@@ -9,7 +9,7 @@ import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import org.sikuli.ide.indentation.IndentationLogic;
+import org.sikuli.ide.indentation.PythonIndentation;
 
 import org.sikuli.script.Debug;
 
@@ -436,7 +436,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             int end = line.getEndOffset()-1; 
             int len = end-start;
             String s = doc.getText(start, len);
-            IndentationLogic indentationLogic = ((SikuliPane)txt).getIndentationLogic();
+            PythonIndentation indentationLogic = ((SikuliPane)txt).getIndentationLogic();
 
             String leadingWS = getLeadingWhitespace(doc, start, caretPos-start);
             StringBuffer sb = new StringBuffer("\n");
@@ -459,6 +459,11 @@ public class SikuliEditorKit extends StyledEditorKit {
                // except, def, class and auto-deindentation for break, continue,
                // pass, return
                analyseDocument(doc, lineNum, indentationLogic);
+               // auto-completion: add colon if it is obvious
+               if (indentationLogic.shouldAddColon()) {
+                  doc.insertString(end, ":", null);
+                  indentationLogic.setLastLineEndsWithColon();
+               }
                int lastLineChange = indentationLogic.shouldChangeLastLineIndentation();
                int nextLineChange = indentationLogic.shouldChangeNextLineIndentation();
                if (lastLineChange != 0) {
@@ -506,7 +511,7 @@ public class SikuliEditorKit extends StyledEditorKit {
       }
 
       private void analyseDocument(Document document, int lineNum,
-            IndentationLogic indentationLogic) throws BadLocationException {
+            PythonIndentation indentationLogic) throws BadLocationException {
          Element map = document.getDefaultRootElement();
          int endPos = map.getElement(lineNum).getEndOffset();
          indentationLogic.reset();
