@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
+import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -228,6 +229,17 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea) {
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
+         // UserPreferences pref = UserPreferences.getInstance();
+         boolean expandTab = true; // pref.getExpandTab();
+         String tabWhitespace;
+         if (expandTab) {
+            int tabWidth = 4; // pref.getTabWidth();
+            char [] blanks = new char[tabWidth];
+            Arrays.fill(blanks, ' ');
+            tabWhitespace = new String(blanks);
+         } else {
+            tabWhitespace = "\t"; 
+         }
          Caret c = textArea.getCaret();
          int dot = c.getDot();
          int mark = c.getMark();
@@ -243,12 +255,12 @@ public class SikuliEditorKit extends StyledEditorKit {
                for (int i=first; i<last; i++) {
                   elem = map.getElement(i);
                   start = elem.getStartOffset();
-                  document.insertString(start, "\t", null);
+                  document.insertString(start, tabWhitespace, null);
                }
                elem = map.getElement(last);
                start = elem.getStartOffset();
                if (Math.max(c.getDot(), c.getMark())!=start) {
-                  document.insertString(start, "\t", null);
+                  document.insertString(start, tabWhitespace, null);
                }
             } catch (BadLocationException ble) {
                ble.printStackTrace();
@@ -257,7 +269,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             }
          }
          else {
-            textArea.replaceSelection("\t");
+            textArea.replaceSelection(tabWhitespace);
          }
       }
 
@@ -283,11 +295,12 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea){
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
+         // UserPreferences pref = UserPreferences.getInstance();
          Caret c = textArea.getCaret();
          int dot = c.getDot();
          int mark = c.getMark();
          int line1 = map.getElementIndex(dot);
-         int tabSize = 3; //FIXME: replace me with the real tab size
+         int tabSize = 4; // pref.getTabWidth();
 
          if (dot!=mark) {
             int line2 = map.getElementIndex(mark);
@@ -455,8 +468,9 @@ public class SikuliEditorKit extends StyledEditorKit {
                doc.insertString(caretPos, sb.toString(), null);
             }
 
-            // FIXME: examine the previous line and do auto-indent if 
-            // 'if', 'while', 'for', or 'with' is seen.
+            // auto-indentation for python statements like if, while, for, try,
+            // except, def, class and auto-deindentation for break, continue,
+            // pass, return
             if (!(txt instanceof SikuliPane)) return;
 
             IndentationLogic indentationLogic = ((SikuliPane)txt).getIndentationLogic();
@@ -493,20 +507,27 @@ public class SikuliEditorKit extends StyledEditorKit {
       }
 
       /**
-       * Change the indentation of a line. Any existing leading whitespace is replaced by
-       * the appropriate number of tab characters and padded with blank characters if
-       * necessary.
-       * @param linenum the line number (0-based)
-       * @param columns the number of columns by which to increase the indentation (if
-       *        columns is greater than 0) or decrease the indentation (if columns is
-       *        less than 0)
-       * @throws BadLocationException if the specified line does not exist
+       * Change the indentation of a line. Any existing leading whitespace is
+       * replaced by the appropriate number of tab characters (padded with blank
+       * characters if necessary) if tab expansion in the user preferences is
+       * true, or the appropriate number of blank characters if tab expansion is
+       * false.
+       * 
+       * @param linenum
+       *           the line number (0-based)
+       * @param columns
+       *           the number of columns by which to increase the indentation
+       *           (if columns is greater than 0) or decrease the indentation
+       *           (if columns is less than 0)
+       * @throws BadLocationException
+       *            if the specified line does not exist
        */
       // TODO: make this a method of SikuliDocument, no need to pass document as argument
       private void changeIndentation(DefaultStyledDocument document, int linenum,
             int columns) throws BadLocationException {
-         // TODO: make tabWidth a field with setter
-         int tabWidth = 4;
+         // UserPreferences pref = UserPreferences.getInstance();
+         boolean expandTab = true; // pref.getExpandTab();
+         int tabWidth = 4; // pref.getTabWidth();
 
          if (linenum < 0) {
             throw new BadLocationException("Negative line", -1); 
@@ -545,8 +566,10 @@ public class SikuliEditorKit extends StyledEditorKit {
          // build whitespace string for new indentation
          StringBuilder newWs = new StringBuilder(newIndentation / tabWidth + tabWidth - 1);
          int ind = 0;
-         for (; ind + tabWidth <= newIndentation; ind += tabWidth) {
-            newWs.append('\t');
+         if (!expandTab) {
+            for (; ind + tabWidth <= newIndentation; ind += tabWidth) {
+               newWs.append('\t');
+            }
          }
          for (; ind < newIndentation; ind++) {
             newWs.append(' ');
