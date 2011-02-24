@@ -451,8 +451,12 @@ public class SikuliEditorKit extends StyledEditorKit {
                   // If the line was nothing but whitespace, select it
                   // so its contents get removed.
                   txt.setSelectionStart(start);
-                  txt.setSelectionEnd(end);
+               } else {
+                  // Select the whitespace between the caret and the EOL
+                  // to remove it
+                  txt.setSelectionStart(caretPos);
                }
+               txt.setSelectionEnd(end);
                txt.replaceSelection(sb.toString());
 
                // auto-indentation for python statements like if, while, for, try,
@@ -461,7 +465,7 @@ public class SikuliEditorKit extends StyledEditorKit {
                analyseDocument(doc, lineNum, indentationLogic);
                // auto-completion: add colon if it is obvious
                if (indentationLogic.shouldAddColon()) {
-                  doc.insertString(end, ":", null);
+                  doc.insertString(caretPos, ":", null);
                   indentationLogic.setLastLineEndsWithColon();
                }
                int lastLineChange = indentationLogic.shouldChangeLastLineIndentation();
