@@ -12,16 +12,34 @@ import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
+import org.sikuli.script.Location;
+import org.sikuli.script.Region;
+
 class AnnotationOval extends Annotation {
 	
    String text;
    int centerx,centery,cornerx,cornery;
    public AnnotationOval(int centerx, int centery, int cornerx, int cornery){
+      init(centerx,centery,cornerx,cornery);
+   }
+   
+   public AnnotationOval(Region region){
+      setRegion(region);
+   }
+   
+   void init(int centerx, int centery, int cornerx, int cornery){
       this.centerx = centerx;
       this.centery = centery;
       this.cornerx = cornerx;
       this.cornery = cornery;
       color = Color.red;
+   }
+   
+   public void setRegion(Region region){
+      Location o = region.getCenter();
+      Location p = region.getTopLeft();
+      p.translate((int)((p.x-o.x)*0.44), (int) ((p.y-o.y)*0.44));
+      init(o.x,o.y,p.x,p.y);
    }
 
    public void setColor(Color color){

@@ -22,23 +22,28 @@ import org.sikuli.script.Region;
 public class Image extends Component {
    
    BufferedImage image;
-   float ratio;
+   float scale;
    int w,h;
+   
    public Image(BufferedImage image){
       this.image = image;
-      ratio = 2.0f;      
-      w = (int) ratio*image.getWidth();
-      h = (int) ratio*image.getHeight();
+      setScale(1.0f);
+   }
+   
+   public void setScale(float scale){
+      this.scale = scale;
+      w = (int) scale*image.getWidth();
+      h = (int) scale*image.getHeight();
       setSize(new Dimension(w,h));
    }
       
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D) g;
       
-      Rectangle r = new Rectangle(5,5,120,140);
-      Ellipse2D.Double ellipse =
-         new Ellipse2D.Double(0,0,w,h);
-      g2d.clip(ellipse);      
+//      Rectangle r = new Rectangle(5,5,120,140);
+//      Ellipse2D.Double ellipse =
+//         new Ellipse2D.Double(0,0,w,h);
+//      g2d.clip(ellipse);      
       g2d.drawImage(image, 0, 0, w, h, null); 
 
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
@@ -47,7 +52,7 @@ public class Image extends Component {
       g2d.setClip(null);      
       g2d.setStroke(new BasicStroke(3.0F));      
       g2d.setColor(Color.white);
-      g2d.draw(ellipse);
+     // g2d.draw(ellipse);
 
    }
 }

@@ -4,10 +4,17 @@ from org.sikuli.guide import Flag
 from org.sikuli.guide import Bracket
 from org.sikuli.guide import NavigationDialog
 from org.sikuli.script import Location
-
+from org.sikuli.guide import Portal
 
 s = UnionScreen()
 _g = SikuliGuide(s);
+
+def portal(targets):
+	p = Portal(_g)
+	for target in targets:
+		r = s.getRegionFromPSRM(target)
+		p.addEntry("",r)
+	_g.addSingleton(p)
 
 def magnifier(target):
 	r = s.getRegionFromPSRM(target)

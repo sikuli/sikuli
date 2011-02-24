@@ -52,7 +52,7 @@ public class SikuliGuide extends TransparentWindow {
    JPanel content = new JPanel(null);
 
    ArrayList<Annotation> _annotations = new ArrayList<Annotation>();
-   ArrayList<AnnotationHighlight> _highlights = new ArrayList<AnnotationHighlight>(); 
+   ArrayList<Spotlight> _spotlights = new ArrayList<Spotlight>(); 
 
    ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
 
@@ -110,14 +110,14 @@ public class SikuliGuide extends TransparentWindow {
       super.paint(g);
 
 
-      if (_highlights.size() > 0){
+      if (_spotlights.size() > 0){
       
          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
          g2d.setColor(Color.black);
          g2d.fillRect(0,0,_region.w,_region.h);
 
          // draw highlight before other annotation elements 
-         for (AnnotationHighlight h : _highlights){
+         for (Spotlight h : _spotlights){
             h.paintAnnotation(g2d);
          }
       }
@@ -136,7 +136,7 @@ public class SikuliGuide extends TransparentWindow {
          target.dispose();
       }
       
-      _highlights.clear();
+      _spotlights.clear();
       _annotations.clear();
       content.removeAll();
       dialog = null;
@@ -188,21 +188,27 @@ public class SikuliGuide extends TransparentWindow {
 
 
    public void updateHighlights(ArrayList<Region> regions){
-      _highlights.clear();
+      _spotlights.clear();
       for (Region r : regions){
-         addHighlight(r);
+         addSpotlight(r);
       }
       repaint();
    }
    
    public void removeHighlights(){
-      _highlights.clear();
+      _spotlights.clear();
+   }
+
+   public void addSpotlight(Region region){   
+      addSpotlight(region, Spotlight.RECTANGLE);
    }
    
-   public void addHighlight(Region region){	
+   public void addSpotlight(Region region, int style){	
       Rectangle rect = new Rectangle(region.getRect());
       rect.translate(-_region.x, -_region.y);
-      _highlights.add(new AnnotationHighlight(rect));
+      Spotlight spotlight = new Spotlight(rect);
+      spotlight.setStyle(style);
+      _spotlights.add(spotlight);
    }
 
    public void addRectangle(Region region){  
@@ -249,9 +255,9 @@ public class SikuliGuide extends TransparentWindow {
       content.add(b);
    }
    
-   Spotlight spotlight = null;
-   public void addSpotlight(Region r){
-      spotlight = new Spotlight(this, r);
+   Beam spotlight = null;
+   public void addBeam(Region r){
+      spotlight = new Beam(this, r);
       spotlight.setAlwaysOnTop(true);
       interactionTarget = spotlight;
    }
@@ -425,6 +431,8 @@ public class SikuliGuide extends TransparentWindow {
          return SikuliGuideDialog.NEXT;
 
       }else{
+         
+         startAnimation();
 
          // if there's no interactive element
          // just close it after the timeout
@@ -485,14 +493,19 @@ public class SikuliGuide extends TransparentWindow {
       }     
       super.toFront();
    }
-
    public void addImage(Location location, String filename) {
+      addImage(location,filename,1.0f);
+   }
+   
+   
+   public void addImage(Location location, String filename, float scale) {
       BufferedImage bimage = null;
       try {
          File sourceimage = new File(filename);
          bimage = ImageIO.read(sourceimage);
          Image img = new Image(bimage);
          img.setLocation(location);
+         img.setScale(scale);
          content.add(img);
       } catch (IOException ioe) {
          ioe.printStackTrace();
@@ -513,6 +526,10 @@ public class SikuliGuide extends TransparentWindow {
 //      } catch (IOException ioe) {
 //         ioe.printStackTrace();
 //      }
+   }
+
+   public void addSingleton(Portal tb) {
+      this.interactionTarget = tb;      
    }
 
 

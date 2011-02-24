@@ -11,10 +11,15 @@ import org.sikuli.guide.ClickTarget;
 import org.sikuli.guide.Flag;
 import org.sikuli.guide.Bracket;
 import org.sikuli.guide.SearchDialog;
-import org.sikuli.guide.Spotlight;
+import org.sikuli.guide.Beam;
 import org.sikuli.guide.NavigationDialog;
 import org.sikuli.guide.SikuliGuide;
+import org.sikuli.guide.Portal;
 import org.sikuli.guide.SikuliGuide.Side;
+import org.sikuli.guide.Spotlight;
+
+
+
 import org.sikuli.script.App;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FindFailed;
@@ -81,6 +86,8 @@ public class SikuliGuideTest {
       bracket = new Bracket(r);
       bracket.setSide(Bracket.SIDE_BOTTOM);
       g.addComponent(bracket);
+
+      
       //g.addBookmark(r.getTopLeft(), "Hello");
       
 //      g.addDialog("This is a test dialog with really long message. hahaha. This is a " +
@@ -101,45 +108,46 @@ public class SikuliGuideTest {
       
       SikuliGuide guide = new SikuliGuide();
       Flag flag = new Flag(new Location(400,400),"Click here");
-      flag.guide = guide;
       guide.addComponent(flag);
       flag = new Flag(new Location(800,400),"or click here");
-      flag.guide = guide;
       guide.addComponent(flag);
 
-      guide.addDialog("Animated flag");
-      guide.showNow(10);      
+//      guide.addDialog("Animated flag");
+      guide.showNow(2);      
    }
-   
-   @Test
-   public void testHighlight(){
-      
-      SikuliGuide guide = new SikuliGuide();
-      guide.addHighlight(new Region(100,100,50,30));
-      guide.addHighlight(new Region(20,20,20,20));
-      guide.addDialog("Some Higlights");
-      guide.showNow(3);          
-
-      guide.addHighlight(new Region(300,300,50,30));
-      guide.addHighlight(new Region(420,420,20,20));
-      guide.showNow();
-   }
-   
    
    @Test
    public void testSpotlight(){
       
-      Screen screen = new Screen();
+      SikuliGuide guide = new SikuliGuide();
+      
+      
+      guide.addSpotlight(new Region(100,100,50,30));
+      guide.addSpotlight(new Region(20,20,20,20));
+      guide.addSpotlight(new Region(200,200,100,100), Spotlight.CIRCLE);
+
+      guide.addDialog("Some spotlights");
+      guide.showNow(3);          
+
+      guide.addSpotlight(new Region(300,300,50,30));
+      guide.addSpotlight(new Region(420,420,20,20));
+      guide.showNow(3);
+   }
+   
+   
+   @Test
+   public void testBeam(){
+      
       SikuliGuide guide = new SikuliGuide();
 
       Region r = new Region(100,100,20,20);
       guide.addText(r,"Move here", Side.TOP);
-      guide.addSpotlight(r);
+      guide.addBeam(r);
       guide.showNow();
       
       r = new Region(500,500,20,20);
       guide.addText(r,"Move here", Side.TOP);      
-      guide.addSpotlight(r);
+      guide.addBeam(r);
       guide.showNow();
 
       
@@ -185,19 +193,46 @@ public class SikuliGuideTest {
 
       SikuliGuide g = new SikuliGuide();
       g.addImage(new Location(10,10),"tools.png");
+      g.addImage(new Location(100,10),"tools.png",2.0f);
+      g.addImage(new Location(200,10),"tools.png",3.0f);
       g.showNow();      
+      
    }
    
    @Test
    public void testMagnifier(){
 
       SikuliGuide g = new SikuliGuide();
-      //g.addMagnifier(new Location(10,10),"tools.png");
-      g.addMagnifier(new Region(10,10,100,100));
-      g.addDialog("Test magnifiers");
-      g.showNow();   
+      g.addMagnifier(new Region(200,100,100,100));
+      g.showNow(5);   
    }
 
+   @Test
+   public void testPortal(){
+      
+      SikuliGuide g = new SikuliGuide();
+      Portal tb = new Portal(g);
+      
+      
+      Region r1 = new Region(100,100,50,50);
+      Region r2 = new Region(400,400,50,50);
+      Region r3 = new Region(100,400,60,70);
+      Region r4 = new Region(300,100,60,70);
+      Region r5 = new Region(500,100,60,70);
+
+      tb.addEntry("first", r1);
+      tb.addEntry("second", r2);
+      tb.addEntry("third", r3);
+      tb.addEntry("fourth", r4);
+      tb.addEntry("fifth", r5);
+      
+//      g.addCircle(r1);
+//      g.addCircle(r2);
+//      g.addCircle(r3);
+      
+      g.addSingleton(tb);
+      g.showNow();
+   }
    
    @Test
    public void testDialog() {
