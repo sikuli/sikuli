@@ -576,9 +576,9 @@ public class PythonIndentationTest extends TestCase {
       assertEquals(-tabsize, indentlogic.shouldChangeLastLineIndentation());
    }
 
-   public void testShouldChangeLastLineIndentationElseNestedIfToplevel(){
+   public void testShouldChangeLastLineIndentationElseNestedIfAlreadyUnindented(){
       indentlogic.addText("if a:\n\tif b:\n\t\tprint\n\telse:\n");
-      assertEquals(-tabsize, indentlogic.shouldChangeLastLineIndentation());
+      assertEquals(0, indentlogic.shouldChangeLastLineIndentation());
    }
 
    public void testShouldChangeLastLineIndentationElseNoIndentation(){

@@ -897,6 +897,72 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
+   public void testGetPrevPhysicalLineIndentation(){
+      state.update("def f():\n\tpass\n");
+      assertEquals(0, state.getPrevPhysicalLineIndentation());
+   }
+
+   public void testGetPrevLogicalLineIndentation(){
+      state.update("def f():\n\tpass\n");
+      assertEquals(0, state.getPrevLogicalLineIndentation());
+   }
+
+   public void testGetPrevPhysicalLineIndentationIndented(){
+      state.update("if x:\n\tprint\nelse:\n");
+      assertEquals(state.getTabSize(), state.getPrevPhysicalLineIndentation());
+   }
+
+   public void testGetPrevLogicalLineIndentationIndented(){
+      state.update("if x:\n\tprint\nelse:\n");
+      assertEquals(state.getTabSize(), state.getPrevLogicalLineIndentation());
+   }
+
+   public void testGetLastPhysicalLineIndentationIllegalState(){
+      state.update("print\n");
+      state.update("print");
+      boolean illegalState = false;
+      try{
+         state.getLastPhysicalLineIndentation();
+      }catch( IllegalStateException e ){
+         illegalState = true;
+      }
+      assertTrue(illegalState);
+   }
+
+   public void testGetLastLogicalLineIndentationIllegalState(){
+      state.update("print\n");
+      state.update("print");
+      boolean illegalState = false;
+      try{
+         state.getLastLogicalLineIndentation();
+      }catch( IllegalStateException e ){
+         illegalState = true;
+      }
+      assertTrue(illegalState);
+   }
+
+   public void testGetPrevPhysicalLineIndentationIllegalState(){
+      state.update("print\n");
+      boolean illegalState = false;
+      try{
+         state.getPrevPhysicalLineIndentation();
+      }catch( IllegalStateException e ){
+         illegalState = true;
+      }
+      assertTrue(illegalState);
+   }
+
+   public void testGetPrevLogicalLineIndentationIllegalState(){
+      state.update("print\n");
+      boolean illegalState = false;
+      try{
+         state.getPrevLogicalLineIndentation();
+      }catch( IllegalStateException e ){
+         illegalState = true;
+      }
+      assertTrue(illegalState);
+   }
+
    public void testResetNoInput(){
       state.reset();
       assertEquals(PythonState.State.DEFAULT, state.getState());
@@ -909,8 +975,6 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
    public void testResetCompletePhysicalLine(){
@@ -926,8 +990,6 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
    public void testResetInCompletePhysicalLine(){
@@ -943,8 +1005,6 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
    public void testResetInParenthesis(){
@@ -960,8 +1020,6 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
    public void testResetInString(){
@@ -977,8 +1035,6 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 
    public void testResetExplicitLineJoining(){
@@ -994,7 +1050,5 @@ public class PythonStateTest extends TestCase {
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
-      assertEquals(0, state.getLastPhysicalLineIndentation());
-      assertEquals(0, state.getLastLogicalLineIndentation());
    }
 }

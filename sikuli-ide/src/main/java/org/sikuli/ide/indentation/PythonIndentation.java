@@ -230,6 +230,12 @@ public class PythonIndentation {
       if( pythonState.getPhysicalLineNumber() > pythonState
             .getLogicalLinePhysicalStartLineNumber() )
          return 0;
+      // if this is not the first logical line and the indentation level is
+      // already less than the previous logical line, do not unindent further
+      if( pythonState.getLogicalLineNumber() > 0
+            && pythonState.getLastLogicalLineIndentation() < pythonState
+                  .getPrevLogicalLineIndentation() )
+         return 0;
       int change;
       if( isUnindentLastLineStatement(pythonState.getLastPhysicalLine()) ){
          change = -pythonState.getTabSize();
@@ -253,6 +259,8 @@ public class PythonIndentation {
     * @return the number of columns by which the indentation should be changed
     */
    public int shouldChangeNextLineIndentation(){
+      if( !pythonState.isPhysicalLineComplete() )
+         return 0;
       int logicalIndentation = pythonState.getLastLogicalLineIndentation();
       int physicalIndentation = pythonState.getLastPhysicalLineIndentation();
       int change = logicalIndentation - physicalIndentation;
