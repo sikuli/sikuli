@@ -74,6 +74,8 @@ Tutorials
 
    tutorials/index
 
+* Slide: `Practical Sikuli: using screenshots for GUI automation and testing <http://www.slideshare.net/vgod/practical-sikuli-using-screenshots-for-gui-automation-and-testing>`_.
+
 FAQ
 ^^^
 .. toctree::
