@@ -67,21 +67,17 @@
    </head>
 <body>
 <div class="info">
-<h2>set-ip.sikuli</h2> <a href="set-ip.zip">(Download this script)</a>
+<h2>rob-new.sikuli</h2> <a href="rob-new.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-ip = <span class="skw">input</span>(<span class="str">"please enter the new IP address:"</span>)
-syspref = App.open(<span class="str">"System Preferences.app"</span>)
-<span class="kw">with</span> Region(syspref.window()):
-        <span class="skw">click</span>(<img src="Network.png" />)
-        <span class="skw">click</span>(<img src="1254367484704.png" />)
-        <span class="skw">click</span>(<img src="1256519960853.png" />)
-        <span class="skw">click</span>(<img src="1254367285543.png" /> )
-        <span class="skw">wait</span>(<img src="1256520016190.png" />)
-        <span class="skw">type</span>(ip + <span class="str">"\t"</span>)
-        <span class="skw">type</span>(<span class="str">"255.255.255.0\t"</span>)
-        <span class="skw">type</span>(<span class="str">"192.168.0.254\t"</span>)
-        <span class="skw">click</span>(<img src="1254367352295.png" />)
+firefox = App.open(<span class="str">"Firefox"</span>)
+<span class="kw">with</span> Region(firefox.window()):
+        <span class="kw">while</span> <span class="kw">not</span> <span class="skw">find</span>(Pattern(<img src="1254347537847.png" />).similar(<span class="dig">0.93</span>)):
+                <span class="skw">sleep</span>(<span class="dig">1</span>)
+                <span class="skw">click</span>(<img src="1273528585844.png" />)
+
+        <span class="skw">click</span>(<img src="1273528622709.png" />)
+        <span class="skw">popup</span>(<span class="str">"Rob just said something!"</span>)
 </pre>
 </body>
 </html>

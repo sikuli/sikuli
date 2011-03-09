@@ -67,21 +67,32 @@
    </head>
 <body>
 <div class="info">
-<h2>set-ip.sikuli</h2> <a href="set-ip.zip">(Download this script)</a>
+<h2>ocr-region.sikuli</h2> <a href="ocr-region.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-ip = <span class="skw">input</span>(<span class="str">"please enter the new IP address:"</span>)
-syspref = App.open(<span class="str">"System Preferences.app"</span>)
-<span class="kw">with</span> Region(syspref.window()):
-        <span class="skw">click</span>(<img src="Network.png" />)
-        <span class="skw">click</span>(<img src="1254367484704.png" />)
-        <span class="skw">click</span>(<img src="1256519960853.png" />)
-        <span class="skw">click</span>(<img src="1254367285543.png" /> )
-        <span class="skw">wait</span>(<img src="1256520016190.png" />)
-        <span class="skw">type</span>(ip + <span class="str">"\t"</span>)
-        <span class="skw">type</span>(<span class="str">"255.255.255.0\t"</span>)
-        <span class="skw">type</span>(<span class="str">"192.168.0.254\t"</span>)
-        <span class="skw">click</span>(<img src="1254367352295.png" />)
+<span class="kw">def</span> OCR_demo():
+        <span class="skw">popup</span>(selectRegion().text())
+
+<span class="kw">def</span> OCR_demo2():
+        skype = Region(App.open(<span class="str">"Skype"</span>).window())
+        skype.<span class="skw">click</span>(<span class="str">"Add Contact"</span>)
+
+
+<span class="kw">def</span> Screenshot_naming():
+        <span class="cmt">#screenshot naming
+</span>        <span class="cmt">#"SikuliIDE.png"
+</span>
+        <span class="kw">pass</span>
+
+<span class="kw">def</span> AppClass():
+        app = App.open(<span class="str">"Skype"</span>)
+        app.window().highlight()
+        <span class="skw">popup</span>(<span class="str">"dismiss highlight"</span>)
+        app.window().highlight()
+
+<span class="cmt">#OCR_demo()
+</span><span class="cmt">#OCR_demo2()
+</span>AppClass()
 </pre>
 </body>
 </html>

@@ -67,21 +67,43 @@
    </head>
 <body>
 <div class="info">
-<h2>set-ip.sikuli</h2> <a href="set-ip.zip">(Download this script)</a>
+<h2>guide.sikuli</h2> <a href="guide.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-ip = <span class="skw">input</span>(<span class="str">"please enter the new IP address:"</span>)
-syspref = App.open(<span class="str">"System Preferences.app"</span>)
-<span class="kw">with</span> Region(syspref.window()):
-        <span class="skw">click</span>(<img src="Network.png" />)
-        <span class="skw">click</span>(<img src="1254367484704.png" />)
-        <span class="skw">click</span>(<img src="1256519960853.png" />)
-        <span class="skw">click</span>(<img src="1254367285543.png" /> )
-        <span class="skw">wait</span>(<img src="1256520016190.png" />)
-        <span class="skw">type</span>(ip + <span class="str">"\t"</span>)
-        <span class="skw">type</span>(<span class="str">"255.255.255.0\t"</span>)
-        <span class="skw">type</span>(<span class="str">"192.168.0.254\t"</span>)
-        <span class="skw">click</span>(<img src="1254367352295.png" />)
+<span class="kw">from</span> guide <span class="kw">import</span> *
+
+skype = App.focus(<span class="str">"Skype"</span>)
+
+dialog(<span class="str">"This tutorial teaches you how to use Skype."</span>)
+bracket(skype.window(), side=<span class="str">"left"</span>)
+show()
+
+text(<img src="1297814068061.png" />, <span class="str">"click me to open the dialpad"</span>, side=<span class="str">"top"</span>)
+spotlight(<img src="1297814068061.png" />)
+show()
+
+
+dialog(<span class="str">"You can call any phone number with the dialpad"</span>)
+show()
+
+
+clickable(<img src="1297814068061.png" />)
+rectangle(<img src="1297814068061.png" />)
+text(<img src="1297814068061.png" />, <span class="str">"click me again to close the dialpad"</span>)
+<span class="cmt">#dialog("Let's close the dialpad")
+</span>show()
+
+<span class="skw">click</span>(Pattern(<img src="1297814235567.png" />).targetOffset(<span class="dig">80</span>,<span class="dig">2</span>))
+
+flag(<img src="1297814547591.png" />, <span class="str">"Click me to call"</span>, side=<span class="str">"left"</span>)
+circle(<img src="1297814547591.png" />)
+dialog(<span class="str">"you can call a certain person in the address book"</span>)
+show()
+
+
+flag(<img src="1297814553097.png" />, <span class="str">"Click me to enable video chat"</span>, side=<span class="str">"left"</span>)
+dialog(<span class="str">"You can also call with video chat..."</span>)
+show()
 </pre>
 </body>
 </html>
