@@ -79,6 +79,10 @@ public class PythonState {
    private int physicalLineNumber;
    private int logicalLineNumber;
    private int logicalLinePhysicalStartLineNumber;
+   private int physicalLineIndentation;
+   private int logicalLineIndentation;
+   private int prevPhysicalLineIndentation;
+   private int prevLogicalLineIndentation;
 
    public PythonState(){
       state = new Stack<PythonState.State>();
@@ -126,6 +130,10 @@ public class PythonState {
       physicalLineNumber = 0;
       logicalLineNumber = 0;
       logicalLinePhysicalStartLineNumber = 0;
+      physicalLineIndentation = -1;
+      logicalLineIndentation = -1;
+      prevPhysicalLineIndentation = -1;
+      prevLogicalLineIndentation = -1;
    }
 
    private boolean isEOL(String s){
@@ -161,12 +169,15 @@ public class PythonState {
             physicalLine.setLength(0);
             completePhysicalLine = false;
             physicalLineNumber++;
+            prevPhysicalLineIndentation = physicalLineIndentation;
          }
          if( completeLogicalLine ){
             logicalLine.setLength(0);
             completeLogicalLine = false;
             logicalLineNumber++;
             logicalLinePhysicalStartLineNumber = physicalLineNumber;
+            prevLogicalLineIndentation = logicalLineIndentation;
+            logicalLineIndentation = -1;
          }
          explicitJoining = false;
          switch( state.peek() ){
@@ -347,6 +358,12 @@ public class PythonState {
          Debug.log(9, "matcher=[%s]", m);
          physicalLine.append(unmatchedChunk
                .substring(j + explicitJoinOffset, i));
+         if( completePhysicalLine ){
+            physicalLineIndentation = getPhysicalLineIndentation();
+            if( logicalLineIndentation < 0 ){
+               logicalLineIndentation = physicalLineIndentation;
+            }
+         }
          if( explicitJoining ){
             // delete backslash-EOL, leave text after previous match in buffer
             // and wait for more input
@@ -556,10 +573,10 @@ public class PythonState {
       return explicitJoining;
    }
 
-   private int getLineIndentation(CharSequence line){
+   private int getPhysicalLineIndentation(){
       int indentation = 0;
-      for( int i = 0; i < line.length(); i++ ){
-         char c = line.charAt(i);
+      for( int i = 0; i < physicalLine.length(); i++ ){
+         char c = physicalLine.charAt(i);
          if( c == ' ' ){
             indentation++;
          }else if( c == '\t' ){
@@ -572,16 +589,21 @@ public class PythonState {
    }
 
    /**
-    * Returns the indentation (in columns of whitespace) of the last physical
-    * line seen by this object.
+    * Returns the indentation (in columns of whitespace) of the last complete
+    * physical line seen by this object.
     * <p>
     * Any tab characters in the leading whitespace of the line are counted as
     * the equivalent number of blank characters.
     * 
-    * @return the indentation of the last physical line
+    * @return the indentation of the last complete physical line
+    * @throws IllegalStateException
+    *            if the last physical line is not complete
     */
-   public int getLastPhysicalLineIndentation(){
-      return getLineIndentation(physicalLine);
+   public int getLastPhysicalLineIndentation() throws IllegalStateException{
+      if( !completePhysicalLine ){
+         throw new IllegalStateException("incomplete physical line");
+      }
+      return physicalLineIndentation;
    }
 
    /**
@@ -593,8 +615,44 @@ public class PythonState {
     * the equivalent number of blank characters.
     * 
     * @return the indentation of the last logical line
+    * @throws IllegalStateException
+    *            if the first physical line in the last logical line is not
+    *            complete
     */
-   public int getLastLogicalLineIndentation(){
-      return getLineIndentation(logicalLine);
+   public int getLastLogicalLineIndentation() throws IllegalStateException{
+      if( logicalLineIndentation < 0 ){
+         throw new IllegalStateException("incomplete logical line");
+      }
+      return logicalLineIndentation;
+   }
+
+   /**
+    * Returns the indentation of the previous physical line.
+    * 
+    * @return the indentation of the previous physical line
+    * @throws IllegalStateException
+    *            if no complete physical line or only one complete physical line
+    *            has been seen by this object.
+    */
+   public int getPrevPhysicalLineIndentation() throws IllegalStateException{
+      if( prevPhysicalLineIndentation < 0 ){
+         throw new IllegalStateException("not enough physical lines");
+      }
+      return prevPhysicalLineIndentation;
+   }
+
+   /**
+    * Returns the indentation of the previous logical line.
+    * 
+    * @return the indentation of the previous logical line
+    * @throws IllegalStateException
+    *            if no logical line or only one logical line has been seen by
+    *            this instance
+    */
+   public int getPrevLogicalLineIndentation() throws IllegalStateException{
+      if( prevLogicalLineIndentation < 0 ){
+         throw new IllegalStateException("not enough logical lines");
+      }
+      return prevLogicalLineIndentation;
    }
 }

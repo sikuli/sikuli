@@ -21,8 +21,7 @@ import javax.imageio.*;
 import org.python.util.PythonInterpreter; 
 import org.python.core.*; 
 
-import org.sikuli.ide.indentation.IndentationLogic;
-import org.sikuli.ide.indentation.PythonIndentationLogic;
+import org.sikuli.ide.indentation.PythonIndentation;
 
 import org.sikuli.script.ImageLocator;
 import org.sikuli.script.ScriptRunner;
@@ -48,7 +47,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private UndoManager _undo = new UndoManager();
 
    // TODO: move to SikuliDocument
-   private IndentationLogic _indentationLogic;
+   private PythonIndentation _indentationLogic;
 
    public SikuliPane(){
       setEditorKitForContentType("text/python", new SikuliEditorKit());
@@ -70,7 +69,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setSelectionColor(new Color(170, 200, 255));
       updateDocumentListeners();
 
-      _indentationLogic = new PythonIndentationLogic();
+      _indentationLogic = new PythonIndentation();
    }
 
    private void updateDocumentListeners(){
@@ -82,7 +81,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return _undo;
    }
 
-   public IndentationLogic getIndentationLogic(){
+   public PythonIndentation getIndentationLogic(){
       return _indentationLogic;
    }
 

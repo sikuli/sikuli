@@ -27,3 +27,4 @@ sikuli-ide/target/linux/Sikuli-IDE/libs
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Frameworks/*.dylib
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Frameworks/*.jnilib
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Resources/Java/*.jar
+sikuli-ide/.settings
