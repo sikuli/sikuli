@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_22" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_24" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
   <void method="setProperty"> 
    <string>i18n.bundlePackage</string> 
@@ -38,6 +38,17 @@
         <object class="com.jformdesigner.model.FormLayoutManager"> 
          <class>javax.swing.JTabbedPane</class> 
         </object> 
+        <void method="setProperty"> 
+         <string>border</string> 
+         <object class="javax.swing.border.EmptyBorder"> 
+          <object class="java.awt.Insets"> 
+           <int>10</int> 
+           <int>10</int> 
+           <int>0</int> 
+           <int>10</int> 
+          </object> 
+         </object> 
+        </void> 
         <void method="auxiliary"> 
          <void method="setProperty"> 
           <string>JavaCodeGenerator.variableName</string> 
@@ -54,7 +65,7 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::61:x:1, space :::p, comp lblDelaySecs::::78:x}, comp txtHotkey::l::145:x:1}, space :p:69:p}}</string> 
+            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::93:x:1, space :::p, comp lblDelaySecs::::106:x}, comp txtHotkey::l::205:x:1}, space :p:69:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
@@ -314,11 +325,147 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::220:x, space :p:82:p}}</string> 
+            <string>par l {seq l {space :p:124:p, par l {comp lblFont::t:p::p, comp lblTabWidth::t:p::p}, space :::p, par l {comp spnTabWidth:::p:49:p, comp cmbFonts:::p:134:p}, space ::117:x}, seq l {space :95:95:95, comp chkExpandTab::::276:x, space ::76:x}, seq l {space :48:48:48, comp titleIndentation:::p::p, space ::321:x}, seq l {space :48:48:48, comp titleAppearance:::p::p, space ::317:x}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::221:x}}</string> 
+            <string>par l {seq l {space :p:29:p, comp titleAppearance:::p::p, space :::p, par b {comp lblFont::b:p::p, comp cmbFonts::b:p::p}, space :p:48:p, comp titleIndentation:::p::p, space :::p, comp chkExpandTab:::p::p, space :::p, par t {comp spnTabWidth:1::p::p, comp lblTabWidth:1::p:16:p}, space ::61:x}}</string> 
+           </void> 
+          </object> 
+          <void property="name"> 
+           <string>paneTextEditing</string> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JCheckBox</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.chkExpandTab.text</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>chkExpandTab</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.lblTabWidth.text</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>labelFor</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>spnTabWidth</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>lblTabWidth</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JComboBox</string> 
+            <void method="setProperty"> 
+             <string>enabled</string> 
+             <boolean>false</boolean> 
+            </void> 
+            <void property="name"> 
+             <string>cmbFonts</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.lblFont.text</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>labelFor</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>cmbFonts</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>lblFont</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>com.jformdesigner.designer.wrapper.JGoodiesFormsTitle</string> 
+            <void method="setProperty"> 
+             <string>textWithMnemonic</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.titleAppearance.textWithMnemonic</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>titleAppearance</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>com.jformdesigner.designer.wrapper.JGoodiesFormsTitle</string> 
+            <void method="setProperty"> 
+             <string>textWithMnemonic</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.titleIndentation.textWithMnemonic</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>titleIndentation</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JSpinner</string> 
+            <void property="name"> 
+             <string>spnTabWidth</string> 
+            </void> 
+           </object> 
+          </void> 
+         </object> 
+         <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+          <null/> 
+          <void method="setProperty"> 
+           <string>title</string> 
+           <object class="com.jformdesigner.model.FormMessage"> 
+            <null/> 
+            <string>PreferencesWin.paneTextEditing.tab.title</string> 
+           </object> 
+          </void> 
+         </object> 
+        </void> 
+        <void method="add"> 
+         <object class="com.jformdesigner.model.FormContainer"> 
+          <string>javax.swing.JPanel</string> 
+          <object class="com.jformdesigner.model.FormLayoutManager"> 
+           <class>org.jdesktop.layout.GroupLayout</class> 
+           <void method="setProperty"> 
+            <string>$horizontalGroup</string> 
+            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::280:x, space :p:82:p}}</string> 
+           </void> 
+           <void method="setProperty"> 
+            <string>$verticalGroup</string> 
+            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::211:x}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 
@@ -487,7 +634,7 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>410</int> 
+        <int>470</int> 
         <int>375</int> 
        </object> 
       </void> 
