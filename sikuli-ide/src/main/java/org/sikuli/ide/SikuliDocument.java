@@ -22,9 +22,6 @@ public class SikuliDocument extends DefaultStyledDocument{
    public static int COMMENT_MODE = 13;
    private int mode = TEXT_MODE;
 
-   public static final int DEFAULT_TAB_WIDTH = 4;
-   private int tabWidth = DEFAULT_TAB_WIDTH;
-
     private static String[] arrKeywords = {
        "and",       "del",       "for",       "is",        "raise",    
        "assert",    "elif",      "from",      "lambda",    "return",   
@@ -401,6 +398,7 @@ public class SikuliDocument extends DefaultStyledDocument{
       // determine current indentation and number of whitespace characters
       int wsChars;
       int indentation = 0;
+      int tabWidth = UserPreferences.getInstance().getTabWidth();
       for (wsChars = 0; wsChars < line.length(); wsChars++) {
          char c = line.charAt(wsChars);
          if (c == ' ') {
@@ -428,14 +426,6 @@ public class SikuliDocument extends DefaultStyledDocument{
          newWs.append(' ');
       }
       this.replace(lineStart, wsChars, newWs.toString(), null);
-   }
-
-   public int getTabWidth() {
-      return tabWidth;
-   }
-
-   public void setTabWidth(int tabWidth) {
-      this.tabWidth = tabWidth;
    }
 
    public Vector getKeywords(){

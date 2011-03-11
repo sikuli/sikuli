@@ -40,6 +40,22 @@ public class UserPreferences {
       pref.putInt("STOP_HOTKEY_MODIFIERS", mod);
    }
 
+   public void setExpandTab(boolean flag){
+      pref.putBoolean("EXPAND_TAB", flag); 
+   }
+
+   public boolean getExpandTab(){
+      return pref.getBoolean("EXPAND_TAB", true); 
+   }
+
+   public void setTabWidth(int width){
+      pref.putInt("TAB_WIDTH", width);
+   }
+
+   public int getTabWidth(){
+      return pref.getInt("TAB_WIDTH", 4); 
+   }
+
    public int getStopHotkey(){
       return pref.getInt("STOP_HOTKEY", 67); // default: 'c'
    }

@@ -229,11 +229,11 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea) {
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
-         // UserPreferences pref = UserPreferences.getInstance();
-         boolean expandTab = false; // pref.getExpandTab();
+         UserPreferences pref = UserPreferences.getInstance();
+         boolean expandTab = pref.getExpandTab();
          String tabWhitespace;
          if (expandTab) {
-            int tabWidth = 4; // pref.getTabWidth();
+            int tabWidth = pref.getTabWidth();
             char [] blanks = new char[tabWidth];
             Arrays.fill(blanks, ' ');
             tabWhitespace = new String(blanks);
@@ -295,12 +295,12 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea){
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
-         // UserPreferences pref = UserPreferences.getInstance();
+         UserPreferences pref = UserPreferences.getInstance();
          Caret c = textArea.getCaret();
          int dot = c.getDot();
          int mark = c.getMark();
          int line1 = map.getElementIndex(dot);
-         int tabSize = 4; // pref.getTabWidth();
+         int tabSize = pref.getTabWidth();
 
          if (dot!=mark) {
             int line2 = map.getElementIndex(mark);
@@ -541,9 +541,9 @@ public class SikuliEditorKit extends StyledEditorKit {
       // TODO: make this a method of SikuliDocument, no need to pass document as argument
       private void changeIndentation(DefaultStyledDocument document, int linenum,
             int columns) throws BadLocationException {
-         // UserPreferences pref = UserPreferences.getInstance();
-         boolean expandTab = false; // pref.getExpandTab();
-         int tabWidth = 4; // pref.getTabWidth();
+         UserPreferences pref = UserPreferences.getInstance();
+         boolean expandTab = pref.getExpandTab();
+         int tabWidth = pref.getTabWidth();
 
          if (linenum < 0) {
             throw new BadLocationException("Negative line", -1); 
