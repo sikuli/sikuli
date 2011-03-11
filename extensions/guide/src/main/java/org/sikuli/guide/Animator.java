@@ -107,6 +107,10 @@ class TimeBasedAnimator implements Animator{
    public boolean running(){
       return _running;
    }
+   
+   public void stop(){
+      _running = false;
+   }
 
 }
 

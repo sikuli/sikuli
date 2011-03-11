@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
@@ -38,6 +39,10 @@ public class Flag extends Component {
       
       public void animateStep(){
          int d = (int) step();
+         animateStep(d);
+      }
+      
+      public void animateStep(int d){
          if (direction == DIRECTION_EAST){
             setLocation(new Location(dest_location.x - d, dest_location.y));
          } else if (direction == DIRECTION_WEST){
@@ -49,11 +54,23 @@ public class Flag extends Component {
          }
       }
       
+      
+      
    }
    
    public void start(){
       anim = new SlidingAnimator();
       anim.animateStep();
+
+      // if the flag is outside of the screen,
+      // stop the animation
+      Rectangle r1 = getBounds();
+      Rectangle g1 = guide.getBounds();
+      Debug.log("r: " + r1 + "," + "g: " + g1);
+      if (!g1.intersects(r1)){
+         anim.animateStep(0);
+         anim.stop();
+      }
    }
 
    // which direction this bookmark is pointing
@@ -71,8 +88,16 @@ public class Flag extends Component {
    int xspacing = 5;
    int yspacing = 5;
    int d = 10;
+   
+   public Flag(Location location){
+      init(location, "      ");
+   }
 
-   public Flag(Location location, String message){
+   public Flag(Location location, String message){     
+      init(location, message);
+   }
+   
+   void init(Location location, String message){
       this.location = location;
       this.text = message;
       this.dest_location = (Location) location.clone();
@@ -163,15 +188,12 @@ public class Flag extends Component {
          rat.rotate(Math.PI);
          gp.transform(rat);
       }else if (direction == DIRECTION_NORTH){
-
          AffineTransform rat = new AffineTransform();
          rat.setToTranslation(text_width, text_height+d);
          rat.rotate(Math.PI);
          gp.transform(rat);
       }
 
-      //g2.transform(rat);
-      // g2d.fillPolygon(shape);
 
       g2d.translate(4,4);
       g2d.setColor(new Color(0.3f,0.3f,0.3f));
@@ -183,18 +205,18 @@ public class Flag extends Component {
       Stroke pen = new BasicStroke(3.0F);
       g2d.setStroke(pen);
       g2d.setColor(Color.black);
-      //g2d.fillPolygon(shape);
       g2d.fill(gp);
-      // g2d.draw(gp);
-
-
 
       g2d.setColor(Color.white);
       g2d.drawString(text, to.x + xspacing, to.y - yspacing*2);
 
       if (anim != null && anim.running()){
          anim.animateStep();
-         guide.repaint();
+         
+         Rectangle r1 = getBounds();
+         Rectangle g1 = guide.getBounds();
+         
+         guide.repaint();         
       }
 
    }

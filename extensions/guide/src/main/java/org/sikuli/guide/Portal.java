@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -28,14 +29,18 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.sikuli.script.Debug;
+import org.sikuli.script.Env;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Location;
+import org.sikuli.script.OS;
 import org.sikuli.script.Region;
 import org.sikuli.script.TransparentWindow;
 
@@ -49,6 +54,26 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       return command;
    }
    
+   class Item extends JPanel{
+      Entry entry;
+      public Item(Entry entry){
+         this.entry = entry;
+         setSelected(false);
+      }
+      
+      public void setSelected(boolean selected){
+         if (selected){            
+            setBackground(new Color(0.5f,0.5f,0.5f));
+         }else{
+            setBackground(null);            
+         }
+      }
+      
+      public Entry getEntry(){
+         return entry;
+      }
+   }
+   
    class Button extends JButton{
 
       Entry entry;
@@ -57,8 +82,9 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
          super(new ImageIcon(entry.image));         
          
          this.entry = entry;         
-         setFont(new Font("sansserif", Font.BOLD, 14));
-         setFocusable(true);
+         setFont(new Font("sansserif", 
+               Font.BOLD, 14));
+        // setFocusable(false);
 
       }
       
@@ -90,19 +116,33 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
    
    ArrayList<Entry> entries = new ArrayList<Entry>();
    public void addEntry(String key, Region region){
+      
+      
       Entry entry = new Entry(key,region); 
       entries.add(entry);
       
       Button btn = new Button(entry);
       btn.addActionListener(this);
       btn.addKeyListener(this);
-      getContentPane().add(btn);
+      
+      Item item = new Item(entry);
+      item.add(btn);
+      //item.addActionListener(this);
+      item.addKeyListener(this);
+      
+
+      if (entries.size() == 1){
+         item.setSelected(true);
+      }
+      
+      getContentPane().add(item);
       pack();
    }
    
    SikuliGuide guide;
 
    public Portal(SikuliGuide guide){
+
       this.guide = guide;
 
       try {
@@ -116,8 +156,11 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       
       Container panel = this.getContentPane();
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      
+      Border empty = BorderFactory.createEmptyBorder(5,10,5,10);
+      ((JComponent) panel).setBorder(empty);
       pack();
+//      requestFocus();
+//      setFocusable(true);
    }
    
    public void apply(Entry entry){
@@ -165,8 +208,14 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
    
    
    AnnotationOval circle;   
+   Spotlight spotlight;
    int selected = 0;
    void selectEntry(int i){
+      
+      Item b = (Item) getContentPane().getComponent(selected);
+      b.requestFocus();
+      b.setSelected(false);
+
       
       if (i < 0){
          i = entries.size() - 1;
@@ -175,9 +224,17 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       }
       
       selected = i;         
-      Button b = (Button) getContentPane().getComponent(i);
+      //Button b = (Button) getContentPane().getComponent(i);
+      //b.requestFocus();
+      
+      b = (Item) getContentPane().getComponent(selected);
       b.requestFocus();
-      circle.setRegion(b.getEntry().region);
+      b.setSelected(true);
+
+      
+      //circle.setRegion(b.getEntry().region);
+      spotlight.setRegion(b.getEntry().region);
+      
       guide.repaint();
    }
    
@@ -189,7 +246,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       }else if (k.getKeyCode() == KeyEvent.VK_UP || k.getKeyCode() == KeyEvent.VK_LEFT ){         
          selectEntry(selected-1);
       }else if (k.getKeyCode() == KeyEvent.VK_ENTER){
-         apply(((Button) k.getSource()).getEntry());
+         apply(((Item) k.getSource()).getEntry());
       }
    }
 
@@ -213,10 +270,19 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       setVisible(true);
       setAlwaysOnTop(true);
       toFront();
+      requestFocus();
             
       // add the circle to the first region
-      circle = new AnnotationOval(entries.get(0).region);
-      guide.addAnnotation(circle);
+//      circle = new AnnotationOval(entries.get(0).region);
+//      guide.addAnnotation(circle);
+      
+       //= new Spotlight(entries.get(0).region.getRect());
+       spotlight = guide.addSpotlight(entries.get(0).region, Spotlight.CIRCLE);
+      
+      //guide.addComponent(spotlight);
+      
+      
+      
       guide.repaint();
       
       synchronized(guide){
@@ -231,6 +297,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       return SikuliGuideDialog.NEXT;
    }
    
+
 }
 
 

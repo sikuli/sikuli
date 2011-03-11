@@ -3,7 +3,7 @@ PROJECT (guide Java)
 SET(VERSION 1.4.2)
 
 SET(PYTHON_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main/python)
-SET(JAVA_SOURCE_FILES    src/main/java/org/sikuli/guide/*.java)
+SET(JAVA_SOURCE_FILES    src/main/java/org/sikuli/guide/*.java src/main/java/org/sikuli/guide/util/*.java src/main/java/org/sikuli/guide/model/*.java)
 
 SET(JAR_FILE ${PROJECT_NAME}-${VERSION}.jar)
 SET(JAR_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-${VERSION}-jar)

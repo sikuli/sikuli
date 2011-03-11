@@ -84,6 +84,7 @@ public class SikuliGuide extends TransparentWindow {
 
       setBounds(rect);
       
+      setBackground(null);
 
       // It turns out these are useful after all
       // so that it works on Windows
@@ -99,6 +100,13 @@ public class SikuliGuide extends TransparentWindow {
       setVisible(false);
       setAlwaysOnTop(true);
       setFocusableWindowState(false);
+      
+      
+      
+      dialog = new NavigationDialog(this);
+      dialog.setAlwaysOnTop(true);
+      dialog.pack();
+      dialog.setLocationRelativeTo(this);
    }
 
 
@@ -109,12 +117,11 @@ public class SikuliGuide extends TransparentWindow {
 
       super.paint(g);
 
-
       if (_spotlights.size() > 0){
       
-         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-         g2d.setColor(Color.black);
-         g2d.fillRect(0,0,_region.w,_region.h);
+//         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+//         g2d.setColor(Color.black);
+//         g2d.fillRect(0,0,_region.w,_region.h);
 
          // draw highlight before other annotation elements 
          for (Spotlight h : _spotlights){
@@ -135,21 +142,26 @@ public class SikuliGuide extends TransparentWindow {
       for (ClickTarget target : _clickTargets){
          target.dispose();
       }
-      
+      setBackground(null);
+      content.setBackground(null);
       _spotlights.clear();
       _annotations.clear();
       content.removeAll();
-      dialog = null;
       interactionTarget = null;
-      spotlight = null;
+      beam = null;
       _clickTargets.clear();
    }
    
    SearchDialog search = null;
    public void addSearchDialog(){
       search = new SearchDialog(this, "Enter the search string:");
+      //search = new GUISearchDialog(this);
       search.setLocationRelativeTo(null);
       search.setAlwaysOnTop(true);
+   }
+   
+   public void setSearchDialog(SearchDialog search){
+      this.search = search;
    }
 
    public void addSearchEntry(String key, Region region){
@@ -187,28 +199,46 @@ public class SikuliGuide extends TransparentWindow {
    }
 
 
-   public void updateHighlights(ArrayList<Region> regions){
-      _spotlights.clear();
-      for (Region r : regions){
-         addSpotlight(r);
+   public void updateSpotlights(ArrayList<Region> regions){
+      removeSpotlights();
+      
+      if (regions.isEmpty()){
+         
+         setBackground(null);
+         content.setBackground(null);
+         
+      }else{
+      
+         for (Region r : regions){
+            addSpotlight(r,Spotlight.CIRCLE);
+         }
       }
+      
       repaint();
    }
    
-   public void removeHighlights(){
+   public void removeSpotlights(){
+    
       _spotlights.clear();
    }
 
-   public void addSpotlight(Region region){   
-      addSpotlight(region, Spotlight.RECTANGLE);
+   public Spotlight addSpotlight(Region region){   
+      return addSpotlight(region, Spotlight.RECTANGLE);
    }
    
-   public void addSpotlight(Region region, int style){	
+   public Spotlight addSpotlight(Region region, int style){	
       Rectangle rect = new Rectangle(region.getRect());
       rect.translate(-_region.x, -_region.y);
       Spotlight spotlight = new Spotlight(rect);
       spotlight.setStyle(style);
       _spotlights.add(spotlight);
+      
+      // if there's any spotlight added, darken the 
+      // background
+      setBackground(new Color(0f,0f,0f,0.2f));      
+      content.setBackground(new Color(0f,0f,0f,0.2f));      
+      
+      return spotlight;
    }
 
    public void addRectangle(Region region){  
@@ -241,6 +271,11 @@ public class SikuliGuide extends TransparentWindow {
       addText(location, message, HorizontalAlignment.LEFT, VerticalAlignment.TOP);      
    }
    
+   public void addFlag(Location location, String message){
+      Flag flag = new Flag(location, message);
+      addComponent(flag);
+   }
+   
    public void addComponent(Component comp){
       if (comp instanceof Flag){
          ((Flag) comp).guide = this;
@@ -255,11 +290,11 @@ public class SikuliGuide extends TransparentWindow {
       content.add(b);
    }
    
-   Beam spotlight = null;
+   Beam beam = null;
    public void addBeam(Region r){
-      spotlight = new Beam(this, r);
-      spotlight.setAlwaysOnTop(true);
-      interactionTarget = spotlight;
+      beam = new Beam(this, r);
+      beam.setAlwaysOnTop(true);
+      interactionTarget = beam;
    }
    
    public void addText(Location location, String message, HorizontalAlignment horizontal_alignment, 
@@ -304,23 +339,22 @@ public class SikuliGuide extends TransparentWindow {
    }
 
    NavigationDialog dialog = null;
-   public void addDialog(String message, int style){
-      dialog = new NavigationDialog(this, message, style);  
-      dialog.setAlwaysOnTop(true);
-      dialog.pack();
+   public void setDialog(String message, int style){
+      dialog.setMessage(message);
+      dialog.setStyle(style);
       interactionTarget = dialog;
    }
 
-   public void addDialog(String message){
-      addDialog(message, SIMPLE);
-      dialog.setLocationRelativeTo(this);
-      interactionTarget = dialog;
+   public NavigationDialog getDialog(){
+      return dialog;
    }
    
-   public void addDialog(NavigationDialog dialog_){
+   public void setDialog(String message){
+      setDialog(message, SIMPLE);
+   }
+   
+   public void setDialog(NavigationDialog dialog_){
       dialog = dialog_;
-      //dialog.setAlwaysOnTop(true);
-      dialog.pack();
       interactionTarget = dialog;
    }
 
@@ -347,15 +381,8 @@ public class SikuliGuide extends TransparentWindow {
    }
    
    public String showNowWithDialog(int style){
-
-      // create the default dialog, unless the user
-      // has already added one
-      if (dialog == null){
-         addDialog("",style);
-         dialog.setLocationRelativeTo(this);
-      } else{
-         dialog.setStyle(style);
-      }
+      dialog.setStyle(style);
+      setTransition(dialog);
       return showNow();        
    }
 
@@ -375,6 +402,9 @@ public class SikuliGuide extends TransparentWindow {
          
          search.setVisible(true);
          search.requestFocus();
+         
+         
+         
          synchronized(this){
             try {
                wait();
@@ -515,21 +545,10 @@ public class SikuliGuide extends TransparentWindow {
    public void addMagnifier(Region region) {
        Magnifier mag = new Magnifier(this,region);
        content.add(mag);
-
-//      BufferedImage bimage = null;
-//      try {
-//         File sourceimage = new File(filename);
-//         bimage = ImageIO.read(sourceimage);
-//         Magnifier mag = new Magnifier(this,bimage);
-//         mag.setLocation(location);
-//         content.add(mag);
-//      } catch (IOException ioe) {
-//         ioe.printStackTrace();
-//      }
    }
 
-   public void addSingleton(Portal tb) {
-      this.interactionTarget = tb;      
+   public void setTransition(SingletonInteractionTarget t) {
+      this.interactionTarget = t;      
    }
 
 

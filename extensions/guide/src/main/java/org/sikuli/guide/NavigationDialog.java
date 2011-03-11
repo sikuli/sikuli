@@ -48,8 +48,6 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       public Button(String text){
          super(text);
          Font f = new Font("sansserif", Font.BOLD, 14);
-//         setBackground(new Color(0.2F,0.2f,0.2f));
-//         setForeground(Color.white);
          setFont(f);
          setFocusable(false);
       }
@@ -61,26 +59,30 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
    Button close;
    Box button_row;
    
+   public NavigationDialog(Object owner_){
+      super(owner_);
+      init("",SikuliGuide.SIMPLE);
+   }
+   
    public NavigationDialog(Object owner_, String message_, int style){
       super(owner_);
-      
+      init(message_,style);
+   }
+   
+   void init(String message_, int style){
+     
       // these are meant to prevent the message box from stealing
       // focus when it's clicked, but they don't seem to work
 //      setFocusableWindowState(false);
 //      setFocusable(false);
       
-
-      
-      this.owner = owner_;
       this.message = message_;
-
-      //setMinimumSize(new Dimension(200,50));
 
       Container panel = this.getContentPane();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       
       messageLabel = new JLabel();   
-      updateMessageLabel();
+      setMessage(message);
       
       Box row1 = new Box(BoxLayout.X_AXIS);
       row1.add(messageLabel);
@@ -104,22 +106,13 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       next.addActionListener(this);
       prev.addActionListener(this);
       close.addActionListener(this);
+      
+      
+      setAlwaysOnTop(true);
    }
    
    void updateMessageLabel(){
-      String html = generateHTML(-1);
      
-      messageLabel.setText(html);
-      
-      // hack to limit the width of the text to 300px      
-      Dimension size = messageLabel.getPreferredSize();
-      if (size.width > 300){
-         html = generateHTML(300);
-         messageLabel.setText(html);
-      }
-      
-      setAlwaysOnTop(true);
-      pack();
    }
    
    String generateHTML(int width){
@@ -141,6 +134,24 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       html += "</div></html>";
       
       return html;
+   }
+   
+   
+   public void setMessage(String message){
+      this.message = message;
+      String html = generateHTML(-1);
+      
+      messageLabel.setText(html);
+      
+      // hack to limit the width of the text to 300px      
+      Dimension size = messageLabel.getPreferredSize();
+      if (size.width > 300){
+         html = generateHTML(300);
+         messageLabel.setText(html);
+      }
+      
+      setAlwaysOnTop(true);
+      pack();
    }
    
    public void setStyle(int style){
@@ -167,9 +178,12 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
    }
    
    public String waitUserAction(){
-      
-      setVisible(true);
       toFront();
+      setVisible(true);
+
+      setAlwaysOnTop(true);
+      // pack needs to be called after the component is set visible
+      pack();
       
       // force the dialog to paint right away before animation starts
       repaint();
