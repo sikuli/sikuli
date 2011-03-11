@@ -58,8 +58,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/BevelDividerPainter.java
          org/sikuli/ide/extmanager/ExtensionItem.java
          org/sikuli/ide/extmanager/ExtensionManagerFrame.java
-         org/sikuli/ide/indentation/IndentationLogic.java
-         org/sikuli/ide/indentation/PythonIndentationLogic.java
+         org/sikuli/ide/indentation/PythonIndentation.java
          org/sikuli/ide/indentation/PythonState.java
 )
 
