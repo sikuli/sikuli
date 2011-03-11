@@ -50,6 +50,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    private PythonIndentation _indentationLogic;
 
    public SikuliPane(){
+      UserPreferences pref = UserPreferences.getInstance();
       setEditorKitForContentType("text/python", new SikuliEditorKit());
       setContentType("text/python");
       initKeyMap();
@@ -58,10 +59,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       _highlighter = new CurrentLineHighlighter(this);
       addCaretListener(_highlighter);
       addCaretListener(this);
-      if(Utils.isMacOSX())
-         setFont(new Font("Courier", Font.PLAIN, 18));
-      else 
-         setFont(new Font("monospaced", Font.PLAIN, 18));
+      setFont(new Font(pref.getFontName(), Font.PLAIN, pref.getFontSize()));
       setMargin( new Insets( 3, 3, 3, 3 ) );
       //setTabSize(4);
       setBackground(Color.WHITE);

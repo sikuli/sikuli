@@ -65,7 +65,7 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::93:x:1, space :::p, comp lblDelaySecs::::106:x}, comp txtHotkey::l::205:x:1}, space :p:69:p}}</string> 
+            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::83:x:1, space :::p, comp lblDelaySecs::::96:x}, comp txtHotkey::l::185:x:1}, space :p:69:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
@@ -325,11 +325,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq l {space :p:124:p, par l {comp lblFont::t:p::p, comp lblTabWidth::t:p::p}, space :::p, par l {comp spnTabWidth:::p:49:p, comp cmbFonts:::p:134:p}, space ::117:x}, seq l {space :95:95:95, comp chkExpandTab::::276:x, space ::76:x}, seq l {space :48:48:48, comp titleIndentation:::p::p, space ::321:x}, seq l {space :48:48:48, comp titleAppearance:::p::p, space ::317:x}}</string> 
+            <string>par l {seq {space :48:48:p, par l {comp titleIndentation::l:p::p, seq l {comp titleAppearance:::p::p, space :::p, par l {seq l {space :29:29:29, par l {comp lblTabWidth::t:p::p, comp lblFont::t:p::p, comp lblFontSize::t:p::p}, space :::p, par l {comp cmbFontName::l::177:x, comp spnFontSize::l:p:67:p, comp spnTabWidth::l:p:52:p}, space ::55:x}, comp chkExpandTab::l::337:x}}}, space :::p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:29:p, comp titleAppearance:::p::p, space :::p, par b {comp lblFont::b:p::p, comp cmbFonts::b:p::p}, space :p:48:p, comp titleIndentation:::p::p, space :::p, comp chkExpandTab:::p::p, space :::p, par t {comp spnTabWidth:1::p::p, comp lblTabWidth:1::p:16:p}, space ::61:x}}</string> 
+            <string>par l {seq l {space :p:21:p, comp titleIndentation:::p::p, par l {seq {space :p:81:p, comp titleAppearance:::p::p}, seq l {space :::p, comp chkExpandTab:::p::p, space :::p, par l {comp lblTabWidth:1::p:16:p, comp spnTabWidth:1::p::p}, space :p:40:p, par b {comp lblFont:2:b:p::p, comp cmbFontName:2:b:p::p}, space :::p, par t {comp lblFontSize:::p:27:p, comp spnFontSize:::p::p}}}, space ::55:x}}</string> 
            </void> 
           </object> 
           <void property="name"> 
@@ -374,12 +374,16 @@
           <void method="add"> 
            <object class="com.jformdesigner.model.FormComponent"> 
             <string>javax.swing.JComboBox</string> 
-            <void method="setProperty"> 
-             <string>enabled</string> 
-             <boolean>false</boolean> 
-            </void> 
             <void property="name"> 
-             <string>cmbFonts</string> 
+             <string>cmbFontName</string> 
+            </void> 
+            <void method="addEvent"> 
+             <object class="com.jformdesigner.model.FormEvent"> 
+              <string>java.awt.event.ItemListener</string> 
+              <string>itemStateChanged</string> 
+              <string>fontNameItemStateChanged</string> 
+              <boolean>true</boolean> 
+             </object> 
             </void> 
            </object> 
           </void> 
@@ -396,7 +400,7 @@
             <void method="setProperty"> 
              <string>labelFor</string> 
              <object class="com.jformdesigner.model.FormReference"> 
-              <string>cmbFonts</string> 
+              <string>cmbFontName</string> 
              </object> 
             </void> 
             <void property="name"> 
@@ -442,6 +446,43 @@
             </void> 
            </object> 
           </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.lblFontSize.text</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>labelFor</string> 
+             <object class="com.jformdesigner.model.FormReference"> 
+              <string>cmbFontName</string> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>lblFontSize</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JSpinner</string> 
+            <void property="name"> 
+             <string>spnFontSize</string> 
+            </void> 
+            <void method="addEvent"> 
+             <object class="com.jformdesigner.model.FormEvent"> 
+              <string>javax.swing.event.ChangeListener</string> 
+              <string>stateChanged</string> 
+              <string>fontSizeStateChanged</string> 
+              <boolean>true</boolean> 
+             </object> 
+            </void> 
+           </object> 
+          </void> 
          </object> 
          <object class="com.jformdesigner.model.FormLayoutConstraints"> 
           <null/> 
@@ -461,11 +502,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::280:x, space :p:82:p}}</string> 
+            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::260:x, space :p:82:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::211:x}}</string> 
+            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::201:x}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 

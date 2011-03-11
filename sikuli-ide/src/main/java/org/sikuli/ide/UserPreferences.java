@@ -56,6 +56,24 @@ public class UserPreferences {
       return pref.getInt("TAB_WIDTH", 4); 
    }
 
+   public void setFontSize(int size){
+      pref.putInt("FONT_SIZE", size);
+   }
+
+   public int getFontSize(){
+      return pref.getInt("FONT_SIZE", 18); 
+   }
+
+   public void setFontName(String font){
+      pref.put("FONT_NAME", font);
+   }
+
+   public String getFontName(){
+      return pref.get("FONT_NAME", "Monospaced"); 
+   }
+
+
+
    public int getStopHotkey(){
       return pref.getInt("STOP_HOTKEY", 67); // default: 'c'
    }
