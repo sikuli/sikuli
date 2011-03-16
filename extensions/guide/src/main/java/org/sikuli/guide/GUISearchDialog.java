@@ -58,7 +58,8 @@ public class GUISearchDialog extends SearchDialog{
          
       guide.clear();
       for (Region cr : regions){
-         guide.addCircle(cr);
+         SikuliGuideCircle c = new SikuliGuideCircle(guide,cr);
+         guide.addComponent(c);
       }
       guide.repaint();
    }
@@ -73,7 +74,8 @@ public class GUISearchDialog extends SearchDialog{
 
       guide.clear();
       for (Region cr : regions){
-         guide.addCircle(cr);
+         SikuliGuideCircle c = new SikuliGuideCircle(guide,cr);
+         guide.addComponent(c);
       }
       guide.addFlag(r.getCenter().left(r.w/2),"This");
       guide.startAnimation();

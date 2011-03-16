@@ -8,12 +8,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.lang.reflect.Array;
 
-class AnnotationArrow extends Annotation{
+public class SikuliGuideArrow extends SikuliGuideComponent{
 
 	public Point getFrom() {
 		return from;
@@ -25,35 +27,20 @@ class AnnotationArrow extends Annotation{
 
 	Point from;
 	Point to;
-	public AnnotationArrow(Point from, Point to, Color color){
+	public SikuliGuideArrow(SikuliGuide g, Point from, Point to){
+	   super(g);
 		this.from = from;
 		this.to = to;
-		this.color = color;
+		
+		Rectangle r = new Rectangle(from);
+		r.add(to);
+		r.grow(2,2);		
+		setBounds(r);
+	
 	}
-	//	public void paintAnnotation(Graphics gc){
-	//		Graphics2D g = (Graphics2D) gc;
-	//		
-	//		g.setColor(color);
-	//		Stroke pen = new BasicStroke(3.0F);
-	//		g.setStroke(pen);
-	//		
-	//		int x0 = from.x;
-	//		int y0 = from.y;
-	//		int x1 = to.x;
-	//		int y1 = to.y;
-	//		
-	//		int deltaX = x1 - x0;
-	//		int deltaY = y1 - y0;
-	//		double frac = 0.2;
-	//
-	//		g.drawLine(x0,y0,x1,y1);
-	//		g.drawLine(x0 + (int)((1-frac)*deltaX + frac*deltaY),
-	//				y0 + (int)((1-frac)*deltaY - frac*deltaX),
-	//				x1, y1);
-	//		g.drawLine(x0 + (int)((1-frac)*deltaX - frac*deltaY),
-	//				y0 + (int)((1-frac)*deltaY + frac*deltaX),
-	//				x1, y1);
-	//	}
+	
+	
+
 
 	public void paintAnnotation1(Graphics gc)
 	{
@@ -170,13 +157,19 @@ class AnnotationArrow extends Annotation{
 
 	}//end drawPolylineArrow
 
-	public void paintAnnotation(Graphics g) {
+	public void paint(Graphics g) {
+	   super.paint(g);
+	   
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setColor(color);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+            RenderingHints.VALUE_ANTIALIAS_ON);       
+
+		Rectangle r = getBounds();
+		
 		Stroke pen = new BasicStroke(3.0F);
 		g2d.setStroke(pen);
-		g2d.drawLine(from.x,from.y,to.x,to.y);
+		g2d.translate(-r.x,-r.y);
 
 		drawPolylineArrow(g, new int[]{from.x,to.x}, new int[]{from.y,to.y}, 6, 6);
 	}

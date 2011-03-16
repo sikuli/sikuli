@@ -191,7 +191,7 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
       // animation must start after the dialog is made visible
       // otherwise, its content won't get completely drawn
       // until the animation is complete
-      ((SikuliGuide)owner).startAnimation();
+      //((SikuliGuide)owner).startAnimation();
       
       synchronized(owner){
          try {

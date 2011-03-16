@@ -51,8 +51,8 @@ public class SikuliGuide extends TransparentWindow {
    // swing components will be drawn on this panel
    JPanel content = new JPanel(null);
 
-   ArrayList<Annotation> _annotations = new ArrayList<Annotation>();
-   ArrayList<Spotlight> _spotlights = new ArrayList<Spotlight>(); 
+   //ArrayList<Annotation> _annotations = new ArrayList<Annotation>();
+   //ArrayList<Spotlight> _spotlights = new ArrayList<Spotlight>(); 
 
    ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
 
@@ -112,40 +112,47 @@ public class SikuliGuide extends TransparentWindow {
 
    public void paint(Graphics g){
 
-     
+
+
+
+      
       Graphics2D g2d = (Graphics2D)g;
 
       super.paint(g);
 
-      if (_spotlights.size() > 0){
-      
-//         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-//         g2d.setColor(Color.black);
-//         g2d.fillRect(0,0,_region.w,_region.h);
+//      if (_spotlights.size() > 0){
+//      
+////         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+////         g2d.setColor(Color.black);
+////         g2d.fillRect(0,0,_region.w,_region.h);
+//
+//         // draw highlight before other annotation elements 
+//         for (Spotlight h : _spotlights){
+//            h.paintAnnotation(g2d);
+//         }
+//      }
 
-         // draw highlight before other annotation elements 
-         for (Spotlight h : _spotlights){
-            h.paintAnnotation(g2d);
-         }
-      }
-
-      for (Annotation an : _annotations){
-         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-               RenderingHints.VALUE_ANTIALIAS_ON);			
-         an.paintAnnotation(g2d);
-         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
-      }
+//      for (Annotation an : _annotations){
+//         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+//         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+//               RenderingHints.VALUE_ANTIALIAS_ON);			
+//         an.paintAnnotation(g2d);
+//         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0f));
+//      }
    }
 
    public void clear(){
       for (ClickTarget target : _clickTargets){
          target.dispose();
       }
+      
       setBackground(null);
       content.setBackground(null);
-      _spotlights.clear();
-      _annotations.clear();
+      
+    
+     
+      //_spotlights.clear();
+    //  _annotations.clear();
       content.removeAll();
       interactionTarget = null;
       beam = null;
@@ -170,9 +177,9 @@ public class SikuliGuide extends TransparentWindow {
       search.addEntry(key, region);
    }
    
-   public void addAnnotation(Annotation annotation){
-      _annotations.add(annotation);
-   }
+//   public void addAnnotation(Annotation annotation){
+//      _annotations.add(annotation);
+//   }
 
    Point convertToRegionLocation(Point point_in_global_coordinate){
       Point ret = new Point(point_in_global_coordinate);
@@ -184,19 +191,19 @@ public class SikuliGuide extends TransparentWindow {
       Point from1 = convertToRegionLocation(from);
       Point to1 = convertToRegionLocation(to);
 
-      addAnnotation(new AnnotationArrow(from1, to1, Color.black));
+//      addAnnotation(new AnnotationArrow(from1, to1, Color.black));
    }
 
-   // Draw an oval containing the given region
-   public void addCircle(Region region){
-      Location o = region.getCenter();
-      Location p = region.getTopLeft();
-      o.translate(-_region.x, -_region.y);
-      p.translate(-_region.x, -_region.y);
-
-      p.translate((int)((p.x-o.x)*0.44), (int) ((p.y-o.y)*0.44));
-      addAnnotation(new AnnotationOval(o.x,o.y,p.x,p.y));
-   }
+//   // Draw an oval containing the given region
+//   public void addCircle(Region region){
+//      Location o = region.getCenter();
+//      Location p = region.getTopLeft();
+//      o.translate(-_region.x, -_region.y);
+//      p.translate(-_region.x, -_region.y);
+//
+//      p.translate((int)((p.x-o.x)*0.44), (int) ((p.y-o.y)*0.44));
+//      addAnnotation(new AnnotationOval(o.x,o.y,p.x,p.y));
+//   }
 
 
    public void updateSpotlights(ArrayList<Region> regions){
@@ -208,9 +215,18 @@ public class SikuliGuide extends TransparentWindow {
          content.setBackground(null);
          
       }else{
-      
+         
+//         for (Component co : content.getComponents()){
+//            if (co instanceof SikuliGuideSpotlight){
+//               // if there's any spotlight added, darken the 
+//               // background
+               setBackground(new Color(0f,0f,0f,0.2f));
+               content.setBackground(new Color(0f,0f,0f,0.2f));
+//            }
+//         }
+//      
          for (Region r : regions){
-            addSpotlight(r,Spotlight.CIRCLE);
+            addSpotlight(r,SikuliGuideSpotlight.CIRCLE);
          }
       }
       
@@ -218,44 +234,50 @@ public class SikuliGuide extends TransparentWindow {
    }
    
    public void removeSpotlights(){
-    
-      _spotlights.clear();
+      for (Component co : content.getComponents()){
+         if (co instanceof SikuliGuideSpotlight){
+            content.remove(co);
+         }
+      }
    }
 
-   public Spotlight addSpotlight(Region region){   
-      return addSpotlight(region, Spotlight.RECTANGLE);
+   public SikuliGuideSpotlight addSpotlight(Region region){   
+      return addSpotlight(region, SikuliGuideSpotlight.RECTANGLE);
    }
    
-   public Spotlight addSpotlight(Region region, int style){	
-      Rectangle rect = new Rectangle(region.getRect());
-      rect.translate(-_region.x, -_region.y);
-      Spotlight spotlight = new Spotlight(rect);
-      spotlight.setStyle(style);
-      _spotlights.add(spotlight);
+   public SikuliGuideSpotlight addSpotlight(Region region, int style){	
+//      Rectangle rect = new Rectangle(region.getRect());
+//      rect.translate(-_region.x, -_region.y);
+//      
+      
+      SikuliGuideSpotlight spotlight = new SikuliGuideSpotlight(this,region);
+      spotlight.setShape(style);
+      addComponent(spotlight);
+      //_spotlights.add(spotlight);
       
       // if there's any spotlight added, darken the 
       // background
-      setBackground(new Color(0f,0f,0f,0.2f));      
-      content.setBackground(new Color(0f,0f,0f,0.2f));      
+      //setBackground(new Color(0f,0f,0f,0.2f));      
+      //content.setBackground(new Color(0f,0f,0f,0.2f));      
       
       return spotlight;
    }
 
-   public void addRectangle(Region region){  
-      Rectangle rect = new Rectangle(region.getRect());
-      rect.translate(-_region.x, -_region.y);
-      addAnnotation(new AnnotationRectangle(rect));
-   }
+//   public void addRectangle(Region region){  
+//      Rectangle rect = new Rectangle(region.getRect());
+//      rect.translate(-_region.x, -_region.y);
+//      addAnnotation(new AnnotationRectangle(rect));
+//   }
 
    ClickTarget _clickTarget = null;
    public void addClickTarget(Region region, String name){
       _clickTargets.add(new ClickTarget(this, region.getRect(), name));
    }
 
-   public void addToolTip(Location location, String message){
-      Point screen_loc = convertToRegionLocation(location);
-      addAnnotation(new AnnotationToolTip(message, screen_loc));
-   }
+//   public void addToolTip(Location location, String message){
+//      Point screen_loc = convertToRegionLocation(location);
+//      addAnnotation(new AnnotationToolTip(message, screen_loc));
+//   }
 
    public enum VerticalAlignment{
       TOP, MIDDLE, BOTTOM
@@ -277,10 +299,17 @@ public class SikuliGuide extends TransparentWindow {
    }
    
    public void addComponent(Component comp){
-      if (comp instanceof Flag){
-         ((Flag) comp).guide = this;
-      }
       content.add(comp);
+      if (comp instanceof SikuliGuideSpotlight){
+         // if there's any spotlight added, darken the 
+         // background
+         setBackground(new Color(0f,0f,0f,0.2f));
+         content.setBackground(new Color(0f,0f,0f,0.2f));
+      }
+   }
+
+   public void removeComponent(Component comp){
+      content.remove(comp);
    }
    
    public void addBookmark(Location location, String message){
@@ -377,6 +406,10 @@ public class SikuliGuide extends TransparentWindow {
          if (co instanceof Magnifier){
             ((Magnifier) co).start();
          }
+         
+         if (co instanceof SikuliGuideComponent){
+            ((SikuliGuideComponent) co).startAnimation();
+         }
       }
    }
    
@@ -392,6 +425,9 @@ public class SikuliGuide extends TransparentWindow {
 
    public String showNow(float secs){
 
+      startAnimation();
+
+      
       // do these to allow static elements to be drawn
       setVisible(true);
       toFront();
@@ -462,7 +498,6 @@ public class SikuliGuide extends TransparentWindow {
 
       }else{
          
-         startAnimation();
 
          // if there's no interactive element
          // just close it after the timeout
@@ -476,6 +511,8 @@ public class SikuliGuide extends TransparentWindow {
       clear();
       setVisible(false);
       dispose();
+      if (dialog != null)
+         dialog.dispose();
    }
 
    private void closeAfter(float secs){
@@ -533,7 +570,7 @@ public class SikuliGuide extends TransparentWindow {
       try {
          File sourceimage = new File(filename);
          bimage = ImageIO.read(sourceimage);
-         Image img = new Image(bimage);
+         SikuliGuideImage img = new SikuliGuideImage(this, bimage);
          img.setLocation(location);
          img.setScale(scale);
          content.add(img);

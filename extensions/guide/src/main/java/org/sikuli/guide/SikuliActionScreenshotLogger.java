@@ -67,9 +67,10 @@ public class SikuliActionScreenshotLogger implements SikuliActionListener {
    
    void drawAction(Graphics g, String action_text, Match match){
       Graphics2D g2d = (Graphics2D) g;
-      
-      AnnotationRectangle rect = new AnnotationRectangle(match.getRect());
-      rect.paintAnnotation(g2d);
+            
+      // TODO: Fix this
+//       SikuliGuideRectangle rect = new SikuliGuideRectangle(match.getRect());
+//       rect.paintAnnotation(g2d);
 
       Location l = match.getBottomLeft();
       

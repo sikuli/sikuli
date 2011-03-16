@@ -27,6 +27,25 @@ public class GUINode extends DefaultMutableTreeNode {
    public void setName(String name){
       this.name = name;
    }
+   
+   public String getPathString(){
+      
+      if (!isRoot()){
+
+         GUINode parent = (GUINode) getParent();
+
+         if (isLeaf()) {         
+            return parent.getPathString() + name;
+         }else{
+            return parent.getPathString() + name + " > ";
+         }
+         
+      } else {
+         
+         return "";
+         
+      }
+   }
 
    
    public Pattern getPattern(){
