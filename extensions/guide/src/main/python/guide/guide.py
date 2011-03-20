@@ -39,17 +39,7 @@ def portal(targets):
 def magnifier(target):
     r = s.getRegionFromPSRM(target)
     _g.addMagnifier(r)    
-
-#def spotlight1(target):
-#    r = s.getRegionFromPSRM(target)
-#    _g.addSpotlight(r)
-
-#def circle1(target):
-#    r = s.getRegionFromPSRM(target)
-#    _g.addCircle(r)
-
-
-            
+    
 def beam(target):
     r = s.getRegionFromPSRM(target)
     _g.addBeam(r)
@@ -61,20 +51,6 @@ def dialog(text, title = None, location = None):
         d.setLocation(location)
     d.setMessage(text)
     _g.setTransition(d)
-
-#def bracket1(target, side='left'):
-#    r = s.getRegionFromPSRM(target)
-#    b = Bracket(r)
-#    if (side == 'top'):
-#        b.setSide(Bracket.SIDE_TOP)
-#    elif (side == 'right'):
-#        b.setSide(Bracket.SIDE_RIGHT)
-#    elif (side == 'bottom'):
-#        b.setSide(Bracket.SIDE_BOTTOM)
-#    else: # left
-#        b.setSide(Bracket.SIDE_LEFT)
-#    _g.addComponent(b)    
-
 
 def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0),
                                  horizontalalignment = 'center',
@@ -128,20 +104,26 @@ def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
 
 def circle(target, **kwargs):
     r = s.getRegionFromPSRM(target)
-    r = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideCircle(_g,r)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideCircle(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
     _g.addComponent(comp)
 
 def rectangle(target,**kwargs):
     r = s.getRegionFromPSRM(target)
-    r = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideRectangle(_g,r)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideRectangle(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
     _g.addComponent(comp)
 
 def spotlight(target, shape = 'rectangle', **kwargs):
     r = s.getRegionFromPSRM(target)
-    r = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideSpotlight(_g,r)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideSpotlight(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)    
     if shape == 'rectangle':
         comp.setShape(SikuliGuideSpotlight.RECTANGLE)
     elif shape == 'circle':
@@ -150,50 +132,28 @@ def spotlight(target, shape = 'rectangle', **kwargs):
 
 def bracket(target, side='left', **kwargs):
     r = s.getRegionFromPSRM(target)
-    b = SikuliGuideBracket(_g)
-    _setLocationRelativeToRegion(b,r,side,**kwargs)
-    _g.addComponent(b)    
+    comp = SikuliGuideBracket(_g)
+    _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)    
 
 def flag(target, text='    ', **kwargs):
     r = s.getRegionFromPSRM(target)
-    f = SikuliGuideFlag(_g,text)
-    _setLocationRelativeToRegion(f,r,**kwargs)
-    _g.addComponent(f)    
+    comp = SikuliGuideFlag(_g,text)
+    _setLocationRelativeToRegion(comp,r,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)    
     
 def text(target, txt, fontsize = 16,side='bottom',**kwargs):
     r = s.getRegionFromPSRM(target)
     comp = SikuliGuideText(_g, txt)
     comp.setFontSize(fontsize)
     _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
     _g.addComponent(comp)        
-
-#def flag1(target, text='    ', side='left'):
-#    r = s.getRegionFromPSRM(target)
-#    if (side == 'right'):    
-#        b = Flag(Location(r.x+r.w,r.y+r.h/2), text)    
-#        b.setDirection(Flag.DIRECTION_WEST)
-#    elif (side == 'top'):
-#        b = Flag(Location(r.x+r.w/2,r.y), text)    
-#        b.setDirection(Flag.DIRECTION_SOUTH)     
-#    elif (side == 'bottom'):
-#        b = Flag(Location(r.x+r.w/2,r.y+r.h), text)    
-#        b.setDirection(Flag.DIRECTION_NORTH)         	   
-#    else: # left
-#        b = Flag(Location(r.x,r.y+r.h/2), text)    
-#        b.setDirection(Flag.DIRECTION_EAST)
-#    b.guide = _g
-#    _g.addComponent(b)
-#
-#def text1(target, msg, side='bottom'):
-#    r = s.getRegionFromPSRM(target)
-#    if (side == 'top'):
-#        _g.addText(r, msg, SikuliGuide.Side.TOP)
-#    elif (side == 'left'):
-#        _g.addText(r, msg, SikuliGuide.Side.LEFT)
-#    elif (side == 'right'):
-#        _g.addText(r, msg, SikuliGuide.Side.RIGHT)
-#    else:
-#        _g.addText(r, msg, SikuliGuide.Side.BOTTOM)
 
     
 def clickable(target, name = ""):

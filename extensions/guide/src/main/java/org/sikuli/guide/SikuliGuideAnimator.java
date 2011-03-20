@@ -13,26 +13,33 @@ public abstract class SikuliGuideAnimator implements ActionListener {
    int duration = 1000;
    int cycle = 50; 
    
+   boolean played = false;
+   
    public SikuliGuideAnimator(SikuliGuideComponent comp){
       this.comp = comp;
       timer = new Timer(cycle,this);
    }
    
    public void start(){
-         timer.start();
+      played = true;
+      timer.start();
    }
    
+   public void stop(){
+         timer.stop();
+   }
    
-//   static SikuliGuideAnimator createCircling(SikuliGuideComponent comp, int radius){
-//         return new CircleAnimator(comp, radius);
-//   }
-//   
-//   static SikuliGuideAnimator createSliding(SikuliGuideComponent comp, int offset_x, int offset_y){
-//      Point dest = getLocation();
-//      Point src = new Point(dest.x + offset_x, dest.y + offset_y);
-//
-//      return new MoveAnimator(comp,src,dest);
-//   }
+   public boolean isRunning(){
+      return timer.isRunning();
+   }
+   
+   public boolean isPlayed(){
+      return played;
+   }
+   
+   public String toString(){
+      return "played=" + played;
+   }
 
 }
 
@@ -90,6 +97,7 @@ class MoveAnimator extends  SikuliGuideAnimator{
    int count;
    
    OutQuarticEase tfuncx,tfuncy;
+   Point src,dest;
    
    public MoveAnimator(SikuliGuideComponent comp, Point src, Point dest){
       super(comp);
@@ -100,10 +108,8 @@ class MoveAnimator extends  SikuliGuideAnimator{
       tfuncx = new OutQuarticEase(src.x,dest.x,repeatCount);
       tfuncy = new OutQuarticEase(src.y,dest.y,repeatCount);
       
-   }
-   
-   public void start(){
-      timer.start();
+      this.dest = dest;
+      this.src = src;
    }
    
    public void actionPerformed(ActionEvent e){
@@ -120,7 +126,16 @@ class MoveAnimator extends  SikuliGuideAnimator{
       }else{
          timer.stop();
       
-      }
-      
+      }      
+   }
+   
+   public void start(){
+      comp.setLocation(src.x,src.y);
+      super.start();
+   }
+   
+   public void stop(){
+      //comp.setLocation(dest.x,dest.y);
+      super.stop();
    }
 }

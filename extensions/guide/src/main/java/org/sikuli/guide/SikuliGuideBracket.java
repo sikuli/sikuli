@@ -51,6 +51,7 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
    static final int SHADOW_SIZE = 2;
 
    int direction;
+   boolean entrance = true;
    void init(){
       
             
@@ -82,15 +83,22 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
    }
    
    public void startAnimation(){
-      if (direction == DIRECTION_EAST){
-         setEntranceAnimation(createSlidingAnimator(-20,0));
-      } else if (direction == DIRECTION_WEST){
-         setEntranceAnimation(createSlidingAnimator(20,0));
-      } else if (direction == DIRECTION_SOUTH){
-         setEntranceAnimation(createSlidingAnimator(0,-20));
-      } else if (direction == DIRECTION_NORTH){
-         setEntranceAnimation(createSlidingAnimator(0,20));
-      }
+
+      // TODO: move this somewhere else
+      // this should only be called first time animation
+      // is started
+      // Why called here? Because ... 
+      // we want the location to be decided
+         if (direction == DIRECTION_EAST){
+            setEntranceAnimation(createSlidingAnimator(-20,0));
+         } else if (direction == DIRECTION_WEST){
+            setEntranceAnimation(createSlidingAnimator(20,0));
+         } else if (direction == DIRECTION_SOUTH){
+            setEntranceAnimation(createSlidingAnimator(0,-20));
+         } else if (direction == DIRECTION_NORTH){
+            setEntranceAnimation(createSlidingAnimator(0,20));
+         }
+
       
       super.startAnimation();
    }
@@ -100,7 +108,7 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
    int margin = 5;
    
    public void setDirection(int direction){
-      this.direction = direction;      
+      this.direction = direction;  
    }
 
    public void paint(Graphics g){
