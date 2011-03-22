@@ -51,7 +51,7 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
    
    static final int PADDING_X = 2;
    static final int PADDING_Y = 2;
-   static final int SHADOW_SIZE = 2;
+   static final int SHADOW_SIZE = 0;
 
    int direction;
    void init(String text){

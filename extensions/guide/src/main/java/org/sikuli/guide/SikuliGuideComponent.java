@@ -46,6 +46,15 @@ public class SikuliGuideComponent extends JComponent{
       }
    }
    
+   public void stopAnimation() {
+      if (emphasis_anim != null){     
+         emphasis_anim.stop();
+      }
+      if (entrance_anim != null){
+         entrance_anim.stop();
+      }
+   }
+   
    public SikuliGuideAnimator createSlidingAnimator(int offset_x, int offset_y){  
       Point dest = getLocation();
       Point src = new Point(dest.x + offset_x, dest.y + offset_y);
@@ -126,6 +135,24 @@ public class SikuliGuideComponent extends JComponent{
       int y = (int) (y0 + (y1-y0)*f);
 
       setLocation(getX(),y);
+   }
+
+   SikuliGuideComponent shadow = null;
+   public void setShadow(SikuliGuideComponent shadow){
+      this.shadow = shadow;
+   }
+   
+   public void setLocation(int x, int y){
+      Point loc = getLocation();
+      if (shadow != null){
+         Point shadow_loc = shadow.getLocation();
+         int dx = x - loc.x;
+         int dy = y - loc.y;
+         shadow_loc.x += dx;
+         shadow_loc.y += dy;
+         shadow.setLocation(shadow_loc);
+      }
+      super.setLocation(x,y);
    }
 
 }

@@ -19,6 +19,7 @@ from org.sikuli.guide import SikuliGuideText
 from org.sikuli.guide import SikuliGuideSpotlight
 from org.sikuli.guide import SikuliGuideCircle
 from org.sikuli.guide import SikuliGuideRectangle
+from org.sikuli.guide import SikuliGuideArrow
 
 from org.sikuli.guide import TreeSearchDialog
 from org.sikuli.guide.model import GUIModel
@@ -44,6 +45,14 @@ def beam(target):
     r = s.getRegionFromPSRM(target)
     _g.addBeam(r)
 
+
+def arrow(srcTarget, destTarget):
+    r1 = s.getRegionFromPSRM(srcTarget)
+    r2 = s.getRegionFromPSRM(destTarget)
+    comp = SikuliGuideArrow(_g,r1.getCenter(),r2.getCenter())
+    #comp.setForeground(Color.red);
+    _g.addComponent(comp)
+
 def dialog(text, title = None, location = None):    
     d = _g.getDialog()
     d.setTitle(title)
@@ -52,7 +61,7 @@ def dialog(text, title = None, location = None):
     d.setMessage(text)
     _g.setTransition(d)
 
-def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0),
+def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,0,0,0),
                                  horizontalalignment = 'center',
                                  verticalalignment = 'center'):    
     r = Region(r_)
@@ -61,6 +70,13 @@ def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0),
     (dx,dy) = offset
     r.x += dx
     r.y += dy
+    
+    # Expansion
+    (dt,dl,db,dr) = expand
+    r.x -= dl
+    r.y -= dt
+    r.w = r.w + dl + dr
+    r.h = r.h + dt + db
     
     # Side
     if (side == 'right'):    
@@ -184,9 +200,9 @@ def _show_steps(steps):
         elif i == n - 1:
             ret = _g.showNowWithDialog(SikuliGuide.LAST)
         
-        if (ret == "Previous"):
+        if (ret == "Previous" and i > 0):
             i = i - 1
-        elif (ret == "Next"):
+        elif (ret == "Next" and i < n - 1):
             i = i + 1
         else:
             return 

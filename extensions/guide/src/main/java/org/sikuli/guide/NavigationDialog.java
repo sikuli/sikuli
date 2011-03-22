@@ -157,8 +157,8 @@ public class NavigationDialog extends SikuliGuideDialog implements ActionListene
    public void setStyle(int style){
       button_row.removeAll();
       setButtons(button_row, style);
-      setAlwaysOnTop(true);
-      pack();
+//      setAlwaysOnTop(true);
+//      pack();
    }
    
    private void setButtons(Container c, int style){

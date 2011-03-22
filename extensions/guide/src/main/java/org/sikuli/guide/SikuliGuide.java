@@ -119,6 +119,7 @@ public class SikuliGuide extends TransparentWindow {
       }
       _clickTargets.clear();
 
+      stopAnimation();
       
       
       setBackground(null);
@@ -248,18 +249,28 @@ public class SikuliGuide extends TransparentWindow {
       addText(location, message, HorizontalAlignment.LEFT, VerticalAlignment.TOP);      
    }
 
-   public void addFlag(Location location, String message){
-      Flag flag = new Flag(location, message);
-      addComponent(flag);
-   }
+//   public void addFlag(Location location, String message){
+//      Flag flag = new Flag(location, message);
+//      addComponent(flag);
+//   }
 
-   public void addComponent(Component comp){
+   public void addComponent(SikuliGuideComponent comp){
       content.add(comp);
       if (comp instanceof SikuliGuideSpotlight){
          // if there's any spotlight added, darken the 
          // background
          setBackground(new Color(0f,0f,0f,0.2f));
          content.setBackground(new Color(0f,0f,0f,0.2f));
+      }
+      
+      if (comp instanceof SikuliGuideText ||
+            comp instanceof SikuliGuideRectangle ||
+            comp instanceof SikuliGuideCircle ||
+            comp instanceof SikuliGuideArrow ||
+            comp instanceof SikuliGuideFlag ||
+            comp instanceof SikuliGuideBracket) {
+         SikuliGuideComponent s = new SikuliGuideShadow(this, comp);
+         content.add(s);
       }
    }
 
@@ -353,11 +364,23 @@ public class SikuliGuide extends TransparentWindow {
    }
 
 
+   
+   public void stopAnimation(){
+      for (Component co : content.getComponents()){
+
+         if (co instanceof Magnifier){
+            ((Magnifier) co).start();
+         }
+
+         if (co instanceof SikuliGuideComponent){
+            ((SikuliGuideComponent) co).stopAnimation();
+         }
+      }
+   }
+   
    public void startAnimation(){
       for (Component co : content.getComponents()){
-         if (co instanceof Flag){
-            ((Flag) co).start();
-         }
+
          if (co instanceof Magnifier){
             ((Magnifier) co).start();
          }
@@ -371,7 +394,7 @@ public class SikuliGuide extends TransparentWindow {
 
    public String showNowWithDialog(int style){
       dialog.setStyle(style);
-      setTransition(dialog);
+      //setTransition(dialog);
       return showNow();        
    }
 
@@ -380,10 +403,15 @@ public class SikuliGuide extends TransparentWindow {
    }
 
    public String showNow(float secs){
-
+      
+      if (content.getComponentCount()  == 0 && interactionTarget == null){
+         // if no component at all, return immediately because
+         // there's nothing to show
+         return SikuliGuideDialog.NEXT;         
+      }
+      
       startAnimation();      
       startTracking();
-
 
       // do these to allow static elements to be drawn
       setVisible(true);
@@ -453,20 +481,21 @@ public class SikuliGuide extends TransparentWindow {
 
          return SikuliGuideDialog.NEXT;
 
-      }else{
+      }else {
 
 
-         // if there's no interactive element
+         // if there's no transition element
          // just close it after the timeout
          closeAfter(secs);
 
          return SikuliGuideDialog.NEXT;
-      }
+      } 
    }
 
    private void closeNow(){
       clear();
       setVisible(false);
+      
       dispose();
       if (dialog != null)
          dialog.dispose();

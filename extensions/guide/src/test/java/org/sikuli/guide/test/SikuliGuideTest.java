@@ -1,13 +1,18 @@
 package org.sikuli.guide.test;
 
 import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Robot;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import org.junit.Test;
+import org.sikuli.guide.SikuliGuideComponent;
+import org.sikuli.guide.Bubble;
 import org.sikuli.guide.ClickTarget;
 import org.sikuli.guide.Flag;
 import org.sikuli.guide.Bracket;
@@ -16,13 +21,19 @@ import org.sikuli.guide.Beam;
 import org.sikuli.guide.NavigationDialog;
 import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.Portal;
+import org.sikuli.guide.SikuliGuideArrow;
+import org.sikuli.guide.SikuliGuideBracket;
+import org.sikuli.guide.SikuliGuideCircle;
+import org.sikuli.guide.SikuliGuideFlag;
+import org.sikuli.guide.SikuliGuideImage;
+import org.sikuli.guide.SikuliGuideRectangle;
+import org.sikuli.guide.SikuliGuideSpotlight;
+import org.sikuli.guide.SikuliGuideText;
+import org.sikuli.guide.Tracker;
 import org.sikuli.guide.TreeSearchDialog;
 import org.sikuli.guide.SikuliGuide.Side;
 import org.sikuli.guide.model.GUIModel;
 import org.sikuli.guide.model.GUINode;
-import org.sikuli.guide.Spotlight;
-
-
 
 import org.sikuli.script.App;
 import org.sikuli.script.Debug;
@@ -36,6 +47,47 @@ import org.sikuli.script.Screen;
 
 
 public class SikuliGuideTest {
+   
+   GUIModel createPPTModel(){
+      
+      GUINode top = new GUINode(null);
+      GUIModel tree = new GUIModel(top);
+
+      GUINode x = new GUINode(new Pattern("ppt_general.png"));
+      x.setName("General");
+      top.add(x);
+      
+      GUINode y = new GUINode(new Pattern("ppt_general_options.png"));
+      y.setName("General Options");
+      x.add(y);
+
+      x = new GUINode(new Pattern("ppt_view.png"));
+      x.setName("View");
+      top.add(x);
+      
+      y = new GUINode(new Pattern("ppt_show.png"));
+      y.setName("Show");
+      x.add(y);
+
+      y = new GUINode(new Pattern("ppt_slideshow.png"));
+      y.setName("Slideshow");
+      x.add(y);
+      
+      x = new GUINode(new Pattern("ppt_edit.png"));
+      x.setName("Edit");
+      top.add(x);
+
+      y = new GUINode(new Pattern("ppt_cutandpaste.png"));
+      y.setName("Cut and paste");
+      x.add(y);
+
+      y = new GUINode(new Pattern("ppt_text.png"));
+      y.setName("Text");
+      x.add(y);
+
+      
+      return tree;
+   }
    
    GUIModel createChromeModel(){
       
@@ -114,67 +166,67 @@ public class SikuliGuideTest {
    }
    
 
-   @Test
-   public void testModel() throws FindFailed{
-
-      GUIModel tree = createModel();
-      
-
-      ArrayList<GUINode> nodes = tree.getNodesByTag("refresh");
-      for (GUINode node : nodes){
-         Debug.info("node: " + node);
-      }
-
-      GUINode target = nodes.get(0);
-
-      Screen s = new Screen();
-      SikuliGuide g = new SikuliGuide();
-      
-      Match m = target.findOnScreen();
-      
-      if (m == null){
-         m = target.findAncestorOnScreen();
-         
-         
-         s.click(m, 0);
-         
-         m = s.wait(target.getPattern());
-         
-         
-         g.addCircle(m);
-         g.addFlag(m.getTopLeft().below(m.h/2),"    ");
-         g.showNow(3);
-         
-      }
-      
-      GUINode print = tree.getNodesByTag("print").get(0);
-      
-      m = print.findOnScreen();
-      g.addCircle(m);
-      g.addFlag(m.getTopLeft().below(m.h/2),"    ");
-      g.showNow(3);
-      
-
-      target = tree.getNodesByTag("references").get(0);;
-      
-      m = target.findAncestorOnScreen();
-      
-      s.hover(m);
-      
-      m = s.wait(target.getPattern());
-      
-      g.addCircle(m);
-      g.addFlag(m.getTopLeft().below(m.h/2),"    ");
-      g.showNow(3);
-      
-
-   }
+//   @Test
+//   public void testModel() throws FindFailed{
+//
+//      GUIModel tree = createModel();
+//      
+//
+//      ArrayList<GUINode> nodes = tree.getNodesByTag("refresh");
+//      for (GUINode node : nodes){
+//         Debug.info("node: " + node);
+//      }
+//
+//      GUINode target = nodes.get(0);
+//
+//      Screen s = new Screen();
+//      SikuliGuide g = new SikuliGuide();
+//      
+//      Match m = target.findOnScreen();
+//      
+//      if (m == null){
+//         m = target.findAncestorOnScreen();
+//         
+//         
+//         s.click(m, 0);
+//         
+//         m = s.wait(target.getPattern());
+//         
+//         
+//         g.addCircle(m);
+//         g.addFlag(m.getTopLeft().below(m.h/2),"    ");
+//         g.showNow(3);
+//         
+//      }
+//      
+//      GUINode print = tree.getNodesByTag("print").get(0);
+//      
+//      m = print.findOnScreen();
+//      g.addCircle(m);
+//      g.addFlag(m.getTopLeft().below(m.h/2),"    ");
+//      g.showNow(3);
+//      
+//
+//      target = tree.getNodesByTag("references").get(0);;
+//      
+//      m = target.findAncestorOnScreen();
+//      
+//      s.hover(m);
+//      
+//      m = s.wait(target.getPattern());
+//      
+//      g.addCircle(m);
+//      g.addFlag(m.getTopLeft().below(m.h/2),"    ");
+//      g.showNow(3);
+//      
+//
+//   }
 
 
    @Test
    public void testModelSearch() throws FindFailed{
 
-      GUIModel tree = createChromeModel();
+      GUIModel tree = createPPTModel();
       
       SikuliGuide guide = new SikuliGuide();
 
@@ -190,123 +242,383 @@ public class SikuliGuideTest {
 
    }
 
-
-
-
-
    @Test
-   public void testTextAlignment() {
+   public void testAnimation(){
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,50,50);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+
+
+      SikuliGuideText t = new SikuliGuideText(g,"Sliding right");
+      t.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(t);
+      t.setEntranceAnimation(t.createSlidingAnimator(-20,0));
+      
+      SikuliGuideFlag f = new SikuliGuideFlag(g,"Sliding left");
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      g.addComponent(f);
+      
+      t = new SikuliGuideText(g,"Sliding down");
+      t.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(t);
+      t.setEntranceAnimation(t.createSlidingAnimator(0,-20));
+
+      f = new SikuliGuideFlag(g,"Sliding up");
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(f);
+      
+      
+      r = new Region(600,200,50,50);
+      o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.blue);
+      g.addComponent(o);
+
+      t = new SikuliGuideText(g,"Circling");
+      t.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(t);
+      t.setEntranceAnimation(t.createCirclingAnimator(10));
+
+      
+      
+      g.setDialog("Test");
+      g.showNow(5);
+      
+
+   }
+   
+   
+   @Test
+   public void testSimpleFlag() {
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,50,50);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+      
+      SikuliGuideFlag f = new SikuliGuideFlag(g,"LEFT");
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(f);
+
+      
+      f = new SikuliGuideFlag(g,"RIGHT");
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+     // f.setDirection(SimpleFlag.DIRECTION_WEST);
+      g.addComponent(f);
+
+      f = new SikuliGuideFlag(g,"TOP");
+      //f.setDirection(SimpleFlag.DIRECTION_SOUTH);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(f);
+      
+      f = new SikuliGuideFlag(g,"BOTTOM");
+      //f.setDirection(SimpleFlag.DIRECTION_NORTH);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(f);
+
+      
+      g.showNow(5);
+   
+   }
+   
+   
+   @Test
+   public void testSimpleShapes() {
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,300,150);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+
+      //r = new Region(550,550,200,150);
+      
+      SikuliGuideCircle c = new SikuliGuideCircle(g,r);
+      c.setForeground(Color.green);
+      g.addComponent(c);
+      
+      
+      Region q = new Region(500,500,200,200);
+      o = new SikuliGuideRectangle(g,q);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+      
+      SikuliGuideArrow a = new SikuliGuideArrow(g, r.getTopLeft(), q.getTopLeft());
+      a.setForeground(Color.blue);
+      g.addComponent(a);
+      
+      g.showNow(5);
+
+   }
+   
+   @Test
+   public void testSimpleBracket() {
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,300,150);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+      
+      SikuliGuideBracket f = new SikuliGuideBracket(g);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(f);
+
+      f = new SikuliGuideBracket(g);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      g.addComponent(f);
+
+      f = new SikuliGuideBracket(g);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(f);
+      
+      f = new SikuliGuideBracket(g);
+      f.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(f);
+
+      
+      g.showNow(5);
+   
+   }
+   
+   @Test
+   public void testTracker() throws FindFailed{
+
       SikuliGuide g = new SikuliGuide();
 
-      Region r = new Region(200,200,100,150);
-      //g.addRectangle(r);
-
-      g.addText(r,"TOP", Side.TOP);
-      g.addText(r,"BOTTOM", Side.BOTTOM);
-      g.addText(r,"LEFT", Side.LEFT);
-      g.addText(r,"RIGHT", Side.RIGHT);
-
-
-      r = new Region(900,200,100,150);
-      g.addRectangle(r);
-
-      g.addComponent(new Flag(r.getTopLeft(),"Top Left"));
-      g.addComponent(new Flag(r.getBottomLeft(),"Bottom Left"));
-
-      Flag b = new Flag(r.getTopRight(),"Top Right");
-      b.setDirection(Flag.DIRECTION_WEST);
-      g.addComponent(b);
-
-      b = new Flag(r.getBottomRight(),"Bottom Right");
-      b.setDirection(Flag.DIRECTION_WEST);
-      g.addComponent(b);
-
-      b = new Flag(r.getCenter().above(r.h/2),"Top Flag");
-      b.setDirection(Flag.DIRECTION_SOUTH);
-      g.addComponent(b);
-
-      b = new Flag(r.getCenter().below(r.h/2),"Bottom Flag");
-      b.setDirection(Flag.DIRECTION_NORTH);
-      g.addComponent(b);
-
-      r = new Region(500,200,300,450);
-      g.addRectangle(r);
-
-      Bracket bracket = new Bracket(r);
-      g.addComponent(bracket);
-
-      bracket = new Bracket(r);
-      bracket.setSide(Bracket.SIDE_RIGHT);
-      g.addComponent(bracket);
-
-      bracket = new Bracket(r);
-      bracket.setSide(Bracket.SIDE_TOP);
-      g.addComponent(bracket);
-
-      bracket = new Bracket(r);
-      bracket.setSide(Bracket.SIDE_BOTTOM);
-      g.addComponent(bracket);
-
-
-      //g.addBookmark(r.getTopLeft(), "Hello");
-
-      //      g.addDialog("This is a test dialog with really long message. hahaha. This is a " +
-      //      		"test dialog with really long message ");
-
-      String dialogmsg = "This is a test dialog with really long message. hahaha. This is a " +
-      "test dialog with really long message ";
-      NavigationDialog dialog = new NavigationDialog(g,dialogmsg, SikuliGuide.SIMPLE);
-      dialog.setTitle("This is a test title");
-      //dialog.setLocation(new Point(100,100));
-      g.setDialog(dialog);
-
-      g.showNow(10);
-   }
-
-   @Test
-   public void testFlag(){
-
-      SikuliGuide guide = new SikuliGuide();
-      Flag flag;
-      flag = new Flag(new Location(400,400),"Click here");
-      guide.addComponent(flag);
-      flag = new Flag(new Location(800,400),"or click here");
-      guide.addComponent(flag);
       
+      Screen s = new Screen();
+      Region r1,r2;
+      SikuliGuideComponent c1,c2,c3,c4;
+      
+//      r1 = s.find("play.png");     
+//      c1 = new SikuliGuideRectangle(g,r1); 
+//      g.addComponent(c1);      
+//
+//      g.addTracker("play.png", r1, c1);
+//            
+//      g.setDialog("Tracking");
+//      g.showNow();
+      
+      
+      r2 = s.find("printer.png");
+      c2 = new SikuliGuideRectangle(g,r2); 
+      g.addComponent(c2);
+//        
+      c3 = new SikuliGuideText(g,"Printer");
+      c3.setLocationRelativeToRegion(r2, SikuliGuideComponent.TOP);
+      g.addComponent(c3);
 
-
-      flag = new Flag(new Location(800,400));
-      flag.setDirection(Flag.DIRECTION_WEST);
-      guide.addComponent(flag);
+      c4 = new SikuliGuideBracket(g);
+      c4.setLocationRelativeToRegion(r2, SikuliGuideComponent.BOTTOM);
+      g.addComponent(c4);
 
       
-      flag = new Flag(new Location(20,10),"Click here");
-      guide.addComponent(flag);
+      ArrayList<SikuliGuideComponent> components = new ArrayList<SikuliGuideComponent>();
+      components.add(c2);
+      components.add(c3);
+      components.add(c4);
+      
+      g.addTracker("printer.png", r2, components);
+      
+      g.setDialog("Tracking");
+      g.showNow();
+   
+//   
+      r1 = s.find("play.png");     
+      c1 = new SikuliGuideSpotlight(g,r1); 
+      g.addComponent(c1);      
 
+      g.addTracker("play.png", r1, c1);
+            
+      g.setDialog("Tracking");
+      g.showNow();
 
-      //      guide.addDialog("Animated flag");
-      guide.showNow(2);      
    }
+   
+
 
    @Test
-   public void testSpotlight(){
+   public void testSimpleSpotlight(){
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,100,100);
+      
+      SikuliGuideSpotlight o = new SikuliGuideSpotlight(g,r);
+      g.addComponent(o);
+      
+      SikuliGuideText t = new SikuliGuideText(g,"This is a spotlight");
+      t.setLocationRelativeToRegion(r, SikuliGuideText.TOP);
+      g.addComponent(t);
+      
+      
+      r = new Region(500,500,100,100);
+      o = new SikuliGuideSpotlight(g,r);
+      o.setShape(SikuliGuideSpotlight.CIRCLE);
+      o.setEntranceAnimation(o.createSlidingAnimator(-100, 0));
+      g.addComponent(o);
 
-      SikuliGuide guide = new SikuliGuide();
+      g.setDialog("Test spotlights");
+      g.showNow();  
+   }
+   
+   @Test
+   public void testGuideText() {
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(250,250,200,300);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+      
+      SikuliGuideText top = new SikuliGuideText(g,"This is Top");
+      top.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(top);
+      
 
+      
+      SikuliGuideText bottom = new SikuliGuideText(g,"This is Bottom");
+      bottom.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(bottom);
 
-      guide.addSpotlight(new Region(100,100,50,30));
-      guide.addSpotlight(new Region(20,20,20,20));
-      guide.addSpotlight(new Region(200,200,100,100), Spotlight.CIRCLE);
-      guide.addSpotlight(new Region(400,50,100,100), Spotlight.CIRCLE);
+      SikuliGuideText left = new SikuliGuideText(g,"This is Left");
+      left.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(left);
+      
+      SikuliGuideText right = new SikuliGuideText(g,"This is Right");
+      right.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      g.addComponent(right);
+      
+      SikuliGuideText tl = new SikuliGuideText(g,"Right Alignment");
+      tl.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      tl.setVerticalAlignmentWithRegion(r, 0f);
+      g.addComponent(tl);
 
-      guide.setDialog("Some spotlights");
-      guide.showNow(3);          
+      SikuliGuideText bl = new SikuliGuideText(g,"Bottom Alignment");
+      bl.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      bl.setVerticalAlignmentWithRegion(r, 1f);
+      g.addComponent(bl);
+      
+      SikuliGuideText ht = new SikuliGuideText(g,"Left Alignment");
+      ht.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      ht.setHorizontalAlignmentWithRegion(r, 0f);
+      ht.setLocation(ht.getX(),ht.getY()-100);
+      g.addComponent(ht);
 
-      guide.addSpotlight(new Region(300,300,50,30));
-      guide.addSpotlight(new Region(420,420,20,20));
-      guide.showNow(3);
+      SikuliGuideText rb = new SikuliGuideText(g,"Right Alignment");
+      rb.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      rb.setHorizontalAlignmentWithRegion(r, 1f);
+      rb.setLocation(rb.getX(),rb.getY()+100);
+      g.addComponent(rb);
+
+      SikuliGuideText cb = new SikuliGuideText(g,"Center Alignment");
+      cb.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      cb.setHorizontalAlignmentWithRegion(r, 0.5f);
+      cb.setLocation(cb.getX(),cb.getY()+50);
+      g.addComponent(cb);
+      
+      
+      SikuliGuideText qq = new SikuliGuideText(g,"Long text with maximum width set to 300");
+      qq.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      qq.setVerticalAlignmentWithRegion(r, 0f);      
+      qq.setMaximumWidth(300);
+      g.addComponent(qq);
+      
+      
+      
+      r = new Region(800,400,100,100);
+      o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.green);
+      g.addComponent(o);
+
+      
+      SikuliGuideText t = new SikuliGuideText(g,"This is a sentence in small font and it is long and supposed to be auto wrapped.");      
+      t.setFontSize(10);
+      t.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      t.setHorizontalAlignmentWithRegion(r, 0.5f);      
+      g.addComponent(t);
+
+      
+      g.setDialog("test text");
+      g.showNow(5);
+
    }
 
+
+   @Test
+   public void testGuideComponent() {
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      Region r = new Region(400,250,200,300);
+      
+      SikuliGuideComponent o = new SikuliGuideComponent(g);
+      o.setBounds(r.getRect());
+      o.setForeground(Color.red);
+      g.addComponent(o);
+      
+      SikuliGuideComponent top = new SikuliGuideComponent(g);
+      top.setSize(new Dimension(100,100));
+      top.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(top);
+
+      SikuliGuideComponent bottom = new SikuliGuideComponent(g);
+      bottom.setSize(new Dimension(100,100));
+      bottom.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(bottom);
+
+      SikuliGuideComponent left = new SikuliGuideComponent(g);
+      left.setSize(new Dimension(100,100));
+      left.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      g.addComponent(left);
+      
+      SikuliGuideComponent right = new SikuliGuideComponent(g);
+      right.setSize(new Dimension(100,100));
+      right.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      g.addComponent(right);
+      
+      
+      g.showNow(5);
+   
+   }
+
+//   @Test
+//   public void testFlag(){
+//
+//      SikuliGuide guide = new SikuliGuide();
+//      Flag flag;
+//      flag = new Flag(new Location(400,400),"Click here");
+//      guide.addComponent(flag);
+//      flag = new Flag(new Location(800,400),"or click here");
+//      guide.addComponent(flag);
+//      
+//
+//
+//      flag = new Flag(new Location(800,400));
+//      flag.setDirection(Flag.DIRECTION_WEST);
+//      guide.addComponent(flag);
+//
+//      
+//      flag = new Flag(new Location(20,10),"Click here");
+//      guide.addComponent(flag);
+//
+//
+//      //      guide.addDialog("Animated flag");
+//      guide.showNow(2);      
+//   }
 
    @Test
    public void testBeam(){
@@ -362,13 +674,36 @@ public class SikuliGuideTest {
    }
 
    @Test
-   public void testImage(){
+   public void testImage() throws IOException{
 
       SikuliGuide g = new SikuliGuide();
-      g.addImage(new Location(10,10),"tools.png");
-      g.addImage(new Location(100,10),"tools.png",2.0f);
-      g.addImage(new Location(200,10),"tools.png",3.0f);
-      g.showNow();      
+      
+      Region r = new Region(400,300,200,100);
+      
+      SikuliGuideRectangle o = new SikuliGuideRectangle(g,r);
+      o.setForeground(Color.red);
+      g.addComponent(o);
+
+      SikuliGuideImage img = new SikuliGuideImage(g, "tools.png");
+      img.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+      g.addComponent(img);
+      
+      img = new SikuliGuideImage(g, "tools.png");
+      img.setScale(1.5f);
+      img.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+      g.addComponent(img);
+
+      img = new SikuliGuideImage(g, "tools.png");
+      img.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+      img.setEntranceAnimation(img.createCirclingAnimator(10));
+      g.addComponent(img);
+      
+      img = new SikuliGuideImage(g, "tools.png");
+      img.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+      img.setEntranceAnimation(img.createSlidingAnimator(-20,0));
+      g.addComponent(img);
+      
+      g.showNow(5);      
 
    }
 
@@ -449,42 +784,6 @@ public class SikuliGuideTest {
    }
 
    @Test
-   public void testFirefox() throws FindFailed {
-
-      App a = new App("Firefox");
-
-      // a.focus();
-      Debug.log("t");
-      //
-      //      a.focus();
-      //      Debug.log("t");
-      //
-      //      Region s = a.window(0);
-
-      Screen s = new Screen();
-
-      Debug.log("s=" + s);
-      //      s.getCenter();
-      //      s.setFindFailedResponse(FindFailedResponse.PROMPT);
-      //
-      //
-      //      Settings.ShowActions = true;
-
-      Region r = null;
-
-      //      s.click("tools.png",0);
-
-      SikuliGuide sa = new SikuliGuide();
-
-      r = s.find("tools.png");
-      //sa.addHighlight(r);
-      sa.addCircle(r);
-      sa.showNow();
-      // sa.showWaitForButtonClick("Continue", "Tools");
-
-   }
-
-   @Test
    public void testICDLSimpleSearch() throws FindFailed{
       App a = new App("Chrome");
       //a.focus();
@@ -503,7 +802,7 @@ public class SikuliGuideTest {
 
       r = s.find(new Pattern("fairy.png").similar(0.95f));
       sa.addClickTarget(r,"");
-      sa.addCircle(r);
+      //sa.addCircle(r);
       sa.showNow();
 
 
@@ -513,7 +812,7 @@ public class SikuliGuideTest {
       " click it again to unselect it.");
       r = s.find(new Pattern("three2five.png").similar(0.95f));
       sa.addClickTarget(r,"");
-      sa.addCircle(r);
+      //sa.addCircle(r);
       sa.showNow();
 
       Robot robot=null;
@@ -528,9 +827,9 @@ public class SikuliGuideTest {
             "We can use the arrows in the results section to page through " +
       "all the different books. ");
       r = s.find(new Pattern("right.png").similar(0.95f));
-      sa.addCircle(r);
+      //sa.addCircle(r);
       r = s.find(new Pattern("left.png").similar(0.95f));
-      sa.addCircle(r);
+      //sa.addCircle(r);
       sa.showNow();
 
 
@@ -538,41 +837,11 @@ public class SikuliGuideTest {
             "we can click the Trash Can button. To learn how to read a book" +
       " go to the reading books section.");
       r = s.find(new Pattern("trashcan.png").similar(0.95f));
-      sa.addCircle(r);
+      //sa.addCircle(r);
       sa.showNow();
    }
 
-   @Test
-   public void testMute() throws FindFailed{
-      //App a = new App("System Preferences");
-      //a.focus();
 
-      Region s = new Screen(0);
-
-      Debug.log("s=" + s);
-      s.getCenter();
-
-      s.setFindFailedResponse(FindFailedResponse.PROMPT);
-
-
-      Region r = null;
-
-      SikuliGuide sa = new SikuliGuide(s);
-      r = s.find("sound.png");
-      sa.addText(r.getBottomLeft().below(5),"Click this");
-      sa.addRectangle(r);
-      sa.addClickTarget(r, "");
-      //sa.addDialog("Next", "Hello");
-      sa.showNow();
-
-      sa.setDialog("Another step");
-      sa.showNow();
-
-      sa.setDialog("Yet another step");
-      sa.showNow();
-
-
-   }
 
    @Test
    public void testICDL() throws FindFailed{
@@ -603,6 +872,22 @@ public class SikuliGuideTest {
 
    }
 
+   
+   @Test
+   public void testBubble(){
+      
+      
+      SikuliGuide g = new SikuliGuide();
+      Region t = new Region(100,100,50,50);
+      Bubble b = new Bubble(g);
+      
+      b.addTarget(new Region(100,100,50,50));
+      b.addTarget(new Region(800,120,50,50));
+      
+      g.setTransition(b);
+      g.showNow();
+      
+   }
 
 
 

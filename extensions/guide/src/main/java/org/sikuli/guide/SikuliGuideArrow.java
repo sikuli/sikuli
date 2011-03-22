@@ -17,6 +17,8 @@ import java.lang.reflect.Array;
 
 public class SikuliGuideArrow extends SikuliGuideComponent{
 
+   
+   
 	public Point getFrom() {
 		return from;
 	}
@@ -34,8 +36,9 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 		
 		Rectangle r = new Rectangle(from);
 		r.add(to);
-		r.grow(2,2);		
+		r.grow(10,10);		
 		setBounds(r);
+		setForeground(Color.red);
 	
 	}
 	
@@ -170,7 +173,8 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 		Stroke pen = new BasicStroke(3.0F);
 		g2d.setStroke(pen);
 		g2d.translate(-r.x,-r.y);
-
+      //g2d.translate(10,10);
+      
 		drawPolylineArrow(g, new int[]{from.x,to.x}, new int[]{from.y,to.y}, 6, 6);
 	}
 }
