@@ -75,18 +75,16 @@ public class SikuliGuideText extends SikuliGuideComponent {
    void updateSize(){
       Dimension size = label.getPreferredSize();
       label.setSize(size);
-
-//      size.height += 2*shadowSize;      
-//      size.width += 2*shadowSize;
       setSize(size);
    }
 
 
-   int fontSize = 16;
+   int fontSize = 12;
    int max_width = Integer.MAX_VALUE;
    String getStyleString(){
       //return "font-size:"+fontSize+"px;color:white;background-color:#333333;padding:3px";
-      return "font-size:"+fontSize+"px;color:black;background-color:#FFF1A8;padding:3px";
+      //return "font-size:"+fontSize+"px;color:black;background-color:#FFF1A8;padding:3px";
+      return "font-size:"+fontSize+"px;color:black;background-color:#FFFF00;padding:3px";
    }
 
    public void setFontSize(int i) {

@@ -47,13 +47,13 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
       this.shape = shape_constant;
    }
    
-   public void paint(Graphics g){
-      super.paint(g);
+   public void paintComponent(Graphics g){
+      super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
       
       Rectangle r = getBounds();
       
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));        
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 1.0f));        
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
             RenderingHints.VALUE_ANTIALIAS_ON);       
 

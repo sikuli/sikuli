@@ -35,8 +35,7 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
    public final static int DIRECTION_WEST = 2;
    public final static int DIRECTION_SOUTH = 3;
    public final static int DIRECTION_NORTH = 4;
-
-
+   
    String text;
    JLabel label;
    public SikuliGuideFlag(SikuliGuide sikuliGuide, String text){         
@@ -49,18 +48,21 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
    Rectangle triangle;
    FontMetrics fm;
    
-   static final int PADDING_X = 2;
-   static final int PADDING_Y = 2;
-   static final int SHADOW_SIZE = 0;
+   static final int PADDING_X = 3;
+   static final int PADDING_Y = 3;
+   static final int SHADOW_SIZE = 1;
 
    int direction;
    void init(String text){
       this.text = text;
+      
+      setForeground(Color.white);
+      setBackground(Color.magenta);
 
       textBox = new Rectangle();
       triangle = new Rectangle();
 
-      font = new Font("sansserif", Font.BOLD, 16);
+      font = new Font("sansserif", Font.BOLD, 14);
       fm = getFontMetrics(font);
       textBox.setSize(fm.stringWidth(text),fm.getHeight());
       textBox.grow(PADDING_X, PADDING_Y);
@@ -158,27 +160,30 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
       g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON));
 
-      // draw shadow
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-      g2d.translate(SHADOW_SIZE,SHADOW_SIZE);
-      g2d.setColor(new Color(0.3f,0.3f,0.3f));
-      g2d.fill(gp);
-
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+//      // draw shadow
+//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+//      g2d.translate(SHADOW_SIZE,SHADOW_SIZE);
+//      g2d.setColor(new Color(0.3f,0.3f,0.3f));
+//      g2d.fill(gp);
+//
+//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
       
-      // draw background
-      g2d.translate(-SHADOW_SIZE,-SHADOW_SIZE);
-      g2d.setColor(Color.black);
+     // g2d.translate(-SHADOW_SIZE,-SHADOW_SIZE);
+     
+      // draw background      
+      //g2d.setColor(Color.black);
+      g2d.setColor(getBackground());
       g2d.fill(gp);
       
       // draw outline
       Stroke pen = new BasicStroke(1.0F);
       g2d.setStroke(pen);
-      g2d.setColor(new Color(0.6f,0.6f,0.6f));
+      //g2d.setColor(new Color(0.6f,0.6f,0.6f));
+      g2d.setColor(Color.white);
       g2d.draw(gp);
       
 
-      g2d.setColor(Color.white);
+      g2d.setColor(getForeground());
       g2d.drawString(text, textBox.x + PADDING_X, 
             textBox.y +  textBox.height - fm.getDescent() - PADDING_Y);
 

@@ -1,4 +1,5 @@
 package org.sikuli.guide;
+import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Location;
@@ -20,6 +21,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 
 
@@ -73,8 +77,34 @@ implements SingletonInteractionTarget{
       for (Region target : targets)
          drawBubble(g, target);  
 
+      
+      if (current != null){
+         Region t = getNearestTarget();
+         g2d.drawRect(t.x,t.y,t.w,t.h);
+      }
+      
    }
 
+   
+   public Region getNearestTarget(){
+      
+      double min_distance = Double.MAX_VALUE;
+      Region nearest_target = null;
+      
+      for (Region target : targets){
+         Point target_point = new Point(target.getCenter());
+         double distance = current.distance(target_point);
+         
+         if (nearest_target == null || distance < min_distance){
+            nearest_target = target;
+            min_distance = distance;
+         }
+         
+      }
+      
+      
+      return nearest_target;
+   }
 
 
    public void drawBubble(Graphics g, Region target){
@@ -120,6 +150,10 @@ implements SingletonInteractionTarget{
       g2d.setColor(new Color(0,0,0,0));
       g2d.fill(inner);
 
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f)); 
+      Point c = target.getCenter();
+      g2d.setColor(Color.black);
+      g2d.drawString(""+distance, c.x, c.y);
 
 
 
@@ -213,6 +247,9 @@ implements SingletonInteractionTarget{
       super.toFront();
    }
 
+   
+   ArrayList<Point> lastMouseLocations = new  ArrayList<Point>();
+   
 
    @Override
    public String waitUserAction() {
@@ -224,19 +261,100 @@ implements SingletonInteractionTarget{
       Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
       Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
       Cursor currentCursor = null;
+      
+      
 
+      //Screen s = new Screen();
+      Robot robot = null;
+      try {
+         robot = new Robot();
+      } catch (AWTException e) {
+      }
+      
+      
       boolean running = true;
       while (running){
+         
+         
+         try {
+            Thread.sleep(50);
+         } catch (InterruptedException e) {
+         }
+         
+         Location m = Env.getMouseLocation();
+         current = new Point(m.x,m.y);
+         Cursor cursor = null;
+         
+         if (lastMouseLocations.size() == 5){
+            lastMouseLocations.remove(0);
+         } 
+         lastMouseLocations.add(current);
+                  
+         //Debug.log("locs:" + lastMouseLocations);
+   
+         
+         Iterator<Point> a = lastMouseLocations.iterator();
+         Iterator<Point> b = lastMouseLocations.iterator();
+         b.next();
+         
+         ArrayList<Point> moves = new  ArrayList<Point>();
+
+         int px=0;
+         int py=0;
+         int cnt=0;
+         
+         String str = "";
+         while (b.hasNext()){
+            
+            Point p = a.next();
+            Point q = b.next();
+            
+            Point move = new Point(q.x-p.x, q.y-p.y); 
+            moves.add(move);
+            
+            px += move.x;
+            py += move.y;
+            
+            if (move.x!=0||move.y!=0){
+               cnt++;
+            }
+            
+            str += "(" + (q.x - p.x) + "," + (q.y - p.y) + ")";
+         }
+
+         if (cnt > 3 && (px != 0 || py != 0)){
+
+            Debug.log("move: (" + px + "," + py + ")");
+
+         }
+
+//         if (moves.size()>0){
+//            Point last = moves.get(moves.size()-1);
+//
+//            if (last.x != 0 || last.y != 0){
+//
+//               Debug.log("move:" + last);
+//
+//            }
+//         }
+         
+         Region r = getNearestTarget();
+         Point dest = r.getCenter();
+         
+         int dx = (dest.x - current.x)/20;
+         int dy = (dest.y - current.y)/20;
+         
+//         robot.mouseMove(current.x+dx, current.y+dy);
+//         robot.delay(50);
+
+         //         try {
+//            s.hover(new Location(current.x+dx, current.y+dy));
+//         } catch (FindFailed e) {
+//         }
+
 
          for (Region target: targets){
             Rectangle target_rect = target.getRect();
-            Location m = Env.getMouseLocation();
-
-            current = new Point(m.x,m.y);
-
-
-
-            Cursor cursor = null;
             if (target_rect.contains(current)){
                running = false;
                cursor = handCursor;

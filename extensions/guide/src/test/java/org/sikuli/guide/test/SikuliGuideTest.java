@@ -9,8 +9,11 @@ import java.awt.Robot;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import org.junit.Test;
 import org.sikuli.guide.Bubble;
+import org.sikuli.guide.ClickableWindow;
 import org.sikuli.guide.Portal;
 import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.SikuliGuideArrow;
@@ -535,7 +538,7 @@ public class SikuliGuideTest {
    }
    
    @Test
-   public void testGuideText() {
+   public void testSimpleText() {
       
       SikuliGuide g = new SikuliGuide();
       
@@ -862,7 +865,7 @@ public class SikuliGuideTest {
 
 
       r = s.find(new Pattern("fairy.png").similar(0.95f));
-      sa.addClickTarget(r,"");
+      //sa.addClickTarget(r,"");
       //sa.addCircle(r);
       sa.showNow();
 
@@ -872,7 +875,7 @@ public class SikuliGuideTest {
             "the Three to Five button as well. To remove a category from the search," +
       " click it again to unselect it.");
       r = s.find(new Pattern("three2five.png").similar(0.95f));
-      sa.addClickTarget(r,"");
+      //sa.addClickTarget(r,"");
       //sa.addCircle(r);
       sa.showNow();
 
@@ -922,9 +925,9 @@ public class SikuliGuideTest {
       Location o = r.getTopLeft().above(100);
 
       sa.addText(o,"Click on the Tiger or the Unicorn");
-      sa.addClickTarget(r,"Tiger");
+      //sa.addClickTarget(r,"Tiger");
 
-      sa.addClickTarget(s.find("unicorn.png"),"Unicorn");
+      //sa.addClickTarget(s.find("unicorn.png"),"Unicorn");
       sa.showNow();
 
 
@@ -933,6 +936,45 @@ public class SikuliGuideTest {
 
    }
 
+   @Test
+   public void testClickable() throws FindFailed{
+      
+      
+      SikuliGuide g = new SikuliGuide();
+//      g.addClickTarget(new Region(100,100,50,50), "1");
+//      g.addClickTarget(new Region(100,100,50,50), "2");
+//      g.addClickTarget(new Region(800,120,50,50), "3");
+//      g.addClickTarget(new Region(700,120,50,50), "4");
+
+      // create a visible "invisible" jframe
+      // so that we can capture mouse movement event
+//      JFrame f = new JFrame();
+//      f.setUndecorated(true);
+//      f.setSize(0,0);
+//      f.setEnabled(true);
+//      f.setVisible(true);
+      
+//      ClickableWindow cw = new ClickableWindow(g);
+      
+      
+      Screen s = new Screen();
+      Match m = s.find("new.png");
+      
+      g.addClickable(m);
+      
+      SikuliGuideFlag flag = new SikuliGuideFlag(g, "Click Here");
+      flag.setLocationRelativeToRegion(m, SikuliGuideComponent.RIGHT);
+      g.addComponent(flag);      
+      
+      g.addClickable(new Region(200,200,50,50));
+      
+      g.showNow();
+      
+      g.addClickable(new Region(500,300,150,50));
+      g.addClickable(new Region(800,400,50,150));
+      g.showNow();
+
+   }
    
    @Test
    public void testBubble(){
@@ -944,6 +986,7 @@ public class SikuliGuideTest {
       
       b.addTarget(new Region(100,100,50,50));
       b.addTarget(new Region(800,120,50,50));
+      b.addTarget(new Region(700,120,50,50));
       
       g.setTransition(b);
       g.showNow();

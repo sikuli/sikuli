@@ -26,32 +26,17 @@ from org.sikuli.guide import TreeSearchDialog
 from org.sikuli.guide.model import GUIModel
 from org.sikuli.guide.model import GUINode
 
-
 s = UnionScreen()
-_g = SikuliGuide(s);
+_g = SikuliGuide(s)
 
-
-def portal(targets):
-    p = Portal(_g)
-    for target in targets:
-        r = s.getRegionFromPSRM(target)
-        p.addEntry("",r)
-    _g.addSingleton(p)
-
-def magnifier(target):
-    r = s.getRegionFromPSRM(target)
-    _g.addMagnifier(r)    
-    
-def beam(target):
-    r = s.getRegionFromPSRM(target)
-    _g.addBeam(r)
-
+#######################     
+#      Core API       #
+#######################
 
 def arrow(srcTarget, destTarget):
     r1 = s.getRegionFromPSRM(srcTarget)
     r2 = s.getRegionFromPSRM(destTarget)
     comp = SikuliGuideArrow(_g,r1.getCenter(),r2.getCenter())
-    #comp.setForeground(Color.red);
     _g.addComponent(comp)
 
 def dialog(text, title = None, location = None):    
@@ -62,6 +47,94 @@ def dialog(text, title = None, location = None):
     d.setMessage(text)
     _g.setTransition(d)
 
+def circle(target, **kwargs):
+    r = s.getRegionFromPSRM(target)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideCircle(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)
+
+def rectangle(target,**kwargs):
+    r = s.getRegionFromPSRM(target)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideRectangle(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)
+
+def spotlight(target, shape = 'circle', **kwargs):
+    r = s.getRegionFromPSRM(target)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = SikuliGuideSpotlight(_g,r1)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)    
+    if shape == 'rectangle':
+        comp.setShape(SikuliGuideSpotlight.RECTANGLE)
+    elif shape == 'circle':
+        comp.setShape(SikuliGuideSpotlight.CIRCLE)
+    _g.addComponent(comp)    
+
+def bracket(target, side='left', **kwargs):
+    r = s.getRegionFromPSRM(target)
+    comp = SikuliGuideBracket(_g)
+    _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)    
+
+def flag(target, text='    ', **kwargs):
+    r = s.getRegionFromPSRM(target)
+    comp = SikuliGuideFlag(_g,text)
+    _setLocationRelativeToRegion(comp,r,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)   
+    
+    
+def text(target, txt, fontsize = 16,side='bottom',**kwargs):
+    r = s.getRegionFromPSRM(target)
+    comp = SikuliGuideText(_g, txt)
+    comp.setFontSize(fontsize)
+    _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)        
+
+def callout(target, txt, fontsize = 16, side='right',**kwargs):
+    r = s.getRegionFromPSRM(target)
+    comp = SikuliGuideCallout(_g, txt)
+    #comp.setFontSize(fontsize)
+    _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)
+    
+def clickable(target, name = ""):
+    r = s.getRegionFromPSRM(target)
+    _g.addClickable(r)
+
+def tooltip(target, txt):
+    text(target, txt, fontsize = 8, side = 'bottom')
+    
+def show(arg = None):
+    # show a list of steps
+    if isinstance(arg, list):
+        _show_steps(arg)
+    # show a single step
+    elif callable(arg):
+        arg()
+        _g.showNowWithDialog(SikuliGuide.SIMPLE)
+    # show for some period of time
+    elif isinstance(arg, float) or isinstance(arg, int):
+        _g.showNow(arg)
+    # show for the default period of time
+    else:
+        _g.showNow()        
+    
+####################
+# Helper functions #
+####################
 def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,0,0,0),
                                  horizontalalignment = 'center',
                                  verticalalignment = 'center'):    
@@ -118,80 +191,7 @@ def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
     
     return r
 
-
-def circle(target, **kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideCircle(_g,r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
-
-def rectangle(target,**kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideRectangle(_g,r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
-
-def spotlight(target, shape = 'rectangle', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideSpotlight(_g,r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)    
-    if shape == 'rectangle':
-        comp.setShape(SikuliGuideSpotlight.RECTANGLE)
-    elif shape == 'circle':
-        comp.setShape(SikuliGuideSpotlight.CIRCLE)
-    _g.addComponent(comp)    
-
-def bracket(target, side='left', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideBracket(_g)
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)    
-
-def flag(target, text='    ', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideFlag(_g,text)
-    _setLocationRelativeToRegion(comp,r,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)   
-    
-    
-def text(target, txt, fontsize = 16,side='bottom',**kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideText(_g, txt)
-    comp.setFontSize(fontsize)
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)        
-
-def callout(target, txt, fontsize = 16,side='right',**kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideCallout(_g, txt)
-    #comp.setFontSize(fontsize)
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
-    
-def clickable(target, name = ""):
-    r = s.getRegionFromPSRM(target)
-    _g.addClickTarget(r, name)
-
-
-def tooltip(target, text):
-    r = s.getRegionFromPSRM(target)
-    _g.addToolTip(r.getBottomLeft().below(5), text)
-    
-
+# functions for showing
 def _show_steps(steps):
     n = len(steps)
     i = 0
@@ -218,17 +218,28 @@ def _show_steps(steps):
             return 
 
 
-def show(arg = None):
-    if isinstance(arg, list):
-        _show_steps(arg)
-    elif callable(arg):
-        arg()
-        _g.showNowWithDialog(SikuliGuide.SIMPLE)
-    elif isinstance(arg, float) or isinstance(arg, int):
-        _g.showNow(arg)
-    else:
-        _g.showNow()    
         
+
+#########################        
+# Experimental Features #
+#########################
+
+def portal(targets):
+    p = Portal(_g)
+    for target in targets:
+        r = s.getRegionFromPSRM(target)
+        p.addEntry("",r)
+    _g.addSingleton(p)
+
+def magnifier(target):
+    r = s.getRegionFromPSRM(target)
+    _g.addMagnifier(r)    
+    
+def beam(target):
+    r = s.getRegionFromPSRM(target)
+    _g.addBeam(r)
+    
+            
         
 def parse_model(gui, level=0):
     for i in range(0,level):
@@ -286,6 +297,4 @@ def search(model = None):
         ret = _g.showNow()
         if ret in h:
             h[ret]()
-        
-        
     

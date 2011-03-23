@@ -11,6 +11,9 @@ import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +57,7 @@ public class SikuliGuide extends TransparentWindow {
    ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
    SingletonInteractionTarget interactionTarget;
    ArrayList<Tracker> trackers = new ArrayList<Tracker>();
-   
+   ClickableWindow clickableWindow;
    
    
    public SikuliGuide(){
@@ -66,6 +69,7 @@ public class SikuliGuide extends TransparentWindow {
    }
 
    void init(Region region){
+      
 
       try {
          robot = new Robot();
@@ -100,25 +104,30 @@ public class SikuliGuide extends TransparentWindow {
       setFocusableWindowState(false);
 
 
-
+      
       dialog = new NavigationDialog(this);
       dialog.setAlwaysOnTop(true);
       dialog.pack();
       dialog.setLocationRelativeTo(this);
+      
+      clickableWindow = new ClickableWindow(this);
    }
 
-
+   
+   
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       super.paint(g);
    }
 
    public void clear(){
-      for (ClickTarget target : _clickTargets){
-         target.dispose();
-      }
-      _clickTargets.clear();
-
+//      for (ClickTarget target : _clickTargets){
+//         target.dispose();
+//      }
+//      _clickTargets.clear();
+      
+      clickableWindow.clear();
+      
       stopAnimation();
       
       
@@ -225,9 +234,9 @@ public class SikuliGuide extends TransparentWindow {
    //      addAnnotation(new AnnotationRectangle(rect));
    //   }
 
-   ClickTarget _clickTarget = null;
-   public void addClickTarget(Region region, String name){
-      _clickTargets.add(new ClickTarget(this, region.getRect(), name));
+   public void addClickable(Region region){
+      clickableWindow.addClickableRegion(region);
+      setTransition(clickableWindow);      
    }
 
    //   public void addToolTip(Location location, String message){
@@ -406,7 +415,10 @@ public class SikuliGuide extends TransparentWindow {
 
    public String showNow(float secs){
       
-      if (content.getComponentCount()  == 0 && interactionTarget == null && search == null){
+      if (content.getComponentCount()  == 0 
+            && interactionTarget == null 
+            && _clickTargets.isEmpty()
+            && search == null){
          // if no component at all, return immediately because
          // there's nothing to show
          return SikuliGuideDialog.NEXT;         
@@ -446,42 +458,45 @@ public class SikuliGuide extends TransparentWindow {
       }
       else if (interactionTarget != null){
 
-
-
-         for (ClickTarget target : _clickTargets){
-            target.setVisible(true);        
-            target.setIgnoreMouse(true);
-         }
-
          String cmd = interactionTarget.waitUserAction();
 
-         closeNow();
          focusBelow();
+         
+         if (interactionTarget instanceof ClickableWindow){
+            // relay the click at the same position
+            Debug.info("clicking");
+            robot.mousePress(InputEvent.BUTTON1_MASK);            
+            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+         }
+         
+         closeNow();
+        
+         
          return cmd;
-      }
-      else if (!_clickTargets.isEmpty()){
-
-         for (ClickTarget target : _clickTargets){
-            target.setVisible(true);
-         }
-
-         synchronized(this){
-            try {
-               wait();
-            } catch (InterruptedException e) {
-               e.printStackTrace();
-            }
-         }
-
-         Debug.log("Last clicked:" + _lastClickedTarget.getName());
-
-         closeNow();
-         focusBelow();
-
-         robot.mousePress(InputEvent.BUTTON1_MASK);            
-         robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-         return SikuliGuideDialog.NEXT;
+//      }
+//      else if (!_clickTargets.isEmpty()){
+//
+//         for (ClickTarget target : _clickTargets){
+//            target.setVisible(true);
+//         }
+//
+//         synchronized(this){
+//            try {
+//               wait();
+//            } catch (InterruptedException e) {
+//               e.printStackTrace();
+//            }
+//         }
+//
+//         Debug.log("Last clicked:" + _lastClickedTarget.getName());
+//
+//         closeNow();
+//         focusBelow();
+//
+//         robot.mousePress(InputEvent.BUTTON1_MASK);            
+//         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//         return SikuliGuideDialog.NEXT;
 
       }else {
 
@@ -501,6 +516,10 @@ public class SikuliGuide extends TransparentWindow {
       dispose();
       if (dialog != null)
          dialog.dispose();
+      
+      if (clickableWindow != null){
+         clickableWindow.dispose();
+      }
    }
 
    private void closeAfter(float secs){
