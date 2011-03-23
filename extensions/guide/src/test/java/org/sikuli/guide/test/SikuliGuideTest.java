@@ -4,41 +4,32 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-
 import org.junit.Test;
-import org.sikuli.guide.SikuliGuideComponent;
 import org.sikuli.guide.Bubble;
-import org.sikuli.guide.ClickTarget;
-import org.sikuli.guide.Flag;
-import org.sikuli.guide.Bracket;
-import org.sikuli.guide.SearchDialog;
-import org.sikuli.guide.Beam;
-import org.sikuli.guide.NavigationDialog;
-import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.Portal;
+import org.sikuli.guide.SikuliGuide;
 import org.sikuli.guide.SikuliGuideArrow;
 import org.sikuli.guide.SikuliGuideBracket;
+import org.sikuli.guide.SikuliGuideCallout;
 import org.sikuli.guide.SikuliGuideCircle;
+import org.sikuli.guide.SikuliGuideComponent;
 import org.sikuli.guide.SikuliGuideFlag;
 import org.sikuli.guide.SikuliGuideImage;
 import org.sikuli.guide.SikuliGuideRectangle;
 import org.sikuli.guide.SikuliGuideSpotlight;
 import org.sikuli.guide.SikuliGuideText;
-import org.sikuli.guide.Tracker;
 import org.sikuli.guide.TreeSearchDialog;
 import org.sikuli.guide.SikuliGuide.Side;
 import org.sikuli.guide.model.GUIModel;
 import org.sikuli.guide.model.GUINode;
-
 import org.sikuli.script.App;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.FindFailedResponse;
 import org.sikuli.script.Location;
 import org.sikuli.script.Match;
 import org.sikuli.script.Pattern;
@@ -60,6 +51,16 @@ public class SikuliGuideTest {
       GUINode y = new GUINode(new Pattern("ppt_general_options.png"));
       y.setName("General Options");
       x.add(y);
+
+      y = new GUINode(new Pattern("ppt_movie_options.png"));
+      //y.setName("Movie Options");
+      y.setName("Photo Browser");
+      x.add(y);
+
+      GUINode z = new GUINode(new Pattern("ppt_slide_transitions.png"));
+      z.setName("Slide Transitions");
+      y.add(z);
+      
 
       x = new GUINode(new Pattern("ppt_view.png"));
       x.setName("View");
@@ -222,6 +223,59 @@ public class SikuliGuideTest {
 //
 //   }
 
+   @Test
+   public void testCallout(){
+
+      SikuliGuide guide = new SikuliGuide();
+      
+      Region region = new Region(400,200,100,100);
+      SikuliGuideRectangle r = new SikuliGuideRectangle(guide, region);
+      
+      guide.addComponent(r);
+      
+      SikuliGuideCallout c = new SikuliGuideCallout(guide,"This is a callout box. " +
+      		"It has lots of text. Let's see if it wraps. Lots of text. Hahaha.");
+      c.setLocationRelativeToRegion(region, SikuliGuideComponent.TOP);
+      guide.addComponent(c);     
+
+      c = new SikuliGuideCallout(guide,"This is a callout box to the bottom");      
+      c.setLocationRelativeToRegion(region, SikuliGuideComponent.BOTTOM);
+      guide.addComponent(c);     
+
+      c = new SikuliGuideCallout(guide,"This is a callout box to the left");      
+      c.setLocationRelativeToRegion(region, SikuliGuideComponent.LEFT);
+      guide.addComponent(c);     
+      
+      c = new SikuliGuideCallout(guide,"Right");      
+      c.setLocationRelativeToRegion(region, SikuliGuideComponent.RIGHT);
+      guide.addComponent(c);     
+
+      
+      guide.setDialog("callout");
+      guide.showNow(3);
+
+   }
+   
+   
+   @Test
+   public void testModelSearchPath() throws FindFailed{
+
+      GUIModel tree = createPPTModel();
+    
+      SikuliGuide guide = new SikuliGuide();
+      
+      tree.drawPathTo(guide, "photobrowser");      
+      guide.showNow(3);
+
+      
+//      tree.drawPathTo(guide, "paste");      
+//      guide.showNow(3);
+//      
+//      tree.drawPathTo(guide, "option");      
+//      guide.showNow(3);
+
+   }
+
 
    @Test
    public void testModelSearch() throws FindFailed{
@@ -328,7 +382,6 @@ public class SikuliGuideTest {
    
    }
    
-   
    @Test
    public void testSimpleShapes() {
       
@@ -356,6 +409,14 @@ public class SikuliGuideTest {
       a.setForeground(Color.blue);
       g.addComponent(a);
       
+      a = new SikuliGuideArrow(g, r.getBottomLeft(), q.getBottomLeft());
+      a.setStyle(SikuliGuideArrow.ELBOW_Y);
+      a.setForeground(Color.cyan);
+      g.addComponent(a);
+
+      
+      
+      g.setDialog("Simple Shapes");
       g.showNow(5);
 
    }
@@ -890,6 +951,76 @@ public class SikuliGuideTest {
    }
 
 
+   @Test
+   public void testGUIPath() throws IOException, FindFailed{
+      
+      
+      SikuliGuide g = new SikuliGuide();
+      
+      ArrayList<GUINode> path = new ArrayList<GUINode>();
+      
+      path.add(new GUINode(new Pattern("play.png")));      
+      path.add(new GUINode(new Pattern("ppt_show.png")));
+      path.add(new GUINode(new Pattern("ppt_slideshow.png")));
+      
+      
+      GUINode head = path.get(0);
+      //SikuliGuideImage img = new SikuliGuideImage(g,head.getPattern().getFilename());
+      //g.addComponent(img);
+      
+      Screen s = new Screen();
+      Match m = s.find(head.getPattern());
+      
+     
+      SikuliGuideRectangle match = new SikuliGuideRectangle(g,m);
+      g.addComponent(match);
+
+      int ox = m.x;
+      int oy = m.y;
+      
+      SikuliGuideComponent previous = match;
+      
+      for (int i = 1; i < path.size(); ++i){
+         
+         
+         ox += previous.getWidth();
+         oy += previous.getHeight();
+         
+         // add spacing between nodes
+         ox += 5;
+         oy += 10;        
+         
+         GUINode node = path.get(i);
+         SikuliGuideImage current = new SikuliGuideImage(g,node.getPattern().getFilename());
+         current.setLocation(ox,oy);
+         g.addComponent(current);
+         
+         
+         Rectangle r1 = previous.getBounds();
+         Rectangle r2 = current.getBounds();
+
+         
+         // draw an elbow between the two
+         Point p1 = new Point(r1.x + r1.width/2, r1.y + r1.height/2); // center bottom        
+         Point p2 = new Point(r2.x, r2.y + r2.height/2); // left middle
+         
+         // give some margin between the arrow head and the pointed image
+         p2.x -= 5;
+         
+         SikuliGuideArrow arrow = new SikuliGuideArrow(g, p1, p2);
+         arrow.setStyle(SikuliGuideArrow.ELBOW_Y);
+         g.addComponent(arrow);
+         
+         
+         
+         previous = current;
+         
+      }
+      
+      
+      g.showNow(3);
+      
+   }
 
 
 }

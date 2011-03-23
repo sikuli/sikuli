@@ -267,7 +267,9 @@ public class SikuliGuide extends TransparentWindow {
             comp instanceof SikuliGuideRectangle ||
             comp instanceof SikuliGuideCircle ||
             comp instanceof SikuliGuideArrow ||
+            comp instanceof SikuliGuideImage ||
             comp instanceof SikuliGuideFlag ||
+            comp instanceof SikuliGuideCallout ||
             comp instanceof SikuliGuideBracket) {
          SikuliGuideComponent s = new SikuliGuideShadow(this, comp);
          content.add(s);
@@ -404,7 +406,7 @@ public class SikuliGuide extends TransparentWindow {
 
    public String showNow(float secs){
       
-      if (content.getComponentCount()  == 0 && interactionTarget == null){
+      if (content.getComponentCount()  == 0 && interactionTarget == null && search == null){
          // if no component at all, return immediately because
          // there's nothing to show
          return SikuliGuideDialog.NEXT;         

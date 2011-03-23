@@ -20,6 +20,7 @@ from org.sikuli.guide import SikuliGuideSpotlight
 from org.sikuli.guide import SikuliGuideCircle
 from org.sikuli.guide import SikuliGuideRectangle
 from org.sikuli.guide import SikuliGuideArrow
+from org.sikuli.guide import SikuliGuideCallout
 
 from org.sikuli.guide import TreeSearchDialog
 from org.sikuli.guide.model import GUIModel
@@ -160,7 +161,8 @@ def flag(target, text='    ', **kwargs):
     _setLocationRelativeToRegion(comp,r,**kwargs)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
-    _g.addComponent(comp)    
+    _g.addComponent(comp)   
+    
     
 def text(target, txt, fontsize = 16,side='bottom',**kwargs):
     r = s.getRegionFromPSRM(target)
@@ -171,6 +173,14 @@ def text(target, txt, fontsize = 16,side='bottom',**kwargs):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)        
 
+def callout(target, txt, fontsize = 16,side='right',**kwargs):
+    r = s.getRegionFromPSRM(target)
+    comp = SikuliGuideCallout(_g, txt)
+    #comp.setFontSize(fontsize)
+    _setLocationRelativeToRegion(comp,r,side,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(target,r,comp)
+    _g.addComponent(comp)
     
 def clickable(target, name = ""):
     r = s.getRegionFromPSRM(target)
@@ -257,6 +267,17 @@ def addEntry(target, keys):
             _g.addSearchEntry(k[0], r)
         else:
             _g.addSearchEntry(k, r)    
+            
+            
+def gui_search(guidefs, keyword):    
+    root = GUINode(None)
+    model = GUIModel(root)
+    for guidef in guidefs:
+        root.add(parse_model(guidef))
+
+    model.drawPathTo(_g, keyword);      
+    _g.showNow(3);
+
 
 def search(model = None):
     if model:

@@ -94,11 +94,9 @@ public class TreeSearchDialog extends SearchDialog{
       }
    }
    
+  
+   
    protected void candidateEntrySelected(SikuliGuide guide, ArrayList<SearchEntry> candidateEntries, SearchEntry e){
-      for (SearchEntry se : candidateEntries){
-         //TreeSearchEntry tse = (TreeSearchEntry) se; 
-         //Debug.info("e: " + tse.node);
-      }
       
       guide.setVisible(false);
       repaint();
@@ -113,7 +111,50 @@ public class TreeSearchDialog extends SearchDialog{
       if (m == null){
          
          Screen s = new Screen();
-         m = node.findAncestorOnScreen();
+         GUINode ancestor = node.findAncestorOnScreen();
+         m = ancestor.getMatch();
+         
+         node.drawPathFromAncestor(guide, ancestor);
+         
+         guide.setVisible(true);
+         guide.repaint();
+      }
+      
+      
+//      if (m != null){
+//         guide.setVisible(true);
+//         guide.clear();
+//         guide.addComponent(new SikuliGuideRectangle(guide,m));
+//         
+//         SikuliGuideFlag flag = new SikuliGuideFlag(guide, "      ");
+//         flag.setLocationRelativeToRegion(m, SikuliGuideComponent.LEFT);
+//
+//         guide.addComponent(flag);
+//         guide.startAnimation();
+//         guide.repaint();
+//      }
+      
+      
+   }
+   
+   protected void candidateEntrySelected1(SikuliGuide guide, ArrayList<SearchEntry> candidateEntries, SearchEntry e){
+      
+      guide.setVisible(false);
+      repaint();
+      
+      Debug.info("selected: " + ((TreeSearchEntry) e).node);
+      
+      GUINode node =  ((TreeSearchEntry) e).node;
+      
+      Debug.info("trying to find: " + node);
+      Match m = node.findOnScreen();
+      
+      if (m == null){
+         
+         Screen s = new Screen();
+         GUINode ancestor = node.findAncestorOnScreen();
+         m = ancestor.getMatch();
+         
          try {
             guide.focusBelow();
             s.click(m,0);

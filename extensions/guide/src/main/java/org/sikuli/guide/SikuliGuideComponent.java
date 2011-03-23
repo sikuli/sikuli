@@ -61,6 +61,11 @@ public class SikuliGuideComponent extends JComponent{
       return new MoveAnimator(this, src, dest);
    }
 
+   public SikuliGuideAnimator createMoveAnimator(int dest_x, int dest_y){
+      Point src = getLocation();
+      Point dest = new Point(dest_x, dest_y);
+      return new MoveAnimator(this, src, dest);
+   }
 
    public SikuliGuideAnimator createCirclingAnimator(int radius) {      
       return new CircleAnimator(this, radius);
@@ -97,6 +102,12 @@ public class SikuliGuideComponent extends JComponent{
       this.sikuliGuide = sikuliGuide;
    }
    
+
+   public void setLocationRelativeTo(JComponent comp, int side) {
+      Region region = new Region(comp.getBounds());
+      setLocationRelativeToRegion(region, side);
+   }
+
    
    public void setLocationRelativeToRegion(Region region, int side) {
       reference_region = region;
@@ -142,6 +153,15 @@ public class SikuliGuideComponent extends JComponent{
       this.shadow = shadow;
    }
    
+   @Override
+   public void setVisible(boolean visible){
+      if (shadow != null){
+         shadow.setVisible(visible);
+      }
+      super.setVisible(visible);
+   }
+   
+   @Override
    public void setLocation(int x, int y){
       Point loc = getLocation();
       if (shadow != null){

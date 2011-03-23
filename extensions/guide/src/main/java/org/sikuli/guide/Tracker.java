@@ -133,19 +133,12 @@ public class Tracker extends Thread{
                   SikuliGuideComponent comp  = components.get(i);
                   Point offset = offsets.get(i);
 
-                  int dx = new_match.x - match.x;
-                  int dy = new_match.y - match.y;
-
-                  comp.setLocation(new_match.x + offset.x, new_match.y + offset.y);
-                  comp.setEmphasisAnimation(comp.createSlidingAnimator(-dx, -dy));
+                  int dest_x = new_match.x + offset.x;
+                  int dest_y = new_match.y + offset.y;
                   
-                  //comp.setVisible(true);
+                  comp.setEmphasisAnimation(comp.createMoveAnimator(dest_x, dest_y));                  
                   comp.startAnimation();
                }
-
-               //guide.startAnimation();
-               guide.repaint();
-
             }
 
 
