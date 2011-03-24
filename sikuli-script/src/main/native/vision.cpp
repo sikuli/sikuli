@@ -440,6 +440,11 @@ Vision::recognize_as_ocrtext(Mat image){
    return OCR::recognize(image);
 }
 
+void Vision::findBlobs(const cv::Mat& image, 
+                  vector<Blob>& out_text_blobs, vector<Blob>& out_img_blobs){
+   cvgui::segmentScreenshot(image, out_text_blobs, out_img_blobs);
+}
+
 cv::Mat Vision::createMat(int _rows, int _cols, unsigned char* _data){
    Mat mat_ref = Mat(_rows, _cols, CV_8UC4, _data);
    Mat mat;

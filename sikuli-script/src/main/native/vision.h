@@ -13,6 +13,7 @@
 #include "find-result.h"
 #include "opencv.hpp"
 #include "tessocr.h"
+#include "cvgui.h"
 
 using namespace cv;
 
@@ -95,6 +96,8 @@ public:
    static string query(const char* index_filename, cv::Mat image);
    
    static OCRText recognize_as_ocrtext(cv::Mat image);
+   static void findBlobs(const cv::Mat& image, 
+                  vector<Blob>& out_text_blobs, vector<Blob>& out_img_blobs);
       
    static std::string recognize(cv::Mat image);
 
