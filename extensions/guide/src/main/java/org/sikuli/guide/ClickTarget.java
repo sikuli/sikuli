@@ -5,9 +5,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JWindow;
 
+import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.TransparentWindow;
 
@@ -64,8 +66,23 @@ public class ClickTarget extends TransparentWindow implements MouseListener {
       setOpacity(0.1f);
 
      // toBack();
-      setFocusableWindowState(false);
+      //setFocusableWindowState(false);
       addMouseListener(this);
+      panel.addMouseListener(this);
+      
+      addMouseMotionListener(new MouseMotionListener(){
+
+         @Override
+         public void mouseDragged(MouseEvent arg0) {
+            // TODO Auto-generated method stub
+            
+         }
+
+         @Override
+         public void mouseMoved(MouseEvent arg0) {
+            Debug.info("Mouse moved");
+            
+         }});
    }
    
    public void setIgnoreMouse(boolean ignore){
@@ -87,6 +104,7 @@ public class ClickTarget extends TransparentWindow implements MouseListener {
 
    @Override
    public void mouseEntered(MouseEvent arg0) {
+      Debug.info("Mouse entered a clickable");
    }
 
    @Override

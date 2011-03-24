@@ -207,8 +207,8 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
    
    
    
-   AnnotationOval circle;   
-   Spotlight spotlight;
+   SikuliGuideCircle circle;   
+   SikuliGuideSpotlight spotlight;
    int selected = 0;
    void selectEntry(int i){
       
@@ -233,7 +233,8 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
 
       
       //circle.setRegion(b.getEntry().region);
-      spotlight.setRegion(b.getEntry().region);
+      //spotlight.setRegion(b.getEntry().region);
+      spotlight.setBounds(b.getEntry().region.getRect());
       
       guide.repaint();
    }
@@ -277,7 +278,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
 //      guide.addAnnotation(circle);
       
        //= new Spotlight(entries.get(0).region.getRect());
-       spotlight = guide.addSpotlight(entries.get(0).region, Spotlight.CIRCLE);
+       spotlight = guide.addSpotlight(entries.get(0).region, SikuliGuideSpotlight.CIRCLE);
       
       //guide.addComponent(spotlight);
       

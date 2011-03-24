@@ -278,7 +278,7 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
          regions.add(entry.region);
       }
          
-      guide.clear();
+      //guide.clear();
       guide.updateSpotlights(regions);
    }
    
@@ -362,7 +362,7 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
       }
    }
    
-   
+   SikuliGuideCircle circle;
    protected void candidateEntrySelected(SikuliGuide guide, ArrayList<SearchEntry> candidateEntries, SearchEntry selectedEntry){
 
       ArrayList<Region> regions = new ArrayList<Region>();
@@ -373,9 +373,16 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
       Region r = selectedEntry.region;
 
       Debug.log("selected region:" + r);
-      guide.clear();
+
       guide.updateSpotlights(regions);
-      guide.addCircle(r);      
+      
+      if (circle != null){
+         guide.removeComponent(circle);
+      }
+      
+      circle = new SikuliGuideCircle(guide,r);
+      guide.addComponent(circle);
+
       guide.repaint();
    }
 
@@ -421,8 +428,13 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
             return;
 
          termList1.setSelectedIndex(i);
-         SearchEntry selectedEntry = (SearchEntry) model.getElementAt(i);
-         candidateEntrySelected(guide, candidateEntries, selectedEntry);
+         final SearchEntry selectedEntry = (SearchEntry) model.getElementAt(i);
+         Thread t = new Thread(){
+            public void run(){
+               candidateEntrySelected(guide, candidateEntries, selectedEntry);
+            }
+         };
+         t.start();
          
       }else if (k.getKeyCode() == KeyEvent.VK_UP){         
          int i = termList1.getSelectedIndex() - 1;
@@ -430,8 +442,14 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
             return;
 
          termList1.setSelectedIndex(i);
-         SearchEntry selectedEntry = (SearchEntry) model.getElementAt(i);
-         candidateEntrySelected(guide, candidateEntries, selectedEntry);
+         final SearchEntry selectedEntry = (SearchEntry) model.getElementAt(i);
+         
+         Thread t = new Thread(){
+            public void run(){
+               candidateEntrySelected(guide, candidateEntries, selectedEntry);
+            }
+         };
+         t.start();
          
       }else if (k.getKeyCode() == KeyEvent.VK_ENTER){
          int i = termList1.getSelectedIndex();

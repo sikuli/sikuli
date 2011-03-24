@@ -19,7 +19,7 @@ import java.awt.Stroke;
 
 import javax.swing.JComponent;
 
-public class AnnotationToolTip extends Annotation{
+public class AnnotationToolTip{// extends Annotation{
 
 	// style parameters
 	final int spacing = 10;	// spacing between the box and the target
