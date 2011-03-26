@@ -96,6 +96,7 @@ public class SikuliGuideComponent extends JComponent{
    public final static int LEFT = 1;
    public final static int RIGHT = 2;
    public final static int BOTTOM = 3;
+   public final static int INSIDE = 4;
 
    public SikuliGuideComponent(SikuliGuide sikuliGuide){    
       super();
@@ -123,6 +124,8 @@ public class SikuliGuideComponent extends JComponent{
          setBounds(region.x - width, region.y + region.h/2 - height/2, width, height);                  
       } else if (side == RIGHT){
          setBounds(region.x + region.w, region.y + region.h/2 - height/2, width, height);                  
+      } else if (side == INSIDE){
+         setBounds(region.x + region.w/2 - width/2, region.y + region.h/2 - height/2, width, height);                  
       }
    }
 

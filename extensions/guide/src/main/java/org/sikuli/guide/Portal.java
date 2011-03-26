@@ -45,7 +45,7 @@ import org.sikuli.script.Region;
 import org.sikuli.script.TransparentWindow;
 
 
-public class Portal extends JFrame implements ActionListener, KeyListener, SingletonInteractionTarget{
+public class Portal extends JFrame implements ActionListener, KeyListener, Transition{
 
    Robot robot;
    
@@ -260,11 +260,11 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
    }
 
    @Override
-   public String waitUserAction() {
+   public String waitForTransition() {
       
       if (entries.isEmpty()){
       // if nothing is added to the portal, do nothing
-         return SikuliGuideDialog.NEXT;
+         return BaseDialog.NEXT;
       }
       
       setLocationRelativeTo(null);
@@ -295,7 +295,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Singl
       }
       dispose();
       setVisible(false);
-      return SikuliGuideDialog.NEXT;
+      return BaseDialog.NEXT;
    }
    
 

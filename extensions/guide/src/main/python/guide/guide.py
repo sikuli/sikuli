@@ -1,15 +1,10 @@
 from org.sikuli.script import UnionScreen
 from org.sikuli.script import Pattern
-
-
-from org.sikuli.guide import SikuliGuide
-from org.sikuli.guide import Flag
-from org.sikuli.guide import Bracket
-from org.sikuli.guide import NavigationDialog
-
 from org.sikuli.script import Location
 from org.sikuli.script import Region
 
+
+from org.sikuli.guide import SikuliGuide
 from org.sikuli.guide import Portal
 
 from org.sikuli.guide import SikuliGuideComponent
@@ -22,6 +17,8 @@ from org.sikuli.guide import SikuliGuideRectangle
 from org.sikuli.guide import SikuliGuideArrow
 from org.sikuli.guide import SikuliGuideCallout
 
+from org.sikuli.guide import TransitionDialog
+
 from org.sikuli.guide import TreeSearchDialog
 from org.sikuli.guide.model import GUIModel
 from org.sikuli.guide.model import GUINode
@@ -33,19 +30,9 @@ _g = SikuliGuide(s)
 #      Core API       #
 #######################
 
-def arrow(srcTarget, destTarget):
-    r1 = s.getRegionFromPSRM(srcTarget)
-    r2 = s.getRegionFromPSRM(destTarget)
-    comp = SikuliGuideArrow(_g,r1.getCenter(),r2.getCenter())
-    _g.addComponent(comp)
-
-def dialog(text, title = None, location = None):    
-    d = _g.getDialog()
-    d.setTitle(title)
-    if location:        
-        d.setLocation(location)
-    d.setMessage(text)
-    _g.setTransition(d)
+#================
+# Area Graphics
+#================
 
 def circle(target, **kwargs):
     r = s.getRegionFromPSRM(target)
@@ -62,6 +49,7 @@ def rectangle(target,**kwargs):
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)
+    
 
 def spotlight(target, shape = 'circle', **kwargs):
     r = s.getRegionFromPSRM(target)
@@ -82,6 +70,14 @@ def bracket(target, side='left', **kwargs):
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)    
+    
+def clickable(target, name = ""):
+    r = s.getRegionFromPSRM(target)
+    _g.addClickable(r,name)
+    
+#================
+# Text Elements
+#================
 
 def flag(target, text='    ', **kwargs):
     r = s.getRegionFromPSRM(target)
@@ -90,7 +86,6 @@ def flag(target, text='    ', **kwargs):
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)   
-    
     
 def text(target, txt, fontsize = 16,side='bottom',**kwargs):
     r = s.getRegionFromPSRM(target)
@@ -110,27 +105,54 @@ def callout(target, txt, fontsize = 16, side='right',**kwargs):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)
     
-def clickable(target, name = ""):
-    r = s.getRegionFromPSRM(target)
-    _g.addClickable(r)
+def arrow(srcTarget, destTarget):
+    r1 = s.getRegionFromPSRM(srcTarget)
+    r2 = s.getRegionFromPSRM(destTarget)
+    comp = SikuliGuideArrow(_g,r1.getCenter(),r2.getCenter())
+    _g.addComponent(comp)
 
-def tooltip(target, txt):
-    text(target, txt, fontsize = 8, side = 'bottom')
+def tooltip(target, txt,**kwargs ):
+    text(target, txt, fontsize = 8,**kwargs)
     
-def show(arg = None):
+#=====================
+# Transition Elements
+#=====================
+    
+# timeout should be expressed in seconds
+def dialog(text, title = None, location = None, timeout = None, buttons = None):    
+    d = TransitionDialog()
+    d.setText(text)
+    if title:
+        d.setTitle(title)
+    if buttons:
+        for b in buttons:
+            d.addButton(b)        
+    d.pack() 
+    if location:        
+        d.setLocation(location)
+    else:
+        d.setLocationToUserPreferredLocation()    
+    if timeout:    
+        d.setTimeout(timeout*1000)
+    _g.setTransition(d)    
+    
+def show(arg = None, timeout = 5):
     # show a list of steps
-    if isinstance(arg, list):
-        _show_steps(arg)
+    if isinstance(arg, list) or isinstance(arg, tuple):
+        _show_steps(arg, timeout)
     # show a single step
     elif callable(arg):
         arg()
-        _g.showNowWithDialog(SikuliGuide.SIMPLE)
+        return _g.showNow(timeout)
     # show for some period of time
     elif isinstance(arg, float) or isinstance(arg, int):
-        _g.showNow(arg)
+        return _g.showNow(arg)
     # show for the default period of time
     else:
-        _g.showNow()        
+        return _g.showNow(timeout)
+        
+def setDefaultTimeout(timeout):
+    _g.setDefaultTimeout(timeout)                
     
 ####################
 # Helper functions #
@@ -145,13 +167,7 @@ def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,
     r.x += dx
     r.y += dy
     
-    # Expansion
-    (dt,dl,db,dr) = expand
-    r.x -= dl
-    r.y -= dt
-    r.w = r.w + dl + dr
-    r.h = r.h + dt + db
-    
+   
     # Side
     if (side == 'right'):    
         comp.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
@@ -159,8 +175,11 @@ def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,
         comp.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
     elif (side == 'bottom'):
         comp.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
-    else: # left
+    elif (side == 'left'):
         comp.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+    elif (side == 'inside'):
+        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.INSIDE);
+        
         
     # Alignment
     if (horizontalalignment == 'left'):
@@ -183,7 +202,11 @@ def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
     r.y += dy
     
     # Expansion
-    (dt,dl,db,dr) = expand
+    if isinstance(expand, tuple):
+        (dt,dl,db,dr) = expand
+    else:
+        (dt,dl,db,dr) = (expand,expand,expand,expand)
+
     r.x -= dl
     r.y -= dt
     r.w = r.w + dl + dr
@@ -192,30 +215,53 @@ def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
     return r
 
 # functions for showing
-def _show_steps(steps):
+def _show_steps(steps, timeout = None):
+
+    # only keep callables
+    steps = filter(lambda x: callable(x), steps)
+    print steps
     n = len(steps)
     i = 0
+        
     while True:
         step = steps[i]
         step()
         
-        if n == 1: # only one step
-            ret = _g.showNowWithDialog(SikuliGuide.SIMPLE)
-            return
-                    
-        elif i == 0:
-            ret = _g.showNowWithDialog(SikuliGuide.FIRST)
-        elif i < n - 1:
-            ret = _g.showNowWithDialog(SikuliGuide.MIDDLE)
-        elif i == n - 1:
-            ret = _g.showNowWithDialog(SikuliGuide.LAST)
+        d = TransitionDialog()
+        
+        text = "Step %d of %d" % (i+1, n)
+        d.setText(text)
+                
+        if n == 1: # only one step            
+            d.addButton("Close")
+        elif i == 0: # first step            
+            d.addButton("Next")
+            d.addButton("Close")
+        elif i < n - 1: # between
+            d.addButton("Previous")            
+            d.addButton("Next")
+            d.addButton("Close")           
+        elif i == n - 1: # final step
+            d.addButton("Previous")            
+            d.addButton("Close")           
+        
+        d.setLocationToUserPreferredLocation()
+        if timeout:
+            d.setTimeout(timeout*1000)        
+        
+        _g.setTransition(d)        
+        ret = _g.showNow()
         
         if (ret == "Previous" and i > 0):
             i = i - 1
         elif (ret == "Next" and i < n - 1):
             i = i + 1
-        else:
+        elif (ret == None and i < n - 1): # timeout
+            i = i + 1
+        elif (ret == "Close"):
             return 
+        else:
+            return
 
 
         

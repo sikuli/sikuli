@@ -27,6 +27,7 @@ public class SikuliGuideImage extends SikuliGuideComponent {
    
    public SikuliGuideImage(SikuliGuide g, BufferedImage image){
       super(g);
+      init(image);
    }
    
    void init(BufferedImage image){

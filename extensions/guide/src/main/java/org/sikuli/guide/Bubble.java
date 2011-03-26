@@ -37,7 +37,7 @@ import java.util.Iterator;
 
 
 public class Bubble extends TransparentWindow 
-implements SingletonInteractionTarget{
+implements Transition{
 
 
    ArrayList<Region> targets = new ArrayList<Region>();
@@ -252,7 +252,7 @@ implements SingletonInteractionTarget{
    
 
    @Override
-   public String waitUserAction() {
+   public String waitForTransition() {
 
       setBounds(guide.getRegion().getRect());
       setVisible(true);
@@ -364,7 +364,7 @@ implements SingletonInteractionTarget{
                synchronized(guide){
                   guide.notify();
                   dispose();
-                  return SikuliGuideDialog.NEXT;
+                  return BaseDialog.NEXT;
                }
 
             }else{
@@ -380,7 +380,7 @@ implements SingletonInteractionTarget{
          }
 
       }
-      return SikuliGuideDialog.NEXT;
+      return BaseDialog.NEXT;
    }
 
 

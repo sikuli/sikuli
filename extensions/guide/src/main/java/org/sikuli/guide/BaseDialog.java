@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.TransparentWindow;
 
-abstract public class SikuliGuideDialog extends TransparentWindow {
+abstract public class BaseDialog extends TransparentWindow {
    
    static public final String PREVIOUS = "Previous";
    static public final String NEXT = "Next";
@@ -27,7 +27,7 @@ abstract public class SikuliGuideDialog extends TransparentWindow {
    
    int style;
    
-   public SikuliGuideDialog(Object owner){
+   public BaseDialog(Object owner){
       this.owner = owner;
    
       // this allows the window to be dragged to another location on the screen

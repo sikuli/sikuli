@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
 import org.sikuli.script.TransparentWindow;
 
 
-public class SingleButtonMessageBox extends SikuliGuideDialog {
+public class SingleButtonMessageBox extends BaseDialog {
 
    String message;
 

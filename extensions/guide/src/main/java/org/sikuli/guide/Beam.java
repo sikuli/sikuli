@@ -32,7 +32,7 @@ import java.util.Comparator;
 
 
 public class Beam extends TransparentWindow 
-implements SingletonInteractionTarget{
+implements Transition{
 
 
    SikuliGuide guide;
@@ -150,7 +150,7 @@ implements SingletonInteractionTarget{
 
 
    @Override
-   public String waitUserAction() {
+   public String waitForTransition() {
 
       setBounds(guide.getRegion().getRect());
       setVisible(true);
@@ -178,7 +178,7 @@ implements SingletonInteractionTarget{
             synchronized(guide){
                guide.notify();
                dispose();
-               return SikuliGuideDialog.NEXT;
+               return BaseDialog.NEXT;
             }
 
          }else{
@@ -193,7 +193,7 @@ implements SingletonInteractionTarget{
          }
 
       }
-      return SikuliGuideDialog.NEXT;
+      return BaseDialog.NEXT;
    }
 
 

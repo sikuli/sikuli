@@ -34,7 +34,7 @@ import org.sikuli.script.TransparentWindow;
 public class SikuliGuide extends TransparentWindow {
 
 
-   static final float DEFAULT_SHOW_DURATION = 10.0f;
+   static float defaultTimeout = 10.0f;
 
 
    static public final int FIRST = 0;
@@ -44,6 +44,10 @@ public class SikuliGuide extends TransparentWindow {
 
 
    Robot robot;
+   
+   public void setDefaultTimeout(float timeout_in_seconds){
+      defaultTimeout = timeout_in_seconds;
+   }
 
    // all the actions will be restricted to this region
    Region _region;
@@ -55,7 +59,10 @@ public class SikuliGuide extends TransparentWindow {
    // swing components will be drawn on this panel
    JPanel content = new JPanel(null);
    ArrayList<ClickTarget> _clickTargets = new ArrayList<ClickTarget>();
-   SingletonInteractionTarget interactionTarget;
+   
+   Transition transition;
+   //Transition defaultTransition;   
+   
    ArrayList<Tracker> trackers = new ArrayList<Tracker>();
    ClickableWindow clickableWindow;
    
@@ -77,6 +84,7 @@ public class SikuliGuide extends TransparentWindow {
          e1.printStackTrace();
       }
 
+      //defaultTransition = new TimeoutTransition(5000);
 
 
       _region = region;      
@@ -105,11 +113,11 @@ public class SikuliGuide extends TransparentWindow {
 
 
       
-      dialog = new NavigationDialog(this);
-      dialog.setAlwaysOnTop(true);
-      dialog.pack();
-      dialog.setLocationRelativeTo(this);
-      
+//      dialog = new SikuliGuideDialog(this);
+//      dialog.setAlwaysOnTop(true);
+//      dialog.pack();
+//      dialog.setLocationRelativeTo(this);
+        
       clickableWindow = new ClickableWindow(this);
    }
 
@@ -126,7 +134,8 @@ public class SikuliGuide extends TransparentWindow {
 //      }
 //      _clickTargets.clear();
       
-      clickableWindow.clear();
+      if (clickableWindow != null)
+         clickableWindow.clear();
       
       stopAnimation();
       
@@ -141,7 +150,7 @@ public class SikuliGuide extends TransparentWindow {
       
       
       content.removeAll();
-      interactionTarget = null;
+      transition = null;
       beam = null;
 
    }
@@ -234,8 +243,8 @@ public class SikuliGuide extends TransparentWindow {
    //      addAnnotation(new AnnotationRectangle(rect));
    //   }
 
-   public void addClickable(Region region){
-      clickableWindow.addClickableRegion(region);
+   public void addClickable(Region region, String name){
+      clickableWindow.addClickableRegion(region,name);
       setTransition(clickableWindow);      
    }
 
@@ -252,11 +261,11 @@ public class SikuliGuide extends TransparentWindow {
       LEFT, CENTER, RIGHT
    }
 
-   public void addText(Location location, String message){
-      // The location is in the global screen coordinate
-
-      addText(location, message, HorizontalAlignment.LEFT, VerticalAlignment.TOP);      
-   }
+//   public void addText(Location location, String message){
+//      // The location is in the global screen coordinate
+//
+//      addText(location, message, HorizontalAlignment.LEFT, VerticalAlignment.TOP);      
+//   }
 
 //   public void addFlag(Location location, String message){
 //      Flag flag = new Flag(location, message);
@@ -289,28 +298,28 @@ public class SikuliGuide extends TransparentWindow {
       content.remove(comp);
    }
 
-   public void addBookmark(Location location, String message){
-      Flag b = new Flag(location, message);
-      //   b.setLocation(location);
-      //b.setBounds(_region.getRect());
-      content.add(b);
-   }
+//   public void addBookmark(Location location, String message){
+//      Flag b = new Flag(location, message);
+//      //   b.setLocation(location);
+//      //b.setBounds(_region.getRect());
+//      content.add(b);
+//   }
 
    Beam beam = null;
    public void addBeam(Region r){
       beam = new Beam(this, r);
       beam.setAlwaysOnTop(true);
-      interactionTarget = beam;
+      transition = beam;
    }
 
-   public void addText(Location location, String message, HorizontalAlignment horizontal_alignment, 
-         VerticalAlignment vertical_alignment){
-      StaticText textbox = new StaticText(this, message);
-      textbox.align(location, horizontal_alignment, vertical_alignment);
-      textbox.moveInside(_region);
-      content.add(textbox);
-      repaint();
-   }
+//   public void addText(Location location, String message, HorizontalAlignment horizontal_alignment, 
+//         VerticalAlignment vertical_alignment){
+//      StaticText textbox = new StaticText(this, message);
+//      textbox.align(location, horizontal_alignment, vertical_alignment);
+//      textbox.moveInside(_region);
+//      content.add(textbox);
+//      repaint();
+//   }
 
    public enum Side {
       TOP,
@@ -319,39 +328,40 @@ public class SikuliGuide extends TransparentWindow {
       BOTTOM
    }
 
-   public void addText(Region r, String message, Side side){
-      HorizontalAlignment h = null;
-      VerticalAlignment v = null;      
-      Location p = null;      
+//   public void addText(Region r, String message, Side side){
+//      HorizontalAlignment h = null;
+//      VerticalAlignment v = null;      
+//      Location p = null;      
+//
+//      if (side == Side.TOP){
+//         p = new Location(r.x+r.w/2, r.y);
+//         h = HorizontalAlignment.CENTER;
+//         v = VerticalAlignment.BOTTOM;
+//      } else if (side == Side.BOTTOM){
+//         p = new Location(r.x+r.w/2, r.y+r.h);
+//         h = HorizontalAlignment.CENTER;
+//         v = VerticalAlignment.TOP; 
+//      } else if (side == Side.LEFT){
+//         p = new Location(r.x, r.y+r.h/2);
+//         h = HorizontalAlignment.RIGHT;
+//         v = VerticalAlignment.MIDDLE; 
+//      } else if (side == Side.RIGHT){
+//         p = new Location(r.x+r.w, r.y+r.h/2);
+//         h = HorizontalAlignment.LEFT;
+//         v = VerticalAlignment.MIDDLE; 
+//      }      
+//      addText(p, message, h, v);
+//   }
 
-      if (side == Side.TOP){
-         p = new Location(r.x+r.w/2, r.y);
-         h = HorizontalAlignment.CENTER;
-         v = VerticalAlignment.BOTTOM;
-      } else if (side == Side.BOTTOM){
-         p = new Location(r.x+r.w/2, r.y+r.h);
-         h = HorizontalAlignment.CENTER;
-         v = VerticalAlignment.TOP; 
-      } else if (side == Side.LEFT){
-         p = new Location(r.x, r.y+r.h/2);
-         h = HorizontalAlignment.RIGHT;
-         v = VerticalAlignment.MIDDLE; 
-      } else if (side == Side.RIGHT){
-         p = new Location(r.x+r.w, r.y+r.h/2);
-         h = HorizontalAlignment.LEFT;
-         v = VerticalAlignment.MIDDLE; 
-      }      
-      addText(p, message, h, v);
-   }
-
-   NavigationDialog dialog = null;
+   TransitionDialog dialog = null;
    public void setDialog(String message, int style){
-      dialog.setMessage(message);
-      dialog.setStyle(style);
-      interactionTarget = dialog;
+      TransitionDialog dialog = new TransitionDialog();
+      dialog.setText(message);
+//      dialog.setStyle(style);
+      transition = dialog;
    }
-
-   public NavigationDialog getDialog(){
+//
+   public TransitionDialog getDialog(){
       return dialog;
    }
 
@@ -359,9 +369,9 @@ public class SikuliGuide extends TransparentWindow {
       setDialog(message, SIMPLE);
    }
 
-   public void setDialog(NavigationDialog dialog_){
-      dialog = dialog_;
-      interactionTarget = dialog;
+   public void setDialog(TransitionDialog dialog_){
+      //dialog = dialog_;
+      transition = dialog_;
    }
 
    ClickTarget _lastClickedTarget = null;
@@ -404,24 +414,24 @@ public class SikuliGuide extends TransparentWindow {
    
 
    public String showNowWithDialog(int style){
-      dialog.setStyle(style);
+      //dialog.setStyle(style);
       //setTransition(dialog);
       return showNow();        
    }
 
    public String showNow(){
-      return showNow(DEFAULT_SHOW_DURATION);
+      return showNow(defaultTimeout);
    }
 
    public String showNow(float secs){
       
       if (content.getComponentCount()  == 0 
-            && interactionTarget == null 
+            && transition == null 
             && _clickTargets.isEmpty()
             && search == null){
          // if no component at all, return immediately because
          // there's nothing to show
-         return SikuliGuideDialog.NEXT;         
+         return BaseDialog.NEXT;         
       }
       
       startAnimation();      
@@ -456,22 +466,24 @@ public class SikuliGuide extends TransparentWindow {
          focusBelow();
          return key;
       }
-      else if (interactionTarget != null){
-
-         String cmd = interactionTarget.waitUserAction();
-
+      //else if (transition != null){
+         
+         if (transition == null){
+            transition = new TimeoutTransition((int)secs*1000);
+         }
+         
+         String cmd = transition.waitForTransition();
          focusBelow();
          
-         if (interactionTarget instanceof ClickableWindow){
+         if (transition instanceof ClickableWindow){
             // relay the click at the same position
-            Debug.info("clicking");
+            //Debug.info("clicking");
             robot.mousePress(InputEvent.BUTTON1_MASK);            
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
          }
          
          closeNow();
         
-         
          return cmd;
 //      }
 //      else if (!_clickTargets.isEmpty()){
@@ -498,15 +510,15 @@ public class SikuliGuide extends TransparentWindow {
 //
 //         return SikuliGuideDialog.NEXT;
 
-      }else {
-
-
-         // if there's no transition element
-         // just close it after the timeout
-         closeAfter(secs);
-
-         return SikuliGuideDialog.NEXT;
-      } 
+//      }else {
+//
+//
+//         // if there's no transition element
+//         // just close it after the timeout
+//         closeAfter(secs);
+//
+//         return BaseDialog.NEXT;
+//      } 
    }
 
    private void closeNow(){
@@ -514,8 +526,8 @@ public class SikuliGuide extends TransparentWindow {
       setVisible(false);
       
       dispose();
-      if (dialog != null)
-         dialog.dispose();
+//      if (dialog != null)
+//         dialog.dispose();
       
       if (clickableWindow != null){
          clickableWindow.dispose();
@@ -591,8 +603,8 @@ public class SikuliGuide extends TransparentWindow {
       content.add(mag);
    }
 
-   public void setTransition(SingletonInteractionTarget t) {
-      this.interactionTarget = t;      
+   public void setTransition(Transition t) {
+      this.transition = t;      
    }
 
    public void removeComponents() {
