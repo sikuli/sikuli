@@ -74,7 +74,7 @@ FindInput::init(){
    target_type = TARGET_TYPE_IMAGE;
    target_text = "";
    similarity = 0.8;
-   limit = 100;
+   limit = 10;
    bFindingAll = false;
 }
 
@@ -440,9 +440,33 @@ Vision::recognize_as_ocrtext(Mat image){
    return OCR::recognize(image);
 }
 
-void Vision::findBlobs(const cv::Mat& image, 
-                  vector<Blob>& out_text_blobs, vector<Blob>& out_img_blobs){
+
+vector<FindResult>
+Vision::findBlobs(const cv::Mat& image){
+   
+   vector<FindResult> results;
+   vector<Blob> out_text_blobs;
+   vector<Blob> out_img_blobs;
+   
    cvgui::segmentScreenshot(image, out_text_blobs, out_img_blobs);
+   
+   
+   for (vector<Blob>::iterator i = out_text_blobs.begin(); 
+        i != out_text_blobs.end(); ++i){
+      
+      Blob& b = *i;
+      FindResult fr(b.x,b.y,b.width,b.height,1);      
+      results.push_back(fr);      
+   }
+   
+   for (vector<Blob>::iterator i = out_img_blobs.begin(); 
+        i != out_img_blobs.end(); ++i){
+      
+      Blob& b = *i;
+      FindResult fr(b.x,b.y,b.width,b.height,1);      
+      results.push_back(fr);      
+   }
+   return results;
 }
 
 cv::Mat Vision::createMat(int _rows, int _cols, unsigned char* _data){

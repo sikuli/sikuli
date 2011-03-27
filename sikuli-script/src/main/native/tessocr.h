@@ -16,7 +16,7 @@
 #include <string>
 #include <stdlib.h>
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "find-result.h"
 
 

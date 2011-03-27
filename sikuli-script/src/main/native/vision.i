@@ -122,21 +122,21 @@ public:
    
 };
 
-class Blob : public cv::Rect{
-   
-public:
-
-   Blob(){};
-   Blob(const cv::Rect& rect);
-   
-   bool isContainedBy(Blob& b);
-   
-   double area;
-   int mb;
-   int mg;
-   int mr;
-   int score;
-};
+//class Blob : public cv::Rect{
+//   
+//public:
+//
+//   Blob(){};
+//   Blob(const cv::Rect& rect);
+//   
+//   bool isContainedBy(Blob& b);
+//   
+//   double area;
+//   int mb;
+//   int mg;
+//   int mr;
+//   int score;
+//};
 
 %include "enumtypeunsafe.swg"
 %javaconst(1);
@@ -198,11 +198,10 @@ namespace sikuli {
       static void initOCR(const char* ocrDataPath);
       
       static std::string query(const char* index_filename, cv::Mat image);
-      
-      
+            
       static OCRText recognize_as_ocrtext(cv::Mat image);
-      static void findBlobs(const cv::Mat& image, 
-                     vector<Blob>& out_text_blobs, vector<Blob>& out_img_blobs);
+      
+      static std::vector<FindResult> findBlobs(const cv::Mat& image);
       
       static std::string recognize(cv::Mat image);
       

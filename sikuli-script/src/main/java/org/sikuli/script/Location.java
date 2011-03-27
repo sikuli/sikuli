@@ -7,7 +7,7 @@ public class Location extends Point{
    public Location(float _x, float _y){
       super((int)_x, (int)_y);
    }
-
+   
    public Location(int _x, int _y){
       super(_x, _y); 
    }

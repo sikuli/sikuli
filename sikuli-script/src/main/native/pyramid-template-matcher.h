@@ -13,7 +13,7 @@
 #include <iostream>
 
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "find-result.h"
 
 using namespace cv;

@@ -31,7 +31,7 @@ PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int lev
 
    TimingBlock tb("PyramidTemplateMatcher()");
    if (source.rows < target.rows || source.cols < target.cols){
-      std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
+      //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
       return;
    }
    

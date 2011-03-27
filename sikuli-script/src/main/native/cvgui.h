@@ -9,7 +9,7 @@
 #ifndef _CVGUI_H_
 #define _CVGUI_H_
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include <iostream>
 #include "tessocr.h"
 
