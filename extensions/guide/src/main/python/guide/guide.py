@@ -37,7 +37,7 @@ _g = SikuliGuide(s)
 def circle(target, **kwargs):
     r = s.getRegionFromPSRM(target)
     r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideCircle(_g,r1)
+    comp = SikuliGuideCircle(r1)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)
@@ -45,7 +45,7 @@ def circle(target, **kwargs):
 def rectangle(target,**kwargs):
     r = s.getRegionFromPSRM(target)
     r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideRectangle(_g,r1)
+    comp = SikuliGuideRectangle(r1)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
     _g.addComponent(comp)
@@ -54,7 +54,7 @@ def rectangle(target,**kwargs):
 def spotlight(target, shape = 'circle', **kwargs):
     r = s.getRegionFromPSRM(target)
     r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideSpotlight(_g,r1)
+    comp = SikuliGuideSpotlight(r1)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)    
     if shape == 'rectangle':
@@ -65,7 +65,7 @@ def spotlight(target, shape = 'circle', **kwargs):
 
 def bracket(target, side='left', **kwargs):
     r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideBracket(_g)
+    comp = SikuliGuideBracket()
     _setLocationRelativeToRegion(comp,r,side,**kwargs)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
@@ -81,7 +81,7 @@ def clickable(target, name = ""):
 
 def flag(target, text='    ', **kwargs):
     r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideFlag(_g,text)
+    comp = SikuliGuideFlag(text)
     _setLocationRelativeToRegion(comp,r,**kwargs)
     if isinstance(target, str):
         _g.addTracker(target,r,comp)
@@ -89,7 +89,7 @@ def flag(target, text='    ', **kwargs):
     
 def text(target, txt, fontsize = 16,side='bottom',**kwargs):
     r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideText(_g, txt)
+    comp = SikuliGuideText( txt)
     comp.setFontSize(fontsize)
     _setLocationRelativeToRegion(comp,r,side,**kwargs)
     if isinstance(target, str):
@@ -98,7 +98,7 @@ def text(target, txt, fontsize = 16,side='bottom',**kwargs):
 
 def callout(target, txt, fontsize = 16, side='right',**kwargs):
     r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideCallout(_g, txt)
+    comp = SikuliGuideCallout( txt)
     #comp.setFontSize(fontsize)
     _setLocationRelativeToRegion(comp,r,side,**kwargs)
     if isinstance(target, str):
@@ -108,7 +108,7 @@ def callout(target, txt, fontsize = 16, side='right',**kwargs):
 def arrow(srcTarget, destTarget):
     r1 = s.getRegionFromPSRM(srcTarget)
     r2 = s.getRegionFromPSRM(destTarget)
-    comp = SikuliGuideArrow(_g,r1.getCenter(),r2.getCenter())
+    comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
     _g.addComponent(comp)
 
 def tooltip(target, txt,**kwargs ):

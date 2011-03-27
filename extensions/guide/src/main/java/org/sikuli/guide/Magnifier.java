@@ -19,7 +19,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
-import org.sikuli.guide.Flag.SlidingAnimator;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Location;
 import org.sikuli.script.Region;

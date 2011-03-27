@@ -26,8 +26,8 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
    String text;
 
-   public SikuliGuideCallout(SikuliGuide sikuliGuide, String text){         
-      super(sikuliGuide);
+   public SikuliGuideCallout(String text){         
+      super();
       init(text);
    }
 
@@ -38,8 +38,8 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
    class Triangle extends SikuliGuideComponent {
 
       GeneralPath gp;
-      public Triangle(SikuliGuide guide) {
-         super(guide);         
+      public Triangle() {
+         super();         
          gp = new GeneralPath();
          gp.moveTo(TRIANGLE_SIZE*0.45,0);
          gp.lineTo(TRIANGLE_SIZE*0.5,TRIANGLE_SIZE);
@@ -67,8 +67,8 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
    class RoundedBox extends SikuliGuideComponent {
 
-      public RoundedBox(SikuliGuide guide, Rectangle rect) {
-         super(guide);
+      public RoundedBox(Rectangle rect) {
+         super();
 
          setBounds(rect);
          setForeground(Color.yellow);
@@ -109,12 +109,12 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
       Rectangle rect = textArea.getBounds();
       rect.grow(PADDING_X,PADDING_Y);      
-      rbox = new RoundedBox(sikuliGuide,rect);
+      rbox = new RoundedBox(rect);
       
       add(textArea);
       add(rbox);
 
-      triangle = new Triangle(sikuliGuide);  
+      triangle = new Triangle();  
       triangle.setForeground(Color.yellow);
       triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.BOTTOM);
       add(triangle);

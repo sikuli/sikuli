@@ -18,15 +18,15 @@ public class SikuliGuideImage extends SikuliGuideComponent {
    float scale;
    int w,h;
    
-   public SikuliGuideImage(SikuliGuide g, String filename) throws IOException{
-       super(g);
+   public SikuliGuideImage(String filename) throws IOException{
+       super();
        File sourceimage = new File(filename);
        BufferedImage bimage = ImageIO.read(sourceimage);
        init(bimage);
    }
    
-   public SikuliGuideImage(SikuliGuide g, BufferedImage image){
-      super(g);
+   public SikuliGuideImage(BufferedImage image){
+      super();
       init(image);
    }
    

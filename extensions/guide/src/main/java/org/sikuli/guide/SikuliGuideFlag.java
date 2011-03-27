@@ -3,15 +3,12 @@
  */
 package org.sikuli.guide;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -20,12 +17,7 @@ import java.awt.geom.GeneralPath;
 
 import javax.swing.JLabel;
 
-import org.sikuli.guide.SikuliGuide.HorizontalAlignment;
-import org.sikuli.guide.SikuliGuide.VerticalAlignment;
-import org.sikuli.script.Debug;
-import org.sikuli.script.Location;
 import org.sikuli.script.Region;
-import org.sikuli.script.Screen;
 
 public class SikuliGuideFlag extends SikuliGuideComponent{
 
@@ -38,8 +30,8 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
    
    String text;
    JLabel label;
-   public SikuliGuideFlag(SikuliGuide sikuliGuide, String text){         
-      super(sikuliGuide);
+   public SikuliGuideFlag(String text){         
+      super();
       init(text);
    }
 

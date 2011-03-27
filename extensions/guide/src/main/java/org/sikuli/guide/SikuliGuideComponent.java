@@ -14,7 +14,6 @@ import org.sikuli.script.Region;
 public class SikuliGuideComponent extends JComponent{
 
  
-   final SikuliGuide sikuliGuide;
    Region reference_region = null;
    int reference_side = -1;
 
@@ -98,9 +97,8 @@ public class SikuliGuideComponent extends JComponent{
    public final static int BOTTOM = 3;
    public final static int INSIDE = 4;
 
-   public SikuliGuideComponent(SikuliGuide sikuliGuide){    
+   public SikuliGuideComponent(){    
       super();
-      this.sikuliGuide = sikuliGuide;
    }
    
 

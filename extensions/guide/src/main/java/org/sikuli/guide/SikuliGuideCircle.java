@@ -5,29 +5,20 @@ package org.sikuli.guide;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
-import javax.swing.JLabel;
-
-import org.sikuli.guide.SikuliGuide.HorizontalAlignment;
-import org.sikuli.guide.SikuliGuide.VerticalAlignment;
-import org.sikuli.script.Debug;
-import org.sikuli.script.Location;
 import org.sikuli.script.Region;
-import org.sikuli.script.Screen;
 
 public class SikuliGuideCircle extends SikuliGuideComponent{
 
    Region region;
-   public SikuliGuideCircle(SikuliGuide sikuliGuide, Region region){         
-      super(sikuliGuide);
+   public SikuliGuideCircle(Region region){         
+      super();
       this.region = region;
       
       Rectangle rect = region.getRect();

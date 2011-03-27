@@ -74,8 +74,9 @@ public class SikuliActionScreenshotLogger implements SikuliActionListener {
 
       Location l = match.getBottomLeft();
       
-      AnnotationToolTip text = new AnnotationToolTip(action_text, l);
-      text.paintAnnotation(g2d);
+      // TODO: replace this text with new tooltip element
+//      AnnotationToolTip text = new AnnotationToolTip(action_text, l);
+//      text.paintAnnotation(g2d);
       
       drawTarget(g2d, match.getTarget());
       

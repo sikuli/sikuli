@@ -37,8 +37,8 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 
 	Point from;
 	Point to;
-	public SikuliGuideArrow(SikuliGuide g, Point from, Point to){
-	   super(g);
+	public SikuliGuideArrow(Point from, Point to){
+	   super();
 		this.from = from;
 		this.to = to;
 		

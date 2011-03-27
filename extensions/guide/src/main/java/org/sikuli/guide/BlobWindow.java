@@ -196,7 +196,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       }
       //dispose();
       setVisible(false);
-      return BaseDialog.NEXT;
+      return "Next";
    }
    
    Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
@@ -217,7 +217,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       
       ScreenImage img = source.getScreen().capture(source);
       
-      SikuliGuideImage sgimage = new SikuliGuideImage(guide, img.getImage());
+      SikuliGuideImage sgimage = new SikuliGuideImage(img.getImage());
       guide.addComponent(sgimage);
       sgimage.setLocation(x,y);
    }
@@ -226,7 +226,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       
       BufferedImage subimage = source.getSubimage(r.x, r.y, r.width, r.height);
       
-      SikuliGuideImage sgimage = new SikuliGuideImage(guide,subimage);
+      SikuliGuideImage sgimage = new SikuliGuideImage(subimage);
       sgimage.setScale(2.0f);
       guide.addComponent(sgimage);
       sgimage.setLocation(x,y);
@@ -307,7 +307,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       large.y -= 10;
       large.h += 20;
       large.w += 20;
-      guide.addComponent(new SikuliGuideCircle(guide, large));
+      guide.addComponent(new SikuliGuideCircle(large));
       
       guide.repaint();
       

@@ -173,9 +173,9 @@ public class TreeSearchDialog extends SearchDialog{
       if (m != null){
          guide.setVisible(true);
          guide.clear();
-         guide.addComponent(new SikuliGuideRectangle(guide,m));
+         guide.addComponent(new SikuliGuideRectangle(m));
          
-         SikuliGuideFlag flag = new SikuliGuideFlag(guide, "      ");
+         SikuliGuideFlag flag = new SikuliGuideFlag("      ");
          flag.setLocationRelativeToRegion(m, SikuliGuideComponent.LEFT);
 
          guide.addComponent(flag);

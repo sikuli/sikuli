@@ -133,7 +133,7 @@ public class GUINode extends DefaultMutableTreeNode {
       
       Match m = ancestor.getMatch();
       
-      SikuliGuideRectangle match = new SikuliGuideRectangle(g,m);
+      SikuliGuideRectangle match = new SikuliGuideRectangle(m);
       g.addComponent(match);
 
       int ox = m.x;
@@ -156,7 +156,7 @@ public class GUINode extends DefaultMutableTreeNode {
          try {
             ImageLocator imgLocator = new ImageLocator();
             String full_image_filename = imgLocator.locate(node.getPattern().getFilename());
-            current = new SikuliGuideImage(g,full_image_filename);
+            current = new SikuliGuideImage(full_image_filename);
          } catch (IOException e1) {
          }
 
@@ -175,7 +175,7 @@ public class GUINode extends DefaultMutableTreeNode {
          // give some margin between the arrow head and the pointed image
          p2.x -= 5;
          
-         SikuliGuideArrow arrow = new SikuliGuideArrow(g, p1, p2);
+         SikuliGuideArrow arrow = new SikuliGuideArrow(p1, p2);
          arrow.setStyle(SikuliGuideArrow.ELBOW_Y);
          g.addComponent(arrow);
          

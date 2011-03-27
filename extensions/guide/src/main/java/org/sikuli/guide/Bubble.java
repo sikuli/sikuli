@@ -364,7 +364,7 @@ implements Transition{
                synchronized(guide){
                   guide.notify();
                   dispose();
-                  return BaseDialog.NEXT;
+                  return "Next";
                }
 
             }else{
@@ -380,7 +380,7 @@ implements Transition{
          }
 
       }
-      return BaseDialog.NEXT;
+      return "Next";
    }
 
 

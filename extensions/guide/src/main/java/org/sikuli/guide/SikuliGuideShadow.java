@@ -17,8 +17,8 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
 
    int shadowSize = 10;
    SikuliGuideComponent source;
-   public SikuliGuideShadow(SikuliGuide sikuliGuide, SikuliGuideComponent source) {
-      super(sikuliGuide);
+   public SikuliGuideShadow(SikuliGuideComponent source) {
+      super();
       this.source = source;
       
       
@@ -70,6 +70,7 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
   }
    
    public void paint(Graphics g){
+      super.paint(g);
 
       Graphics2D g2d = (Graphics2D)g;
       BufferedImage image = new BufferedImage(getWidth() + shadowSize * 2,

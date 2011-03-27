@@ -4,26 +4,14 @@
 package org.sikuli.guide;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
-import javax.swing.JLabel;
-
-import org.sikuli.guide.SikuliGuide.HorizontalAlignment;
-import org.sikuli.guide.SikuliGuide.VerticalAlignment;
-import org.sikuli.script.Debug;
-import org.sikuli.script.Location;
 import org.sikuli.script.Region;
-import org.sikuli.script.Screen;
 
 public class SikuliGuideSpotlight extends SikuliGuideComponent{
 
@@ -36,8 +24,8 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
    int shape = RECTANGLE;
    
    Region region;
-   public SikuliGuideSpotlight(SikuliGuide sikuliGuide, Region region){         
-      super(sikuliGuide);
+   public SikuliGuideSpotlight(Region region){         
+      super();
       this.region = region;
       setBounds(region.getRect());
       setShape(RECTANGLE);

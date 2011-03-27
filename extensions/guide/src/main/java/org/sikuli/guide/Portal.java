@@ -264,7 +264,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Trans
       
       if (entries.isEmpty()){
       // if nothing is added to the portal, do nothing
-         return BaseDialog.NEXT;
+         return "Next";
       }
       
       setLocationRelativeTo(null);
@@ -278,9 +278,11 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Trans
 //      guide.addAnnotation(circle);
       
        //= new Spotlight(entries.get(0).region.getRect());
-       spotlight = guide.addSpotlight(entries.get(0).region, SikuliGuideSpotlight.CIRCLE);
+       
+      spotlight = new SikuliGuideSpotlight(entries.get(0).region);
+      spotlight.setShape(SikuliGuideSpotlight.CIRCLE);
       
-      //guide.addComponent(spotlight);
+      guide.addComponent(spotlight);
       
       
       
@@ -295,7 +297,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Trans
       }
       dispose();
       setVisible(false);
-      return BaseDialog.NEXT;
+      return "Next";
    }
    
 

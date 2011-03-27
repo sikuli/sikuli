@@ -3,32 +3,10 @@
  */
 package org.sikuli.guide;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.JLabel;
-import javax.swing.Timer;
-
-import org.sikuli.guide.SikuliGuide.HorizontalAlignment;
-import org.sikuli.guide.SikuliGuide.VerticalAlignment;
-import org.sikuli.script.Debug;
-import org.sikuli.script.Location;
-import org.sikuli.script.Region;
-import org.sikuli.script.Screen;
 
 public class SikuliGuideText extends SikuliGuideComponent {
 
@@ -37,8 +15,8 @@ public class SikuliGuideText extends SikuliGuideComponent {
 
    String text;
    JLabel label;
-   public SikuliGuideText(SikuliGuide sikuliGuide, String text){         
-      super(sikuliGuide);
+   public SikuliGuideText(String text){         
+      super();
       this.text = text;
 
       label = new JLabel();

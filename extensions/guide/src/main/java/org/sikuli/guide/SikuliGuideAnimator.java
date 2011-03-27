@@ -1,6 +1,7 @@
 package org.sikuli.guide;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -78,8 +79,18 @@ class CircleAnimator extends SikuliGuideAnimator{
       
       Point p = new Point(x,y);
       
-      comp.setLocation(p);         
-      comp.sikuliGuide.repaint();
+      Rectangle r1 = comp.getBounds();
+      
+      comp.setLocation(p);
+      
+      // r1 stores the union of the bounds before/after the animated step
+      Rectangle r2 = comp.getBounds();
+      r1.add(r2);
+      
+      comp.getParent().getParent().repaint(r1.x,r1.y,r1.width,r1.height);
+      //repaint(r1);
+//      comp.getParent().invalidate();
+//      comp.repaint();
       
       if (count == repeatCount)
          count = 0;
@@ -120,8 +131,20 @@ class MoveAnimator extends  SikuliGuideAnimator{
          
          count++;
 
+        
+         
+         Rectangle r1 = comp.getBounds();
+         
          comp.setLocation(x,y); 
-         comp.sikuliGuide.repaint();
+         
+         Rectangle r2 = comp.getBounds();
+         r1.add(r2);
+         
+         comp.getParent().getParent().repaint(r1.x,r1.y,r1.width,r1.height);
+
+         
+         //comp.sikuliGuide.repaint();
+        // comp.repaint();
          
       }else{
          timer.stop();
