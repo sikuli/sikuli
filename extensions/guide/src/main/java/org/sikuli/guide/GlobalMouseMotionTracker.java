@@ -13,12 +13,7 @@ import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.Location;
 
-interface GlobalMouseMotionListener {
-   public void globalMouseMoved(int x, int y);         
-   public void globalMouseIdled(int x, int y);         
-}
-
-class GlobalMouseLocationTracker implements ActionListener {
+public class GlobalMouseMotionTracker implements ActionListener {
 
    
    final static int IDLE_COUNT_THRESHOLD = 200;
@@ -28,10 +23,10 @@ class GlobalMouseLocationTracker implements ActionListener {
 
    Location lastLocation = null;
 
-   static GlobalMouseLocationTracker _instance = null;
-   static public GlobalMouseLocationTracker getInstance(){
+   static GlobalMouseMotionTracker _instance = null;
+   static public GlobalMouseMotionTracker getInstance(){
       if (_instance == null){
-         _instance = new GlobalMouseLocationTracker();
+         _instance = new GlobalMouseMotionTracker();
       }
       return _instance;
    }
@@ -44,15 +39,15 @@ class GlobalMouseLocationTracker implements ActionListener {
    }
 
    Timer timer;
-   private GlobalMouseLocationTracker(){
+   private GlobalMouseMotionTracker(){
       timer = new Timer(10, this);
    }
 
-   void start(){
+   public void start(){
       timer.start();
    }
 
-   void stop(){
+   public void stop(){
       //Debug.info("stopping global mouse tracker");
       timer.stop();
    }

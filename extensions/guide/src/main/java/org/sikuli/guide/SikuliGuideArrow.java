@@ -11,8 +11,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
 import java.lang.reflect.Array;
 
 public class SikuliGuideArrow extends SikuliGuideComponent{
@@ -22,36 +20,26 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
    public static final int ELBOW_Y = 2;
    
    int style;
+   private Point source;
+   private Point destination;
+   
    
    public void setStyle(int style){
       this.style = style;
    }
    
-	public Point getFrom() {
-		return from;
-	}
-
-	public Point getTo() {
-		return to;
-	}
-
-	Point from;
-	Point to;
 	public SikuliGuideArrow(Point from, Point to){
 	   super();
-		this.from = from;
-		this.to = to;
+		this.source = from;
+		this.destination = to;
 		
-		Rectangle r = new Rectangle(from);
-		r.add(to);
-		r.grow(10,10);		
-		setBounds(r);
-		setForeground(Color.red);
-	
+		setForeground(Color.red);	
 		setStyle(STRAIGHT);
+		updateBounds();
 	}
 	
 	
+
 
 	private void drawPolylineArrow(Graphics g, int[] xPoints, int[] yPoints, int headLength, int headwidth){
 
@@ -100,8 +88,8 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 
 	}//end drawPolylineArrow
 
-	public void paint(Graphics g) {
-	   super.paint(g);
+	public void paintComponent(Graphics g) {
+	   super.paintComponent(g);
 	   
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -116,22 +104,49 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 
 		if (style == STRAIGHT){
 		
-		   drawPolylineArrow(g, new int[]{from.x,to.x}, new int[]{from.y,to.y}, 6, 6);
+		   drawPolylineArrow(g, new int[]{getSource().x,getDestination().x}, new int[]{getSource().y,getDestination().y}, 6, 6);
 		
 		}else if (style == ELBOW_X){
 		   
-		   Point m = new Point(to.x, from.y);
+		   Point m = new Point(getDestination().x, getSource().y);
 		   
-		   g2d.drawLine(from.x,from.y,m.x,m.y);
-         drawPolylineArrow(g, new int[]{m.x,to.x}, new int[]{m.y,to.y}, 6, 6);		   		   
+		   g2d.drawLine(getSource().x,getSource().y,m.x,m.y);
+         drawPolylineArrow(g, new int[]{m.x,getDestination().x}, new int[]{m.y,getDestination().y}, 6, 6);		   		   
 		   
 		}else if (style == ELBOW_Y){
          
-         Point m = new Point(from.x, to.y);
+         Point m = new Point(getSource().x, getDestination().y);
          
-         g2d.drawLine(from.x,from.y,m.x,m.y);
-         drawPolylineArrow(g, new int[]{m.x,to.x}, new int[]{m.y,to.y}, 6, 6);                  
+         g2d.drawLine(getSource().x,getSource().y,m.x,m.y);
+         drawPolylineArrow(g, new int[]{m.x,getDestination().x}, new int[]{m.y,getDestination().y}, 6, 6);                  
          
       }
 	}
+
+   public void setDestination(Point destination) {
+      this.destination = destination;
+      updateBounds();
+   }
+
+   public Point getDestination() {
+      return destination;
+   }
+
+   public void setSource(Point source) {
+      this.source = source;
+      updateBounds();
+   }
+
+   public Point getSource() {
+      return source;
+   }
+
+   protected void updateBounds() {
+      Rectangle r = new Rectangle(getSource());
+      r.add(getDestination());
+      r.grow(10,10);    
+      setBounds(r);
+   }
+
+
 }

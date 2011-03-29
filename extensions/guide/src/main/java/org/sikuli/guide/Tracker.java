@@ -25,7 +25,26 @@ public class Tracker extends Thread{
    String image_filename;
    Pattern centerPattern;
 
+   public Tracker(SikuliGuide guide, Pattern pattern, Region match){
+      this.guide = guide;    
+      this.match = match;
+      screen = new Screen();
 
+      BufferedImage image;
+      BufferedImage center;
+      this.pattern = pattern;
+      try {
+         image = pattern.getImage();
+         int w = image.getWidth();
+         int h = image.getHeight();
+         center = image.getSubimage(w/4,h/4,w/2,h/2);         
+         centerPattern = new Pattern(center);
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }      
+   }
+   
    public Tracker(SikuliGuide guide, String image_filename, Region match){
       this.guide = guide;    
       this.match = match;
@@ -168,5 +187,12 @@ public class Tracker extends Thread{
       return this.image_filename.compareTo(image_filename) == 0;
    }
 
+   public boolean isAlreadyTracking(Pattern pattern, Region r) {
+      try {
+         return this.pattern.getImage() == pattern.getImage();
+      } catch (IOException e) {
+         return false;
+      }
+   }
 
 }

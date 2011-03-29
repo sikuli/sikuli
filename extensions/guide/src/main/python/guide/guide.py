@@ -2,7 +2,7 @@ from org.sikuli.script import UnionScreen
 from org.sikuli.script import Pattern
 from org.sikuli.script import Location
 from org.sikuli.script import Region
-
+from org.sikuli.script import Screen
 
 from org.sikuli.guide import SikuliGuide
 from org.sikuli.guide import Portal
@@ -16,6 +16,8 @@ from org.sikuli.guide import SikuliGuideCircle
 from org.sikuli.guide import SikuliGuideRectangle
 from org.sikuli.guide import SikuliGuideArrow
 from org.sikuli.guide import SikuliGuideCallout
+from org.sikuli.guide import SikuliGuideButton
+from org.sikuli.guide import Clickable
 
 from org.sikuli.guide import TransitionDialog
 
@@ -73,7 +75,19 @@ def bracket(target, side='left', **kwargs):
     
 def clickable(target, name = ""):
     r = s.getRegionFromPSRM(target)
-    _g.addClickable(r,name)
+    comp = Clickable(r)
+    comp.setName(name)
+    _g.addClickable(comp)
+    
+def button(name, location = None):
+    comp = SikuliGuideButton(name)
+    if not location:
+        location = Screen().getCenter()
+        comp.setLocationRelativeToPoint(location, SikuliGuideComponent.CENTER)
+    elif isinstance(location, tuple):
+        (x,y) = location
+        comp.setLocation(x,y)
+    _g.addClickable(comp)
     
 #================
 # Text Elements

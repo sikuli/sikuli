@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import org.sikuli.script.Env;
 import org.sikuli.script.OS;
+import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.TransparentWindow;
@@ -124,7 +125,7 @@ public class SikuliGuide extends TransparentWindow {
       trackers.clear();
       
       
-      //getContentPane().removeAll();
+      content.removeAll();
       transition = null;
       beam = null;
 
@@ -220,8 +221,8 @@ public class SikuliGuide extends TransparentWindow {
    //      addAnnotation(new AnnotationRectangle(rect));
    //   }
 
-   public void addClickable(Region region, String name){
-      clickableWindow.addClickableRegion(region,name);
+   public void addClickable(Clickable c){
+      clickableWindow.addClickable(c);
       setTransition(clickableWindow);      
    }
 
@@ -585,6 +586,25 @@ public class SikuliGuide extends TransparentWindow {
       }
    }
 
+   public void addTracker(Pattern pattern, Region r, SikuliGuideComponent c){     
+      Tracker tracker = null;
+      
+      // find a tracker already assigned to the filename
+      for (Tracker t : trackers){
+         if (t.isAlreadyTracking(pattern,r)){
+            tracker = t;
+            break;
+         }
+      }      
+      
+      if (tracker == null){
+         tracker = new Tracker(this, pattern, r);
+         trackers.add(tracker);
+      }
+      
+      tracker.addReferencingComponent(c);
+   }
+   
    public void addTracker(String image_filename, Region r, SikuliGuideComponent c){     
       Tracker tracker = null;
       

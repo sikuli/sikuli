@@ -3,16 +3,35 @@
  */
 package org.sikuli.guide;
 
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
+import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
-public class SikuliGuideComponent extends JComponent{
+public class SikuliGuideComponent extends JComponent 
+implements Cloneable{
 
+   public Object clone() {
+      SikuliGuideComponent clone;
+      try {
+          clone =  (SikuliGuideComponent) super.clone();
+          
+          // do not clone references to other components
+          clone.followers = new ArrayList<SikuliGuideComponent>();
+          clone.leader = null;
+          clone.connectors = new ArrayList<Connector>();
+          return clone;
+      }
+      catch (CloneNotSupportedException e) {
+          throw new InternalError(e.toString());
+      }
+  }
  
    Region reference_region = null;
    int reference_side = -1;
@@ -96,17 +115,35 @@ public class SikuliGuideComponent extends JComponent{
    public final static int RIGHT = 2;
    public final static int BOTTOM = 3;
    public final static int INSIDE = 4;
+   public final static int CENTER = 5;
 
    public SikuliGuideComponent(){    
       super();
+      setMovable(false);
    }
    
+   // this allows the component to be dragged to another location on the screen
+   ComponentMover cm = new ComponentMover();
+   public void setMovable(boolean movable){
+      if (movable){
+         cm.registerComponent(this);         
+      }else{
+         cm.deregisterComponent(this);
+      }
+   }
 
    public void setLocationRelativeTo(JComponent comp, int side) {
       Region region = new Region(comp.getBounds());
       setLocationRelativeToRegion(region, side);
    }
 
+   public void setLocationRelativeToPoint(Point point, int side){      
+      Rectangle bounds = getBounds();
+      // TODO implement other positioning parameters
+      if (side == CENTER){
+         setLocation(point.x - bounds.width/2, point.y - bounds.height/2);
+      }
+   }
    
    public void setLocationRelativeToRegion(Region region, int side) {
       reference_region = region;
@@ -149,9 +186,26 @@ public class SikuliGuideComponent extends JComponent{
       setLocation(getX(),y);
    }
 
+   
+   private ArrayList<SikuliGuideComponent> followers = new ArrayList<SikuliGuideComponent>();
+   SikuliGuideComponent leader;
+   
+   SikuliGuideComponent followerAsDestination;
+   private ArrayList<Connector> connectors = new ArrayList<Connector>();  
+   
    SikuliGuideComponent shadow = null;
    public void setShadow(SikuliGuideComponent shadow){
       this.shadow = shadow;
+      addFollower(shadow);
+   }
+   
+   public void addFollower(SikuliGuideComponent follower){
+      getFollowers().add(follower);
+      follower.setLeader(this);
+   }
+   
+   public void setLeader(SikuliGuideComponent followee){
+      this.leader = followee;
    }
    
    @Override
@@ -162,18 +216,53 @@ public class SikuliGuideComponent extends JComponent{
       super.setVisible(visible);
    }
    
+   
    @Override
    public void setLocation(int x, int y){
       Point loc = getLocation();
-      if (shadow != null){
-         Point shadow_loc = shadow.getLocation();
+      
+      for (SikuliGuideComponent follower : getFollowers()){
+         Point curloc = follower.getLocation();
          int dx = x - loc.x;
          int dy = y - loc.y;
-         shadow_loc.x += dx;
-         shadow_loc.y += dy;
-         shadow.setLocation(shadow_loc);
+         curloc.x += dx;
+         curloc.y += dy;
+         follower.setLocation(curloc);      
       }
+      
+      for (Connector connector : connectors){
+         connector.update(this);
+      }
+      
       super.setLocation(x,y);
+   }
+
+   public void addConnector(Connector connector) {
+      this.connectors.add(connector);
+   }
+
+   public ArrayList<Connector> getConnectors() {
+      return connectors;
+   }
+   
+   public Point getCenter(){
+      Point loc = new Point(getLocation());
+      Dimension size = getSize();
+      loc.x += size.width/2;
+      loc.y += size.height/2;
+      return loc;
+   }
+
+   public ArrayList<SikuliGuideComponent> getFollowers() {
+      return followers;
+   }
+
+   public SikuliGuideComponent getLeader() {
+      return leader;
+   }
+
+   public void removeFollower(SikuliGuideComponent comp) {
+      followers.remove(comp);
    }
 
 }

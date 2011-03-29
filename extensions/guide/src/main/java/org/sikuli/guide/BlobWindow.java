@@ -93,7 +93,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    }
 
    SikuliGuide guide;
-   GlobalMouseLocationTracker mouseTracker;
+   GlobalMouseMotionTracker mouseTracker;
    public BlobWindow(SikuliGuide guide){
       this.guide = guide;
       
@@ -105,7 +105,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       setAlwaysOnTop(true);
 
 
-      mouseTracker = GlobalMouseLocationTracker.getInstance();
+      mouseTracker = GlobalMouseMotionTracker.getInstance();
       mouseTracker.addListener(this);
 
 //            JLabel label = new JLabel("<html><font size=10>This is a clickable window</font></html>");
