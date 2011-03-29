@@ -1,8 +1,15 @@
 package org.sikuli.script;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 public class Pattern {
    String imgURL = null;
    float similarity = 0.7f;
+   BufferedImage image;
 
    int dx=0, dy=0;
 
@@ -15,12 +22,16 @@ public class Pattern {
    public Pattern(String imgURL_){
       imgURL = imgURL_;
    }
+   
+   public Pattern(BufferedImage image){
+      this.image = image;
+   }
 
    public Pattern similar(float similarity_){
       Pattern ret = new Pattern(this);
       ret.similarity = similarity_;
       return ret;
-   }
+   }   
 
    public Pattern exact(){
       Pattern ret = new Pattern(this);
@@ -49,6 +60,16 @@ public class Pattern {
 
    public String getFilename(){
       return imgURL;
+   }
+   
+   public BufferedImage getImage() throws IOException{
+      if (image == null){
+         // locate and read the image into memory
+         ImageLocator locator = new ImageLocator();
+         String foundImageFullPath = locator.locate(getFilename());       
+         image = ImageIO.read(new File(foundImageFullPath));
+      }
+      return image;
    }
 
 }

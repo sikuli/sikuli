@@ -75,7 +75,8 @@ public class Finder implements Iterator<Match>{
    protected <PSC> void setFindInput(PSC ptn) throws IOException{
       if( ptn instanceof Pattern ){
          _pattern = (Pattern)ptn;
-         _findInput.setTarget(TARGET_TYPE.IMAGE,findImageFile(_pattern.imgURL));
+         Mat targetMat = OpenCV.convertBufferedImageToMat(_pattern.getImage());
+         _findInput.setTarget(targetMat);
          _findInput.setSimilarity(_pattern.similarity);
       }
       else if( ptn instanceof String){
