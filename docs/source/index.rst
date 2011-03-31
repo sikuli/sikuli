@@ -83,6 +83,8 @@ FAQ
    :glob:
 
    faq/*
+   
+* `Read more FAQs on Launchpad <https://answers.launchpad.net/sikuli/+faqs>`_
 
 
 
