@@ -61,7 +61,7 @@ Example - Run xxxx.sikuli with three arguments:
 
 .. windows::
 
-   :command:`PATH-TO-SIKULI/sikuli-ide.exe -r xxxx.sikuli ---args a1 a2 a3`
+   :command:`PATH-TO-SIKULI\sikuli-ide.exe -r xxxx.sikuli ---args a1 a2 a3`
 
 .. linux::
 
