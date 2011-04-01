@@ -1,5 +1,6 @@
 package org.sikuli.guide;
 
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -140,11 +141,11 @@ class MoveAnimator extends  SikuliGuideAnimator{
          Rectangle r2 = comp.getBounds();
          r1.add(r2);
          
-         comp.getParent().getParent().repaint(r1.x,r1.y,r1.width,r1.height);
-
-         
-         //comp.sikuliGuide.repaint();
-        // comp.repaint();
+          Container c = comp.getParent();
+          
+          if (c != null){
+             c.getParent().getParent().repaint(r1.x,r1.y,r1.width,r1.height);
+          }
          
       }else{
          timer.stop();

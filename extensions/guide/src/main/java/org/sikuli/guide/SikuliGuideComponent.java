@@ -48,8 +48,8 @@ implements Cloneable{
          //}
          
          if (!entrance_anim.isPlayed()){
-            Debug.log("entrance anim started");
-            Debug.log("entrance anim:" + entrance_anim);
+            //Debug.log("entrance anim started");
+            //Debug.log("entrance anim:" + entrance_anim);
             entrance_anim.start();
          }
       } 
@@ -59,7 +59,7 @@ implements Cloneable{
          if (entrance_anim != null)
             entrance_anim.stop();
 
-         Debug.log("emphasis anim started");
+         //Debug.log("emphasis anim started");
          emphasis_anim.start();
       }
    }
@@ -152,15 +152,15 @@ implements Cloneable{
       int height = getHeight();
       int width = getWidth();
       if (side == TOP){
-         setBounds(region.x + region.w/2 - width/2, region.y - height, width, height);
+         setLocation(region.x + region.w/2 - width/2, region.y - height);
       } else if (side == BOTTOM){
-         setBounds(region.x + region.w/2 - width/2, region.y + region.h, width, height);         
+         setLocation(region.x + region.w/2 - width/2, region.y + region.h);         
       } else if (side == LEFT){
-         setBounds(region.x - width, region.y + region.h/2 - height/2, width, height);                  
+         setLocation(region.x - width, region.y + region.h/2 - height/2);                  
       } else if (side == RIGHT){
-         setBounds(region.x + region.w, region.y + region.h/2 - height/2, width, height);                  
+         setLocation(region.x + region.w, region.y + region.h/2 - height/2);                  
       } else if (side == INSIDE){
-         setBounds(region.x + region.w/2 - width/2, region.y + region.h/2 - height/2, width, height);                  
+         setLocation(region.x + region.w/2 - width/2, region.y + region.h/2 - height/2);                  
       }
    }
 
@@ -210,13 +210,13 @@ implements Cloneable{
    
    @Override
    public void setVisible(boolean visible){
-      if (shadow != null){
-         shadow.setVisible(visible);
+      for (SikuliGuideComponent follower : getFollowers()){
+         follower.setVisible(visible);
       }
       super.setVisible(visible);
    }
    
-   
+   // TODO need to update shadow size as well
    @Override
    public void setLocation(int x, int y){
       Point loc = getLocation();

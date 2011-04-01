@@ -40,48 +40,49 @@ public class Tracker extends Thread{
          center = image.getSubimage(w/4,h/4,w/2,h/2);         
          centerPattern = new Pattern(center);
       } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }      
    }
    
-   public Tracker(SikuliGuide guide, String image_filename, Region match){
-      this.guide = guide;    
-      this.match = match;
-      screen = new Screen();
-      pattern = new Pattern(image_filename);
-      this.image_filename = image_filename;
+//   public Tracker(SikuliGuide guide, String image_filename, Region match){
+//      this.guide = guide;    
+//      this.match = match;
+//      screen = new Screen();
+//      pattern = new Pattern(image_filename);
+//      this.image_filename = image_filename;
+//
+//      // TODO: Sikuli needs to support searching for an image in memory
+//      // so we don't need to use the temp file hack
+//      File temp = null;
+//
+//      try {
+//         ImageLocator imgLocator = new ImageLocator();
+//         String full_image_filename = imgLocator.locate(image_filename);
+//         
+//         BufferedImage image = ImageIO.read(new File(full_image_filename));
+//         int w = image.getWidth();
+//         int h = image.getHeight();
+//         BufferedImage center = image.getSubimage(w/4,h/4,w/2,h/2);
+//
+//
+//
+//         temp = File.createTempFile("ctr",".png");
+//         temp.deleteOnExit();
+//         ImageIO.write(center,"png",temp);
+//      } catch (IOException ex) {
+//         System.err.println("Cannot create temp file: " + ex.getMessage());
+//      } finally {
+//
+//      }
+//
+//      Debug.log("temp: " + temp.getAbsolutePath());
+//      centerPattern = new Pattern(temp.getAbsolutePath());
+//
+//
+//   }
 
-      // TODO: Sikuli needs to support searching for an image in memory
-      // so we don't need to use the temp file hack
-      File temp = null;
-
-      try {
-         ImageLocator imgLocator = new ImageLocator();
-         String full_image_filename = imgLocator.locate(image_filename);
-         
-         BufferedImage image = ImageIO.read(new File(full_image_filename));
-         int w = image.getWidth();
-         int h = image.getHeight();
-         BufferedImage center = image.getSubimage(w/4,h/4,w/2,h/2);
-
-
-
-         temp = File.createTempFile("ctr",".png");
-         temp.deleteOnExit();
-         ImageIO.write(center,"png",temp);
-      } catch (IOException ex) {
-         System.err.println("Cannot create temp file: " + ex.getMessage());
-      } finally {
-
-      }
-
-      Debug.log("temp: " + temp.getAbsolutePath());
-      centerPattern = new Pattern(temp.getAbsolutePath());
-
-
-   }
-
+   
+   //void init()
 
    ArrayList<SikuliGuideComponent> components = new ArrayList<SikuliGuideComponent>();
    ArrayList<Point> offsets = new ArrayList<Point>();
@@ -141,7 +142,7 @@ public class Tracker extends Thread{
          
          if (new_match != null){
 
-            Debug.log("Found: " + new_match);
+            //Debug.log("Found: " + new_match);
 
             if (match.x == new_match.x && match.y == new_match.y)
                continue;
@@ -183,13 +184,14 @@ public class Tracker extends Thread{
       running = false;
    }
 
-   public boolean isAlreadyTracking(String image_filename, Region r) {
-      return this.image_filename.compareTo(image_filename) == 0;
-   }
-
-   public boolean isAlreadyTracking(Pattern pattern, Region r) {
+   public boolean isAlreadyTracking(Pattern pattern, Region match) {
       try {
-         return this.pattern.getImage() == pattern.getImage();
+         boolean sameMatch = this.match == match; 
+         boolean sameBufferedImage = this.pattern.getImage() == pattern.getImage();
+         boolean sameFilename = (this.pattern.getFilename() != null &&
+               (this.pattern.getFilename().compareTo(pattern.getFilename()) == 0));
+      
+         return sameMatch || sameBufferedImage || sameFilename;
       } catch (IOException e) {
          return false;
       }

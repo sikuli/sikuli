@@ -1,23 +1,19 @@
 package org.sikuli.guide;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JWindow;
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
+import org.sikuli.script.OS;
 import org.sikuli.script.Region;
-import org.sikuli.script.TransparentWindow;
 
 
 
@@ -38,7 +34,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
 
    SikuliGuide guide;
    GlobalMouseMotionTracker mouseTracker;
-   Clickable lastClickedClickable;
+   private Clickable lastClickedClickable;
    
    public ClickableWindow(SikuliGuide guide){
       this.guide = guide;
@@ -84,7 +80,12 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    
    public void addClickable(Clickable c){
       clickables.add(c);
-      add(c);      
+      
+      // add an almost invisible clickable to the content pane to 
+      // capture the mouse click happening to this region
+      Rectangle rect = c.getBounds();
+      Clickable c1 = new Clickable(new Region(rect));
+      this.add(c1);
    }
    
    public void addClickableRegion(Region region, String name){
@@ -100,16 +101,16 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       //Debug.log("clicked on " + e.getX() + "," + e.getY());
       Point p = e.getPoint();
 
-      lastClickedClickable  = null;
-      // find clicked clickable
+      
+      lastClickedClickable = null;
+      // find and remember which clickable was most recently clicked
       for (Clickable c : clickables){         
          if (c.getBounds().contains(p)){
             lastClickedClickable = c;
          }
       }         
       
-      if (lastClickedClickable != null){
-      
+      if (getLastClickedClickable() != null){      
          synchronized(guide){
             guide.notify();
          }
@@ -150,8 +151,8 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       }
       setVisible(false);
       
-      if (lastClickedClickable != null)
-         return lastClickedClickable.name;
+      if (getLastClickedClickable() != null)
+         return getLastClickedClickable().name;
       else
          return "Next";
    }
@@ -170,7 +171,6 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
          
          c.setMouseOver(c.getBounds().contains(p));
          
-         
          // TODO: figure out why setCursor is not working
 //         if (c.getBounds().contains(p)){
 //            Debug.log("inside");
@@ -184,12 +184,13 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
          
       }
             
-
+      //Debug.log("loc: " + getLocation());
+      
+      // keep moving to (0,0) to nullify the dragged move bug
+      setLocation(0,0);
 
    }
    
-      
-
    public void clear() {
       clickables.clear();
       getContentPane().removeAll();      
@@ -197,6 +198,14 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
 
    @Override
    public void globalMouseIdled(int x, int y) {
+   }
+   
+   public Clickable getLastClickedClickable() {
+      return lastClickedClickable;
+   }
+
+   public ArrayList<Clickable> getClickables() {
+      return clickables;
    }
 
 }

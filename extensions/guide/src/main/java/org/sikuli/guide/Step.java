@@ -10,7 +10,7 @@ import org.sikuli.script.Screen;
 
 
 public class Step {
-   ArrayList<Part> contentParts = new ArrayList<Part>();
+   private ArrayList<Part> contentParts = new ArrayList<Part>();
    Transition transition;
    
    public Transition getTransition() {
@@ -26,7 +26,7 @@ public class Step {
 
 
    public void addPart(Part part){
-      contentParts.add(part);
+      getParts().add(part);
    }
    
    
@@ -34,7 +34,7 @@ public class Step {
    public void play(SikuliGuide guide) throws FindFailed{
       Screen s = new Screen();
       
-      for (Part part : contentParts){
+      for (Part part : getParts()){
          
          Pattern pattern = part.getTargetPattern();
          
@@ -65,6 +65,11 @@ public class Step {
 
       guide.setTransition(transition);
       guide.showNow();
+   }
+
+
+   public ArrayList<Part> getParts() {
+      return contentParts;
    }
          
 }

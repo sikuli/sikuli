@@ -118,6 +118,10 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
       triangle.setForeground(Color.yellow);
       triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.BOTTOM);
       add(triangle);
+      
+      Rectangle bounds = rbox.getBounds();
+      bounds.add(triangle.getBounds());
+      setBounds(bounds);
 
    }
 

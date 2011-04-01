@@ -17,7 +17,9 @@ from org.sikuli.guide import SikuliGuideRectangle
 from org.sikuli.guide import SikuliGuideArrow
 from org.sikuli.guide import SikuliGuideCallout
 from org.sikuli.guide import SikuliGuideButton
+from org.sikuli.guide import SikuliGuideImage
 from org.sikuli.guide import Clickable
+from org.sikuli.guide import Hotspot
 
 from org.sikuli.guide import TransitionDialog
 
@@ -28,105 +30,97 @@ from org.sikuli.guide.model import GUINode
 s = UnionScreen()
 _g = SikuliGuide(s)
 
+
+
 #######################     
 #      Core API       #
 #######################
 
 #================
-# Area Graphics
+# Area Components
 #================
 
 def circle(target, **kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideCircle(r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
+    comp_func = lambda r: SikuliGuideCircle(r)
+    return _addAraeComponentToTarget(comp_func, target, **kwargs)
 
 def rectangle(target,**kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideRectangle(r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
-    
+    comp_func = lambda r: SikuliGuideRectangle(r)
+    return _addAraeComponentToTarget(comp_func, target, **kwargs)    
 
 def spotlight(target, shape = 'circle', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    r1 = _adjustRegion(r, **kwargs)
-    comp = SikuliGuideSpotlight(r1)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)    
-    if shape == 'rectangle':
-        comp.setShape(SikuliGuideSpotlight.RECTANGLE)
-    elif shape == 'circle':
-        comp.setShape(SikuliGuideSpotlight.CIRCLE)
-    _g.addComponent(comp)    
+    def createSpotlight(r):
+        comp = SikuliGuideSpotlight(r)
+        if shape == 'rectangle':
+            comp.setShape(SikuliGuideSpotlight.RECTANGLE)
+        elif shape == 'circle':
+            comp.setShape(SikuliGuideSpotlight.CIRCLE)
+        return comp        
+    
+    return _addAraeComponentToTarget(createSpotlight, target, **kwargs)    
+    
+def clickable(target, name = "", **kwargs):
+    comp_func = lambda r: Clickable(r)
+    return _addAraeComponentToTarget(comp_func, target, **kwargs)   
 
-def bracket(target, side='left', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideBracket()
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)    
-    
-def clickable(target, name = ""):
-    r = s.getRegionFromPSRM(target)
-    comp = Clickable(r)
-    comp.setName(name)
-    _g.addClickable(comp)
-    
-def button(name, location = None):
+def button(target, name, **kwargs):
     comp = SikuliGuideButton(name)
-    if not location:
-        location = Screen().getCenter()
-        comp.setLocationRelativeToPoint(location, SikuliGuideComponent.CENTER)
-    elif isinstance(location, tuple):
-        (x,y) = location
-        comp.setLocation(x,y)
-    _g.addClickable(comp)
+    return _addSideComponentToTarget(comp, target, **kwargs)  
     
+
+
+def arrow(srcTarget, destTarget):
+    r1 = s.getRegionFromTarget(srcTarget)
+    r2 = s.getRegionFromTarget(destTarget)
+    comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
+    _g.addComponent(comp)
+    return comp    
+
 #================
 # Text Elements
 #================
 
+def bracket(target, side='left', **kwargs):
+    comp = SikuliGuideBracket()
+    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
+
 def flag(target, text='    ', **kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideFlag(text)
-    _setLocationRelativeToRegion(comp,r,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)   
+    comp = SikuliGuideFlag(text)    
+    return _addSideComponentToTarget(comp, target, **kwargs)
     
-def text(target, txt, fontsize = 16,side='bottom',**kwargs):
-    r = s.getRegionFromPSRM(target)
-    comp = SikuliGuideText( txt)
+def text(target, txt, fontsize = 16, side = 'bottom', **kwargs):
+    comp = SikuliGuideText(txt)
     comp.setFontSize(fontsize)
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)        
+    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
 
 def callout(target, txt, fontsize = 16, side='right',**kwargs):
-    r = s.getRegionFromPSRM(target)
     comp = SikuliGuideCallout( txt)
     #comp.setFontSize(fontsize)
-    _setLocationRelativeToRegion(comp,r,side,**kwargs)
-    if isinstance(target, str):
-        _g.addTracker(target,r,comp)
-    _g.addComponent(comp)
-    
-def arrow(srcTarget, destTarget):
-    r1 = s.getRegionFromPSRM(srcTarget)
-    r2 = s.getRegionFromPSRM(destTarget)
-    comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
-    _g.addComponent(comp)
+    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
 
 def tooltip(target, txt,**kwargs ):
-    text(target, txt, fontsize = 8,**kwargs)
+    return text(target, txt, fontsize = 8,**kwargs)
+    
+def image(target, imgurl, **kwargs):    
+    comp = SikuliGuideImage(imgurl)
+    return _addSideComponentToTarget(comp, target, **kwargs)
+
+#=====================
+# Interactive Elements
+#=====================    
+    
+def hotspot(target, message, side = 'right'):
+    # TODO allow hotspot's positions to be automatically updated
+    r = _getRegionFromTarget(target)  
+    txtcomp = SikuliGuideCallout(message)
+    r1 = Region(r)
+    r1.x -= 10
+    r1.w += 20
+    _setLocationRelativeToRegion(txtcomp,r1,side)
+
+    comp = Hotspot(r, txtcomp, _g)
+    _g.addClickable(comp)
+    return comp    
     
 #=====================
 # Transition Elements
@@ -171,6 +165,38 @@ def setDefaultTimeout(timeout):
 ####################
 # Helper functions #
 ####################
+
+def _addSideComponentToTarget(comp, target, **kwargs):
+    r = _getRegionFromTarget(target)
+    _setLocationRelativeToRegion(comp,r,**kwargs)
+    if isinstance(target, str):
+        _g.addTracker(Pattern(target),r,comp)
+    elif isinstance(target, Pattern):
+        _g.addTracker(target,r,comp)        
+    elif isinstance(target, SikuliGuideComponent):
+        target.addFollower(comp)
+    _g.addComponent(comp)        
+    return comp    
+
+def _addAraeComponentToTarget(comp_func, target, **kwargs):
+    r = _getRegionFromTarget(target)
+    r1 = _adjustRegion(r, **kwargs)
+    comp = comp_func(r1)
+    if isinstance(target, str):
+        _g.addTracker(Pattern(target),r1,comp)
+    elif isinstance(target, Pattern):
+        _g.addTracker(target,r1,comp)        
+    elif isinstance(target, SikuliGuideComponent):
+        target.addFollower(comp)
+    _g.addComponent(comp)        
+    return comp
+
+def _getRegionFromTarget(target):
+    if isinstance(target, SikuliGuideComponent):
+        return Region(target.getBounds())        
+    else:
+        return s.getRegionFromPSRM(target)    
+    
 def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,0,0,0),
                                  horizontalalignment = 'center',
                                  verticalalignment = 'center'):    

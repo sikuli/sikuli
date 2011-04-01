@@ -31,7 +31,7 @@ public class SikuliGuideText extends SikuliGuideComponent {
       updateLabel();
       updateSize();
    }
-   
+      
    public void setText(String text){
       this.text = text;
       updateLabel();
@@ -78,4 +78,18 @@ public class SikuliGuideText extends SikuliGuideComponent {
       updateLabel();
    }
    
+   TextPropertyEditor ed = null;
+   public void setEditable(boolean editable){
+      if (editable){
+                  
+         TextPropertyEditor ed = new TextPropertyEditor(this);
+         ed.setLocationRelativeTo(this, SikuliGuideComponent.TOP);
+         this.getParent().add(ed);
+         ed.requestFocus();
+         
+      }else{
+         
+         this.getParent().remove(ed);
+      }
+   }
 }

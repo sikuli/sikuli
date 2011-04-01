@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.sikuli.script.ImageLocator;
+
 public class SikuliGuideImage extends SikuliGuideComponent {
    
    BufferedImage image;
@@ -20,7 +22,9 @@ public class SikuliGuideImage extends SikuliGuideComponent {
    
    public SikuliGuideImage(String filename) throws IOException{
        super();
-       File sourceimage = new File(filename);
+       
+       ImageLocator locator = new ImageLocator();       
+       File sourceimage = new File(locator.locate(filename));
        BufferedImage bimage = ImageIO.read(sourceimage);
        init(bimage);
    }

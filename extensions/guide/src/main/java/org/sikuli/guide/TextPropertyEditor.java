@@ -46,6 +46,8 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
        targetComponent.addFollower(this);
        
        textField.addKeyListener(this);
+       setFocusable(true);
+       setOpaque(true);
    }
 
    @Override
@@ -58,9 +60,18 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
          
          // make this editor no longer following the edited target
          targetComponent.removeFollower(this);
-      }      
-      // TODO ESC to cancel
+         
+      }else if (k.getKeyCode() == KeyEvent.VK_ESCAPE){
+         
+         //((SikuliGuideText) targetComponent).setText(textField.getText());
+         setVisible(false);     
+         
+         // make this editor no longer following the edited target
+         targetComponent.removeFollower(this);
+      }
    }
+   
+
    
    @Override
    public void requestFocus(){

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import org.sikuli.script.Env;
+import org.sikuli.script.FindFailed;
+import org.sikuli.script.Match;
 import org.sikuli.script.OS;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
@@ -34,7 +36,7 @@ public class SikuliGuide extends TransparentWindow {
 
 
    Robot robot;
-   
+
    public void setDefaultTimeout(float timeout_in_seconds){
       defaultTimeout = timeout_in_seconds;
    }
@@ -49,15 +51,15 @@ public class SikuliGuide extends TransparentWindow {
    // swing components will be drawn on this panel
    JPanel content = new JPanel(null);
    //Container content;
-   
-   
+
+
    Transition transition;
    //Transition defaultTransition;   
-   
+
    ArrayList<Tracker> trackers = new ArrayList<Tracker>();
    ClickableWindow clickableWindow;
-   
-   
+
+
    public SikuliGuide(){
       init(new Screen());
    }
@@ -67,7 +69,7 @@ public class SikuliGuide extends TransparentWindow {
    }
 
    void init(Region region){
-      
+
       try {
          robot = new Robot();
       } catch (AWTException e1) {
@@ -81,12 +83,13 @@ public class SikuliGuide extends TransparentWindow {
 
       setBounds(rect);
 
+      
       setBackground(null);
 
       // It turns out these are useful after all
       // so that it works on Windows
       ((JPanel)getContentPane()).setBackground(null);      
-     // content.setBackground(null);
+      // content.setBackground(null);
 
       Env.getOSUtil().setWindowOpaque(this, false);
       //setOpacity(1.0f);
@@ -98,33 +101,34 @@ public class SikuliGuide extends TransparentWindow {
       setAlwaysOnTop(true);
       setFocusableWindowState(false);
 
-        
+
       clickableWindow = new ClickableWindow(this);
    }
 
-   
-   
+
+
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       super.paint(g);
    }
 
    public void clear(){
-      
+
       if (clickableWindow != null)
          clickableWindow.clear();
-      
+
       stopAnimation();
-      
-      setBackground(null);
-      content.setBackground(null);
+
+      setDarken(false);
+      //setBackground(null);
+      //content.setBackground(null);
 
       for (Tracker track : trackers){
          track.stopTracking();
       }
       trackers.clear();
-      
-      
+
+
       content.removeAll();
       transition = null;
       beam = null;
@@ -155,13 +159,15 @@ public class SikuliGuide extends TransparentWindow {
       return ret;
    }
 
-//   public void addArrow(Point from, Point to){
-//      Point from1 = convertToRegionLocation(from);
-//      Point to1 = convertToRegionLocation(to);
-//
-//      //      addAnnotation(new AnnotationArrow(from1, to1, Color.black));
-//   }
+   //   public void addArrow(Point from, Point to){
+   //      Point from1 = convertToRegionLocation(from);
+   //      Point to1 = convertToRegionLocation(to);
+   //
+   //      //      addAnnotation(new AnnotationArrow(from1, to1, Color.black));
+   //   }
 
+
+   final float DIMMING_OPACITY = 0.5f;
    public void updateSpotlights(ArrayList<Region> regions){
       removeSpotlights();
 
@@ -173,8 +179,8 @@ public class SikuliGuide extends TransparentWindow {
       }else{
 
          // if there are spotlights added, darken the background
-         setBackground(new Color(0f,0f,0f,0.2f));
-         content.setBackground(new Color(0f,0f,0f,0.2f));
+         setBackground(new Color(0f,0f,0f,DIMMING_OPACITY));
+         content.setBackground(new Color(0f,0f,0f,DIMMING_OPACITY));
          for (Region r : regions){
             SikuliGuideSpotlight spotlight = new SikuliGuideSpotlight(r);
             spotlight.setShape(SikuliGuideSpotlight.CIRCLE);
@@ -193,27 +199,27 @@ public class SikuliGuide extends TransparentWindow {
       }
    }
 
-//   public SikuliGuideSpotlight addSpotlight(Region region){   
-//      return addSpotlight(region, SikuliGuideSpotlight.RECTANGLE);
-//   }
+   //   public SikuliGuideSpotlight addSpotlight(Region region){   
+   //      return addSpotlight(region, SikuliGuideSpotlight.RECTANGLE);
+   //   }
 
-//   public SikuliGuideSpotlight addSpotlight(Region region, int style){	
-//      //      Rectangle rect = new Rectangle(region.getRect());
-//      //      rect.translate(-_region.x, -_region.y);
-//      //      
-//
-//      SikuliGuideSpotlight spotlight = new SikuliGuideSpotlight(this,region);
-//      spotlight.setShape(style);
-//      addComponent(spotlight);
-//      //_spotlights.add(spotlight);
-//
-//      // if there's any spotlight added, darken the 
-//      // background
-//      //setBackground(new Color(0f,0f,0f,0.2f));      
-//      //content.setBackground(new Color(0f,0f,0f,0.2f));      
-//
-//      return spotlight;
-//   }
+   //   public SikuliGuideSpotlight addSpotlight(Region region, int style){	
+   //      //      Rectangle rect = new Rectangle(region.getRect());
+   //      //      rect.translate(-_region.x, -_region.y);
+   //      //      
+   //
+   //      SikuliGuideSpotlight spotlight = new SikuliGuideSpotlight(this,region);
+   //      spotlight.setShape(style);
+   //      addComponent(spotlight);
+   //      //_spotlights.add(spotlight);
+   //
+   //      // if there's any spotlight added, darken the 
+   //      // background
+   //      //setBackground(new Color(0f,0f,0f,0.2f));      
+   //      //content.setBackground(new Color(0f,0f,0f,0.2f));      
+   //
+   //      return spotlight;
+   //   }
 
    //   public void addRectangle(Region region){  
    //      Rectangle rect = new Rectangle(region.getRect());
@@ -221,44 +227,47 @@ public class SikuliGuide extends TransparentWindow {
    //      addAnnotation(new AnnotationRectangle(rect));
    //   }
 
-   public void addClickable(Clickable c){
+   private void addClickable(Clickable c){
       clickableWindow.addClickable(c);
       setTransition(clickableWindow);      
    }
-
-   //   public void addToolTip(Location location, String message){
-   //      Point screen_loc = convertToRegionLocation(location);
-   //      addAnnotation(new AnnotationToolTip(message, screen_loc));
-   //   }
-//
-//   public enum VerticalAlignment{
-//      TOP, MIDDLE, BOTTOM
-//   }
-//
-//   public enum HorizontalAlignment{
-//      LEFT, CENTER, RIGHT
-//   }
-
-//   public void addText(Location location, String message){
-//      // The location is in the global screen coordinate
-//
-//      addText(location, message, HorizontalAlignment.LEFT, VerticalAlignment.TOP);      
-//   }
-
-//   public void addFlag(Location location, String message){
-//      Flag flag = new Flag(location, message);
-//      addComponent(flag);
-//   }
+   
+   public void setDarken(boolean darken){
+      if (darken){
+         setBackground(new Color(0f,0f,0f,DIMMING_OPACITY));
+         content.setBackground(new Color(0f,0f,0f,DIMMING_OPACITY));
+      }else{
+         setBackground(null);
+         content.setBackground(null);
+      }
+   }
 
    public void addComponent(SikuliGuideComponent comp){
-      content.add(comp);
-      if (comp instanceof SikuliGuideSpotlight){
-         // if there's any spotlight added, darken the 
-         // background
-         setBackground(new Color(0f,0f,0f,0.2f));
-         content.setBackground(new Color(0f,0f,0f,0.2f));
+      if (comp instanceof Clickable){
+
+         // add to the guide window
+         content.add(comp);
+
+         // add it to the glasspane window to capture mouse events
+         clickableWindow.addClickable((Clickable) comp);
+         
+         // add a shadow if it is a button
+         if (comp instanceof SikuliGuideButton){
+            SikuliGuideComponent s = new SikuliGuideShadow(comp);
+            content.add(s);
+         }         
+
+         
+         setTransition(clickableWindow);
+         return;
       }
       
+      content.add(comp);
+      if (comp instanceof SikuliGuideSpotlight){
+         // if there's any spotlight added, darken the background
+         setDarken(true);
+      }
+
       if (comp instanceof SikuliGuideText ||
             comp instanceof SikuliGuideRectangle ||
             comp instanceof SikuliGuideCircle ||
@@ -266,6 +275,7 @@ public class SikuliGuide extends TransparentWindow {
             comp instanceof SikuliGuideImage ||
             comp instanceof SikuliGuideFlag ||
             comp instanceof SikuliGuideCallout ||
+            comp instanceof SikuliGuideButton ||
             comp instanceof SikuliGuideBracket) {
          SikuliGuideComponent s = new SikuliGuideShadow(comp);
          content.add(s);
@@ -276,72 +286,12 @@ public class SikuliGuide extends TransparentWindow {
       content.remove(comp);
    }
 
-//   public void addBookmark(Location location, String message){
-//      Flag b = new Flag(location, message);
-//      //   b.setLocation(location);
-//      //b.setBounds(_region.getRect());
-//      content.add(b);
-//   }
-
    Beam beam = null;
    public void addBeam(Region r){
       beam = new Beam(this, r);
       beam.setAlwaysOnTop(true);
       transition = beam;
    }
-
-//   public void addText(Location location, String message, HorizontalAlignment horizontal_alignment, 
-//         VerticalAlignment vertical_alignment){
-//      StaticText textbox = new StaticText(this, message);
-//      textbox.align(location, horizontal_alignment, vertical_alignment);
-//      textbox.moveInside(_region);
-//      content.add(textbox);
-//      repaint();
-//   }
-
-//   public enum Side {
-//      TOP,
-//      LEFT,
-//      RIGHT,
-//      BOTTOM
-//   }
-
-//   public void addText(Region r, String message, Side side){
-//      HorizontalAlignment h = null;
-//      VerticalAlignment v = null;      
-//      Location p = null;      
-//
-//      if (side == Side.TOP){
-//         p = new Location(r.x+r.w/2, r.y);
-//         h = HorizontalAlignment.CENTER;
-//         v = VerticalAlignment.BOTTOM;
-//      } else if (side == Side.BOTTOM){
-//         p = new Location(r.x+r.w/2, r.y+r.h);
-//         h = HorizontalAlignment.CENTER;
-//         v = VerticalAlignment.TOP; 
-//      } else if (side == Side.LEFT){
-//         p = new Location(r.x, r.y+r.h/2);
-//         h = HorizontalAlignment.RIGHT;
-//         v = VerticalAlignment.MIDDLE; 
-//      } else if (side == Side.RIGHT){
-//         p = new Location(r.x+r.w, r.y+r.h/2);
-//         h = HorizontalAlignment.LEFT;
-//         v = VerticalAlignment.MIDDLE; 
-//      }      
-//      addText(p, message, h, v);
-//   }
-
-//   TransitionDialog dialog = null;
-//   public void setDialog(String message, int style){
-//      TransitionDialog dialog = new TransitionDialog();
-//      dialog.setText(message);
-////      dialog.setStyle(style);
-//      transition = dialog;
-//   }
-//
-//   public TransitionDialog getDialog(){
-//      return dialog;
-//   }
 
    public void setDialog(String message){
       TransitionDialog dialog = new TransitionDialog();
@@ -354,7 +304,7 @@ public class SikuliGuide extends TransparentWindow {
       transition = dialog_;
    }
 
-   
+
    public void stopAnimation(){
       for (Component co : content.getComponents()){
 
@@ -367,7 +317,7 @@ public class SikuliGuide extends TransparentWindow {
          }
       }
    }
-   
+
    public void startAnimation(){
       for (Component co : content.getComponents()){
 
@@ -380,20 +330,35 @@ public class SikuliGuide extends TransparentWindow {
          }
       }
    }
-   
-
-//   public String showNowWithDialog(int style){
-//      //dialog.setStyle(style);
-//      //setTransition(dialog);
-//      return showNow();        
-//   }
 
    public String showNow(){
       return showNow(defaultTimeout);
    }
+   
+   boolean hasSpotlight(){
+      for (Component comp : content.getComponents()){
+         if (comp instanceof SikuliGuideSpotlight)
+            return true;
+      }
+      return false;
+   }
+   
+   
 
    public String showNow(float secs){
       
+      
+//      if (hasSpotlight()){
+//         // hack for revealing clickables when the screen is darken
+//         for (Clickable clickable : clickableWindow.getClickables()){
+//
+//            Region r = new Region(clickable.getBounds());
+//            SikuliGuideSpotlight sp = new SikuliGuideSpotlight(r);
+//            addComponent(sp);
+//            clickable.addFollower(sp);
+//         }
+//      }
+
       if (content.getComponentCount()  == 0 
             && transition == null 
             && search == null){
@@ -401,7 +366,7 @@ public class SikuliGuide extends TransparentWindow {
          // there's nothing to show
          return "Next";         
       }
-      
+
       startAnimation();      
       startTracking();
 
@@ -434,69 +399,44 @@ public class SikuliGuide extends TransparentWindow {
          focusBelow();
          return key;
       }
-      //else if (transition != null){
+
+      
+      if (transition == null){
+         transition = new TimeoutTransition((int)secs*1000);
+      }
+
+      String cmd = transition.waitForTransition();
+      
+//      if (!(transition instanceof TimeoutTransition))
+//         focusBelow();
+
+      if (transition instanceof ClickableWindow){
+         // relay the click at the same position
+         //Debug.info("clicking");
          
-         if (transition == null){
-            transition = new TimeoutTransition((int)secs*1000);
-         }
-         
-         String cmd = transition.waitForTransition();
-         focusBelow();
-         
-         if (transition instanceof ClickableWindow){
-            // relay the click at the same position
-            //Debug.info("clicking");
+         ClickableWindow cw = (ClickableWindow) transition;
+         if (!(cw.getLastClickedClickable() instanceof SikuliGuideButton)){
+            
+            focusBelow();            
             robot.mousePress(InputEvent.BUTTON1_MASK);            
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
          }
-         
-         closeNow();
-        
-         return cmd;
-//      }
-//      else if (!_clickTargets.isEmpty()){
-//
-//         for (ClickTarget target : _clickTargets){
-//            target.setVisible(true);
-//         }
-//
-//         synchronized(this){
-//            try {
-//               wait();
-//            } catch (InterruptedException e) {
-//               e.printStackTrace();
-//            }
-//         }
-//
-//         Debug.log("Last clicked:" + _lastClickedTarget.getName());
-//
-//         closeNow();
-//         focusBelow();
-//
-//         robot.mousePress(InputEvent.BUTTON1_MASK);            
-//         robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//
-//         return SikuliGuideDialog.NEXT;
+      }
 
-//      }else {
-//
-//
-//         // if there's no transition element
-//         // just close it after the timeout
-//         closeAfter(secs);
-//
-//         return BaseDialog.NEXT;
-//      } 
+      closeNow();
+
+      return cmd;
+
    }
 
    private void closeNow(){
       clear();
       setVisible(false);
-      
+
       dispose();
-//      if (dialog != null)
-//         dialog.dispose();
-      
+      //      if (dialog != null)
+      //         dialog.dispose();
+
       if (clickableWindow != null){
          clickableWindow.dispose();
       }
@@ -547,24 +487,6 @@ public class SikuliGuide extends TransparentWindow {
       }     
       super.toFront();
    }
-//   public void addImage(Location location, String filename) {
-//      addImage(location,filename,1.0f);
-//   }
-
-
-//   public void addImage(Location location, String filename, float scale) {
-//      BufferedImage bimage = null;
-//      try {
-//         File sourceimage = new File(filename);
-//         bimage = ImageIO.read(sourceimage);
-//         SikuliGuideImage img = new SikuliGuideImage(bimage);
-//         img.setLocation(location);
-//         img.setScale(scale);
-//         content.add(img);
-//      } catch (IOException ioe) {
-//         ioe.printStackTrace();
-//      }
-//   }
 
    public void addMagnifier(Region region) {
       Magnifier mag = new Magnifier(this,region);
@@ -574,12 +496,16 @@ public class SikuliGuide extends TransparentWindow {
    public void setTransition(Transition t) {
       this.transition = t;      
    }
+   
+   public Transition getTransition(){
+      return transition;
+   }
 
    public void removeComponents() {
       content.removeAll();
    }
-   
-   
+
+
    public void startTracking(){
       for (Tracker tracker : trackers){
          tracker.start();
@@ -588,51 +514,72 @@ public class SikuliGuide extends TransparentWindow {
 
    public void addTracker(Pattern pattern, Region r, SikuliGuideComponent c){     
       Tracker tracker = null;
-      
-      // find a tracker already assigned to the filename
+
+      // find a tracker already assigned to this pattern
       for (Tracker t : trackers){
          if (t.isAlreadyTracking(pattern,r)){
             tracker = t;
             break;
          }
       }      
-      
+
       if (tracker == null){
          tracker = new Tracker(this, pattern, r);
          trackers.add(tracker);
       }
-      
-      tracker.addReferencingComponent(c);
-   }
-   
-   public void addTracker(String image_filename, Region r, SikuliGuideComponent c){     
-      Tracker tracker = null;
-      
-      // find a tracker already assigned to the filename
-      for (Tracker t : trackers){
-         if (t.isAlreadyTracking(image_filename,r)){
-            tracker = t;
-            break;
-         }
-      }      
-      
-      if (tracker == null){
-         tracker = new Tracker(this, image_filename, r);
-         trackers.add(tracker);
-      }
-      
+
       tracker.addReferencingComponent(c);
    }
 
-   public void addTracker(String image_filename, Region r, ArrayList<SikuliGuideComponent> components) {
-      Tracker tracker = new Tracker(this, image_filename, r);
+   public void addTracker(Pattern pattern, Region r, ArrayList<SikuliGuideComponent> components) {
+      Tracker tracker = new Tracker(this, pattern, r);
       for (SikuliGuideComponent c : components){
          tracker.addReferencingComponent(c);
       }      
       trackers.add(tracker);   
    }
-   
-   
+
+
+
+   public void play(Step step) throws FindFailed{
+      Screen s = new Screen();
+
+      for (Part part : step.getParts()){
+
+         Pattern pattern = part.getTargetPattern();
+
+         Match m = s.find(pattern);
+
+
+         SikuliGuideAnchor anchor = new SikuliGuideAnchor(m);
+         //anchor.setVisible(false);
+         //Clickable anchor = new Clickable(m);
+         addComponent(anchor);
+
+         addTracker(pattern, m, anchor);
+
+         Point o = part.getTargetOrigin();
+
+         for (SikuliGuideComponent comp : part.getAnnotationComponents()){
+
+            //TODO remove scale
+            Point loc = comp.getLocation();
+            loc.x = (int) ((loc.x - o.x)/EditorWindow.SCALE + m.x);
+            loc.y = (int) ((loc.y - o.y)/EditorWindow.SCALE + m.y);
+            comp.setLocation(loc);
+
+            anchor.addFollower(comp);
+
+            addComponent(comp);
+         }
+
+      }
+
+      setTransition(step.getTransition());
+
+      showNow();
+   }
+
 }
 
 

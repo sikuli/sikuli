@@ -48,8 +48,8 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
    void init(String text){
       this.text = text;
       
-      setForeground(Color.white);
-      setBackground(Color.magenta);
+      setForeground(Color.black);
+      setBackground(Color.green);
 
       textBox = new Rectangle();
       triangle = new Rectangle();
