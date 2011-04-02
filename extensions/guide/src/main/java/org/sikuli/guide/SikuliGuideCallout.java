@@ -116,7 +116,7 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
       triangle = new Triangle();  
       triangle.setForeground(Color.yellow);
-      triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.BOTTOM);
+      triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.BOTTOM);
       add(triangle);
       
       Rectangle bounds = rbox.getBounds();
@@ -127,35 +127,43 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
    int dx=0;
    int dy=0;
+   
+   int currentSide = -1;
    public void setLocationRelativeToRegion(Region region, int side) {
 
-      if (side == TOP){
+      if (side != currentSide){
+         currentSide = side;
 
-         triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.BOTTOM);
 
-      } else if (side == BOTTOM){
+         if (side == TOP){
 
-         dy = TRIANGLE_SIZE;
+            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.BOTTOM);
 
-         triangle.rotate(Math.PI);
-         triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.TOP);
+         } else if (side == BOTTOM){
 
-      } else if (side == LEFT){
+            dy = TRIANGLE_SIZE;
 
-         triangle.rotate(-Math.PI/2);
-         triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.RIGHT);
+            triangle.rotate(Math.PI);
+            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.TOP);
 
-      } else if (side == RIGHT){
+         } else if (side == LEFT){
 
-         dx = TRIANGLE_SIZE;
+            triangle.rotate(-Math.PI/2);
+            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.RIGHT);
 
-         triangle.rotate(Math.PI/2);
-         triangle.setLocationRelativeTo(rbox, SikuliGuideComponent.LEFT);
-      }      
+         } else if (side == RIGHT){
 
-      Rectangle bounds = rbox.getBounds();
-      bounds.add(triangle.getBounds());
-      setBounds(bounds);
+            dx = TRIANGLE_SIZE;
+
+            triangle.rotate(Math.PI/2);
+            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.LEFT);
+         }      
+
+         Rectangle bounds = rbox.getBounds();
+         bounds.add(triangle.getBounds());
+         setBounds(bounds);
+
+      }
 
       super.setLocationRelativeToRegion(region,side);
    }

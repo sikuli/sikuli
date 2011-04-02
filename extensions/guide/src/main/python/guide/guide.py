@@ -20,6 +20,8 @@ from org.sikuli.guide import SikuliGuideButton
 from org.sikuli.guide import SikuliGuideImage
 from org.sikuli.guide import Clickable
 from org.sikuli.guide import Hotspot
+from org.sikuli.guide import SikuliGuideArea
+from org.sikuli.guide import SikuliGuideAnchor
 
 from org.sikuli.guide import TransitionDialog
 
@@ -41,40 +43,79 @@ _g = SikuliGuide(s)
 #================
 
 def circle(target, **kwargs):
-    comp_func = lambda r: SikuliGuideCircle(r)
-    return _addAraeComponentToTarget(comp_func, target, **kwargs)
+    comp = SikuliGuideCircle()
+    return _addComponentHelper(comp, target, side = 'over', **kwargs)
 
 def rectangle(target,**kwargs):
-    comp_func = lambda r: SikuliGuideRectangle(r)
-    return _addAraeComponentToTarget(comp_func, target, **kwargs)    
+    comp = SikuliGuideRectangle(None)
+    return _addComponentHelper(comp, target, side = 'over',  **kwargs)
 
 def spotlight(target, shape = 'circle', **kwargs):
-    def createSpotlight(r):
-        comp = SikuliGuideSpotlight(r)
-        if shape == 'rectangle':
-            comp.setShape(SikuliGuideSpotlight.RECTANGLE)
-        elif shape == 'circle':
-            comp.setShape(SikuliGuideSpotlight.CIRCLE)
-        return comp        
     
-    return _addAraeComponentToTarget(createSpotlight, target, **kwargs)    
+    comp = SikuliGuideSpotlight(None)
+    if shape == 'rectangle':
+        comp.setShape(SikuliGuideSpotlight.RECTANGLE)
+    elif shape == 'circle':
+        comp.setShape(SikuliGuideSpotlight.CIRCLE)
+        
+    return _addComponentHelper(comp, target, side = 'over', **kwargs)
+    
     
 def clickable(target, name = "", **kwargs):
-    comp_func = lambda r: Clickable(r)
-    return _addAraeComponentToTarget(comp_func, target, **kwargs)   
+    comp = Clickable(None)
+    return _addComponentHelper(comp, target, side = 'over', **kwargs)   
 
-def button(target, name, **kwargs):
+def button(target, name, side = 'bottom', **kwargs):
     comp = SikuliGuideButton(name)
-    return _addSideComponentToTarget(comp, target, **kwargs)  
-    
-
+    return _addComponentHelper(comp, target, side = side, **kwargs)   
+  
 
 def arrow(srcTarget, destTarget):
-    r1 = s.getRegionFromTarget(srcTarget)
-    r2 = s.getRegionFromTarget(destTarget)
-    comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
+    def getComponentFromTarget(target):        
+        if isinstance(target, str) or isinstance(target, pattern):
+            return anchor(target)
+        elif isinstance(target, SikuliGuideComponent):
+            return target
+        #elif isinstance(target, region):
+                    
+    comp1 = getComponentFromTarget(srcTarget)
+    comp2 = getComponentFromTarget(destTarget)
+         
+    #r1 = s.getRegionFromTarget(srcTarget)
+    #r2 = s.getRegionFromTarget(destTarget)
+    #comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
+    comp = SikuliGuideArrow(comp1, comp2)
     _g.addComponent(comp)
-    return comp    
+    return comp
+
+
+#=====================
+# Positioning Elements
+#======================
+
+def anchor(target):
+    region = _getRegionFromTarget(target)
+    comp = SikuliGuideAnchor(region)
+    _g.addComponent(comp)
+    
+    if isinstance(target, Pattern):
+        pattern = target
+    elif isinstance(target, str):
+        pattern = Pattern(target)
+    _g.addTracker(pattern, region, comp)
+    
+    return comp
+
+def area(targets):
+    patterns = [Pattern(target) for target in targets] 
+    comp = SikuliGuideArea()
+    for pattern in patterns:
+        region = _getRegionFromTarget(pattern)
+        anchor = SikuliGuideAnchor(region)
+        _g.addTracker(pattern,region,anchor)                 
+        comp.addLandmark(anchor)        
+    _g.addComponent(comp)
+    return comp
 
 #================
 # Text Elements
@@ -82,29 +123,30 @@ def arrow(srcTarget, destTarget):
 
 def bracket(target, side='left', **kwargs):
     comp = SikuliGuideBracket()
-    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
+    return _addComponentHelper(comp, target, side = side, **kwargs)
 
 def flag(target, text='    ', **kwargs):
     comp = SikuliGuideFlag(text)    
-    return _addSideComponentToTarget(comp, target, **kwargs)
+    return _addComponentHelper(comp, target, **kwargs)
+
     
 def text(target, txt, fontsize = 16, side = 'bottom', **kwargs):
     comp = SikuliGuideText(txt)
     comp.setFontSize(fontsize)
-    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
+    return _addComponentHelper(comp, target, side = side , **kwargs)
 
-def callout(target, txt, fontsize = 16, side='right',**kwargs):
+def callout(target, txt, fontsize = 16, side='right', **kwargs):
     comp = SikuliGuideCallout( txt)
     #comp.setFontSize(fontsize)
-    return _addSideComponentToTarget(comp, target, side = side, **kwargs)
+    return _addComponentHelper(comp, target, side = side , **kwargs)
 
 def tooltip(target, txt,**kwargs ):
     return text(target, txt, fontsize = 8,**kwargs)
     
 def image(target, imgurl, **kwargs):    
     comp = SikuliGuideImage(imgurl)
-    return _addSideComponentToTarget(comp, target, **kwargs)
-
+    return _addComponentHelper(comp, target, **kwargs)
+    
 #=====================
 # Interactive Elements
 #=====================    
@@ -165,6 +207,51 @@ def setDefaultTimeout(timeout):
 ####################
 # Helper functions #
 ####################
+
+def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0)):
+            
+    # Margin
+    if margin:        
+        if isinstance(margin, tuple):        
+            (dt,dl,db,dr) = margin
+        else:
+            (dt,dl,db,dr) = (margin,margin,margin,margin)    
+        comp.setMargin(dt,dl,db,dr)
+        
+    # Offset
+    if offset:
+        (x,y) = offset
+        comp.setOffset(x,y)
+        
+        
+    # Side
+    if (side == 'right'):    
+        sideConstant = SikuliGuideComponent.RIGHT
+    elif (side == 'top'):
+        sideConstant = SikuliGuideComponent.TOP
+    elif (side == 'bottom'):
+        sideConstant = SikuliGuideComponent.BOTTOM
+    elif (side == 'left'):
+        sideConstant = SikuliGuideComponent.LEFT
+    elif (side == 'inside'):
+        sideConstant = SikuliGuideComponent.INSIDE
+    elif (side == 'over'):
+        sideConstant = SikuliGuideComponent.OVER
+
+
+    if isinstance(target, Region):        
+        comp.setLocationRelativeToRegion(target, sideConstant)
+    else:
+        if isinstance(target, str) or isinstance(target, Pattern):
+            targetComponent = anchor(target)
+        elif isinstance(target, SikuliGuideComponent):
+            targetComponent = target
+        comp.setLocationRelativeToComponent(targetComponent, sideConstant)
+
+    _g.addComponent(comp)
+    
+    return comp
+    
 
 def _addSideComponentToTarget(comp, target, **kwargs):
     r = _getRegionFromTarget(target)

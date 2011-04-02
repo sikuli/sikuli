@@ -246,7 +246,7 @@ public class SikuliGuide extends TransparentWindow {
       if (comp instanceof Clickable){
 
          // add to the guide window
-         content.add(comp);
+         content.add(comp,0);
 
          // add it to the glasspane window to capture mouse events
          clickableWindow.addClickable((Clickable) comp);
@@ -254,7 +254,7 @@ public class SikuliGuide extends TransparentWindow {
          // add a shadow if it is a button
          if (comp instanceof SikuliGuideButton){
             SikuliGuideComponent s = new SikuliGuideShadow(comp);
-            content.add(s);
+            content.add(s,1);
          }         
 
          
@@ -262,7 +262,7 @@ public class SikuliGuide extends TransparentWindow {
          return;
       }
       
-      content.add(comp);
+      content.add(comp,0);
       if (comp instanceof SikuliGuideSpotlight){
          // if there's any spotlight added, darken the background
          setDarken(true);
@@ -278,7 +278,7 @@ public class SikuliGuide extends TransparentWindow {
             comp instanceof SikuliGuideButton ||
             comp instanceof SikuliGuideBracket) {
          SikuliGuideComponent s = new SikuliGuideShadow(comp);
-         content.add(s);
+         content.add(s,1);
       }
    }
 

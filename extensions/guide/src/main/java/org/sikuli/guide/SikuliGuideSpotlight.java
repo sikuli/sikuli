@@ -27,7 +27,12 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
    public SikuliGuideSpotlight(Region region){         
       super();
       this.region = region;
-      setBounds(region.getRect());
+      
+      if (region != null)
+         setBounds(region.getRect());
+      
+      
+      
       setShape(RECTANGLE);
    }
 

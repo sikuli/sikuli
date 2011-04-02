@@ -17,8 +17,10 @@ public class SikuliGuideRectangle extends SikuliGuideComponent{
    Region region;
    public SikuliGuideRectangle(Region region){         
       super();
-      this.region = region;
-      setBounds(region.getRect());
+      if (region != null){
+         this.region = region;
+         setBounds(region.getRect());
+      }
       setForeground(Color.red);
    }
 

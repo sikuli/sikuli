@@ -21,8 +21,10 @@ public class Clickable extends SikuliGuideComponent {
       Region region;
       public Clickable(Region region){
          this.region = region;
-         this.setBounds(region.getRect());
-         this.setLocation(region.x,region.y);
+         if (region != null){
+            this.setBounds(region.getRect());
+            this.setLocation(region.x,region.y);
+         }
       }
 
       public void setName(String name){ 

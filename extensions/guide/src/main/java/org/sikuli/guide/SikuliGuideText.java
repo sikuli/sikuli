@@ -83,7 +83,7 @@ public class SikuliGuideText extends SikuliGuideComponent {
       if (editable){
                   
          TextPropertyEditor ed = new TextPropertyEditor(this);
-         ed.setLocationRelativeTo(this, SikuliGuideComponent.TOP);
+         ed.setLocationRelativeToComponent(this, SikuliGuideComponent.TOP);
          this.getParent().add(ed);
          ed.requestFocus();
          

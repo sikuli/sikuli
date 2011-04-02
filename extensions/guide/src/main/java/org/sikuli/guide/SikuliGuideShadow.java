@@ -24,34 +24,39 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
    public SikuliGuideShadow(SikuliGuideComponent source_) {
       super();
       this.source = source_;
-      
-      
+
+
       setBoundsRelativeToComponent(source);
-      
-      source.addFollower(this);
-      
-      source.addComponentListener(new ComponentListener(){
+      setLocationRelativeToComponent(source,-shadowSize+2,-shadowSize+2);
 
-         @Override
-         public void componentHidden(ComponentEvent e) {
-         }
-
-         @Override
-         public void componentMoved(ComponentEvent e) {
-         }
-
-         @Override
-         public void componentResized(ComponentEvent e) {
-            setBoundsRelativeToComponent(source);
-         }
-
-         @Override
-         public void componentShown(ComponentEvent e) {
-         }
-         
-      });
+      //      source.addComponentListener(new ComponentListener(){
+      //
+      //         @Override
+      //         public void componentHidden(ComponentEvent e) {
+      //         }
+      //
+      //         @Override
+      //         public void componentMoved(ComponentEvent e) {
+      //         }
+      //
+      //         @Override
+      //         public void componentResized(ComponentEvent e) {
+      //            setBoundsRelativeToComponent(source);
+      //         }
+      //
+      //         @Override
+      //         public void componentShown(ComponentEvent e) {
+      //         }
+      //         
+      //      });
    }
-   
+
+   @Override
+   public void setLocationRelativeToComponent(JComponent comp, int offsetx, int offsety) {
+      setBoundsRelativeToComponent(comp);
+      super.setLocationRelativeToComponent(comp, offsetx, offsety);       
+   }
+
    void setBoundsRelativeToComponent(JComponent comp){
       if (source instanceof SikuliGuideCircle ||
             source instanceof SikuliGuideArrow ||
@@ -62,19 +67,16 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
             source instanceof SikuliGuideText){
          shadowSize = 10;
       }
-      
+
       Rectangle r = source.getBounds();
       r.grow(shadowSize,shadowSize);
 
-      // offset shadow      
-      r.x += shadowSize/4;
-      r.y += shadowSize/4;
-      
-      setBounds(r);
-      
-      createShadowImage();
+      if (!r.getSize().equals(getSize())){
+         setSize(r.getSize());      
+         createShadowImage();
+      }
    }
-   
+
    float shadowOpacity = 0.8f;
    Color shadowColor = Color.black;
    BufferedImage createShadowMask(BufferedImage image){ 
@@ -89,38 +91,36 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
       g2d.dispose(); 
       return mask; 
    } 
-   
+
    ConvolveOp getBlurOp(int size) {
       float[] data = new float[size * size];
       float value = 1 / (float) (size * size);
       for (int i = 0; i < data.length; i++) {
-          data[i] = value;
+         data[i] = value;
       }
       return new ConvolveOp(new Kernel(size, size, data));
-  }
-   
+   }
+
    BufferedImage shadowImage = null;
    BufferedImage createShadowImage(){      
-      if (shadow == null){
-         
-         BufferedImage image = new BufferedImage(getWidth() + shadowSize * 2,
-               getHeight() + shadowSize * 2, BufferedImage.TYPE_INT_ARGB);
-         Graphics2D g2 = image.createGraphics();
-         g2.translate(shadowSize,shadowSize);
-         source.paint(g2);
-         
-         shadowImage = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_ARGB);
-         getBlurOp(shadowSize).filter(createShadowMask(image), shadowImage);
-         
-      }
+
+      BufferedImage image = new BufferedImage(getWidth() + shadowSize * 2,
+            getHeight() + shadowSize * 2, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g2 = image.createGraphics();
+      g2.translate(shadowSize,shadowSize);
+      source.paint(g2);
+
+      shadowImage = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_ARGB);
+      getBlurOp(shadowSize).filter(createShadowMask(image), shadowImage);
+
       return shadowImage;
    }
-   
+
    public void paintComponent(Graphics g){
       super.paintComponent(g);
 
       Graphics2D g2d = (Graphics2D)g;
-      
+
       g2d.drawImage(shadowImage, 0, 0, null, null);      
    }
 }

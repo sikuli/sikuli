@@ -11,9 +11,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.lang.reflect.Array;
 
-public class SikuliGuideArrow extends SikuliGuideComponent{
+public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentListener{
 
    public static final int STRAIGHT = 0;
    public static final int ELBOW_X = 1;
@@ -23,6 +25,9 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
    private Point source;
    private Point destination;
    
+   
+   SikuliGuideComponent from;
+   SikuliGuideComponent to;
    
    public void setStyle(int style){
       this.style = style;
@@ -37,6 +42,20 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
 		setStyle(STRAIGHT);
 		updateBounds();
 	}
+	
+	  public SikuliGuideArrow(SikuliGuideComponent from, SikuliGuideComponent to){
+	      super();
+	      this.from = from;
+	      this.to = to;
+	      	      
+	      setForeground(Color.red);  
+	      setStyle(STRAIGHT);
+	      updateBounds();
+	      
+	      
+	      from.addComponentListener(this);
+	      to.addComponentListener(this);
+	   }
 	
 	
 
@@ -142,11 +161,36 @@ public class SikuliGuideArrow extends SikuliGuideComponent{
    }
 
    protected void updateBounds() {
+      
+      source = from.getLocation();
+      destination = to.getLocation();      
+      
       Rectangle r = new Rectangle(getSource());
       r.add(getDestination());
+      
       r.grow(10,10);    
       setBounds(r);
    }
 
+   @Override
+   public void componentHidden(ComponentEvent arg0) {
+      setVisible(from.isVisible() || to.isVisible());
+   }
+
+   @Override
+   public void componentMoved(ComponentEvent arg0) {
+      updateBounds();
+      // update more efficiently
+      //getParent().getParent().repaint();
+   }
+
+   @Override
+   public void componentResized(ComponentEvent arg0) {
+   }
+
+   @Override
+   public void componentShown(ComponentEvent arg0) {
+      setVisible(from.isVisible() || to.isVisible());
+   }
 
 }
