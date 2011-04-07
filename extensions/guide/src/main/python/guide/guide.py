@@ -125,9 +125,9 @@ def bracket(target, side='left', **kwargs):
     comp = SikuliGuideBracket()
     return _addComponentHelper(comp, target, side = side, **kwargs)
 
-def flag(target, text='    ', **kwargs):
+def flag(target, text='    ', side = 'left', **kwargs):
     comp = SikuliGuideFlag(text)    
-    return _addComponentHelper(comp, target, **kwargs)
+    return _addComponentHelper(comp, target, side = side, **kwargs)
 
     
 def text(target, txt, fontsize = 16, side = 'bottom', **kwargs):
@@ -161,7 +161,7 @@ def hotspot(target, message, side = 'right'):
     _setLocationRelativeToRegion(txtcomp,r1,side)
 
     comp = Hotspot(r, txtcomp, _g)
-    _g.addClickable(comp)
+    _g.addComponent(comp)
     return comp    
     
 #=====================

@@ -6,10 +6,12 @@ package org.sikuli.guide;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
 public class Clickable extends SikuliGuideComponent {
@@ -56,6 +58,9 @@ public class Clickable extends SikuliGuideComponent {
          return mouseOver;
       }
       
+      public void globalMouseMoved(Point p){         
+      }
+      
       public void globalMouseEntered(){  
          //mouseOver = true;
       }
@@ -64,12 +69,16 @@ public class Clickable extends SikuliGuideComponent {
          //mouseOver = false;         
       }
       
+      public void globalMouseClicked(Point p){
+         Debug.info("Clickable is clicked at: " + p);
+      }
+      
       public void paintComponent(Graphics g){
          super.paintComponent(g);
          
          Graphics2D g2d = (Graphics2D) g;
          
-         g2d.setColor(new Color(1,1,1,0.1f));         
+         g2d.setColor(new Color(1,1,1,0.05f));         
          g2d.fillRect(0,0,getWidth()-1,getHeight()-1);
          
 //         if (mouseOver){

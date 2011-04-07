@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
@@ -227,10 +228,10 @@ public class SikuliGuide extends TransparentWindow {
    //      addAnnotation(new AnnotationRectangle(rect));
    //   }
 
-   private void addClickable(Clickable c){
-      clickableWindow.addClickable(c);
-      setTransition(clickableWindow);      
-   }
+//   private void addClickable(Clickable c){
+//      clickableWindow.addClickable(c);
+//      setTransition(clickableWindow);      
+//   }
    
    public void setDarken(boolean darken){
       if (darken){
@@ -416,10 +417,10 @@ public class SikuliGuide extends TransparentWindow {
          
          ClickableWindow cw = (ClickableWindow) transition;
          if (!(cw.getLastClickedClickable() instanceof SikuliGuideButton)){
-            
-            focusBelow();            
+            Debug.info("Focusing below");
+            focusBelow();
             robot.mousePress(InputEvent.BUTTON1_MASK);            
-            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+            robot.mouseRelease(InputEvent.BUTTON1_MASK);                       
          }
       }
 
@@ -540,35 +541,58 @@ public class SikuliGuide extends TransparentWindow {
    }
 
 
+   public void playSteps(ArrayList<Step> steps) throws FindFailed{
 
-   public void play(Step step) throws FindFailed{
+      Screen s = new Screen();
+      
+      for (Step step : steps){
+         SikuliGuideButton btn = new SikuliGuideButton("Next");
+         btn.setLocation(s.getTopRight().left(200).below(50));
+
+
+         addComponent(btn);
+
+
+         
+         step.setTransition(getTransition());
+
+         playStep(step);
+      }
+      
+   }
+
+   public void playStep(Step step) throws FindFailed{
       Screen s = new Screen();
 
       for (Part part : step.getParts()){
 
          Pattern pattern = part.getTargetPattern();
 
-         Match m = s.find(pattern);
+         Match m = s.wait(pattern,30);
+         
 
 
          SikuliGuideAnchor anchor = new SikuliGuideAnchor(m);
-         //anchor.setVisible(false);
+         anchor.setEditable(true);
          //Clickable anchor = new Clickable(m);
          addComponent(anchor);
-
+         
+         Clickable clickable = new Clickable(m);
+         addComponent(clickable);
+         
          addTracker(pattern, m, anchor);
 
          Point o = part.getTargetOrigin();
 
          for (SikuliGuideComponent comp : part.getAnnotationComponents()){
 
-            //TODO remove scale
             Point loc = comp.getLocation();
-            loc.x = (int) ((loc.x - o.x)/EditorWindow.SCALE + m.x);
-            loc.y = (int) ((loc.y - o.y)/EditorWindow.SCALE + m.y);
+            loc.x = (int) ((loc.x - o.x) + m.x);
+            loc.y = (int) ((loc.y - o.y) + m.y);
             comp.setLocation(loc);
 
-            anchor.addFollower(comp);
+            
+            comp.followComponent(anchor);
 
             addComponent(comp);
          }

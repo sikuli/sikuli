@@ -6,6 +6,7 @@ package org.sikuli.guide;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -23,51 +24,45 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
    float scale;
    int w,h;
    
-   SikuliGuideComponent targetComponent;
+   private SikuliGuideComponent targetComponent;
    JTextField textField;
    
-   public TextPropertyEditor(SikuliGuideComponent comp)  {
+   
+   
+   public TextPropertyEditor()  {
        super();
-       this.targetComponent = comp;
-       
        
        textField = new JTextField(20);
-       
-       if (comp instanceof SikuliGuideText){          
-          String text = ((SikuliGuideText) targetComponent).getText();
-          textField.setText(text);
-       }
        
        textField.setSize(textField.getPreferredSize());
        setSize(textField.getPreferredSize());       
        add(textField);
        
        // allow the text editor to move as the user moves the edited target
-       targetComponent.addFollower(this);
+       //getTargetComponent().addFollower(this);
        
        textField.addKeyListener(this);
        setFocusable(true);
        setOpaque(true);
+    //   setBounds(new Rectangle(0,0,100,100));
    }
 
    @Override
    public void keyPressed(KeyEvent k) {
-      Debug.info("Entered");
+      
       if (k.getKeyCode() == KeyEvent.VK_ENTER){ 
-         Debug.info("Entered");
-         ((SikuliGuideText) targetComponent).setText(textField.getText());
+         
+         Debug.info("[TextPropertyEditor] User pressed ENTER");
+         
+         ((SikuliGuideText) getTargetComponent()).setText(textField.getText());
          setVisible(false);     
-         
-         // make this editor no longer following the edited target
-         targetComponent.removeFollower(this);
-         
+                  
       }else if (k.getKeyCode() == KeyEvent.VK_ESCAPE){
          
-         //((SikuliGuideText) targetComponent).setText(textField.getText());
-         setVisible(false);     
+         Debug.info("[TextPropertyEditor] User pressed ESCAPE");
          
-         // make this editor no longer following the edited target
-         targetComponent.removeFollower(this);
+         setVisible(false);
+         
       }
    }
    
@@ -84,6 +79,24 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
 
    @Override
    public void keyTyped(KeyEvent arg0) {
+   }
+
+   public void setTargetComponent(SikuliGuideComponent targetComponent) {
+      this.targetComponent = targetComponent;
+      
+      Debug.info("" +this);
+      if (targetComponent instanceof SikuliGuideText){
+         setLocationRelativeToComponent(targetComponent, 
+               SikuliGuideComponent.TOP);
+         
+         String text = ((SikuliGuideText) targetComponent).getText();
+         textField.setText(text);
+      }
+
+   }
+
+   public SikuliGuideComponent getTargetComponent() {
+      return targetComponent;
    }
       
    

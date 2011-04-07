@@ -16,7 +16,7 @@ import org.sikuli.script.ImageLocator;
 
 public class SikuliGuideImage extends SikuliGuideComponent {
    
-   BufferedImage image;
+   private BufferedImage image;
    float scale;
    int w,h;
    
@@ -39,6 +39,8 @@ public class SikuliGuideImage extends SikuliGuideComponent {
       setScale(1.0f);      
    }
    
+   
+   
    public void setScale(float scale){
       this.scale = scale;
       w = (int) (scale*image.getWidth());
@@ -46,11 +48,19 @@ public class SikuliGuideImage extends SikuliGuideComponent {
       setSize(new Dimension(w,h));
    }
       
-   public void paint(Graphics g){
+   public void paintComponent(Graphics g){
       Graphics2D g2d = (Graphics2D) g;
       
       g2d.drawImage(image, 0, 0, w, h, null); 
       g2d.drawRect(0,0,w-1,h-1);
+   }
+
+   public void setImage(BufferedImage image) {
+      this.image = image;
+   }
+
+   public BufferedImage getImage() {
+      return image;
    }
    
 }

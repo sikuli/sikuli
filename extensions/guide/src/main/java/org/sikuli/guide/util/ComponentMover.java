@@ -1,5 +1,6 @@
 package org.sikuli.guide.util;
 
+
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -498,7 +499,7 @@ public class ComponentMover extends MouseAdapter{
          ((JComponent)destination).setAutoscrolls( autoscrolls );
 
       }
-
+      
    }
 
 }

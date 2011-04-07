@@ -162,8 +162,12 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
    protected void updateBounds() {
       
-      source = from.getLocation();
-      destination = to.getLocation();      
+//      source = from.getLocation();
+//      destination = to.getLocation();      
+
+       source = from.getCenter();
+       destination = to.getCenter();      
+
       
       Rectangle r = new Rectangle(getSource());
       r.add(getDestination());

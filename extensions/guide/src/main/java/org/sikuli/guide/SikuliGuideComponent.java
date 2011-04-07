@@ -3,6 +3,7 @@
  */
 package org.sikuli.guide;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -27,7 +28,9 @@ implements Cloneable{
          // do not clone references to other components
          clone.followers = new ArrayList<SikuliGuideComponent>();
          clone.leader = null;
-         clone.connectors = new ArrayList<Connector>();
+         clone.autolayout = null;
+         clone.actualBounds = new Rectangle();
+         //clone.connectors = new ArrayList<Connector>();
          return clone;
       }
       catch (CloneNotSupportedException e) {
@@ -35,8 +38,8 @@ implements Cloneable{
       }
    }
 
-   Region reference_region = null;
-   int reference_side = -1;
+   //Region reference_region = null;
+   //int reference_side = -1;
 
    //   ArrayList<SikuliGuideAnimator> anims = new ArrayList<SikuliGuideAnimator>();
 
@@ -121,9 +124,14 @@ implements Cloneable{
    public final static int OVER = 6;
    public final static int ORIGIN = 7;
 
+   private boolean autoLayoutEnabled = false;
+   private boolean autoResizeEnabled = false;
+   private boolean autoMoveEnabled = false;
+   private boolean autoVisibilityEnabled = false;
+   
    public SikuliGuideComponent(){    
       super();
-      setMovable(false);
+      setMovable(false);      
    }
 
    // this allows the component to be dragged to another location on the screen
@@ -137,29 +145,32 @@ implements Cloneable{
    }
 
    class AutoLayout implements ComponentListener {
-      private JComponent targetComponent;
-      AutoLayout(JComponent targetComponent){
+      private SikuliGuideComponent targetComponent;
+      AutoLayout(SikuliGuideComponent targetComponent){
          this.setTargetComponent(targetComponent);
          targetComponent.addComponentListener(this);
       }
-      public void setTargetComponent(JComponent targetComponent) {
+      public void setTargetComponent(SikuliGuideComponent targetComponent) {
          this.targetComponent = targetComponent;
       }
-      public JComponent getTargetComponent() {
+      public SikuliGuideComponent getTargetComponent() {
          return targetComponent;
       }
             
       void update() {
          
+         //Debug.info("Update caused by leader:" + this);
+         
          // TODO calculate necesary region to udpate
-         if (getParent()!=null){
-            
-            if (getParent().getParent()!=null){
-               getParent().getParent().repaint();
-            }else{
-               getParent().repaint();
-            }
-         }
+//         if (getParent()!=null){
+//            
+//            if (getParent().getParent()!=null){
+//               getParent().getParent().repaint();
+//            }else{
+//               getParent().repaint();
+//            }
+//         }
+         
       }
       
       void stop(){
@@ -168,22 +179,31 @@ implements Cloneable{
       
       @Override
       public void componentHidden(ComponentEvent e) {
-         setVisible(false);
+         
+//         if (isAutoVisibilityEnabled()){
+//            setVisible(false);
+//            update();
+//         }
       }
 
       @Override
       public void componentMoved(ComponentEvent e) {
-         update();         
+//         if (isAutoMoveEnabled())
+//            update();         
       }
 
       @Override
       public void componentResized(ComponentEvent e) {
-         update();
+//         if (isAutoResizeEnabled())
+//            update();
       }
 
       @Override
       public void componentShown(ComponentEvent e) {
-         setVisible(true);
+//         if (isAutoVisibilityEnabled()){
+//            setVisible(true);
+//            update();
+//         }
       }
       
    }
@@ -191,30 +211,97 @@ implements Cloneable{
    class AutoLayoutBySide extends AutoLayout{
       int side;
       
-      AutoLayoutBySide(JComponent targetComponent, int side){
+      AutoLayoutBySide(SikuliGuideComponent targetComponent, int side){
          super(targetComponent);
          this.side = side;
       }
       
+      @Override
       void update(){
          Region region = new Region(getTargetComponent().getBounds());
          setLocationRelativeToRegion(region, side);     
          super.update();
       }
    }
+
+   class AutoLayoutByMovement extends AutoLayout {      
+      // previous known location of the target this component follows
+      int x;
+      int y;
+      
+      AutoLayoutByMovement(SikuliGuideComponent targetComponent){
+         super(targetComponent);
+         this.x = targetComponent.getX();
+         this.y = targetComponent.getY();
+      }
+      
+      
+      @Override
+      public void update() {
+         
+         Debug.info("auto moved by leader");
+         
+         int newx = getTargetComponent().getX();
+         int newy = getTargetComponent().getY();
+         
+         int dx = newx - x;
+         int dy = newy - y;
+         
+//         float targetZoomLevel = getTargetComponent().zoomLevel;
+        // if (zoomLevel != targetZoomLevel){
+//            dx = (int) (dx * targetZoomLevel / zoomLevel);
+//            dy = (int) (dy * targetZoomLevel / zoomLevel);
+//             dx = (int) (dx / (targetZoomLevel / zoomLevel));
+//             dy = (int) (dy / (targetZoomLevel / zoomLevel));
+//            dx = 0;
+//            dy = 0;
+         //}
+         
+         x = newx;
+         y = newy;
+         
+         setLocation(getX()+dx, getY()+dy);
+      }
+      
+//      @Override
+//      public void componentMoved(ComponentEvent e) {
+//         int newx = e.getComponent().getX();
+//         int newy = e.getComponent().getY();
+//         
+//         int dx = newx - x;
+//         int dy = newy - y;
+//         
+//         float targetZoomLevel = getTargetComponent().zoomLevel;
+//        // if (zoomLevel != targetZoomLevel){
+////            dx = (int) (dx * targetZoomLevel / zoomLevel);
+////            dy = (int) (dy * targetZoomLevel / zoomLevel);
+////             dx = (int) (dx / (targetZoomLevel / zoomLevel));
+////             dy = (int) (dy / (targetZoomLevel / zoomLevel));
+////            dx = 0;
+////            dy = 0;
+//         //}
+//         
+//         x = newx;
+//         y = newy;
+//         
+//         setLocation(getX()+dx, getY()+dy);
+//      }
+
+   }
    
    class AutoLayoutByOffset extends AutoLayout {
       int offsetx;
       int offsety;
       
-      AutoLayoutByOffset(JComponent targetComponent, int offsetx, int offsety){
+      AutoLayoutByOffset(SikuliGuideComponent targetComponent, int offsetx, int offsety){
          super(targetComponent);
          this.offsetx = offsetx;
          this.offsety = offsety;
       }
 
+      @Override
       void update(){
-         setOffset(offsetx, offsety);         
+         setOffset((int)(offsetx*zoomLevel), (int) (offsety*zoomLevel));         
          Region region = new Region(getTargetComponent().getBounds());
          setLocationRelativeToRegion(region, SikuliGuideComponent.ORIGIN);
          super.update();
@@ -224,12 +311,13 @@ implements Cloneable{
    class AutoLayoutByRatio extends AutoLayout{
       float x, y;
       
-      AutoLayoutByRatio(JComponent targetComponent, float x, float y){
+      AutoLayoutByRatio(SikuliGuideComponent targetComponent, float x, float y){
          super(targetComponent);
          this.x = x;
          this.y = y;
       }
       
+      @Override
       void update(){
          Region region = new Region(getTargetComponent().getBounds());
          setHorizontalAlignmentWithRegion(region, x);
@@ -240,31 +328,46 @@ implements Cloneable{
    
    AutoLayout autolayout = null;   
    
-   public void setLocationRelativeToComponent(JComponent comp, int side) {
+   public void setLocationRelativeToComponent(SikuliGuideComponent comp, int side) {
       if (autolayout != null){
          autolayout.stop();
       } 
+      
+      comp.addFollower(this);
       
       autolayout = new AutoLayoutBySide(comp, side);      
       autolayout.update();           
    }
    
-   public void setLocationRelativeToComponent(JComponent comp, int offsetx, int offsety) {
+   public void setLocationRelativeToComponent(SikuliGuideComponent comp, int offsetx, int offsety) {
       if (autolayout != null){
          autolayout.stop();
       } 
+      
+      comp.addFollower(this);
       
       autolayout = new AutoLayoutByOffset(comp, offsetx, offsety);     
       autolayout.update();      
    }
 
-   public void setLocationRelativeToComponent(JComponent comp, float relativeX, float relativeY) {
+   public void setLocationRelativeToComponent(SikuliGuideComponent comp, float relativeX, float relativeY) {
       if (autolayout != null){
          autolayout.stop();
       } 
       
       autolayout = new AutoLayoutByRatio(comp, relativeX, relativeY);      
       autolayout.update();        
+   }
+   
+   public void followComponent(SikuliGuideComponent leader){      
+      if (autolayout != null){
+         autolayout.stop();
+      } 
+      
+      leader.addFollower(this);
+      
+      autolayout = new AutoLayoutByMovement(leader);      
+      autolayout.update(); 
    }
 
 
@@ -274,8 +377,102 @@ implements Cloneable{
       if (side == CENTER){
          setLocation(point.x - bounds.width/2, point.y - bounds.height/2);
       }
-   }
+   }  
 
+   Rectangle actualBounds = new Rectangle();
+   
+   float zoomLevel = 1.0f;
+   public void setZoomLevel(float zoomLevel){
+      
+      this.zoomLevel = zoomLevel; 
+
+      for (SikuliGuideComponent sklComp : getFollowers()){         
+         if (sklComp.autolayout != null){
+            sklComp.setZoomLevel(zoomLevel);
+         }
+      }
+
+      Debug.info("Component:" + this);
+      Debug.info("Actual bounds:" + actualBounds);
+      Rectangle bounds = new Rectangle(actualBounds);
+
+      bounds.x *= zoomLevel;
+      bounds.y *= zoomLevel;
+      bounds.width *= zoomLevel;
+      bounds.height *= zoomLevel;      
+
+      //super.setBounds(bounds);
+      super.setBounds(bounds);
+      
+      for (SikuliGuideComponent sklComp : getFollowers()){         
+         if (sklComp.autolayout != null){
+            
+            if (sklComp.autolayout instanceof AutoLayoutByMovement){               
+               ((AutoLayoutByMovement) sklComp.autolayout).x = bounds.x;
+               ((AutoLayoutByMovement) sklComp.autolayout).y = bounds.y;               
+            } else if (sklComp.autolayout instanceof AutoLayoutByOffset){
+               sklComp.autolayout.update();
+            } else{
+               sklComp.autolayout.update();
+            }
+         }
+      }
+      
+      
+      if (autolayout instanceof AutoLayoutByOffset){
+         //((AutoLayoutByOffset autolayout)).offsetx *= zoomLevel;
+         //((AutoLayoutByOffset autolayout)).offsety *= zoomLevel;         
+      }
+      
+   }
+   
+//   public void zoomIn(){
+//      
+//      float zoomStep = 1.1f;
+//      Rectangle bounds = getBounds();
+//      bounds.x *= zoomStep;
+//      bounds.y *= zoomStep;
+//      bounds.width *= zoomStep;
+//      bounds.height *= zoomStep;      
+//
+//      setBounds(bounds);
+//
+//      if (autolayout instanceof AutoLayoutByOffset){
+//         // no need to do anything
+//      } else if (autolayout instanceof AutoLayoutByMovement){
+//         ((AutoLayoutByMovement) autolayout).x *= zoomStep;
+//         ((AutoLayoutByMovement) autolayout).y *= zoomStep;
+//         autolayout.update();
+//      }
+//   }
+//   
+//   public void zoomOut(){
+//      float zoomStep = 0.9f;
+//      Rectangle bounds = getBounds();
+//      bounds.x *= zoomStep;
+//      bounds.y *= zoomStep;
+//      bounds.width *= zoomStep;
+//      bounds.height *= zoomStep;      
+//
+//      setBounds(bounds);
+//
+//      if (autolayout instanceof AutoLayoutByOffset){
+//         // no need to do anything
+//      } else if (autolayout instanceof AutoLayoutByMovement){
+//         ((AutoLayoutByMovement) autolayout).x *= zoomStep;
+//         ((AutoLayoutByMovement) autolayout).y *= zoomStep;
+//         autolayout.update();
+//      }
+//   }
+//   
+//   private float zoomLevel = 1.0f;
+//   public void setZoomLevel(float zoomLevel) {
+//      this.zoomLevel = zoomLevel;
+//   }
+//
+//   public float getZoomLevel() {
+//      return zoomLevel;
+//   }
 
    class Margin{
       int top;
@@ -301,8 +498,8 @@ implements Cloneable{
 
    public void setLocationRelativeToRegion(Region region, int side) {
 
-      reference_region = region;
-      reference_side = side;
+    //  reference_region = region;
+     // reference_side = side;
 
       if (margin != null){
          Region rectWithSpacing = new Region(region);
@@ -339,7 +536,7 @@ implements Cloneable{
 
 
    public void setHorizontalAlignmentWithRegion(Region region, float f){
-      reference_region = region;
+      //reference_region = region;
 
       int x0 = region.x;
       int x1 = region.x + region.w - getWidth();
@@ -350,7 +547,7 @@ implements Cloneable{
    }
 
    public void setVerticalAlignmentWithRegion(Region region, float f){
-      reference_region = region;
+      //reference_region = region;
 
       int y0 = region.y;
       int y1 = region.y + region.h - getHeight();
@@ -364,41 +561,131 @@ implements Cloneable{
    private ArrayList<SikuliGuideComponent> followers = new ArrayList<SikuliGuideComponent>();
    SikuliGuideComponent leader;
 
-   SikuliGuideComponent followerAsDestination;
-   private ArrayList<Connector> connectors = new ArrayList<Connector>();  
+   //SikuliGuideComponent followerAsDestination;
 
-   public void addFollower(SikuliGuideComponent follower){
-      getFollowers().add(follower);
-      follower.setLeader(this);
+//   public void removeFollower(SikuliGuideComponent follower){
+//      followers.remove(followers);
+//   }
+   
+   public void removeLeader(){
+      if (leader != null)
+         leader.removeFollower(this);
+      leader = null;
    }
+   
+   public void addFollower(SikuliGuideComponent sklComp){
+      if (followers.indexOf(sklComp)<0){
+         // if this component is not already a follower
 
-   public void setLeader(SikuliGuideComponent followee){
-      this.leader = followee;
-   }
-
-   @Override
-   public void setLocation(int x, int y){
-      
-      
-//      for (Connector connector : connectors){
-//         connector.update(this);
-//      }
-     
-      super.setLocation(x,y);
-      
-      // notify dependents immediately so they can get repainted together
-      for (ComponentListener listener : getComponentListeners()){         
-         listener.componentMoved(null);
+         // add it to the list of follower
+         followers.add(sklComp);
+         
+         // remove its previous leader
+         sklComp.removeLeader();
+         
+         // set its new leader to self
+         sklComp.setLeader(this);
       }
    }
 
-   public void addConnector(Connector connector) {
-      this.connectors.add(connector);
+   public void setLeader(SikuliGuideComponent leader){
+      this.leader = leader;
    }
 
-   public ArrayList<Connector> getConnectors() {
-      return connectors;
+   @Override
+   public void setVisible(boolean visible){
+      for (SikuliGuideComponent follower : getFollowers()){
+         follower.setVisible(visible);
+      }
+      super.setVisible(visible);
    }
+   
+   @Override
+   public void setLocation(Point location){
+      setLocation(location.x, location.y);
+   }   
+   
+   @Override
+   public void setLocation(int x, int y){
+      
+      actualBounds.x = (int) (x/zoomLevel);
+      actualBounds.y = (int) (y/zoomLevel);
+
+      super.setLocation(x,y);
+      
+      for (SikuliGuideComponent sklComp : getFollowers()){
+         Debug.info("update followers");
+         if (sklComp.autolayout != null){
+            sklComp.autolayout.update();
+         }
+         
+      }
+
+   }
+   
+//   @Override
+//   public void setBounds(int x, int y, int w, int h){
+//      
+//      Rectangle bounds = new Rectangle(x,y,w,h);
+//      
+//      actualBounds = new Rectangle(bounds);
+//      actualBounds.x /= zoomLevel;
+//      actualBounds.y /= zoomLevel;
+//      actualBounds.width /= zoomLevel;
+//      actualBounds.height /= zoomLevel;      
+//      
+//      for (SikuliGuideComponent sklComp : getFollowers()){         
+//         if (sklComp.autolayout != null){
+//            sklComp.autolayout.update();
+//         }
+//      }
+//      super.setBounds(x,y,w,h);
+//   }
+
+   @Override
+   public void setBounds(Rectangle bounds){
+      
+      actualBounds = new Rectangle(bounds);
+      actualBounds.x /= zoomLevel;
+      actualBounds.y /= zoomLevel;
+      actualBounds.width /= zoomLevel;
+      actualBounds.height /= zoomLevel;      
+      
+      for (SikuliGuideComponent sklComp : getFollowers()){         
+         if (sklComp.autolayout != null){
+            sklComp.autolayout.update();
+         }
+      }
+      super.setBounds(bounds);
+   }
+   
+   @Override
+   public void setSize(int width, int height){
+      actualBounds.width = (int) (width/zoomLevel);
+      actualBounds.height = (int) (height/zoomLevel);
+      
+      for (SikuliGuideComponent sklComp : getFollowers()){         
+         if (sklComp.autolayout != null){
+            sklComp.autolayout.update();
+         }         
+      }     
+      super.setSize(width, height); 
+   }
+   
+   @Override
+   public void setSize(Dimension size){
+      actualBounds.width = (int) (size.width/zoomLevel);
+      actualBounds.height = (int) (size.height/zoomLevel);
+      
+      for (SikuliGuideComponent sklComp : getFollowers()){         
+         if (sklComp.autolayout != null){
+            sklComp.autolayout.update();
+         }         
+      }     
+      super.setSize(size);
+
+   }
+
 
    public Point getCenter(){
       Point loc = new Point(getLocation());
@@ -419,5 +706,45 @@ implements Cloneable{
    public void removeFollower(SikuliGuideComponent comp) {
       followers.remove(comp);
    }
+
+   public void setAutoLayoutEnabled(boolean autoLayoutEnabled) {
+      this.autoLayoutEnabled = autoLayoutEnabled;
+   }
+
+   public boolean isAutoLayoutEnabled() {
+      return autoLayoutEnabled;
+   }
+
+   public void setAutoResizeEnabled(boolean autoResizeEnabled) {
+      this.autoResizeEnabled = autoResizeEnabled;
+   }
+
+   public boolean isAutoResizeEnabled() {
+      return autoResizeEnabled;
+   }
+
+   public void setAutoMoveEnabled(boolean autoMoveEnabled) {
+      this.autoMoveEnabled = autoMoveEnabled;
+   }
+
+   public boolean isAutoMoveEnabled() {
+      return autoMoveEnabled;
+   }
+
+   public void removeFrom(Container container) {
+      for (SikuliGuideComponent follower : getFollowers()){
+         follower.removeFrom(container);
+      }
+      container.remove(this);
+   }
+
+   public void setAutoVisibilityEnabled(boolean autoVisibilityEnabled) {
+      this.autoVisibilityEnabled = autoVisibilityEnabled;
+   }
+
+   public boolean isAutoVisibilityEnabled() {
+      return autoVisibilityEnabled;
+   }
+
 
 }

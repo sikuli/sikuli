@@ -115,7 +115,7 @@ public class Tracker extends Thread{
             if (m == null)
                break;
 
-            //Debug.log("still there m: " + m);
+           // Debug.log("still there m: " + m);
 
             for (SikuliGuideComponent comp : components){
                comp.setVisible(true);
@@ -142,7 +142,7 @@ public class Tracker extends Thread{
          
          if (new_match != null){
 
-            //Debug.log("Found: " + new_match);
+            //Debug.log("[Tracker] Pattern is found in a new location: " + new_match);
 
             if (match.x == new_match.x && match.y == new_match.y)
                continue;
@@ -166,7 +166,7 @@ public class Tracker extends Thread{
 
          } else {
 
-            //Debug.log("Disappeared");
+            //Debug.log("[Tracker] Pattern has disappeared");
 
             for (SikuliGuideComponent comp : components){
                comp.setVisible(false);

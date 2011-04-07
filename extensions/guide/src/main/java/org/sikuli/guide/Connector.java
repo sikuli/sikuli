@@ -3,46 +3,35 @@
  */
 package org.sikuli.guide;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 
 
 public class Connector extends SikuliGuideArrow {
 
-   private SikuliGuideComponent sourceComponent;
-   private SikuliGuideComponent destinationComponent;
-
    public Connector(SikuliGuideComponent source, SikuliGuideComponent destination){
-      super(source.getCenter(), destination.getCenter());
-      sourceComponent = source;
-      destinationComponent = destination;
+      super(source, destination);
+      //      setForeground(Color.white);
+      //      sourceComponent = source;
+      //      destinationComponent = destination;
    }      
-   
-   public void setSourceComponent(SikuliGuideComponent sourceComponent) {
-      this.sourceComponent = sourceComponent;
-      setSource(sourceComponent.getCenter());
-      updateBounds();
-   }
 
-   public SikuliGuideComponent getSourceComponent() {
-      return sourceComponent;
-   }
+   @Override
+   protected void updateBounds() {
+      super.updateBounds();
 
-   public void setDestinationComponent(SikuliGuideComponent destinationComponent) {
-      this.destinationComponent = destinationComponent;
-      setDestination(destinationComponent.getCenter());
-      updateBounds();
-   }
-
-   public SikuliGuideComponent getDestinationComponent() {
-      return destinationComponent;
-   }
-   
-   public void update(SikuliGuideComponent comp){
-      if (comp == getSourceComponent()){
-         setSource(comp.getCenter());
-      } else if (comp == getDestinationComponent()){
-         setDestination(comp.getCenter());
-      }
-      updateBounds();
-      repaint();
+      Point src = getSource();
+      Point dest = getDestination();
+      
+      int dx = src.x - dest.x;
+      int dy = src.y - dest.y;
+      if (Math.abs(dx) < Math.abs(dy))
+         setStyle(ELBOW_X);
+      else
+         setStyle(ELBOW_Y);
+         
+      
    }
 }

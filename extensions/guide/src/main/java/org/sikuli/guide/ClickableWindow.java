@@ -98,7 +98,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    // notifies the owner of this click target that the target has
    // been clicked
    public void mouseClicked(MouseEvent e) {
-      //Debug.log("clicked on " + e.getX() + "," + e.getY());
+      Debug.log("clicked on " + e.getX() + "," + e.getY());
       Point p = e.getPoint();
 
       
@@ -107,6 +107,9 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       for (Clickable c : clickables){         
          if (c.getBounds().contains(p)){
             lastClickedClickable = c;
+            p.x -= c.getX();
+            p.y -= c.getY();
+            c.globalMouseClicked(p);
          }
       }         
       
@@ -170,6 +173,14 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       for (Clickable c : clickables){
          
          c.setMouseOver(c.getBounds().contains(p));
+         
+         if (c.getBounds().contains(p)){
+            Point cp = c.getLocation();
+            p.x -= cp.x;
+            p.y -= cp.y;
+            c.globalMouseMoved(p);
+         }
+         
          
          // TODO: figure out why setCursor is not working
 //         if (c.getBounds().contains(p)){

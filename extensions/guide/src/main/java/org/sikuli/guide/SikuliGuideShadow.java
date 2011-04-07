@@ -16,6 +16,9 @@ import java.awt.image.Kernel;
 
 import javax.swing.JComponent;
 
+import org.sikuli.script.Debug;
+import org.sikuli.script.Region;
+
 public class SikuliGuideShadow extends SikuliGuideComponent{
 
 
@@ -25,37 +28,26 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
       super();
       this.source = source_;
 
-
+      setAutoVisibilityEnabled(false);
+      
       setBoundsRelativeToComponent(source);
       setLocationRelativeToComponent(source,-shadowSize+2,-shadowSize+2);
-
-      //      source.addComponentListener(new ComponentListener(){
-      //
-      //         @Override
-      //         public void componentHidden(ComponentEvent e) {
-      //         }
-      //
-      //         @Override
-      //         public void componentMoved(ComponentEvent e) {
-      //         }
-      //
-      //         @Override
-      //         public void componentResized(ComponentEvent e) {
-      //            setBoundsRelativeToComponent(source);
-      //         }
-      //
-      //         @Override
-      //         public void componentShown(ComponentEvent e) {
-      //         }
-      //         
-      //      });
+      
+      source_.addFollower(this);
    }
 
    @Override
-   public void setLocationRelativeToComponent(JComponent comp, int offsetx, int offsety) {
+   public void setLocationRelativeToComponent(SikuliGuideComponent comp, int offsetx, int offsety) {
       setBoundsRelativeToComponent(comp);
       super.setLocationRelativeToComponent(comp, offsetx, offsety);       
    }
+   
+   @Override
+   public void setLocationRelativeToRegion(Region region, int side) {
+      setBoundsRelativeToComponent(source);
+      super.setLocationRelativeToRegion(region, side);       
+   }
+
 
    void setBoundsRelativeToComponent(JComponent comp){
       if (source instanceof SikuliGuideCircle ||
