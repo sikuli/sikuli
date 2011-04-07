@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
 
 
 public class Env {
-   final static String SikuliVersion = "X-1.0rc2";
+   final static String SikuliVersion = "X-1.0rc3";
 
    public static Location getMouseLocation() throws HeadlessException{
       Point loc = MouseInfo.getPointerInfo().getLocation();

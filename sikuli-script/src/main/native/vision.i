@@ -122,21 +122,21 @@ public:
    
 };
 
-//class Blob : public cv::Rect{
-//   
-//public:
-//
-//   Blob(){};
-//   Blob(const cv::Rect& rect);
-//   
-//   bool isContainedBy(Blob& b);
-//   
-//   double area;
-//   int mb;
-//   int mg;
-//   int mr;
-//   int score;
-//};
+class Blob : public cv::Rect{
+   
+public:
+
+   Blob(){};
+   Blob(const cv::Rect& rect);
+   
+   bool isContainedBy(Blob& b);
+   
+   double area;
+   int mb;
+   int mg;
+   int mr;
+   int score;
+};
 
 %include "enumtypeunsafe.swg"
 %javaconst(1);
