@@ -2,6 +2,8 @@
 How to use Sikuli Script in your JAVA programs
 ==============================================
 
+.. _howtojava:
+
 The core of Sikuli Script is written in Java, which means you can use Sikuli Script as a standard JAVA library in your program. This document lets you know how to do that. 
 
 After having installed Sikuli on your system, as recommended on the `download page <http://sikuli.org/download.shtml>`_, you have to do the following:
