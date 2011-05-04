@@ -369,7 +369,8 @@ This follows the standards of the Python language, so that you could handle such
 ``try: ... except: ...``. 
 
 If you are not used to programming using the Python language or because of other reasons, you might just want to bypass the
-exception handling (ignore it) or interactively react on a FindFailed situation (e.g. optionally repeat the find).
+exception handling, which means just ignoring it (None is returned in that case). 
+Or you might interactively react on a FindFailed situation (e.g. optionally repeat the find).
 Read more about concepts and options at: :ref:`Exception FindFailed <ExceptionFindFailed>`.
 
 If you have **multiple monitors**, please read 
@@ -386,7 +387,7 @@ using a string containing the file name (path to an image file).
 	.. py:method:: find(PS)
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image file or just plain text)
-		:return: a :py:class:`Match` object that contains the best match or ``None`` if not found. 
+		:return: a :py:class:`Match` object that contains the best match 
 
 		Find a particular GUI element, which is seen as the given image or
 		just plain text. The given file name of an image specifies the element's
@@ -407,12 +408,16 @@ using a string containing the file name (path to an image file).
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image
 			file or just plain text)
-		:return: one ore more match objects as an iterator object or ``None`` if not found. How to
-			iterate through is :ref:`documented here <IteratingMatches>`. 
+		:return: one ore more match objects as an iterator object
+		
+		How to iterate through is :ref:`documented here <IteratingMatches>`. 
 
 		Repeatedly find ALL instances of a pattern, until no match can be
 		found anymore, that meets the requirements for a single
 		:py:meth:`Region.find()` with the specified pattern.
+
+		If no match is found with the minimum similarity
+		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
 
 		**Side Effect** *lastMatches*: a reference to the returned iterator object containing the 
 		found matches is stored with the region that was searched. It can be
@@ -428,7 +433,7 @@ using a string containing the file name (path to an image file).
 			specified, the auto wait timeout value set by
 			:py:meth:`Region.setAutoWaitTimeout` is used. Use the constant
 			*FOREVER* to wait for an infinite time. 
-		:return: a :py:class:`Match` object that contains the best match or ``None`` if not found. 
+		:return: a :py:class:`Match` object that contains the best match 
 
 		If *PS* is not specified, the script just pauses for the specified
 		amount of time. It is still possible to use ``sleep(seconds)`` instead,
@@ -438,6 +443,9 @@ using a string containing the file name (path to an image file).
 		region until the image appears ( would have been found with
 		:py:meth:`Region.find`) or the specified amount of time has elapsed. At
 		least one find operation is performed, even if 0 seconds is specified.) 
+
+		If no match is found with the minimum similarity
+		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
 
 		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
