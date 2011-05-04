@@ -151,6 +151,8 @@ You might type the following (<enter> means pressing the enter/return key)
 
 * import os <enter>
 
+* import sys <enter>
+
 * for e in sys.path: print e <enter> <enter>
 
 * type exit() <enter> (to leave interactive Jython)
