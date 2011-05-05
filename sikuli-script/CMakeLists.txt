@@ -141,6 +141,7 @@ SET(PYTHON_TESTS
    keys mouse multiscreen observe region 
    showActions sikuli type vdict wait with
    ocr imageurl wheel imagepath findfailed
+   pattern
 )
 
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")

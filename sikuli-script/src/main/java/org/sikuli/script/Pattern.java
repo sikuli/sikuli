@@ -17,6 +17,8 @@ public class Pattern {
    public Pattern(Pattern p){
       imgURL = p.imgURL;
       similarity = p.similarity;
+      dx = p.dx;
+      dy = p.dy;
    }
 
    public Pattern(String imgURL_){
