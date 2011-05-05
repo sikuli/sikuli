@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 from org.sikuli.script import Screen as JScreen
 import inspect
 import __main__

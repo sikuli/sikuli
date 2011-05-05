@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #ifndef _FINDER_H_
 #define _FINDER_H_
 

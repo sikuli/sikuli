@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #import "org_sikuli_script_MacUtil.h"
 #import <Cocoa/Cocoa.h>
 #import <JavaVM/jawt_md.h>

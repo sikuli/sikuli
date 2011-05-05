@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #include <iostream>
 #include <jni.h>
 #include "org_sikuli_script_VDictProxy.h"

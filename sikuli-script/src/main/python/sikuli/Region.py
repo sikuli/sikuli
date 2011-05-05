@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 from org.sikuli.script import Region as JRegion
 from org.sikuli.script import Location
 from org.sikuli.script import Settings

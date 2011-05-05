@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #ifndef TIMING_BLOCK_H
 #define TIMING_BLOCK_H
 

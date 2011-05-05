@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 from math import sqrt
 
 def byDistanceTo(m):

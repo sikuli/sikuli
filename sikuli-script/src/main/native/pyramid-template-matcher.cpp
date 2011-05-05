@@ -1,9 +1,6 @@
 /*
- *  pyramid-template-matcher.cpp
- *  vision
- *
- *  Created by Tom Yeh on 5/1/10.
- *  Copyright 2010 Project Sikuli. All rights reserved.
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
  *
  */
 

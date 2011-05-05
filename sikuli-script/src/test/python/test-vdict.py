@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 from java.io import FileNotFoundException
 from sikuli.Sikuli import *
 

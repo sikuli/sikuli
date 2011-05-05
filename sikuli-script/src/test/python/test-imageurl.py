@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 from sikuli.Sikuli import *
 from java.lang import System
 

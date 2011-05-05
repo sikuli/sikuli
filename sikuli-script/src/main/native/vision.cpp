@@ -1,9 +1,6 @@
 /*
- *  vision.cpp
- *  sikuli
- *
- *  Created by Tom Yeh on 8/1/10.
- *  Copyright 2010 sikuli.org. All rights reserved.
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
  *
  */
 

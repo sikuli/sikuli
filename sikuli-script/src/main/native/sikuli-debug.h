@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #ifndef _SIKULU_DEBUG_H
 #define _SIKULI_DEBUG_H
 
