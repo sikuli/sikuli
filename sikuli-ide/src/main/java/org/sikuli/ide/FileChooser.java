@@ -13,7 +13,7 @@ public class FileChooser {
       _parent = parent;
    }
 
-   protected File open(String msg, int mode, GeneralFileFilter[] filters){
+   protected File open(String msg, int mode, GeneralFileFilter[] filters,int selectionMode){
       if( Utils.isMacOSX() ){
          FileDialog fd = new FileDialog(_parent, msg, mode);
          for(GeneralFileFilter filter: filters)
@@ -23,10 +23,10 @@ public class FileChooser {
             return null;
          return new File(fd.getDirectory(), fd.getFile());
       }	
-      return openWithSwingDialog(msg, mode, filters);
+      return openWithSwingDialog(msg, mode, filters, selectionMode);
    }
 
-   protected File openWithSwingDialog(String msg, int mode, GeneralFileFilter[] filters){
+   protected File openWithSwingDialog(String msg, int mode, GeneralFileFilter[] filters,int selectionMode){
       JFileChooser fchooser = new JFileChooser();
       if(mode==FileDialog.SAVE) {
          fchooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -38,7 +38,7 @@ public class FileChooser {
       fchooser.setAcceptAllFileFilterUsed(false);
       for(GeneralFileFilter filter: filters)
          fchooser.setFileFilter(filter);
-      fchooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
+      fchooser.setFileSelectionMode(selectionMode);
       fchooser.setSelectedFile(null);
       if(fchooser.showDialog(_parent, null) != JFileChooser.APPROVE_OPTION)
          return null;
@@ -52,28 +52,28 @@ public class FileChooser {
       return open("Open a Image File", FileDialog.LOAD,
          new GeneralFileFilter[]{
              new GeneralFileFilter("png","PNG Image Files (*.png)")
-      });
+      },JFileChooser.FILES_ONLY);
    }
 
    public File load(){
       return open("Open a Sikuli Source File", FileDialog.LOAD,
          new GeneralFileFilter[]{
              new GeneralFileFilter("sikuli","Sikuli source files (*.sikuli)")
-      });
+      },JFileChooser.DIRECTORIES_ONLY);
    }
 
    public File save(){
       return open("Save a Sikuli Source File", FileDialog.SAVE,
          new GeneralFileFilter[]{
              new GeneralFileFilter("sikuli","Sikuli source files (*.sikuli)")
-      });
+      },JFileChooser.DIRECTORIES_ONLY);
    }
 
    public File export(){
       return open("Export a Sikuli Executable File", FileDialog.SAVE,
          new GeneralFileFilter[]{
              new GeneralFileFilter("skl","Sikuli executable files (*.skl)")
-      });
+      },JFileChooser.FILES_ONLY);
    }
 
 }
