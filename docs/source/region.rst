@@ -363,7 +363,7 @@ it afterwards. Unsuccessful find operations will leave these values unchanged.
 
 .. _PatternNotFound:
 
-As a default, if the **visual object (image or text) cannot be found**, Sikuli
+By default, if the **visual object (image or text) cannot be found**, Sikuli
 will stop the script by raising an :ref:`Exception FindFailed <ExceptionFindFailed>`. 
 This follows the standards of the Python language, so that you could handle such exceptions using
 ``try: ... except: ...``. 
@@ -387,7 +387,7 @@ using a string containing the file name (path to an image file).
 	.. py:method:: find(PS)
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image file or just plain text)
-		:return: a :py:class:`Match` object that contains the best match 
+		:return: a :py:class:`Match` object that contains the best match or fails if :ref:`not found <PatternNotFound>`
 
 		Find a particular GUI element, which is seen as the given image or
 		just plain text. The given file name of an image specifies the element's
@@ -397,9 +397,6 @@ using a string containing the file name (path to an image file).
 		:py:meth:`Pattern.similar` before, a default minimum similarity of 0.7
 		is set automatically. 
 		
-		If no match is found with the minimum similarity
-		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
-
 		If autoWaitTimeout is set to a non-zero value, find() just acts as a wait().
 
 		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
@@ -408,16 +405,13 @@ using a string containing the file name (path to an image file).
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image
 			file or just plain text)
-		:return: one ore more match objects as an iterator object
+		:return: one or more match objects as an iterator object or fails if :ref:`not found <PatternNotFound>`
 		
 		How to iterate through is :ref:`documented here <IteratingMatches>`. 
 
 		Repeatedly find ALL instances of a pattern, until no match can be
 		found anymore, that meets the requirements for a single
 		:py:meth:`Region.find()` with the specified pattern.
-
-		If no match is found with the minimum similarity
-		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
 
 		**Side Effect** *lastMatches*: a reference to the returned iterator object containing the 
 		found matches is stored with the region that was searched. It can be
@@ -433,7 +427,7 @@ using a string containing the file name (path to an image file).
 			specified, the auto wait timeout value set by
 			:py:meth:`Region.setAutoWaitTimeout` is used. Use the constant
 			*FOREVER* to wait for an infinite time. 
-		:return: a :py:class:`Match` object that contains the best match 
+		:return: a :py:class:`Match` object that contains the best match or fails if :ref:`not found <PatternNotFound>`
 
 		If *PS* is not specified, the script just pauses for the specified
 		amount of time. It is still possible to use ``sleep(seconds)`` instead,
@@ -443,9 +437,6 @@ using a string containing the file name (path to an image file).
 		region until the image appears ( would have been found with
 		:py:meth:`Region.find`) or the specified amount of time has elapsed. At
 		least one find operation is performed, even if 0 seconds is specified.) 
-
-		If no match is found with the minimum similarity
-		or greater, the find fails (see: :ref:`not found <PatternNotFound>`)
 
 		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
 
