@@ -1,3 +1,5 @@
+# Copyright 2010-2011, Sikuli.org
+# Released under the MIT License.
 IF(APPLE)
    SET(OS_EXTRA_SOURCE_FILES org/sikuli/ide/NativeLayerForMac.java)
 ELSEIF(LINUX)

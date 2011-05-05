@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2011, Sikuli.org
+ * Released under the MIT License.
+ *
+ */
 #include "org_sikuli_ide_NativeLayerForMac.h"
 
 #include <Carbon/Carbon.h>
