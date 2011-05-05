@@ -3,4 +3,6 @@ from sikuli.Sikuli import *
 
 print Env.getOS(), Env.getOSVersion()
 print "MAC?", Env.getOS() == OS.MAC
-print Env.getMouseLocation()
+print "Mouse location:", Env.getMouseLocation()
+print "Caps lock:", Env.isLockOn(Key.CAPS_LOCK)
+print "Sikuli version:", Env.getSikuliVersion()

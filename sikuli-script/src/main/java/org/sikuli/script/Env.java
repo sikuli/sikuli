@@ -92,7 +92,7 @@ public class Env {
       return _osUtil;
    }
 
-   static boolean isLockOn(char key){
+   public static boolean isLockOn(char key){
       Toolkit tk = Toolkit.getDefaultToolkit();
       switch(key){
          case '\ue025': return tk.getLockingKeyState(KeyEvent.VK_SCROLL_LOCK);
