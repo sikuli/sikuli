@@ -260,7 +260,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Trans
    }
 
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
       
       if (entries.isEmpty()){
       // if nothing is added to the portal, do nothing
@@ -282,7 +282,7 @@ public class Portal extends JFrame implements ActionListener, KeyListener, Trans
       spotlight = new SikuliGuideSpotlight(entries.get(0).region);
       spotlight.setShape(SikuliGuideSpotlight.CIRCLE);
       
-      guide.addComponent(spotlight);
+      guide.addToFront(spotlight);
       
       
       

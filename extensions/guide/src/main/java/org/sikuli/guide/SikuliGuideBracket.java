@@ -46,22 +46,22 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
       setDirection(DIRECTION_EAST);
    }
 
-   public void setLocationRelativeToRegion(Region region, int side) {
-      if (side == TOP){
-         setSize(region.w,thickness);
+   public void setLocationRelativeToRegion(Region region, Layout side) {
+      if (side == Layout.TOP){
+         setActualSize(region.w,thickness);
          setDirection(DIRECTION_SOUTH);
-      } else if (side == BOTTOM){
-         setSize(region.w,thickness);
+      } else if (side == Layout.BOTTOM){
+         setActualSize(region.w,thickness);
          setDirection(DIRECTION_NORTH);
-      } else if (side == LEFT){
-         setSize(thickness,region.h);
+      } else if (side == Layout.LEFT){
+         setActualSize(thickness,region.h);
          setDirection(DIRECTION_EAST);
-      } else if (side == RIGHT){
-         setSize(thickness,region.h);
+      } else if (side == Layout.RIGHT){
+         setActualSize(thickness,region.h);
          setDirection(DIRECTION_WEST);
       }      
       
-      if (side == LEFT || side == RIGHT){
+      if (side == Layout.LEFT || side == Layout.RIGHT){
          length = region.h;
       }else{
          length = region.w;
@@ -99,7 +99,8 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
       this.direction = direction;  
    }
 
-   public void paint(Graphics g){
+   public void paintComponent(Graphics g){
+      super.paintComponent(g);
       Graphics2D g2d = (Graphics2D) g;
 
       Stroke pen = new BasicStroke(3.0F);

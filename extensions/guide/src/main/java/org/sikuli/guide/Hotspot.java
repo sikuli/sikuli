@@ -38,7 +38,7 @@ public class Hotspot extends Clickable {
       spotlight.setBounds(bounds);
       
       this.text = text;
-      text.setLocationRelativeToComponent(this, SikuliGuideComponent.RIGHT);
+      text.setLocationRelativeToComponent(this, Layout.RIGHT);
       //this.text.setLocationRelativeToRegion(new Region(bounds), SikuliGuideComponent.RIGHT);
 
       // draw a question mark centered on the region
@@ -53,15 +53,18 @@ public class Hotspot extends Clickable {
       
       // draw a circle around the question mark
       Rectangle cc = new Rectangle(symbol.getBounds());
-      cc.grow(7,0);
+      cc.grow(7,0);      
       circle = new SikuliGuideCircle(new Region(cc));
+      circle.setForeground(Color.white);
+      circle.setShadow(5,2);
+      
       //circle.setLocationRelativeToComponent(this, SikuliGuideComponent.OVER);
       
       g.content.add(symbol);
-      g.addComponent(circle);
+      g.addToFront(circle);
       
-      g.addComponent(spotlight);
-      g.addComponent(text);
+      g.addToFront(spotlight);
+      g.addToFront(text);
       
       text.setVisible(false);
       spotlight.setVisible(false);

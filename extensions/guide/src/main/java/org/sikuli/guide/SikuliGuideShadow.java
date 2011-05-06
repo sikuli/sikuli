@@ -5,6 +5,7 @@ package org.sikuli.guide;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -24,49 +25,59 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
 
    int shadowSize = 10;
    SikuliGuideComponent source;
+   
+   Dimension sourceSize = new Dimension();
    public SikuliGuideShadow(SikuliGuideComponent source_) {
       super();
       this.source = source_;
 
-      setAutoVisibilityEnabled(false);
-      
       setBoundsRelativeToComponent(source);
-      setLocationRelativeToComponent(source,-shadowSize+2,-shadowSize+2);
-      
-      source_.addFollower(this);
+      setLocationRelativeToComponent(source,-shadowSize+2,-shadowSize+2);      
    }
 
    @Override
    public void setLocationRelativeToComponent(SikuliGuideComponent comp, int offsetx, int offsety) {
+      this.source = comp;
       setBoundsRelativeToComponent(comp);
       super.setLocationRelativeToComponent(comp, offsetx, offsety);       
    }
    
    @Override
-   public void setLocationRelativeToRegion(Region region, int side) {
+   public void setLocationRelativeToRegion(Region region, Layout side) {
       setBoundsRelativeToComponent(source);
+      Debug.info("[Shadow] UDPATED: " + this);
+
       super.setLocationRelativeToRegion(region, side);       
    }
 
+   
+   
 
-   void setBoundsRelativeToComponent(JComponent comp){
-      if (source instanceof SikuliGuideCircle ||
-            source instanceof SikuliGuideArrow ||
-            source instanceof SikuliGuideRectangle ||
-            source instanceof SikuliGuideBracket){
+   void setBoundsRelativeToComponent(SikuliGuideComponent comp){
+      if (sourceSize.equals(comp.getSize()))
+         return;
+      
+      
+      sourceSize = (Dimension) comp.getSize().clone();
+      source = comp;
+      
+      if (comp instanceof SikuliGuideCircle ||
+            comp instanceof SikuliGuideArrow ||
+            comp instanceof SikuliGuideRectangle ||
+            comp instanceof SikuliGuideBracket){
          shadowSize = 5;
       } else if (source instanceof SikuliGuideFlag ||
             source instanceof SikuliGuideText){
          shadowSize = 10;
+      } else{
+         shadowSize = 10;
       }
 
-      Rectangle r = source.getBounds();
+      Rectangle r = comp.getBounds();
       r.grow(shadowSize,shadowSize);
-
-      if (!r.getSize().equals(getSize())){
-         setSize(r.getSize());      
-         createShadowImage();
-      }
+      
+      setSize(r.getSize());
+      createShadowImage();
    }
 
    float shadowOpacity = 0.8f;
@@ -94,16 +105,20 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
    }
 
    BufferedImage shadowImage = null;
-   BufferedImage createShadowImage(){      
+   public BufferedImage createShadowImage(){    
 
-      BufferedImage image = new BufferedImage(getWidth() + shadowSize * 2,
-            getHeight() + shadowSize * 2, BufferedImage.TYPE_INT_ARGB);
+      BufferedImage image = new BufferedImage(source.getWidth() + shadowSize * 2,
+            source.getHeight() + shadowSize * 2, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g2 = image.createGraphics();
       g2.translate(shadowSize,shadowSize);
       source.paint(g2);
 
       shadowImage = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_ARGB);
       getBlurOp(shadowSize).filter(createShadowMask(image), shadowImage);
+
+      
+      Debug.info("[Shadow] shadowImage: " + shadowImage);
+      Debug.info("[Shadow] bounds: " + getBounds());
 
       return shadowImage;
    }
@@ -112,7 +127,6 @@ public class SikuliGuideShadow extends SikuliGuideComponent{
       super.paintComponent(g);
 
       Graphics2D g2d = (Graphics2D)g;
-
-      g2d.drawImage(shadowImage, 0, 0, null, null);      
+      g2d.drawImage(shadowImage, 0, 0, getWidth(), getHeight(), null, null);
    }
 }

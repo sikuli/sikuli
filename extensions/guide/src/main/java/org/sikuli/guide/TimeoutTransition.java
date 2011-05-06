@@ -19,35 +19,25 @@ import org.sikuli.script.Debug;
 import org.sikuli.script.TransparentWindow;
 
 
-public class TimeoutTransition implements Transition, ActionListener{
+public class TimeoutTransition implements Transition, ActionListener {
 
    Timer timer;
+   TransitionListener listener;
    public TimeoutTransition(int timeout){
        timer = new Timer(timeout,this);
    }
-   
-   public String waitForTransition(){
       
+   public String waitForTransition(final TransitionListener listener){
+      this.listener = listener;
       timer.start();
-      synchronized(this){
-         try {
-            wait();
-         } catch (InterruptedException e) {
-         }
-      }
-
       return "Next";
    }
 
    @Override
    public void actionPerformed(ActionEvent arg0) {
-      synchronized(this){
-         this.notify();
-      }
-      
-   }
-
-  
+      listener.transitionOccurred(this);
+   }         
+     
 }
 
 

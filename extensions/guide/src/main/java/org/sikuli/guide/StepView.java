@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import org.sikuli.guide.EditorWindow.BackgroundImage;
 import org.sikuli.script.Screen;
 
-class StepView extends SikuliGuideComponent {
+public class StepView extends SikuliGuideComponent {
       
       Step step;
       public StepView(Step step){

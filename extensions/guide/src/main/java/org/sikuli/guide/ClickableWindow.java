@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.JWindow;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.OS;
@@ -80,11 +81,12 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    
    public void addClickable(Clickable c){
       clickables.add(c);
+      //Debug.info("[ClickableWindow] adding clickable");
       
       // add an almost invisible clickable to the content pane to 
       // capture the mouse click happening to this region
-      Rectangle rect = c.getBounds();
-      Clickable c1 = new Clickable(new Region(rect));
+      Clickable c1 = new Clickable(null);
+      c1.setLocationRelativeToComponent(c, Layout.OVER);
       this.add(c1);
    }
    
@@ -94,18 +96,19 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       addClickable(c);
    }
 
+   
    @Override
    // notifies the owner of this click target that the target has
    // been clicked
    public void mouseClicked(MouseEvent e) {
-      Debug.log("clicked on " + e.getX() + "," + e.getY());
+      Debug.log("[ClickableWindow] clicked on " + e.getX() + "," + e.getY());
       Point p = e.getPoint();
 
       
       lastClickedClickable = null;
       // find and remember which clickable was most recently clicked
       for (Clickable c : clickables){         
-         if (c.getBounds().contains(p)){
+         if (c.getActualBounds().contains(p)){
             lastClickedClickable = c;
             p.x -= c.getX();
             p.y -= c.getY();
@@ -114,8 +117,10 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       }         
       
       if (getLastClickedClickable() != null){      
-         synchronized(guide){
-            guide.notify();
+         if (token != null){
+            // hide so that the click can go through and hit the interface below
+            setVisible(false);
+            token.transitionOccurred(this);            
          }
       }
    }
@@ -136,27 +141,37 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    public void mouseReleased(MouseEvent arg0) {
    }
 
+   
+//   @Override
+//   public void stopTransition(){      
+//   }
+   
+   
+   TransitionListener token;
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
+      this.token = token;
       
       toFront();
       setVisible(true);
       setAlwaysOnTop(true);
       
+      // force the invisible clickables to repaint
+      //repaint();
+      
       mouseTracker.start();      
       
-      synchronized(guide){
-         try {
-            guide.wait();
-         } catch (InterruptedException e) {
-            e.printStackTrace();
-         }
-      }
-      setVisible(false);
-      
-      if (getLastClickedClickable() != null)
-         return getLastClickedClickable().name;
-      else
+//      synchronized(guide){
+//         try {
+//            guide.wait();
+//         } catch (InterruptedException e) {
+//            e.printStackTrace();
+//         }
+//      }
+//      
+//      if (getLastClickedClickable() != null)
+//         return getLastClickedClickable().name;
+//      else
          return "Next";
    }
    

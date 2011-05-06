@@ -3,22 +3,55 @@
  */
 package org.sikuli.guide;
 
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
+
+
 public class SikuliGuideComponent extends JComponent 
 implements Cloneable{
+   
+   public enum Layout{
+      TOP,
+      BOTTOM,
+      LEFT,
+      RIGHT,
+      FOLLOWERS,
+      INSIDE,
+      OVER,
+      ORIGIN,
+      CENTER
+   };
+   
+   static boolean DEBUG_BOUNDS = false;
+   
+   public interface AnimationListener {   
+      void animationCompleted();
+   }
+   
 
    public Object clone() {
       SikuliGuideComponent clone;
@@ -27,9 +60,9 @@ implements Cloneable{
 
          // do not clone references to other components
          clone.followers = new ArrayList<SikuliGuideComponent>();
-         clone.leader = null;
+         clone.removeFromLeader();
+         clone.actualBounds = new Rectangle(actualBounds);
          clone.autolayout = null;
-         clone.actualBounds = new Rectangle();
          //clone.connectors = new ArrayList<Connector>();
          return clone;
       }
@@ -37,38 +70,103 @@ implements Cloneable{
          throw new InternalError(e.toString());
       }
    }
-
-   //Region reference_region = null;
-   //int reference_side = -1;
-
-   //   ArrayList<SikuliGuideAnimator> anims = new ArrayList<SikuliGuideAnimator>();
-
-   public void startAnimation(){          
-      // TODO: this is ugly
-      // use animation queue..
-
-      if (entrance_anim != null){
-         //if (entrance_anim.isRunning()){
-         entrance_anim.stop();
-         //}
-
-         if (!entrance_anim.isPlayed()){
-            //Debug.log("entrance anim started");
-            //Debug.log("entrance anim:" + entrance_anim);
-            entrance_anim.start();
-         }
-      } 
-
-      if (emphasis_anim != null){     
-
-         if (entrance_anim != null)
-            entrance_anim.stop();
-
-         //Debug.log("emphasis anim started");
-         emphasis_anim.start();
-      }
+   
+   ShadowRenderer shadowRenderer;
+        
+   int shadowSize = 0;
+   int shadowOffset = 2;
+   
+   public void setShadowDefault(){
+      setShadow(10,2);
+   }
+   
+   public void setShadow(int shadowSize, int shadowOffset){
+      this.shadowSize = shadowSize;
+      this.shadowOffset = shadowOffset;
+      
+      shadowRenderer = new ShadowRenderer(this, shadowSize);
+      super.setSize(getActualWidth()+2*shadowSize, getActualHeight()+2*shadowSize);
+      Point p = getActualLocation();
+      p.x = p.x - shadowSize + shadowOffset;
+      p.y = p.y - shadowSize + shadowOffset;
+      super.setLocation(p.x,p.y);
    }
 
+
+   class AnimationSequence {
+      Queue<NewAnimator> queue = new LinkedBlockingQueue<NewAnimator>();
+
+      private void startNextAnimation(){
+         if (queue.peek() != null){
+            
+            NewAnimator anim = queue.remove();
+            anim.start();
+            anim.setListener(new AnimationListener(){
+
+               @Override
+               public void animationCompleted() {
+                  startNextAnimation();
+               }            
+            });
+            
+         }
+      }
+      
+      public void add(NewAnimator animator){
+         queue.add(animator);
+      }
+      
+      public void start(){
+         startNextAnimation();
+      }
+   }
+   
+   AnimationSequence animationSequence = new AnimationSequence();
+   
+   public void addMoveAnimation(Point source, Point destination){
+      animationSequence.add(new NewMoveAnimator(source, destination));
+   }
+
+   public void addResizeAnimation(Dimension currentSize, Dimension targetSize){
+      animationSequence.add(new ResizeAnimator(currentSize, targetSize));
+   }
+   
+   public void addCircleAnimation(Point origin, float radius){
+      animationSequence.add(new CircleAnimator(origin, radius));
+   }
+   
+   public void addFadeinAnimation(){
+      if (opacity < 1f)
+         animationSequence.add(new OpacityAnimator(opacity,1f));
+   }
+   
+   public void addFadeoutAnimation(){
+      if (opacity > 0f)
+         animationSequence.add(new OpacityAnimator(opacity,0f));
+   }
+   
+   public void addSlideAnimation(Point destination, Layout side){
+      Point p0 = new Point(destination);
+      Point p1 = new Point(destination);
+      
+      if (side == Layout.RIGHT){      
+         p0.x += 20;      
+      } else if (side == Layout.BOTTOM){
+         p0.y += 20;
+      } else if (side == Layout.TOP) {
+         p0.y -= 20;
+      } else if (side == Layout.LEFT) {
+         p0.x -= 20;
+      }
+      
+      setActualLocation(p0);
+      addMoveAnimation(p0, p1);
+   }
+   
+   public void startAnimation(){
+      animationSequence.start();            
+   }
+   
    public void stopAnimation() {
       if (emphasis_anim != null){     
          emphasis_anim.stop();
@@ -79,19 +177,407 @@ implements Cloneable{
    }
 
    public SikuliGuideAnimator createSlidingAnimator(int offset_x, int offset_y){  
-      Point dest = getLocation();
+      Point dest = getActualLocation();
       Point src = new Point(dest.x + offset_x, dest.y + offset_y);
       return new MoveAnimator(this, src, dest);
    }
 
    public SikuliGuideAnimator createMoveAnimator(int dest_x, int dest_y){
-      Point src = getLocation();
+      Point src = getActualLocation();
       Point dest = new Point(dest_x, dest_y);
       return new MoveAnimator(this, src, dest);
    }
 
-   public SikuliGuideAnimator createCirclingAnimator(int radius) {      
-      return new CircleAnimator(this, radius);
+//   public SikuliGuideAnimator createCirclingAnimator(int radius) {      
+//      return new CircleAnimator(this, radius);
+//      return nu
+//   }
+
+   
+   class LinearStepper {
+      float beginVal;
+      float endVal;
+      int step;
+      int steps;
+
+      public LinearStepper(float beginVal, float endVal, int steps){
+         this.step = 0;
+         this.steps = steps;
+         this.beginVal = beginVal;
+         this.endVal = endVal;
+      }
+
+      public float next(){
+         float ret = beginVal + step * (endVal - beginVal) / steps;
+         step += 1;
+         return ret;
+      }
+
+      public boolean hasNext(){
+         return step <= steps;
+      }
+   }
+   
+   class NewAnimator implements ActionListener {
+      Timer timer;      
+      
+      boolean looping = false;
+      
+      NewAnimator(){
+         
+      }      
+      
+      protected void init(){
+         
+      }
+      
+      public void start(){         
+         init();
+         timer = new Timer(25, this);
+         timer.start();
+         animationRunning = true;
+      }
+      
+      protected boolean isRunning(){
+         return animationRunning;
+      }
+      
+      public void setLooping(boolean looping){
+         this.looping = looping;
+      }
+      
+      AnimationListener listener;
+      public void setListener(AnimationListener listener) {
+         this.listener = listener;
+      }
+
+      protected void animate(){
+         
+      }
+      
+      
+      public void actionPerformed(ActionEvent e){
+         if (isRunning()){         
+            
+            Rectangle r = getBounds();
+            
+            //setActualLocation((int) x, (int) y);
+            
+            animate();
+
+            r.add(getBounds());
+            
+            if (getTopLevelAncestor() != null)
+               getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
+
+            
+         }else{            
+            timer.stop();
+            if (looping){
+               start();
+            }else{
+               animationRunning = false;
+               if (listener != null)
+                  listener.animationCompleted();
+            }
+         }
+      }
+   }
+   
+   
+
+   
+   class NewMoveAnimator extends NewAnimator {
+
+      LinearStepper xStepper;
+      LinearStepper yStepper;
+      
+      Point source;
+      Point destination;
+      NewMoveAnimator(Point source, Point destination){
+         this.source = source;
+         this.destination = destination;
+      }
+            
+      @Override
+      protected void init(){
+         xStepper = new LinearStepper(source.x, destination.x, 10);
+         yStepper = new LinearStepper(source.y, destination.y, 10);                  
+      }
+      
+      @Override
+      protected boolean isRunning(){
+         return xStepper.hasNext();
+      }
+      
+      @Override
+      protected void animate(){
+         float x = xStepper.next();
+         float y = yStepper.next();
+                     
+         setActualLocation((int) x, (int) y);
+      }
+
+   }
+   
+   class CircleAnimator extends NewAnimator {
+      LinearStepper radiusStepper;
+      
+      Point origin;
+      float radius;
+      CircleAnimator(Point origin, float radius){
+         this.radius = radius;
+         this.origin = origin;
+         setLooping(true);
+      }
+      
+      @Override
+      protected void init(){
+         radiusStepper = new LinearStepper(0,(float) (2*Math.PI),20);
+      }
+
+      @Override
+      protected boolean isRunning(){
+         return radiusStepper.hasNext();
+      }
+            
+      @Override
+      protected void animate(){
+         float theta = radiusStepper.next();
+         
+         int x = (int) (origin.x + (int) radius * Math.sin(theta));
+         int y=  (int) (origin.y + (int) radius * Math.cos(theta));
+      
+         setActualLocation((int) x, (int) y);
+      }  
+   }
+
+   class ResizeAnimator extends NewAnimator {
+      LinearStepper widthStepper;
+      LinearStepper heightStepper;
+       
+      Dimension currentSize;
+      Dimension targetSize;
+      ResizeAnimator(Dimension currentSize, Dimension targetSize){
+         this.currentSize = currentSize;
+         this.targetSize = targetSize;                       
+      }
+      
+      @Override
+      protected void init(){
+         widthStepper = new LinearStepper(currentSize.width, targetSize.width, 10);
+         heightStepper = new LinearStepper(currentSize.height, targetSize.height, 10);
+      }
+      
+      @Override
+      protected boolean isRunning(){
+         return widthStepper.hasNext();
+      }
+            
+      @Override
+      protected void animate(){
+            float width = widthStepper.next();
+            float height = heightStepper.next();
+            setActualSize(new Dimension((int) width, (int) height));
+      }       
+   }
+   
+   class OpacityAnimator extends NewAnimator {
+      LinearStepper stepper;
+
+      float sourceOpacity;
+      float targetOpacity;
+      OpacityAnimator(float sourceOpacity, float targetOpacity){
+         this.sourceOpacity = sourceOpacity;
+         this.targetOpacity = targetOpacity;
+      }
+      
+      @Override
+      protected void init(){
+         stepper = new LinearStepper(sourceOpacity, targetOpacity, 10);         
+      }
+
+      @Override
+      protected boolean isRunning(){
+         return stepper.hasNext();
+      }
+
+      @Override
+      public void animate(){
+            float f = stepper.next();
+            setOpacity(f);
+      }
+   }
+   
+   boolean animationRunning = false;
+   class PopupAnimator implements ActionListener{
+      LinearStepper shadowSizeStepper;
+      LinearStepper offsetStepper;
+      LinearStepper scaleStepper;
+      LinearStepper widthStepper;
+      LinearStepper heightStepper;
+
+       
+      Timer timer;      
+      
+      Point centerLocation;
+      PopupAnimator(){
+         shadowSizeStepper = new LinearStepper(5,13,10);
+         offsetStepper = new LinearStepper(0,10,5);    
+         //scaleStepper = new LinearStepper(1f,1.2f,);
+         widthStepper = new LinearStepper(getActualWidth(),1.0f*getActualWidth()*1.1f,10);
+         heightStepper = new LinearStepper(getActualHeight(),1.0f*getActualHeight()*1.1f,10);
+         
+         centerLocation = new Point(getActualLocation());
+         centerLocation.x = centerLocation.x + getActualWidth()/2;
+         centerLocation.y = centerLocation.y + getActualHeight()/2;         
+      }      
+      
+      public void start(){         
+         Timer timer = new Timer(25, this);
+         timer.start();
+         animationRunning = true;
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e){
+         if (shadowSizeStepper.hasNext()){
+
+            float shadowSize = shadowSizeStepper.next();
+            float offset = offsetStepper.next();
+            float width = widthStepper.next();
+            float height = heightStepper.next();                        
+
+            Rectangle r = getBounds();
+            
+            setActualLocation((int)(centerLocation.x - width/2), (int)(centerLocation.y - height/2));
+            setActualSize((int)width, (int)height);
+
+            setShadow((int)shadowSize,(int) 2);
+            //Point p = getActualLocation();
+            //p.x -= 1;
+            //p.y -= 1;
+            //setActualLocation(p);
+            r.add(getBounds());
+            
+            getParent().getParent().repaint();//r.x,r.y,r.width,r.height);
+         }else{
+            ((Timer)e.getSource()).stop();
+            animationRunning = false;
+            animationCompleted();
+         }
+      }
+   }   
+
+   
+   float opacity = 1.0f;
+
+   public void paintPlain(Graphics g){
+      super.paint(g);
+   }
+   
+   public void paint(Graphics g){
+      
+         
+         // render the component in an offscreen buffer with shadow
+         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+         Graphics2D g2 = image.createGraphics();
+         
+         if (shadowRenderer != null){
+            shadowRenderer.paintComponent(g2);
+            g2.translate((shadowSize-shadowOffset),(shadowSize-shadowOffset));
+         }
+         
+         super.paint(g2);
+         
+         Graphics2D g2d = (Graphics2D) g;
+         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,opacity));
+         g2d.drawImage(image,0,0,null,null);
+         
+         
+//         shadowRenderer.paintComponent(g);
+//         Graphics2D g2d = (Graphics2D) g;
+//         
+//         if (DEBUG_BOUNDS){
+//            // visualize display bounds         
+//            g2d.setColor(Color.black);
+//            g2d.setStroke(new BasicStroke(1.0f));
+//            g2d.drawRect(0,0,getWidth()-1,getHeight()-1);
+//         }
+//         
+//       //  g.translate((shadowSize-shadowOffset),(shadowSize-shadowOffset));
+//         
+//         // clear the foreground area covered by the shadow
+//         // so transparent foreground can see through
+////         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR,0));
+////         g2d.fillRect(0,0,getActualWidth()-1,getActualHeight()-1);
+//
+//         super.paint(g);
+//         
+//         if (DEBUG_BOUNDS){
+//         
+//            // visualize actual bounds
+//            g2d.setColor(Color.green);
+//            g2d.drawRect(0,0,getActualWidth()-1,getActualHeight()-1);
+//         }
+//
+//      }else{
+//         super.paint(g);
+//      }
+      
+      
+   }
+   
+   public void resizeTo(Dimension targetSize){
+      ResizeAnimator anim = new ResizeAnimator(getActualSize(),targetSize);
+      anim.start();
+   }
+   
+   public void moveTo(Point targetLocation){
+      NewMoveAnimator anim = new NewMoveAnimator(getActualLocation(),targetLocation);
+      anim.start();
+   }
+   
+   public void moveTo(Point targetLocation, AnimationListener listener){
+      NewMoveAnimator anim = new NewMoveAnimator(getActualLocation(),targetLocation);
+      anim.setListener(listener);
+      anim.start();
+   }
+
+
+   public void popup(){
+      PopupAnimator anim = new PopupAnimator();
+      anim.start();      
+   }
+   
+   public void setOpacity(float opacity){
+      
+      if (opacity > 0){
+         setVisible(true);
+      }else{
+         setVisible(false);
+      }
+         
+      this.opacity = opacity;
+      for (SikuliGuideComponent sklComp : getFollowers()){
+         sklComp.setOpacity(opacity);
+      }
+//      if (shadowRenderer != null){
+//         shadowRenderer.createShadowImage();
+//      }
+      
+      
+      Rectangle r = getBounds();
+      if (getTopLevelAncestor() != null)
+         //getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
+         // for some reason the whole thing needs to be repainted otherwise the
+         // shadow of other compoments looks weird
+         getTopLevelAncestor().repaint();
+   }
+   
+   public void changeOpacityTo(float targetOpacity){
+      OpacityAnimator anim = new OpacityAnimator(opacity,targetOpacity);
+      anim.start();
    }
 
 
@@ -123,6 +609,7 @@ implements Cloneable{
    public final static int CENTER = 5;
    public final static int OVER = 6;
    public final static int ORIGIN = 7;
+   public final static int FOLLOWERS = 8;
 
    private boolean autoLayoutEnabled = false;
    private boolean autoResizeEnabled = false;
@@ -132,6 +619,8 @@ implements Cloneable{
    public SikuliGuideComponent(){    
       super();
       setMovable(false);      
+      setActualLocation(0,0);
+      setActualSize(new Dimension(0,0));
    }
 
    // this allows the component to be dragged to another location on the screen
@@ -148,7 +637,7 @@ implements Cloneable{
       private SikuliGuideComponent targetComponent;
       AutoLayout(SikuliGuideComponent targetComponent){
          this.setTargetComponent(targetComponent);
-         targetComponent.addComponentListener(this);
+         //targetComponent.addComponentListener(this);
       }
       public void setTargetComponent(SikuliGuideComponent targetComponent) {
          this.targetComponent = targetComponent;
@@ -174,7 +663,7 @@ implements Cloneable{
       }
       
       void stop(){
-         targetComponent.removeComponentListener(this);
+        // targetComponent.removeComponentListener(this);
       }
       
       @Override
@@ -209,17 +698,40 @@ implements Cloneable{
    }
    
    class AutoLayoutBySide extends AutoLayout{
-      int side;
+      Layout side;
       
-      AutoLayoutBySide(SikuliGuideComponent targetComponent, int side){
+      AutoLayoutBySide(SikuliGuideComponent targetComponent, Layout side){
          super(targetComponent);
          this.side = side;
       }
       
       @Override
       void update(){
-         Region region = new Region(getTargetComponent().getBounds());
-         setLocationRelativeToRegion(region, side);     
+         
+         if (side == Layout.FOLLOWERS){
+
+            // set to the total bounds of the other followers
+
+            // first set its bounds to be equal to the targets, so that
+            // its current bounds won't have effect on the calculation
+            // of the total bounds            
+            setBounds(getTargetComponent().getBounds());            
+            
+            // then this call will gives us the total bounds of the
+            // rest of the followers
+            Rectangle totalBounds = getTargetComponent().getFollowerBounds();
+            
+            totalBounds.grow(5,5);
+            
+            setBounds(totalBounds);
+            
+            
+         }else{
+         
+            //Debug.info("Target actual bounds: " + getTargetComponent().getActualBounds());
+            Region region = new Region(getTargetComponent().getActualBounds());
+            setLocationRelativeToRegion(region, side);
+         }
          super.update();
       }
    }
@@ -229,8 +741,11 @@ implements Cloneable{
       int x;
       int y;
       
+      Point targetLocation;
+      
       AutoLayoutByMovement(SikuliGuideComponent targetComponent){
          super(targetComponent);
+         targetLocation = new Point(targetComponent.getActualLocation());
          this.x = targetComponent.getX();
          this.y = targetComponent.getY();
       }
@@ -239,54 +754,18 @@ implements Cloneable{
       @Override
       public void update() {
          
-         Debug.info("auto moved by leader");
+         //Debug.info("auto moved by leader");
          
-         int newx = getTargetComponent().getX();
-         int newy = getTargetComponent().getY();
+         Point newTargetLocation = getTargetComponent().getActualLocation();
+         int dx = newTargetLocation.x - targetLocation.x;
+         int dy = newTargetLocation.y - targetLocation.y;         
+         targetLocation = newTargetLocation;
+         Point actualLocation = getActualLocation();
+         actualLocation.x += dx;
+         actualLocation.y += dy;
          
-         int dx = newx - x;
-         int dy = newy - y;
-         
-//         float targetZoomLevel = getTargetComponent().zoomLevel;
-        // if (zoomLevel != targetZoomLevel){
-//            dx = (int) (dx * targetZoomLevel / zoomLevel);
-//            dy = (int) (dy * targetZoomLevel / zoomLevel);
-//             dx = (int) (dx / (targetZoomLevel / zoomLevel));
-//             dy = (int) (dy / (targetZoomLevel / zoomLevel));
-//            dx = 0;
-//            dy = 0;
-         //}
-         
-         x = newx;
-         y = newy;
-         
-         setLocation(getX()+dx, getY()+dy);
-      }
-      
-//      @Override
-//      public void componentMoved(ComponentEvent e) {
-//         int newx = e.getComponent().getX();
-//         int newy = e.getComponent().getY();
-//         
-//         int dx = newx - x;
-//         int dy = newy - y;
-//         
-//         float targetZoomLevel = getTargetComponent().zoomLevel;
-//        // if (zoomLevel != targetZoomLevel){
-////            dx = (int) (dx * targetZoomLevel / zoomLevel);
-////            dy = (int) (dy * targetZoomLevel / zoomLevel);
-////             dx = (int) (dx / (targetZoomLevel / zoomLevel));
-////             dy = (int) (dy / (targetZoomLevel / zoomLevel));
-////            dx = 0;
-////            dy = 0;
-//         //}
-//         
-//         x = newx;
-//         y = newy;
-//         
-//         setLocation(getX()+dx, getY()+dy);
-//      }
-
+         setActualLocation(actualLocation.x,actualLocation.y);
+      }      
    }
    
    class AutoLayoutByOffset extends AutoLayout {
@@ -301,9 +780,9 @@ implements Cloneable{
 
       @Override
       void update(){
-         setOffset((int)(offsetx*zoomLevel), (int) (offsety*zoomLevel));         
-         Region region = new Region(getTargetComponent().getBounds());
-         setLocationRelativeToRegion(region, SikuliGuideComponent.ORIGIN);
+         setOffset(offsetx, offsety);
+         Region region = new Region(leader.getBounds());
+         setLocationRelativeToRegion(region, Layout.ORIGIN);
          super.update();
       }
    }
@@ -328,7 +807,7 @@ implements Cloneable{
    
    AutoLayout autolayout = null;   
    
-   public void setLocationRelativeToComponent(SikuliGuideComponent comp, int side) {
+   public void setLocationRelativeToComponent(SikuliGuideComponent comp, Layout side) {
       if (autolayout != null){
          autolayout.stop();
       } 
@@ -359,30 +838,33 @@ implements Cloneable{
       autolayout.update();        
    }
    
-   public void followComponent(SikuliGuideComponent leader){      
+   public void setLocationRelativeToComponent(SikuliGuideComponent leader){      
       if (autolayout != null){
          autolayout.stop();
       } 
       
       leader.addFollower(this);
       
-      autolayout = new AutoLayoutByMovement(leader);      
-      autolayout.update(); 
+      autolayout = new AutoLayoutByMovement(leader);
+      autolayout.update();
    }
 
 
-   public void setLocationRelativeToPoint(Point point, int side){      
-      Rectangle bounds = getBounds();
+   public void setLocationRelativeToPoint(Point point, Layout side){      
+      Rectangle bounds = getActualBounds();
       // TODO implement other positioning parameters
-      if (side == CENTER){
-         setLocation(point.x - bounds.width/2, point.y - bounds.height/2);
+      if (side == Layout.CENTER){
+         setActualLocation(point.x - bounds.width/2, point.y - bounds.height/2);
       }
    }  
 
-   Rectangle actualBounds = new Rectangle();
-   
+   private Rectangle actualBounds = new Rectangle();
+   // TODO: fix this
    float zoomLevel = 1.0f;
    public void setZoomLevel(float zoomLevel){
+      
+      if (true)
+         return; 
       
       this.zoomLevel = zoomLevel; 
 
@@ -392,9 +874,9 @@ implements Cloneable{
          }
       }
 
-      Debug.info("Component:" + this);
-      Debug.info("Actual bounds:" + actualBounds);
-      Rectangle bounds = new Rectangle(actualBounds);
+      Debug.info("[setZoomLevel] Component:" + this);
+//      Debug.info("Actual bounds:" + actualBounds);
+      Rectangle bounds = new Rectangle(getActualBounds());
 
       bounds.x *= zoomLevel;
       bounds.y *= zoomLevel;
@@ -407,72 +889,27 @@ implements Cloneable{
       for (SikuliGuideComponent sklComp : getFollowers()){         
          if (sklComp.autolayout != null){
             
+            Debug.info("Updaing by offset:" + sklComp.autolayout);
+            Debug.info("Updaing child:" + sklComp);
+
+            
             if (sklComp.autolayout instanceof AutoLayoutByMovement){               
                ((AutoLayoutByMovement) sklComp.autolayout).x = bounds.x;
                ((AutoLayoutByMovement) sklComp.autolayout).y = bounds.y;               
             } else if (sklComp.autolayout instanceof AutoLayoutByOffset){
+//               ((AutoLayoutByOffset) sklComp.autolayout).offsetx *= zoomLevel;
+//               ((AutoLayoutByOffset) sklComp.autolayout).offsety *= zoomLevel;
+//               sklComp.zoomLevel = zoomLevel;
                sklComp.autolayout.update();
             } else{
                sklComp.autolayout.update();
             }
          }
       }
-      
-      
-      if (autolayout instanceof AutoLayoutByOffset){
-         //((AutoLayoutByOffset autolayout)).offsetx *= zoomLevel;
-         //((AutoLayoutByOffset autolayout)).offsety *= zoomLevel;         
-      }
+            
       
    }
    
-//   public void zoomIn(){
-//      
-//      float zoomStep = 1.1f;
-//      Rectangle bounds = getBounds();
-//      bounds.x *= zoomStep;
-//      bounds.y *= zoomStep;
-//      bounds.width *= zoomStep;
-//      bounds.height *= zoomStep;      
-//
-//      setBounds(bounds);
-//
-//      if (autolayout instanceof AutoLayoutByOffset){
-//         // no need to do anything
-//      } else if (autolayout instanceof AutoLayoutByMovement){
-//         ((AutoLayoutByMovement) autolayout).x *= zoomStep;
-//         ((AutoLayoutByMovement) autolayout).y *= zoomStep;
-//         autolayout.update();
-//      }
-//   }
-//   
-//   public void zoomOut(){
-//      float zoomStep = 0.9f;
-//      Rectangle bounds = getBounds();
-//      bounds.x *= zoomStep;
-//      bounds.y *= zoomStep;
-//      bounds.width *= zoomStep;
-//      bounds.height *= zoomStep;      
-//
-//      setBounds(bounds);
-//
-//      if (autolayout instanceof AutoLayoutByOffset){
-//         // no need to do anything
-//      } else if (autolayout instanceof AutoLayoutByMovement){
-//         ((AutoLayoutByMovement) autolayout).x *= zoomStep;
-//         ((AutoLayoutByMovement) autolayout).y *= zoomStep;
-//         autolayout.update();
-//      }
-//   }
-//   
-//   private float zoomLevel = 1.0f;
-//   public void setZoomLevel(float zoomLevel) {
-//      this.zoomLevel = zoomLevel;
-//   }
-//
-//   public float getZoomLevel() {
-//      return zoomLevel;
-//   }
 
    class Margin{
       int top;
@@ -496,10 +933,15 @@ implements Cloneable{
       this.offsety = offsety;
    }
 
-   public void setLocationRelativeToRegion(Region region, int side) {
-
-    //  reference_region = region;
-     // reference_side = side;
+   public int getActualWidth(){
+      return getActualBounds().width;
+   }
+   
+   public int getActualHeight(){
+      return getActualBounds().height;
+   }
+   
+   public void setLocationRelativeToRegion(Region region, Layout side) {
 
       if (margin != null){
          Region rectWithSpacing = new Region(region);
@@ -513,67 +955,63 @@ implements Cloneable{
       region.x += offsetx;
       region.y += offsety;
 
-      int height = getHeight();
-      int width = getWidth();
-      if (side == TOP){
-         setLocation(region.x + region.w/2 - width/2, region.y - height);
-      } else if (side == BOTTOM){
-         setLocation(region.x + region.w/2 - width/2, region.y + region.h);         
-      } else if (side == LEFT){
-         setLocation(region.x - width, region.y + region.h/2 - height/2);                  
-      } else if (side == RIGHT){
-         setLocation(region.x + region.w, region.y + region.h/2 - height/2);                  
-      } else if (side == INSIDE){
-         setLocation(region.x + region.w/2 - width/2, region.y + region.h/2 - height/2);                  
-      } else if (side == OVER){
-         setLocation(region.x,region.y);
-         setSize(region.w,region.h);
-      } else if (side == ORIGIN){
-         setLocation(region.x,region.y);
-      }
+      int height = getActualHeight();
+      int width = getActualWidth();
+      
+      if (side == Layout.TOP){
+         setActualLocation(region.x + region.w/2 - width/2, region.y - height);
+      } else if (side == Layout.BOTTOM){
+         setActualLocation(region.x + region.w/2 - width/2, region.y + region.h);         
+      } else if (side == Layout.LEFT){
+         setActualLocation(region.x - width, region.y + region.h/2 - height/2);                  
+      } else if (side == Layout.RIGHT){
+         setActualLocation(region.x + region.w, region.y + region.h/2 - height/2);                  
+      } else if (side == Layout.INSIDE){
+         setActualLocation(region.x + region.w/2 - width/2, region.y + region.h/2 - height/2);                  
+      } else if (side == Layout.OVER){
+         setActualBounds(region.getRect());
+      } else if (side == Layout.ORIGIN){
+         setActualLocation(region.x,region.y);
+      } 
 
    }
 
 
    public void setHorizontalAlignmentWithRegion(Region region, float f){
-      //reference_region = region;
 
       int x0 = region.x;
-      int x1 = region.x + region.w - getWidth();
+      int x1 = region.x + region.w - getActualWidth();
 
       int x = (int) (x0 + (x1-x0)*f);
 
-      setLocation(x,getY());
+      setActualLocation(x,getActualLocation().y);
    }
 
    public void setVerticalAlignmentWithRegion(Region region, float f){
-      //reference_region = region;
 
       int y0 = region.y;
-      int y1 = region.y + region.h - getHeight();
+      int y1 = region.y + region.h - getActualHeight();
 
       int y = (int) (y0 + (y1-y0)*f);
 
-      setLocation(getX(),y);
+      setActualLocation(getActualLocation().x,y);
    }
 
 
    private ArrayList<SikuliGuideComponent> followers = new ArrayList<SikuliGuideComponent>();
    SikuliGuideComponent leader;
-
-   //SikuliGuideComponent followerAsDestination;
-
-//   public void removeFollower(SikuliGuideComponent follower){
-//      followers.remove(followers);
-//   }
    
-   public void removeLeader(){
+   public void removeFromLeader(){
       if (leader != null)
          leader.removeFollower(this);
       leader = null;
    }
    
    public void addFollower(SikuliGuideComponent sklComp){
+      // force the follower to have the same visibility
+      sklComp.setVisible(isVisible());
+      sklComp.setOpacity(opacity);
+      
       if (followers.indexOf(sklComp)<0){
          // if this component is not already a follower
 
@@ -581,15 +1019,19 @@ implements Cloneable{
          followers.add(sklComp);
          
          // remove its previous leader
-         sklComp.removeLeader();
+         sklComp.removeFromLeader();
          
          // set its new leader to self
-         sklComp.setLeader(this);
+         sklComp.leader = this;
       }
    }
-
-   public void setLeader(SikuliGuideComponent leader){
-      this.leader = leader;
+   
+   private void updateAllFollowers(){
+      for (SikuliGuideComponent sklComp : getFollowers()){
+         if (sklComp.autolayout != null){
+            sklComp.autolayout.update();
+         }         
+      }
    }
 
    @Override
@@ -600,29 +1042,26 @@ implements Cloneable{
       super.setVisible(visible);
    }
    
-   @Override
-   public void setLocation(Point location){
-      setLocation(location.x, location.y);
-   }   
+//   @Override
+//   public void setLocation(Point location){
+//      setLocation(location.x, location.y);
+//   }   
    
-   @Override
-   public void setLocation(int x, int y){
-      
-      actualBounds.x = (int) (x/zoomLevel);
-      actualBounds.y = (int) (y/zoomLevel);
-
-      super.setLocation(x,y);
-      
-      for (SikuliGuideComponent sklComp : getFollowers()){
-         Debug.info("update followers");
-         if (sklComp.autolayout != null){
-            sklComp.autolayout.update();
-         }
-         
-      }
-
-   }
-   
+//   @Override
+//   public void setLocation(int x, int y){
+//      
+////      if (shadowRenderer != null){
+////         x -= 8;
+////         y -= 8;         
+////      }
+//      
+//      getActualBounds().x = (int) (x/zoomLevel);
+//      getActualBounds().y = (int) (y/zoomLevel);
+//
+//      super.setLocation(x,y);
+//      updateAllFollowers();
+//   }
+//   
 //   @Override
 //   public void setBounds(int x, int y, int w, int h){
 //      
@@ -642,54 +1081,109 @@ implements Cloneable{
 //      super.setBounds(x,y,w,h);
 //   }
 
-   @Override
-   public void setBounds(Rectangle bounds){
+//   @Override
+//   public void setBounds(Rectangle bounds){
+//      
+//      setActualBounds(new Rectangle(bounds));
+//      getActualBounds().x /= zoomLevel;
+//      getActualBounds().y /= zoomLevel;
+//      getActualBounds().width /= zoomLevel;
+//      getActualBounds().height /= zoomLevel;      
+//
+//      super.setBounds(bounds);      
+//      updateAllFollowers();
+//   }
+   
+   boolean hasShadow(){
+      return shadowRenderer != null;
+   }
+   
+   public void setActualLocation(Point location){
+      setActualLocation(location.x, location.y);
+   }
+   
+   public void setActualLocation(int x, int y){
       
-      actualBounds = new Rectangle(bounds);
-      actualBounds.x /= zoomLevel;
-      actualBounds.y /= zoomLevel;
-      actualBounds.width /= zoomLevel;
-      actualBounds.height /= zoomLevel;      
+      int paintX = x;
+      int paintY = y;
       
-      for (SikuliGuideComponent sklComp : getFollowers()){         
-         if (sklComp.autolayout != null){
-            sklComp.autolayout.update();
-         }
+      actualBounds.setLocation(x,y);
+      
+      if (hasShadow()){
+         paintX -= (shadowSize-shadowOffset);
+         paintY -= (shadowSize-shadowOffset);
       }
-      super.setBounds(bounds);
+      
+      super.setLocation(paintX, paintY);
+      updateAllFollowers();
    }
    
-   @Override
-   public void setSize(int width, int height){
-      actualBounds.width = (int) (width/zoomLevel);
-      actualBounds.height = (int) (height/zoomLevel);
-      
-      for (SikuliGuideComponent sklComp : getFollowers()){         
-         if (sklComp.autolayout != null){
-            sklComp.autolayout.update();
-         }         
-      }     
-      super.setSize(width, height); 
+   public void setActualSize(int width, int height){
+      setActualSize(new Dimension(width,height));
    }
-   
-   @Override
-   public void setSize(Dimension size){
-      actualBounds.width = (int) (size.width/zoomLevel);
-      actualBounds.height = (int) (size.height/zoomLevel);
       
-      for (SikuliGuideComponent sklComp : getFollowers()){         
-         if (sklComp.autolayout != null){
-            sklComp.autolayout.update();
-         }         
-      }     
-      super.setSize(size);
+   public void setActualSize(Dimension actualSize){
+      
+      actualBounds.setSize(actualSize);
+      
+      Dimension paintSize = (Dimension) actualSize.clone();
 
+      if (hasShadow()){
+         paintSize.width += (2*shadowSize);
+         paintSize.height += (2*shadowSize);
+      }
+      
+      super.setSize(paintSize);
+      updateAllFollowers();
    }
+   
+   public void setActualBounds(Rectangle actualBounds) {
+      this.actualBounds = (Rectangle) actualBounds.clone();
+      
+      Rectangle paintBounds = (Rectangle) actualBounds.clone();
+      if (hasShadow()){
+         paintBounds.x -= (shadowSize-shadowOffset);
+         paintBounds.y -= (shadowSize-shadowOffset);         
+         paintBounds.width += (2*shadowSize);
+         paintBounds.height += (2*shadowSize);
+      }
+      
+      super.setBounds(paintBounds);
+      updateAllFollowers();
+   }
+   
+//   @Override
+//   public void setSize(int width, int height){
+//      getActualBounds().width = (int) (width/zoomLevel);
+//      getActualBounds().height = (int) (height/zoomLevel);
+//      
+//      if (hasShadow()){
+//         width += 20;
+//         height += 20;      
+//      }
+//      
+//      super.setSize(width, height);
+////      updateAllFollowers();
+//   }     
+//   
+//   @Override
+//   public void setSize(Dimension size){
+////      getActualBounds().width = (int) (size.width/zoomLevel);
+////      getActualBounds().height = (int) (size.height/zoomLevel);
+//      
+////      if (hasShadow()){
+////         size.width += 20;
+////         size.height += 20;      
+////      }
+//      
+//      super.setSize(size);
+////      updateAllFollowers();
+//   }
 
 
    public Point getCenter(){
-      Point loc = new Point(getLocation());
-      Dimension size = getSize();
+      Point loc = new Point(getActualLocation());
+      Dimension size = getActualSize();
       loc.x += size.width/2;
       loc.y += size.height/2;
       return loc;
@@ -745,6 +1239,39 @@ implements Cloneable{
    public boolean isAutoVisibilityEnabled() {
       return autoVisibilityEnabled;
    }
+   
+   public Rectangle getFollowerBounds(){
+      
+      // find the total bounds of all the components
+      Rectangle bounds = new Rectangle(getBounds());
+      for (SikuliGuideComponent sklComp : getFollowers()){
+         bounds.add(sklComp.getBounds());
+      }
+      return bounds;
+   }
 
+
+   public Rectangle getActualBounds() {
+      return actualBounds;
+   }
+
+   public Point getActualLocation(){
+      return actualBounds.getLocation();      
+   }
+   
+   public Dimension getActualSize() {
+      return new Dimension(getActualWidth(),getActualHeight());
+   }
+
+   
+   public void addAnimationListener(AnimationListener listener){
+      animationListener = listener;
+   }
+   
+   AnimationListener animationListener;
+   public void animationCompleted(){
+      if (animationListener != null)
+         animationListener.animationCompleted();
+   }
 
 }

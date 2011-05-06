@@ -23,7 +23,8 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
    static final int PADDING_Y = 5;
    
 
-
+   
+   
    String text;
 
    public SikuliGuideCallout(String text){         
@@ -46,7 +47,7 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
          gp.lineTo(TRIANGLE_SIZE*0.85,0);
          gp.closePath();
 
-         setSize(new Dimension(TRIANGLE_SIZE,TRIANGLE_SIZE));
+         setActualSize(new Dimension(TRIANGLE_SIZE,TRIANGLE_SIZE));
       }
 
       public void rotate(double radius){
@@ -69,15 +70,12 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
       public RoundedBox(Rectangle rect) {
          super();
-
-         setBounds(rect);
-         setForeground(Color.yellow);
+         setActualBounds(rect);
       }
 
       public void paintComponent(Graphics g){
          super.paintComponent(g);
          Graphics2D g2d = (Graphics2D) g;
-
 
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                RenderingHints.VALUE_ANTIALIAS_ON); 
@@ -89,8 +87,16 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
    }
 
-
-   void init(String text){
+   
+   @Override
+   public void setBackground(Color color){
+      textArea.setBackground(color);
+      triangle.setForeground(color);
+      rbox.setForeground(color);
+      super.setBackground(color);
+   }
+   
+    void init(String text){
       this.text = text;
 
       //      JTextArea textArea = new JTextArea();
@@ -104,64 +110,65 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
 
       textArea = new HTMLTextPane();
       textArea.setText(text);
-      textArea.setMaximumWidth(200);
+      textArea.setMaximumWidth(400);
       textArea.setLocation(PADDING_X,PADDING_Y);
 
       Rectangle rect = textArea.getBounds();
       rect.grow(PADDING_X,PADDING_Y);      
       rbox = new RoundedBox(rect);
+
       
       add(textArea);
       add(rbox);
 
       triangle = new Triangle();  
-      triangle.setForeground(Color.yellow);
-      triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.BOTTOM);
+      triangle.setLocationRelativeToComponent(rbox, Layout.BOTTOM);
       add(triangle);
       
       Rectangle bounds = rbox.getBounds();
       bounds.add(triangle.getBounds());
-      setBounds(bounds);
-
+      setActualBounds(bounds);
+      
+      setBackground(Color.yellow);
    }
 
    int dx=0;
    int dy=0;
    
-   int currentSide = -1;
-   public void setLocationRelativeToRegion(Region region, int side) {
+   Layout currentSide = null;
+   public void setLocationRelativeToRegion(Region region, Layout side) {
 
       if (side != currentSide){
          currentSide = side;
 
 
-         if (side == TOP){
+         if (side == Layout.TOP){
 
-            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.BOTTOM);
+            triangle.setLocationRelativeToComponent(rbox, Layout.BOTTOM);
 
-         } else if (side == BOTTOM){
+         } else if (side == Layout.BOTTOM){
 
             dy = TRIANGLE_SIZE;
 
             triangle.rotate(Math.PI);
-            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.TOP);
+            triangle.setLocationRelativeToComponent(rbox, Layout.TOP);
 
-         } else if (side == LEFT){
+         } else if (side == Layout.LEFT){
 
             triangle.rotate(-Math.PI/2);
-            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.RIGHT);
+            triangle.setLocationRelativeToComponent(rbox, Layout.RIGHT);
 
-         } else if (side == RIGHT){
+         } else if (side == Layout.RIGHT){
 
             dx = TRIANGLE_SIZE;
 
             triangle.rotate(Math.PI/2);
-            triangle.setLocationRelativeToComponent(rbox, SikuliGuideComponent.LEFT);
+            triangle.setLocationRelativeToComponent(rbox, Layout.LEFT);
          }      
 
          Rectangle bounds = rbox.getBounds();
          bounds.add(triangle.getBounds());
-         setBounds(bounds);
+         setActualBounds(bounds);
 
       }
 
@@ -169,6 +176,7 @@ public class SikuliGuideCallout extends SikuliGuideComponent{
    }
 
 
+   @Override
    public void paintComponent(Graphics g){
       g.translate(dx, dy);
       super.paintComponent(g);

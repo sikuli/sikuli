@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
@@ -35,7 +36,7 @@ public class ControlBox extends SikuliGuideComponent {
    float scale;
    int w,h;
    
-   private SikuliGuideComponent targetComponent;
+   private SikuliGuideComponent controlledComponent;
    
    private EditorWindow editor;
    
@@ -134,7 +135,7 @@ public class ControlBox extends SikuliGuideComponent {
          
          Rectangle bounds = new Rectangle(getBounds());
          bounds.grow(-10,-10);
-         getTargetComponent().setBounds(bounds);
+         getControlledComponent().setActualBounds(bounds);
          
          
          if (getParent() != null)
@@ -247,25 +248,25 @@ public class ControlBox extends SikuliGuideComponent {
    }
 
    public void setTargetComponent(SikuliGuideComponent targetComponent) {
-      this.targetComponent = targetComponent;
+      this.controlledComponent = targetComponent;
       
 
       //setAutoResizeEnabled(false);
       //setAutoMoveEnabled(false);
       
       setMargin(10,10,10,10);
-      setLocationRelativeToComponent(targetComponent, SikuliGuideComponent.OVER);
+      setLocationRelativeToComponent(targetComponent, Layout.OVER);
    }   
    
    @Override
-   public void setLocationRelativeToRegion(Region region, int side) {
+   public void setLocationRelativeToRegion(Region region, Layout side) {
       //Debug.info("[ControlBox] updated by relative component");
       super.setLocationRelativeToRegion(region, side); 
       updateControlPoints();
    }
    
-   public SikuliGuideComponent getTargetComponent() {
-      return targetComponent;
+   public SikuliGuideComponent getControlledComponent() {
+      return controlledComponent;
    }
 
    public void setEditor(EditorWindow editor) {

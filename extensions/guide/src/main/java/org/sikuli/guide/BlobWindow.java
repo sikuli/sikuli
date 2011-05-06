@@ -179,7 +179,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
    }
 
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
       
       toFront();
       setVisible(true);
@@ -218,7 +218,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       ScreenImage img = source.getScreen().capture(source);
       
       SikuliGuideImage sgimage = new SikuliGuideImage(img.getImage());
-      guide.addComponent(sgimage);
+      guide.addToFront(sgimage);
       sgimage.setLocation(x,y);
    }
    
@@ -228,7 +228,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       
       SikuliGuideImage sgimage = new SikuliGuideImage(subimage);
       sgimage.setScale(2.0f);
-      guide.addComponent(sgimage);
+      guide.addToFront(sgimage);
       sgimage.setLocation(x,y);
    }
 
@@ -307,7 +307,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener {
       large.y -= 10;
       large.h += 20;
       large.w += 20;
-      guide.addComponent(new SikuliGuideCircle(large));
+      guide.addToFront(new SikuliGuideCircle(large));
       
       guide.repaint();
       

@@ -134,7 +134,7 @@ public class GUINode extends DefaultMutableTreeNode {
       Match m = ancestor.getMatch();
       
       SikuliGuideRectangle match = new SikuliGuideRectangle(m);
-      g.addComponent(match);
+      g.addToFront(match);
 
       int ox = m.x;
       int oy = m.y;
@@ -144,8 +144,8 @@ public class GUINode extends DefaultMutableTreeNode {
       for (int i = 1; i < path.size(); ++i){
          
          
-         ox += previous.getWidth();
-         oy += previous.getHeight();
+         ox += previous.getActualWidth();
+         oy += previous.getActualHeight();
          
          // add spacing between nodes
          ox += 5;
@@ -154,18 +154,16 @@ public class GUINode extends DefaultMutableTreeNode {
          GUINode node = path.get(i);
          SikuliGuideImage current = null;
          try {
-            ImageLocator imgLocator = new ImageLocator();
-            String full_image_filename = imgLocator.locate(node.getPattern().getFilename());
-            current = new SikuliGuideImage(full_image_filename);
+            current = new SikuliGuideImage(node.getPattern().getImage());
          } catch (IOException e1) {
+            e1.printStackTrace();
          }
 
-         current.setLocation(ox,oy);
-         g.addComponent(current);
+         current.setActualLocation(ox,oy);
+      
          
-         
-         Rectangle r1 = previous.getBounds();
-         Rectangle r2 = current.getBounds();
+         Rectangle r1 = previous.getActualBounds();
+         Rectangle r2 = current.getActualBounds();
 
          
          // draw an elbow between the two
@@ -175,10 +173,12 @@ public class GUINode extends DefaultMutableTreeNode {
          // give some margin between the arrow head and the pointed image
          p2.x -= 5;
          
-         SikuliGuideArrow arrow = new SikuliGuideArrow(p1, p2);
+         //SikuliGuideArrow arrow = new SikuliGuideArrow(previous, current);
+         SikuliGuideArrow arrow = new SikuliGuideArrow(p1,p2);
          arrow.setStyle(SikuliGuideArrow.ELBOW_Y);
-         g.addComponent(arrow);
+         g.addToFront(arrow);
          
+         g.addToFront(current);
          
          
          previous = current;

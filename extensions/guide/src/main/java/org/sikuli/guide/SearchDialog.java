@@ -381,7 +381,7 @@ public class SearchDialog extends JFrame implements ActionListener, DocumentList
       }
       
       circle = new SikuliGuideCircle(r);
-      guide.addComponent(circle);
+      guide.addToFront(circle);
 
       guide.repaint();
    }

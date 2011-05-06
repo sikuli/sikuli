@@ -34,10 +34,20 @@ public class Part {
       return targetOrigin;
    }
 
+   public void setTargetScreenOrigin(Point targetScreenOrigin) {
+      this.targetScreenOrigin = targetScreenOrigin;
+   }
+
+   public Point getTargetScreenOrigin() {
+      return targetScreenOrigin;
+   }
+
    private Point targetOrigin;
+   private Point targetScreenOrigin;
    
    Pattern targetPattern;   
    ArrayList<SikuliGuideComponent> annotationComponents = new
       ArrayList<SikuliGuideComponent>();
+   
       
 }

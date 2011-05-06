@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -24,13 +25,21 @@ public class Clickable extends SikuliGuideComponent {
       public Clickable(Region region){
          this.region = region;
          if (region != null){
-            this.setBounds(region.getRect());
-            this.setLocation(region.x,region.y);
+            this.setActualBounds(region.getRect());
+            this.setActualLocation(region.x,region.y);
          }
+      }
+      Point clickPoint = null;
+
+      public Clickable(){
       }
 
       public void setName(String name){ 
          this.name = name;
+      }
+      
+      public String getName(){
+         return name;
       }
             
       boolean borderVisible = true;
@@ -48,7 +57,8 @@ public class Clickable extends SikuliGuideComponent {
                globalMouseEntered();
             }
             
-            this.repaint();
+            Rectangle r = getBounds();
+            this.getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
          }            
          this.mouseOver = mouseOver;
          
@@ -70,7 +80,12 @@ public class Clickable extends SikuliGuideComponent {
       }
       
       public void globalMouseClicked(Point p){
-         Debug.info("Clickable is clicked at: " + p);
+         //Debug.info("[Clickable] clicked at: " + p);
+      }
+      
+      boolean mouseOverVisible = false;
+      public void setMouseOverVisible(boolean visible){
+         mouseOverVisible = visible;
       }
       
       public void paintComponent(Graphics g){
@@ -78,12 +93,21 @@ public class Clickable extends SikuliGuideComponent {
          
          Graphics2D g2d = (Graphics2D) g;
          
-         g2d.setColor(new Color(1,1,1,0.05f));         
-         g2d.fillRect(0,0,getWidth()-1,getHeight()-1);
+         g2d.setColor(new Color(1,1,1,0.05f));
+         g2d.fillRect(0,0,getActualWidth()-1,getActualHeight()-1);
          
-//         if (mouseOver){
-//            g2d.setColor(mouseOverColor);
-//         }else{
+         if (mouseOverVisible){
+            
+            if (mouseOver){
+               g2d.setColor(mouseOverColor);               
+            }
+            else{
+                g2d.setColor(normalColor);
+             }
+            
+            g2d.fillRect(0,0,getActualWidth()-1,getActualHeight()-1);
+         }
+//         else{
 //            g2d.setColor(normalColor);
 //         }
 //         

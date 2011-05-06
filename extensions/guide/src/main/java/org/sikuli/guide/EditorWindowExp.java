@@ -230,7 +230,7 @@ implements MouseListener, Transition, GlobalMouseMotionListener, MouseMotionList
    
 
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
       
       toFront();
       setVisible(true);

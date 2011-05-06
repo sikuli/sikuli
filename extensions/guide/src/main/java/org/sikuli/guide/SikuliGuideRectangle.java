@@ -19,20 +19,17 @@ public class SikuliGuideRectangle extends SikuliGuideComponent{
       super();
       if (region != null){
          this.region = region;
-         setBounds(region.getRect());
+         setActualBounds(region.getRect());
       }
       setForeground(Color.red);
    }
 
-   public void paint(Graphics g){
-      super.paint(g);
+   public void paintComponent(Graphics g){
+      super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
-
       Stroke pen = new BasicStroke(3.0F);    
       g2d.setStroke(pen);
-
-      Rectangle r = getBounds();      
-      g2d.drawRect(0,0,r.width-1,r.height-1);
+      g2d.drawRect(0,0,getActualWidth()-1,getActualHeight()-1);
 
    } 
 
