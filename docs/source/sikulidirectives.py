@@ -148,6 +148,7 @@ class Parser:
 
 from sphinx.util.compat import Directive
 from docutils import nodes
+from docutils.utils import relative_path
 import os.path
 import os
 
@@ -173,7 +174,7 @@ class SikuliCodeDirective(Directive):
       srcdir = os.path.dirname(src)
       
       #print env.__dict__
-      relpath = os.path.relpath(src, root)
+      relpath = relative_path(root, src)
       #print relpath
       
       dest = os.path.join(root, "../build/html", relpath)
