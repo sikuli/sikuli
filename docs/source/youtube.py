@@ -37,5 +37,6 @@ def youtube(name, args, options, content, lineno,
         params = [PARAM % (key, extra_args[key]) for key in extra_args]
         string_vars['extra'] = "".join(params)
     return [nodes.raw('', CODE % (string_vars), format='html')]
-youtube.content = True
-directives.register_directive('youtube', youtube)
+
+def setup(app):
+    app.add_directive('youtube', youtube, content=True)
