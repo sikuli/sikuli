@@ -38,7 +38,7 @@ and all matches of the last successful :py:meth:`Region.findAll` (accessible
 with :py:meth:`Region.getLastMatches`. You can wait for patterns to show up
 using :py:meth:`Region.wait`, to vanish using :py:meth:`Region.waitVanish` or
 just check whether a pattern :py:meth:`exists <Region.exists>` without the need to handle
-:ref:`exceptions <ExceptionsFindFailed>`. 
+:ref:`exceptions <ExceptionFindFailed>`. 
 
 Sikuli supports visual event driven programming. You can tell a region
 :ref:`to observe that something appears, vanishes or changes <ObservingVisualEventsinaRegion>`. 
