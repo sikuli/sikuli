@@ -16,7 +16,8 @@ Python/Jython features of module support - for your scripts too.
 This is possible with Sikuli X:
 
 * import other .sikuli in a way that is fully compatible with Python import
-* import a python modul structure including underlying Java classes from a jar-file, that is dynamically loaded using the function :py:func:`load(jar-file) <load>`
+* import a python module structure including underlying Java classes from a
+  jar-file, that is dynamically loaded using the function :py:func:`load(jar-file) <load>`
 * automatically access images contained in the imported .sikuli (no need to use
   :py:func:`setBundlePath`) 
 
