@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,9 +20,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,7 +35,9 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.Timer;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.util.ComponentMover;
+import org.sikuli.script.Clipboard;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Finder;
@@ -66,6 +71,10 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    Toolbar toolbar;
    JPanel palletePanel;   
    private OverviewWindow overview;  
+   
+   JPanel left;
+   JLayeredPane right;
+
 
    interface PointSelectionListener {
       void pointSelectionCompleted(PointSelectionEvent e);
@@ -78,7 +87,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       public ArrayList<Point> selectedPoints;
    }
 
-   class Toolbar extends JWindow {
+   class Toolbar extends JPanel {
 
 
       class ToolbarButton extends JButton implements ActionListener{
@@ -87,6 +96,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
             super(text);
             setActionCommand(command);
             setFocusable(false);
+            setFont(new Font("Helvetica", Font.PLAIN,  10));
             addActionListener(this);
          }
 
@@ -112,14 +122,16 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
                doRun();
             }else if (e.getActionCommand() == "RunAll"){
                doRunAll();
+            }else if (e.getActionCommand() == "Export"){
+               doExport();
             }
 
          }
 
       }
 
-      public Toolbar(Frame owner){
-         super(owner);
+      public Toolbar(){
+         super();
 
          setBackground(Color.red);
          //setOpaque(true);
@@ -127,34 +139,39 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          ComponentMover cm = new ComponentMover();
          cm.registerComponent(this);
 
-         JPanel p = new JPanel();
-         p.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-         p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
+         //JPanel p = new JPanel();
+         //p.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+         setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 
          //         p.add(new ToolbarButton("Select","Select"));                  
 
-         p.add(new ToolbarButton("Anchor","Anchor"));
-         p.add(new ToolbarButton("Text","Text"));
-         //         p.add(new ToolbarButton("Callout","Callout"));
-         //         p.add(new ToolbarButton("Flag","Flag"));
-         //         p.add(new ToolbarButton("Circle","Circle"));
-         //         p.add(new ToolbarButton("Bracket","Bracket"));
+         add(new ToolbarButton("Anchor","Anchor"));
+         
+         add(new ToolbarButton("Text","Text"));
+         add(new ToolbarButton("Callout","Callout"));
+         add(new ToolbarButton("Flag","Flag"));
+         add(new ToolbarButton("Hotspot","Hotspot"));
 
-         p.add(new ToolbarButton("Play","Run"));
-         p.add(new ToolbarButton("Play All","RunAll"));
+         add(new ToolbarButton("Spotlight","Spotlight"));
+         add(new ToolbarButton("Circle","Circle"));
+         add(new ToolbarButton("Rectangle","Rectangle"));
+         add(new ToolbarButton("Bracket","Bracket"));
+         add(new ToolbarButton("Arrow","Arrow"));
 
-         p.setSize(p.getPreferredSize());
+         add(new ToolbarButton("Play","Run"));
+         add(new ToolbarButton("Export","Export"));
+
+         //add(new ToolbarButton("Play All","RunAll"));
+         //add(new ToolbarButton("Play All","RunAll"));
+
+         setSize(getPreferredSize());
 
          //p.setBackground(new Color(255,245,238,100));
          Color bg = new Color(119,136,153);
-         p.setBackground(bg);
-         p.setBorder(BorderFactory.createLineBorder(Color.black));
+         setBackground(bg);
+         //setBorder(BorderFactory.createLineBorder(Color.black));
 
-         add(p);
-
-         setSize(p.getSize());      
-         //setMovable(true);
-      }      
+         }      
    }
 
    class PointSelector extends JComponent implements
@@ -266,7 +283,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       double scale = (double) SCALE;
       public BackgroundImage(BufferedImage image){
          this.image = image;
-         setBounds(new Rectangle(0,0,(int)(image.getWidth()*scale),(int)(image.getHeight()*scale)));
+         setActualBounds(new Rectangle(0,0,(int)(image.getWidth()*scale),(int)(image.getHeight()*scale)));
       }
 
       @Override
@@ -401,8 +418,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       getContentPane().addMouseListener(rectangleSelector);
       getContentPane().addMouseMotionListener(rectangleSelector);
 
-      locationSelector = new LocationSelector();
-      getContentPane().addMouseListener(locationSelector);
 
       //      getGlassPane().addMouseListener(locationSelector);
       //      getGlassPane().setVisible(true);
@@ -422,17 +437,43 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       getContentPane().setFocusable(true);
 
 
+
+      toolbar = new Toolbar();
+      toolbar.setLocation(0,0);
+      toolbar.setSize(1050,50);
+      toolbar.setVisible(true);
+      //toolbar.pack();
+      //toolbar.toFront();
+      
+      
+      left = new JPanel();
+      left.setLayout(null);
+      //left.setBorder(BorderFactory.createLoweredBevelBorder());
+      
+      right = new JLayeredPane();
+      right.setLayout(null);
+      right.setBorder(BorderFactory.createLoweredBevelBorder());
+      
       palletePanel = new JPanel();
       palletePanel.setLayout(null);
       palletePanel.setBackground(null);
       palletePanel.setOpaque(false);      
-      getLayeredPane().add(palletePanel, JLayeredPane.PALETTE_LAYER);
+      right.add(palletePanel, JLayeredPane.PALETTE_LAYER);      
+      
+      
+      left.setLocation(0,50);
+      left.setSize(250,640);
+      right.setLocation(250,50);
+      right.setSize(800,640);
+      this.setScreenImageSize(new Dimension(800,640));
 
-      toolbar = new Toolbar(this);
-      toolbar.setLocation(10,30);
-      toolbar.setVisible(true);
-      toolbar.pack();
-      toolbar.toFront();
+      setLayout(null);
+      add(toolbar);
+      add(left);
+      add(right);
+      
+      setSize(1050,690);
+      setResizable(false);
 
       controlBox = new ControlBox();
       controlBox.setEditor(this);
@@ -442,14 +483,25 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       textPropertyEditor.setVisible(false);
       addToPaletteLayer(textPropertyEditor);
 
-      overview = new OverviewWindow(this);
-      overview.setLocation(10,70);
+      overview = new OverviewWindow();
+      overview.setLocation(0,0);
       overview.setEditor(this);
       overview.setVisible(true);
-      overview.toFront();
+      overview.setSize(250,640);
+      overview.setBorder(BorderFactory.createLoweredBevelBorder());
+
+      //overview.toFront();
+      
+      left.add(overview,0);
 
       linkedAnchorVisualization = new RelatedAnchorVisulization();
       addToPaletteLayer(linkedAnchorVisualization);
+      
+      
+      
+      locationSelector = new LocationSelector();
+      right.addMouseListener(locationSelector);
+
 
    }
 
@@ -511,7 +563,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
 
       //toFront();
       setVisible(true);
@@ -689,7 +741,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       componentSelector.start(new LinkComponentToAnchorAction());
    }
 
-   void createStepToPlay(Step step){
+   public void createStepToPlay(Step step){
       step.clear();
 
       unselectComponent();
@@ -703,8 +755,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
             Debug.info("Adding an anchor to the current step");
 
-            SikuliGuideAnchor anchor = (SikuliGuideAnchor) comp;
-            Rectangle bounds = anchor.getBounds();
+            SikuliGuideAnchor anchor = (SikuliGuideAnchor) comp;            
+            Rectangle bounds = anchor.getActualBounds();
 
             BufferedImage screenImage = step.getScreenImage();
             BufferedImage croppedImage 
@@ -713,13 +765,34 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
             Part part = new Part(new Pattern(croppedImage));
             // TODO: fold this into target
-            part.setTargetOrigin(new Point(anchor.getLocation()));
+            part.setTargetOrigin(new Point(bounds.getLocation()));
+            
+            // calculate the anchor's location on screen
+            Point screenLocation = new Point(bounds.getLocation());
+            Point viewLocation = step.getView().getLocation();
+            Point panelLocation = right.getLocation();
+            Point windowLocation = getLocation();
+            screenLocation.x += viewLocation.x;
+            screenLocation.y += viewLocation.y;
+            screenLocation.x += panelLocation.x;
+            screenLocation.y += panelLocation.y;            
+            screenLocation.x += windowLocation.x;
+            screenLocation.y += windowLocation.y;
+            screenLocation.y += 22;
+            //part.setTargetScreenOrigin(new Point(anchor.getLocationOnScreen()));
+            part.setTargetScreenOrigin(screenLocation);
+            
 
             for (SikuliGuideComponent annotation : anchor.getFollowers()){   
 
                if (annotation.isVisible() && !(annotation instanceof Connector)){
                   Debug.info("Adding " + annotation);
-                  part.addComponent((SikuliGuideComponent) annotation.clone());
+                  SikuliGuideComponent clonedSklComp = (SikuliGuideComponent) annotation.clone();
+                  clonedSklComp.shadowRenderer = null;
+                  part.addComponent(clonedSklComp);
+                  clonedSklComp.setActualBounds(annotation.getActualBounds());//.getLocation());
+                  Debug.info("added " + clonedSklComp);
+
                }
             }
 
@@ -735,7 +808,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          createStepToPlay(step);
       }
 
-      setVisible(false);
+      //setVisible(false);
       synchronized(this){
          this.notify();
       }
@@ -745,49 +818,39 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       setPlayAll(false);
       Step step = getCurrentStep();
       createStepToPlay(step);
-      //      step.clear();
-      //      
-      //      unselectComponent();
-      //      
-      //      Component[] components = this.getCurrentComponents();
-      //
-      //      Debug.info("" + components.length + " components");
-      //
-      //      for (Component comp: components){
-      //         if (comp instanceof SikuliGuideAnchor){
-      //
-      //            Debug.info("Adding an anchor to the current step");
-      //
-      //            SikuliGuideAnchor anchor = (SikuliGuideAnchor) comp;
-      //            Rectangle bounds = anchor.getBounds();
-      //
-      //            BufferedImage screenImage = step.getScreenImage();
-      //            BufferedImage croppedImage 
-      //            = screenImage.getSubimage(bounds.x, bounds.y, bounds.width, bounds.height);
-      //
-      //
-      //            Part part = new Part(new Pattern(croppedImage));
-      //            // TODO: fold this into target
-      //            part.setTargetOrigin(new Point(anchor.getLocation()));
-      //
-      //            for (SikuliGuideComponent annotation : anchor.getFollowers()){   
-      //
-      //               if (annotation.isVisible() && !(annotation instanceof Connector)){
-      //                  Debug.info("Adding " + annotation);
-      //                  part.addComponent((SikuliGuideComponent) annotation.clone());
-      //               }
-      //            }
-      //
-      //            step.addPart(part);  
-      //         }
-      //
-      //      }
-
-      setVisible(false);
+      
+      //setVisible(false);
       synchronized(this){
          this.notify();
       }
    }
+   
+   public void doExport(){
+      
+      StepView view = getCurrentStep().getView();
+      BufferedImage outImage = new BufferedImage(view.getWidth(), view.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g2d = outImage.createGraphics();
+      view.paint(g2d);
+      g2d.dispose();
+
+      try {
+         ImageIO.write(outImage, "png", new File("/Users/tomyeh/Desktop/outscreenimage.png"));
+
+
+         String html = "<table style='background-color:#EEEEEE;border:1px solid #AAA;'>\n" +
+         "<tr><td style='border:1px solid #AAA;'>\n" + 
+         "<img src='outscreenimage.png' width=300/>\n" +
+         "<td></tr><tr style='background-color:#EEEEEE'>\n" +
+         "<td>Powered by Sikuli<span style='float:right;cursor:pointer;'>Pop-Out</span></td></tr></table>";
+
+         Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8, 
+               Clipboard.BYTE_BUFFER, html);
+
+      } catch (IOException e) {
+      }
+
+   }
+      
 
 
    float zoomLevel = 1.0f;
@@ -802,7 +865,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    public void setScreenImageSize(Dimension size){
       screenImageSize = (Dimension) size.clone();
-      setSize(size);
+      //setSize(size);
       setLocationRelativeTo(null);
    }
 
@@ -810,25 +873,35 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    void setZoomLevel(float zoomLevel){
       this.zoomLevel = zoomLevel;
 
-      int containerWidth = getContentPane().getWidth();
-      int containerHeight = getContentPane().getHeight();
+      int containerWidth = right.getWidth();
+      int containerHeight = right.getHeight();
 
       int w = getScreenImageSize().width;
       int h = getScreenImageSize().height;
 
       StepView view = getCurrentStep().getView();
+      
       int w1 = (int) (w * zoomLevel);
       int h1 = (int) (h * zoomLevel);
-      view.setSize(w1,h1);
+      //Debug.info("BEFORE view:" + view);
+      
+      // TODO no need to recompute shadow
+      view.setSize(w1,h1);      
       view.setLocation(containerWidth/2 - w1/2, containerHeight/2 - h1/2);
       palletePanel.setBounds(view.getBounds());
-
-
+      
+      
       for (Component comp : view.getComponents()){
          SikuliGuideComponent sklComp = (SikuliGuideComponent) comp;
          if (sklComp instanceof SikuliGuideAnchor || sklComp instanceof BackgroundImage)
             sklComp.setZoomLevel(zoomLevel);
       }
+      
+      // recompute shadow after the content (i.e., BackgroundImage) is drawn
+      for (SikuliGuideComponent sklComp : view.getFollowers()){
+        // ((SikuliGuideShadow) sklComp).createShadowImage();
+      }
+      repaint();
 
       //      for (Component comp : palletePanel.getComponents()){
       //         SikuliGuideComponent sklComp = (SikuliGuideComponent) comp;
@@ -848,9 +921,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
          if (k.getKeyCode() == KeyEvent.VK_UP){
             Debug.info("Zoom in");
-            setZoomLevel(getZoomLevel() + 0.1f);
+            setZoomLevel(getZoomLevel() + 0.05f);
          } else if (k.getKeyCode() == KeyEvent.VK_DOWN) {
-            setZoomLevel(getZoomLevel() - 0.1f);
+            setZoomLevel(getZoomLevel() - 0.05f);
          }
 
 
@@ -950,6 +1023,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
          SikuliGuideAnchor anchor = new SikuliGuideAnchor(new Region(rectangle));
          anchor.addMouseListener(componentSelector);
+         anchor.addMouseMotionListener(componentSelector);
+
          anchor.setEditable(true);
          anchor.setMovable(true);
 
@@ -995,10 +1070,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          Debug.info("User double-clicked on this");
 
          // TODO allow other types to be edited
-         if (comp instanceof SikuliGuideText){
+         if (comp instanceof SikuliGuideText || comp instanceof SikuliGuideFlag ){
 
             Debug.info("User double-clicked on Text");
-
 
             textPropertyEditor.setTargetComponent(comp);
             textPropertyEditor.setVisible(true);
@@ -1008,7 +1082,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
             controlBox.setTargetComponent(comp);
             controlBox.setVisible(true);
-            //controlBox.setAutoResizeEnabled(true);
          }
       }
    }
@@ -1030,11 +1103,13 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          // highlight the anchor of the selected component
          if (comp.getLeader() instanceof SikuliGuideAnchor){
 
-
             SikuliGuideAnchor anchor = (SikuliGuideAnchor) comp.getLeader();
             linkedAnchorVisualization.setVisible(true);
             linkedAnchorVisualization.setAnchor(anchor);
 
+         } else if (comp instanceof SikuliGuideAnchor){
+            linkedAnchorVisualization.setVisible(true);            
+            linkedAnchorVisualization.setAnchor((SikuliGuideAnchor) comp);            
          }
 
          repaint();  
@@ -1056,9 +1131,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
          if(r.w > r.h)
-            bracket.setLocationRelativeToComponent(comp, SikuliGuideComponent.TOP);
+            bracket.setLocationRelativeToComponent(comp, Layout.TOP);
          else
-            bracket.setLocationRelativeToComponent(comp, SikuliGuideComponent.LEFT);
+            bracket.setLocationRelativeToComponent(comp, Layout.LEFT);
 
          comp.addFollower(bracket);
 
@@ -1072,7 +1147,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       public void componentSelected(SikuliGuideComponent comp) {
 
          SikuliGuideCircle circle = new SikuliGuideCircle();
-         circle.setLocationRelativeToComponent(comp, SikuliGuideComponent.OVER);
+         circle.setLocationRelativeToComponent(comp, Layout.OVER);
 
          comp.addFollower(circle);
 
@@ -1097,7 +1172,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       public void perform(SikuliGuideComponent sourceComponent,
             SikuliGuideComponent anchor){
 
-         sourceComponent.followComponent(anchor);
+         sourceComponent.setLocationRelativeToComponent(anchor);
          anchor.addFollower(sourceComponent);         
 
          Debug.info("Linking " + sourceComponent  + " to " + anchor);
@@ -1134,7 +1209,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
          SikuliGuideRectangle rect = new SikuliGuideRectangle(null);
          rect.setMargin(5,5,5,5);
-         rect.setLocationRelativeToComponent(comp, SikuliGuideComponent.OVER);         
+         rect.setLocationRelativeToComponent(comp, Layout.OVER);         
 
          addToPaletteLayer(rect);
 
@@ -1234,14 +1309,12 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          Debug.info("Adding a text element at " + location);
 
          SikuliGuideText text = new SikuliGuideText("Text");
-         SikuliGuideShadow shadow = new SikuliGuideShadow(text);
-
-         text.setLocationRelativeToPoint(location, SikuliGuideComponent.CENTER);         
+         text.setLocationRelativeToPoint(location, Layout.CENTER);         
          text.setMovable(true);
+         //text.setShadow(10);
          text.addMouseListener(componentSelector);
          text.addMouseMotionListener(componentSelector);
 
-         addToCurrentStep(shadow,0);
          addToCurrentStep(text,0);
 
          linkComponentToClosestAnchor(text);
@@ -1273,6 +1346,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
          SikuliGuideAnchor anchor = new SikuliGuideAnchor(new Region(r));
          anchor.addMouseListener(componentSelector);
+         anchor.addMouseMotionListener(componentSelector);
+
          anchor.setEditable(true);
          anchor.setMovable(true);
 
@@ -1294,18 +1369,41 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          perform(location);
       }
 
-      public void perform(Point location){
-         Debug.info("adding flag at:" + location);
+      public SikuliGuideComponent perform(Point location){
+         Debug.info("adding a flag at: " + location);
          SikuliGuideFlag text = new SikuliGuideFlag("Flag");
-         SikuliGuideShadow shadow = new SikuliGuideShadow(text);
-
-         text.setLocationRelativeToPoint(location, SikuliGuideComponent.CENTER);         
+//         SikuliGuideShadow shadow = new SikuliGuideShadow(text);
+//
+//         text.setLocationRelativeToPoint(location, Layout.CENTER);         
+//         text.setMovable(true);
+//         text.addMouseListener(componentSelector);
+//
+//         addToCurrentStep(shadow,0);
+//         addToCurrentStep(text,0);
+//         currentStepContentChanged();
+//         
+//         Debug.info("Adding a text element at " + location);
+//
+//         SikuliGuideText text = new SikuliGuideText("Text");
+         text.setLocationRelativeToPoint(location, Layout.CENTER);         
          text.setMovable(true);
+         //text.setShadow(10,2);
          text.addMouseListener(componentSelector);
+         text.addMouseMotionListener(componentSelector);
 
-         addToCurrentStep(shadow,0);
          addToCurrentStep(text,0);
+
+         linkComponentToClosestAnchor(text);
+         (new SelectAction()).componentSelected(text);
+
+         // after adding a text element, we want to switch back to the selection mode
+         doSelect();
+
+         (new SelectAction()).componentSelected(text);
+
+         // we want to notify those interested in the changes in the content of the current step
          currentStepContentChanged();
+         return text;
       }
    }
 
@@ -1319,7 +1417,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          SikuliGuideCallout text = new SikuliGuideCallout("Callout");
          SikuliGuideShadow shadow = new SikuliGuideShadow(text);
 
-         text.setLocationRelativeToPoint(location, SikuliGuideComponent.CENTER);         
+         text.setLocationRelativeToPoint(location, Layout.CENTER);         
          text.setMovable(true);
          text.addMouseListener(componentSelector);
 
@@ -1446,7 +1544,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       public void start(Object action){
          this.action = action;
          this.running = true;
-         Debug.info("LocationSelector started");
       }
 
       public void stop(){
@@ -1535,7 +1632,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       SikuliGuideComponent closestAnchor = findClosestAnchor(component);
 
       if (closestAnchor != null){
-         component.followComponent(closestAnchor);
+         component.setLocationRelativeToComponent(closestAnchor);
          closestAnchor.addFollower(component);
       }
    }
@@ -1552,8 +1649,16 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          addToPaletteLayer(this);
       }
 
-      public void setAnchor(SikuliGuideComponent comp){
-         setLocationRelativeToComponent(comp, SikuliGuideComponent.OVER);
+      public void setAnchor(SikuliGuideAnchor anchor){    
+         
+         //Rectangle bounds = anchor.getFollowerBounds();
+         // add some margin
+         //bounds.grow(10,10);
+
+         //setBounds(bounds);
+                  
+         setLocationRelativeToComponent(anchor, Layout.FOLLOWERS);
+         //followComponent(anchor);
       }
 
    }
@@ -1590,28 +1695,27 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
          Debug.log("[ComponentSelector] Component is at: " + draggedComponent.getLocation());
 
-         closestAnchor = findClosestAnchor(draggedComponent);     
-         if (closestAnchor != null)
-            Debug.log("[ComponentSelector] Closest anchor is at: " + closestAnchor.getLocation());
+         
+         if (draggedComponent instanceof SikuliGuideAnchor){
+
+            linkedAnchorVisualization.setVisible(true);
+            linkedAnchorVisualization.setAnchor((SikuliGuideAnchor) draggedComponent);
+
+         }else{
+
+            closestAnchor = findClosestAnchor(draggedComponent);  
+            
+            if (closestAnchor != null){
+               Debug.log("[ComponentSelector] Closest anchor is at: " + closestAnchor.getLocation());               
+               draggedComponent.setLocationRelativeToComponent(closestAnchor);
+            }
 
 
-         linkedAnchorVisualization.setVisible(true);
-         linkedAnchorVisualization.setAnchor(closestAnchor);
+            linkedAnchorVisualization.setVisible(true);
+            linkedAnchorVisualization.setAnchor(closestAnchor);
+         }
 
       }
-
-      //SikuliGuideRectangle selectionVisulization;
-      //      public void setSelectionVisulization(SikuliGuideComponent comp){
-      ////         if (selectionVisulization == null){
-      ////            selectionVisulization = new SikuliGuideRectangle(null);
-      ////            selectionVisulization.setMargin(5,5,5,5);
-      ////            selectionVisulization.setForeground(Color.green);
-      ////            addToPaletteLayer(selectionVisulization);
-      ////         }
-      ////
-      //         
-      //         //selectionVisulization.setLocationRelativeToComponent(comp, SikuliGuideComponent.OVER);         
-      //      }
 
 
       public void mouseReleased(MouseEvent e){
@@ -1620,21 +1724,34 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          currentStepContentChanged();
 
 
-         if (draggedComponent != null){
+         if (draggedComponent != null && !(draggedComponent instanceof SikuliGuideAnchor)){
             linkComponentToClosestAnchor(draggedComponent);   
          }
 
          draggedComponent = null;
 
       }
-
-      public void mouseClicked(MouseEvent e) {
-
-
+      
+      public void mousePressed(MouseEvent e){
 
          SikuliGuideComponent comp = (SikuliGuideComponent) e.getSource();
 
          selectedComponent = comp;
+         
+         
+         // test resizeTo
+//         Dimension size = (Dimension) comp.getSize().clone();
+//         size.width *= 1.5f;
+//         size.height *= 1.5f;
+//         comp.resizeTo(size);
+         
+         // test moveTo
+//         Point p = comp.getActualLocation();
+//         p.x -= 50;
+//         p.y -= 50;
+//         comp.moveTo(p);
+                  
+//         comp.changeOpacityTo(0.5f);
 
          if (action instanceof LinkComponentToAnchorAction){            
             ((LinkComponentToAnchorAction) action).componentSelected(comp);
@@ -1694,7 +1811,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          SikuliGuideText text = new SikuliGuideText("Some text");
          SikuliGuideShadow shadow = new SikuliGuideShadow(text);
 
-         text.setLocationRelativeToPoint(p, SikuliGuideComponent.CENTER);         
+         text.setLocationRelativeToPoint(p, Layout.CENTER);         
          text.setMovable(true);
          text.addMouseListener(componentSelector);
 
@@ -1775,9 +1892,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       linkedAnchorVisualization.setVisible(false);
       textPropertyEditor.setVisible(false);
 
-      textPropertyEditor.removeLeader();
-      controlBox.removeLeader();
-      linkedAnchorVisualization.removeLeader();
+      textPropertyEditor.removeFromLeader();
+      controlBox.removeFromLeader();
+      linkedAnchorVisualization.removeFromLeader();
 
    }
 
@@ -1984,7 +2101,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       // the index of the imported step
       int stepIndex = steps.size();
 
-      Debug.info("importing " + stepIndex);
+      Debug.info("Importing a step " + stepIndex);
 
 
       Step step = new Step();      
@@ -2010,33 +2127,41 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
       selectStep(step);
 
-      getLayeredPane().add(view, JLayeredPane.DEFAULT_LAYER);
-      //      selectStep(stepIndex);          
+      //getLayeredPane().add(view, JLayeredPane.DEFAULT_LAYER);
+      right.add(view,0);
 
+      // this is too slow for large image
+//      SikuliGuideRectangleShadow viewShadow = new SikuliGuideRectangleShadow(view);      
+//      right.add(viewShadow,0);
+//       SikuliGuideRectangle viewShadow = new SikuliGuideRectangle(null);
+//       viewShadow.setMargin(10,10,-10,-10);
+//       viewShadow.setLocationRelativeToComponent(view,-18,-18);
+//       right.add(viewShadow,1);
 
-      Point p = event.getClickLocation();
-      Rectangle r = new Rectangle(100,100);
-      r.x = p.x - r.width/2;
-      r.y = p.y - r.height/2;
+      Point clickLocation = event.getClickLocation();
+      Rectangle defaultAnchorBounds = new Rectangle(50,50);
+      // center the default anchor at the click location
+      defaultAnchorBounds.x = clickLocation.x - defaultAnchorBounds.width/2;
+      defaultAnchorBounds.y = clickLocation.y - defaultAnchorBounds.height/2;
 
 
       Rectangle small = new Rectangle(20,20);
-      small.x = p.x - small.width/2;
-      small.y = p.y - small.height/2;
+      small.x = clickLocation.x - small.width/2;
+      small.y = clickLocation.y - small.height/2;
 
 
       //
 
       if (segmentationEnabled){
-         BufferedImage neighoborImage = bgImage.crop(r);
+         BufferedImage neighoborImage = bgImage.crop(defaultAnchorBounds);
 
 
          ArrayList<Rectangle> blobs = getBlobRegions(neighoborImage);
 
          Rectangle mergedBlob = new Rectangle(small);
          for (Rectangle blob : blobs){
-            blob.x += r.x;
-            blob.y += r.y;
+            blob.x += defaultAnchorBounds.x;
+            blob.y += defaultAnchorBounds.y;
 
             mergedBlob.add(blob);
 
@@ -2046,9 +2171,10 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          performAddAnchorAction(mergedBlob);
       }else{
 
-         performAddAnchorAction(r);
+         performAddAnchorAction(defaultAnchorBounds);
 
-         SikuliGuideText txt = (SikuliGuideText) performAddTextAction(new Point(r.x+50,r.y-20));
+         // TODO chooses the best location automatically (that does not go outside of display bounds) 
+         SikuliGuideText txt = (SikuliGuideText) performAddTextAction(new Point(defaultAnchorBounds.x+50,defaultAnchorBounds.y-20));
          txt.setText("Click");     
       }
 
@@ -2067,37 +2193,11 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    }
 
    public void importSteps(ArrayList<RecordedClickEvent> events) {
-
-      //      int stepIndex = 0;
-
       for (RecordedClickEvent event : events){
-
-
          importStep(event);
-
-         //      overview.addStep(step);
-
       }
 
       selectStep(steps.get(0));
-
-      //      overview = new OverviewWindow();
-
-      // populate overview
-      //      for (Step step : steps){
-      //         overview.addStep(step);
-      //      }
-
-      //      overview.setLocation(10,50);
-      //      //overview.setMovable(true);
-      //      overview.setEditor(this);
-
-      // this causes the element to position correctly
-      //      overview.setVisible(true);
-      //      //overview.pack();
-      //      overview.toFront();
-      //      
-      // selectStep(0);
       doSelect();
    }
 
@@ -2139,9 +2239,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       SikuliGuide g = new SikuliGuide();
       
       SikuliGuideButton btn = new SikuliGuideButton("Start Recording (Select a Region)");
-      btn.setLocationRelativeToRegion(new Screen(), SikuliGuideComponent.INSIDE);      
+      btn.setLocationRelativeToRegion(new Screen(), Layout.INSIDE);      
 
-      g.addComponent(btn);
+      g.addToFront(btn);
       g.showNow();
       
       
@@ -2169,12 +2269,12 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
       btn = new SikuliGuideButton("Stop Recording");
-      btn.setLocationRelativeToRegion(regionToRecord, SikuliGuideComponent.TOP);      
+      btn.setLocationRelativeToRegion(regionToRecord, Layout.TOP);      
 
 
       while (true){
-         g.addComponent(btn);
-         g.addComponent(c);         
+         g.addToFront(btn);
+         g.addToFront(c);         
          String ret = g.showNow();
 
          if (ret != null && ret.compareTo("Stop Recording") == 0){
@@ -2224,7 +2324,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
             btn.setLocation(s.getTopRight().left(200).below(50));
 
             Step step = ew.getCurrentStep();         
-            g.addComponent(btn);
+            g.addToFront(btn);
             step.setTransition(g.getTransition());
             g.playStep(step);
          }

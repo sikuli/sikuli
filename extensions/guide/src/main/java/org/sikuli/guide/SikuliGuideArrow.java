@@ -15,6 +15,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.lang.reflect.Array;
 
+import org.sikuli.script.Debug;
+
 public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentListener{
 
    public static final int STRAIGHT = 0;
@@ -53,8 +55,13 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 	      updateBounds();
 	      
 	      
+	      
+	      
 	      from.addComponentListener(this);
 	      to.addComponentListener(this);
+	      
+	      updateVisibility();
+
 	   }
 	
 	
@@ -115,7 +122,7 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
             RenderingHints.VALUE_ANTIALIAS_ON);       
 
-		Rectangle r = getBounds();
+		Rectangle r = getActualBounds();
 		
 		Stroke pen = new BasicStroke(3.0F);
 		g2d.setStroke(pen);
@@ -162,30 +169,41 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
    protected void updateBounds() {
       
+      Rectangle dirtyBounds = getBounds();
+
 //      source = from.getLocation();
 //      destination = to.getLocation();      
+// TODO: fix this hack
+      if (from != null && to != null){
+         source = from.getCenter();
+         destination = to.getCenter();
+      }
 
-       source = from.getCenter();
-       destination = to.getCenter();      
-
-      
+      Debug.info("" + getSource() + " to " + getDestination());
       Rectangle r = new Rectangle(getSource());
       r.add(getDestination());
       
       r.grow(10,10);    
-      setBounds(r);
+      setActualBounds(r);
+      
+      dirtyBounds.add(getBounds());
+      if (getTopLevelAncestor() != null)
+         getTopLevelAncestor().repaint(dirtyBounds.x,dirtyBounds.y,dirtyBounds.width,dirtyBounds.height);
+
    }
 
+   void updateVisibility(){
+      setVisible(from.isVisible() && to.isVisible());      
+   }
+   
    @Override
    public void componentHidden(ComponentEvent arg0) {
-      setVisible(from.isVisible() || to.isVisible());
+      updateVisibility();
    }
 
    @Override
    public void componentMoved(ComponentEvent arg0) {
       updateBounds();
-      // update more efficiently
-      //getParent().getParent().repaint();
    }
 
    @Override
@@ -194,7 +212,8 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
    @Override
    public void componentShown(ComponentEvent arg0) {
-      setVisible(from.isVisible() || to.isVisible());
+      updateBounds();
+      updateVisibility();
    }
 
 }

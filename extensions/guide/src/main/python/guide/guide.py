@@ -1,3 +1,5 @@
+from sikuli.Sikuli import *
+
 from org.sikuli.script import UnionScreen
 from org.sikuli.script import Pattern
 from org.sikuli.script import Location
@@ -8,6 +10,8 @@ from org.sikuli.guide import SikuliGuide
 from org.sikuli.guide import Portal
 
 from org.sikuli.guide import SikuliGuideComponent
+from org.sikuli.guide.SikuliGuideComponent import Layout
+
 from org.sikuli.guide import SikuliGuideFlag
 from org.sikuli.guide import SikuliGuideBracket
 from org.sikuli.guide import SikuliGuideText
@@ -22,6 +26,8 @@ from org.sikuli.guide import Clickable
 from org.sikuli.guide import Hotspot
 from org.sikuli.guide import SikuliGuideArea
 from org.sikuli.guide import SikuliGuideAnchor
+from org.sikuli.guide import Magnet
+
 
 from org.sikuli.guide import TransitionDialog
 
@@ -31,8 +37,6 @@ from org.sikuli.guide.model import GUINode
 
 s = UnionScreen()
 _g = SikuliGuide(s)
-
-
 
 #######################     
 #      Core API       #
@@ -63,6 +67,7 @@ def spotlight(target, shape = 'circle', **kwargs):
     
 def clickable(target, name = "", **kwargs):
     comp = Clickable(None)
+    comp.setName(name)
     return _addComponentHelper(comp, target, side = 'over', **kwargs)   
 
 def button(target, name, side = 'bottom', **kwargs):
@@ -72,20 +77,16 @@ def button(target, name, side = 'bottom', **kwargs):
 
 def arrow(srcTarget, destTarget):
     def getComponentFromTarget(target):        
-        if isinstance(target, str) or isinstance(target, pattern):
+        if isinstance(target, str) or isinstance(target, Pattern):
             return anchor(target)
         elif isinstance(target, SikuliGuideComponent):
             return target
-        #elif isinstance(target, region):
                     
     comp1 = getComponentFromTarget(srcTarget)
     comp2 = getComponentFromTarget(destTarget)
          
-    #r1 = s.getRegionFromTarget(srcTarget)
-    #r2 = s.getRegionFromTarget(destTarget)
-    #comp = SikuliGuideArrow(r1.getCenter(),r2.getCenter())
     comp = SikuliGuideArrow(comp1, comp2)
-    _g.addComponent(comp)
+    _g.addToFront(comp)
     return comp
 
 
@@ -93,28 +94,23 @@ def arrow(srcTarget, destTarget):
 # Positioning Elements
 #======================
 
-def anchor(target):
-    region = _getRegionFromTarget(target)
-    comp = SikuliGuideAnchor(region)
-    _g.addComponent(comp)
-    
+def anchor(target):    
     if isinstance(target, Pattern):
         pattern = target
     elif isinstance(target, str):
         pattern = Pattern(target)
-    _g.addTracker(pattern, region, comp)
-    
+    comp = SikuliGuideAnchor(pattern)
+    _g.addToFront(comp)    
     return comp
 
 def area(targets):
     patterns = [Pattern(target) for target in targets] 
-    comp = SikuliGuideArea()
+    comp = SikuliGuideArea()    
     for pattern in patterns:
-        region = _getRegionFromTarget(pattern)
-        anchor = SikuliGuideAnchor(region)
-        _g.addTracker(pattern,region,anchor)                 
-        comp.addLandmark(anchor)        
-    _g.addComponent(comp)
+        anchor = SikuliGuideAnchor(pattern)
+        _g.addToFront(anchor)
+        comp.addLandmark(anchor)   
+    _g.addToFront(comp)
     return comp
 
 #================
@@ -159,34 +155,36 @@ def hotspot(target, message, side = 'right'):
     r1.x -= 10
     r1.w += 20
     _setLocationRelativeToRegion(txtcomp,r1,side)
+    txtcomp.setShadow(10,2)
 
     comp = Hotspot(r, txtcomp, _g)
-    _g.addComponent(comp)
+    _g.addToFront(comp)
     return comp    
     
 #=====================
 # Transition Elements
 #=====================
     
-# timeout should be expressed in seconds
-def dialog(text, title = None, location = None, timeout = None, buttons = None):    
-    d = TransitionDialog()
-    d.setText(text)
-    if title:
-        d.setTitle(title)
-    if buttons:
-        for b in buttons:
-            d.addButton(b)        
-    d.pack() 
-    if location:        
-        d.setLocation(location)
-    else:
-        d.setLocationToUserPreferredLocation()    
-    if timeout:    
-        d.setTimeout(timeout*1000)
-    _g.setTransition(d)    
+# (deprecated)
+#def dialog(text, title = None, location = None, timeout = None, buttons = None):    
+#    d = TransitionDialog()
+#    d.setText(text)
+#    if title:
+#        d.setTitle(title)
+#    if buttons:
+#        for b in buttons:
+#            d.addButton(b)        
+#    d.pack() 
+#    if location:        
+#        d.setLocation(location)
+#    else:
+#        d.setLocationToUserPreferredLocation()    
+#    if timeout:    
+#        d.setTimeout(timeout*1000)
+#    _g.setTransition(d)    
     
 def show(arg = None, timeout = 5):
+
     # show a list of steps
     if isinstance(arg, list) or isinstance(arg, tuple):
         _show_steps(arg, timeout)
@@ -197,9 +195,9 @@ def show(arg = None, timeout = 5):
     # show for some period of time
     elif isinstance(arg, float) or isinstance(arg, int):
         return _g.showNow(arg)
-    # show for the default period of time
+    # show 
     else:
-        return _g.showNow(timeout)
+        return _g.showNow()
         
 def setDefaultTimeout(timeout):
     _g.setDefaultTimeout(timeout)                
@@ -208,7 +206,9 @@ def setDefaultTimeout(timeout):
 # Helper functions #
 ####################
 
-def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0)):
+def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0),
+                         horizontalalignment = 'center', verticalalignment = 'center',
+                         shadow = 'default'):
             
     # Margin
     if margin:        
@@ -226,29 +226,64 @@ def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0))
         
     # Side
     if (side == 'right'):    
-        sideConstant = SikuliGuideComponent.RIGHT
+        sideConstant = Layout.RIGHT
     elif (side == 'top'):
-        sideConstant = SikuliGuideComponent.TOP
+        sideConstant = Layout.TOP
     elif (side == 'bottom'):
-        sideConstant = SikuliGuideComponent.BOTTOM
+        sideConstant = Layout.BOTTOM
     elif (side == 'left'):
-        sideConstant = SikuliGuideComponent.LEFT
+        sideConstant = Layout.LEFT
     elif (side == 'inside'):
-        sideConstant = SikuliGuideComponent.INSIDE
+        sideConstant = Layout.INSIDE
     elif (side == 'over'):
-        sideConstant = SikuliGuideComponent.OVER
+        sideConstant = Layout.OVER
+        
+
+    # Alignment
+#    if (horizontalalignment == 'left'):
+#        comp.setHorizontalAlignmentWithRegion(r,0.0)
+#    elif (horizontalalignment == 'right'):
+#
+#   if (verticalalignment == 'top'):
+#       comp.setVerticalAlignmentWithRegion(r,0.0)
+#   elif (verticalalignment == 'bottom'):
+#        comp.setVerticalAlignmentWithRegion(r,1.0)        
 
 
-    if isinstance(target, Region):        
+    if isinstance(target, Region):
+        # absolute location wrt a Region 
         comp.setLocationRelativeToRegion(target, sideConstant)
-    else:
-        if isinstance(target, str) or isinstance(target, Pattern):
+    elif isinstance(target, tuple):
+        # absolute location wrt a point (specified as (x,y)) 
+        comp.setLocationRelativeToRegion(Region(target[0], target[1],1,1), Layout.RIGHT)
+    else: 
+        
+        if isinstance(target, str):
+            # relative location to a string (image filename)        
+            targetComponent = anchor(Pattern(target))
+            targetComponent.setOpacity(0)            
+        elif isinstance(target, Pattern):
+            # relative location to a pattern
             targetComponent = anchor(target)
+            targetComponent.setOpacity(0)
         elif isinstance(target, SikuliGuideComponent):
             targetComponent = target
+        
         comp.setLocationRelativeToComponent(targetComponent, sideConstant)
-
-    _g.addComponent(comp)
+            
+    # set shadow, different sizes for different types of components
+    if shadow == 'default':
+            
+        if (isinstance(comp, SikuliGuideCircle) or 
+                isinstance(comp, SikuliGuideRectangle) or
+                isinstance(comp, SikuliGuideBracket)):
+            comp.setShadow(5,2)
+        elif not (isinstance(comp, SikuliGuideSpotlight)):
+            comp.setShadow(10,2)
+        
+        
+    # add the component to guide    
+    _g.addToFront(comp)
     
     return comp
     
@@ -297,15 +332,15 @@ def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,
    
     # Side
     if (side == 'right'):    
-        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.RIGHT);
+        comp.setLocationRelativeToRegion(r, Layout.RIGHT);
     elif (side == 'top'):
-        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.TOP);
+        comp.setLocationRelativeToRegion(r, Layout.TOP);
     elif (side == 'bottom'):
-        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.BOTTOM);
+        comp.setLocationRelativeToRegion(r, Layout.BOTTOM);
     elif (side == 'left'):
-        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);
+        comp.setLocationRelativeToRegion(r, Layout.LEFT);
     elif (side == 'inside'):
-        comp.setLocationRelativeToRegion(r, SikuliGuideComponent.INSIDE);
+        comp.setLocationRelativeToRegion(r, Layout.INSIDE);
         
         
     # Alignment
@@ -341,8 +376,64 @@ def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
     
     return r
 
+
+
+def addCloseButton(a):
+    button(a,"Close", side="left", offset = (200,0))
+def addNextButton(a):            
+    button(a,"Next",side="left", offset = (60,0))
+def addPreviousButton(a):
+    button(a,"Previous", side ="left", offset = (0,0))            
+
 # functions for showing
 def _show_steps(steps, timeout = None):
+
+    # only keep callables
+    steps = filter(lambda x: callable(x), steps)
+    print steps
+    n = len(steps)
+    i = 0
+        
+    while True:
+        step = steps[i]
+        step()
+        
+        msg = "Step %d of %d" % (i+1, n)
+        a = rectangle(Region(100,100,0,0))                
+        text((10,50), msg, fontsize = 10)
+            
+        if n == 1: # only one step            
+            addCloseButton(a)
+        elif i == 0: # first step              
+            addNextButton(a)
+            addCloseButton(a)
+        elif i < n - 1: # between
+            addPreviousButton(a)
+            addNextButton(a)
+            addCloseButton(a)
+        elif i == n - 1: # final step
+            addPreviousButton(a)
+            addCloseButton(a)
+                
+        ret = _g.showNow()
+        
+        if (ret == "Previous" and i > 0):
+            i = i - 1
+        elif (ret == "Next" and i < n - 1):
+            i = i + 1
+        elif (ret == None and i < n - 1): # timeout
+            i = i + 1
+        elif (ret == "Close"):
+            return 
+        else:
+            # some other transitions happened
+            if (i < n - 1):
+                i = i + 1
+            else:
+                return
+
+# functions for showing
+def _show_steps_old(steps, timeout = None):
 
     # only keep callables
     steps = filter(lambda x: callable(x), steps)
@@ -391,7 +482,32 @@ def _show_steps(steps, timeout = None):
             return
 
 
+#########################        
+# Cursor Enhancement    #
+#########################
+
+def beam(target):
+    r = s.getRegionFromPSRM(target)
+    c = _g.addBeam(r)
+    return c    
+
+def magnet(arg):
+    m = Magnet(_g)
+    
+    def addTarget(x):
+        if (isinstance(x, Pattern)):
+            pattern = x
+        elif (isinstance(x, str)):
+            pattern = Pattern(x)
+        m.addTarget(pattern)
+    
+    if isinstance(arg, list) or isinstance(arg, tuple):
+        for x in arg:
+            addTarget(x)
+    else:
+        addTarget(x)
         
+    _g.addTransition(m)
 
 #########################        
 # Experimental Features #
@@ -407,13 +523,7 @@ def portal(targets):
 def magnifier(target):
     r = s.getRegionFromPSRM(target)
     _g.addMagnifier(r)    
-    
-def beam(target):
-    r = s.getRegionFromPSRM(target)
-    _g.addBeam(r)
-    
             
-        
 def parse_model(gui, level=0):
     for i in range(0,level):
         print "----",

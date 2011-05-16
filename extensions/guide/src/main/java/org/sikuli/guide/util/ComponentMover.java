@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import org.sikuli.guide.SikuliGuideComponent;
+
 public class ComponentMover extends MouseAdapter{
 
 
@@ -378,7 +380,12 @@ public class ComponentMover extends MouseAdapter{
 
       pressed = e.getLocationOnScreen();
 
-      location = destination.getLocation();
+      
+      if (destination instanceof SikuliGuideComponent){
+         location = ((SikuliGuideComponent) destination).getActualLocation();
+      }else{
+         location = destination.getLocation();         
+      }
 
 
 
@@ -436,7 +443,11 @@ public class ComponentMover extends MouseAdapter{
 
       int dragY = getDragDistance(dragged.y, pressed.y, snapSize.height);
 
-      destination.setLocation(location.x + dragX, location.y + dragY);
+      
+      if (destination instanceof SikuliGuideComponent)
+         ((SikuliGuideComponent) destination).setActualLocation(location.x + dragX, location.y + dragY);
+      else
+         destination.setLocation(location.x + dragX, location.y + dragY);
 
    }
 

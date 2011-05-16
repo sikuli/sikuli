@@ -45,11 +45,12 @@ public class GlobalMouseMotionTracker implements ActionListener {
 
    public void start(){
       timer.start();
+      //Debug.info("[GlobalMouseMotionTracker] started");      
    }
 
    public void stop(){
-      //Debug.info("stopping global mouse tracker");
       timer.stop();
+      //Debug.info("[GlobalMouseMotionTracker] stopped");      
    }
    
    @Override

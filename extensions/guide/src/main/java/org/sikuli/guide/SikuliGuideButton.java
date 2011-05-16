@@ -36,12 +36,17 @@ public class SikuliGuideButton extends Clickable {
       
       public void globalMouseEntered(){
          Rectangle r = getBounds();
-         getParent().getParent().repaint(r.x,r.y,r.width,r.height);
+         if (getTopLevelAncestor() != null)
+            getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
+         //getParent().getParent().repaint(r.x,r.y,r.width,r.height);
       }
       
       public void globalMouseExited(){
          Rectangle r = getBounds();
-         getParent().getParent().repaint(r.x,r.y,r.width,r.height);
+         if (getTopLevelAncestor() != null)
+            getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
+
+//         getParent().getParent().repaint(r.x,r.y,r.width,r.height);
       }
 
       public void setName(String name){
@@ -58,15 +63,14 @@ public class SikuliGuideButton extends Clickable {
 
          s.height += 10;
          s.width += 10;
-         setSize(s);
-                   
+         setActualSize(s);                
       }
       
       public void paintComponent(Graphics g){
          super.paintComponent(g);               
          
          Graphics2D g2d = (Graphics2D) g;
-         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 10, 10);
+         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(0, 0, getActualWidth()-1, getActualHeight()-1, 10, 10);
          if (isMouseOver()){
             g2d.setColor(mouseOverColor);
          }else{
@@ -78,7 +82,7 @@ public class SikuliGuideButton extends Clickable {
          g2d.setColor(Color.white);
          g2d.draw(roundedRectangle);
          
-         roundedRectangle = new RoundRectangle2D.Float(1, 1, getWidth()-3, getHeight()-3, 10, 10);
+         roundedRectangle = new RoundRectangle2D.Float(1, 1, getActualWidth()-3, getActualHeight()-3, 10, 10);
          g2d.setColor(Color.black);
          g2d.draw(roundedRectangle);
          

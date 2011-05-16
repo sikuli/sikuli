@@ -35,7 +35,10 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
        textField = new JTextField(20);
        
        textField.setSize(textField.getPreferredSize());
+
        setSize(textField.getPreferredSize());       
+       setActualSize(textField.getPreferredSize());
+       
        add(textField);
        
        // allow the text editor to move as the user moves the edited target
@@ -44,6 +47,7 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
        textField.addKeyListener(this);
        setFocusable(true);
        setOpaque(true);
+       
     //   setBounds(new Rectangle(0,0,100,100));
    }
 
@@ -54,7 +58,11 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
          
          Debug.info("[TextPropertyEditor] User pressed ENTER");
          
-         ((SikuliGuideText) getTargetComponent()).setText(textField.getText());
+         if (getTargetComponent() instanceof SikuliGuideText)
+            ((SikuliGuideText) getTargetComponent()).setText(textField.getText());
+         else if (getTargetComponent() instanceof SikuliGuideFlag)
+            ((SikuliGuideFlag) getTargetComponent()).setText(textField.getText());
+         
          setVisible(false);     
                   
       }else if (k.getKeyCode() == KeyEvent.VK_ESCAPE){
@@ -87,11 +95,20 @@ public class TextPropertyEditor extends SikuliGuideComponent implements KeyListe
       Debug.info("" +this);
       if (targetComponent instanceof SikuliGuideText){
          setLocationRelativeToComponent(targetComponent, 
-               SikuliGuideComponent.TOP);
+               Layout.TOP);
          
          String text = ((SikuliGuideText) targetComponent).getText();
          textField.setText(text);
       }
+      else if (targetComponent instanceof SikuliGuideFlag){
+         setLocationRelativeToComponent(targetComponent, 
+               Layout.TOP);
+         
+         String text = ((SikuliGuideFlag) targetComponent).getText();
+         textField.setText(text);         
+      }
+
+      
 
    }
 

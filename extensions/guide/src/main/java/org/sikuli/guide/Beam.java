@@ -23,6 +23,8 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,7 @@ import java.util.Comparator;
 
 
 public class Beam extends TransparentWindow 
-implements Transition{
+implements Transition, GlobalMouseMotionListener{
 
 
    SikuliGuide guide;
@@ -60,8 +62,72 @@ implements Transition{
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       drawRayPolygon(g, current, target.getRect());      
    }
-
+   
    public void drawRayPolygon(Graphics g, Point p, Rectangle rect){
+      if (p == null || rect == null)
+         return;
+
+      Graphics2D g2d = (Graphics2D)g;
+
+      Rectangle r = rect;
+      Ellipse2D.Double ellipse =
+         new Ellipse2D.Double(r.x,r.y,r.width-1,r.height-1);
+
+      g2d.setColor(Color.red);
+      g2d.fill(ellipse);    
+      //g2d.drawRect(rect.x,rect.y,rect.width,rect.height);
+
+      
+      // compute tangent points
+      g2d.translate(rect.x+rect.width/2,rect.y+rect.height/2);
+      
+      float a0 = r.width/2;
+      float b0 = r.height/2;
+      float a = a0 * a0;
+      float b = b0 * b0;
+      
+      float m = p.x - rect.x - rect.width/2;
+      float n = p.y - rect.y - rect.height/2;
+      float t1 = (1f + (a*n*n)/(b*m*m));
+      float t2 = - 2f * a*n / (m*m);
+      float t3 = (b*a)/(m*m) - b;
+      
+      float s = (float) Math.sqrt(t2*t2 - 4*t1*t3);
+      float y1 = (-t2 + s) / (2*t1);
+      float y2 = (-t2 - s) / (2*t1);
+      
+      float x1 = a/m - y1*(a*n)/(b*m);
+      float x2 = a/m - y2*(a*n)/(b*m);
+      
+//      g2d.drawLine((int)m,(int)n,(int)x1,(int)y1);
+//      g2d.drawLine((int)m,(int)n,(int)x2,(int)y2);
+//      
+//      
+//      g2d.setColor(Color.black);
+//      g2d.drawLine(0,0,(int)a0,(int)b0);
+//      
+//      
+//      
+      GeneralPath flagShape = new GeneralPath();
+         flagShape.moveTo(m,n);
+         flagShape.lineTo(x1,y1);
+         flagShape.lineTo(x2,y2);
+         flagShape.closePath();
+
+      g2d.fill(flagShape);
+      
+      
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 1.0f));        
+      
+      //Rectangle smaller = new Rectangle(rect);
+      ellipse =
+         new Ellipse2D.Double(-r.width/2+3,-r.height/2+3,r.width-6,r.height-6);
+      g2d.fill(ellipse);
+   }
+   
+   
+
+   public void drawRayPolygon1(Graphics g, Point p, Rectangle rect){
       if (p == null || rect == null)
          return;
 
@@ -148,52 +214,81 @@ implements Transition{
       super.toFront();
    }
 
-
+   GlobalMouseMotionTracker mouseTracker;
+   TransitionListener listener;
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener listener) {
+      this.listener = listener;
 
+      mouseTracker = GlobalMouseMotionTracker.getInstance();
+      mouseTracker.addListener(this);
+      mouseTracker.start();
+      
+      
       setBounds(guide.getRegion().getRect());
       setVisible(true);
       toFront();
+      
+//      repaint();
 
-      Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
-      Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-      Cursor currentCursor = null;
-
-      boolean running = true;
-      while (running){
-
-         Rectangle target_rect = target.getRect();
-         Location m = Env.getMouseLocation();
-
-         current = new Point(m.x,m.y);
-
-         Cursor cursor = null;
-         if (target_rect.contains(current)){
-            running = false;
-            cursor = handCursor;
-
-            setVisible(false);
-            dispose();
-            synchronized(guide){
-               guide.notify();
-               dispose();
-               return "Next";
-            }
-
-         }else{
-            cursor = defaultCursor;
-            repaint();
-         }
-
-
-         if (cursor != currentCursor){
-            setCursor(cursor);
-            currentCursor = cursor;
-         }
-
-      }
+//      Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+//      Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+//      Cursor currentCursor = null;
+//
+//      boolean running = true;
+//      while (running){
+//
+//         Rectangle target_rect = target.getRect();
+//         Location m = Env.getMouseLocation();
+//
+//         current = new Point(m.x,m.y);
+//
+//         Cursor cursor = null;
+//         if (target_rect.contains(current)){
+//            running = false;
+//            cursor = handCursor;
+//
+//            setVisible(false);
+//            dispose();
+////            synchronized(guide){
+////               guide.notify();
+////               dispose();
+////               return "Next";
+////            }
+//            token.transitionOccurred(this);
+//            return "Next";
+//
+//         }else{
+//            cursor = defaultCursor;
+//            repaint();
+//         }
+//
+//
+//         if (cursor != currentCursor){
+//            setCursor(cursor);
+//            currentCursor = cursor;
+//         }
+//
+//      }
       return "Next";
+   }
+
+   @Override
+   public void globalMouseIdled(int x, int y) {
+   }
+
+   @Override
+   public void globalMouseMoved(int x, int y) {
+      
+      current = new Point(x,y);
+      repaint();
+      
+      if (target.getRect().contains(current)){
+         setVisible(false);
+         dispose();
+         listener.transitionOccurred(this);
+         
+      }
    }
 
 

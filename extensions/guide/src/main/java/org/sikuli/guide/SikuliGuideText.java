@@ -5,6 +5,8 @@ package org.sikuli.guide;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JLabel;
 
@@ -61,7 +63,7 @@ public class SikuliGuideText extends SikuliGuideComponent {
    void updateSize(){
       Dimension size = label.getPreferredSize();
       label.setSize(size);
-      setSize(size);
+      setActualSize(size);
    }
 
 
@@ -77,6 +79,18 @@ public class SikuliGuideText extends SikuliGuideComponent {
       fontSize = i;
       updateLabel();
    }
+   
+   public void paintComponent(Graphics g){
+      
+      Dimension originalSize = label.getPreferredSize();
+      Dimension actualSize = getActualSize();
+      
+      float scalex = 1f * actualSize.width / originalSize.width;
+      float scaley = 1f * actualSize.height / originalSize.height;      
+      ((Graphics2D) g).scale(scalex, scaley);
+      super.paintComponent(g);
+   }
+
    
    TextPropertyEditor ed = null;
    public void setEditable(boolean editable){

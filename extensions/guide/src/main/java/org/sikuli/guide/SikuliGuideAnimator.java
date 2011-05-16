@@ -108,7 +108,8 @@ class MoveAnimator extends  SikuliGuideAnimator{
    int repeatCount;
    int count;
    
-   OutQuarticEase tfuncx,tfuncy;
+   QuarticEase tfuncx;
+   QuarticEase tfuncy;
    Point src,dest;
    
    public MoveAnimator(SikuliGuideComponent comp, Point src, Point dest){
@@ -117,8 +118,12 @@ class MoveAnimator extends  SikuliGuideAnimator{
       repeatCount = duration / cycle;     
       count = 0;
       
-      tfuncx = new OutQuarticEase(src.x,dest.x,repeatCount);
-      tfuncy = new OutQuarticEase(src.y,dest.y,repeatCount);
+//      tfuncx = new OutQuarticEase(src.x,dest.x,repeatCount);
+//      tfuncy = new OutQuarticEase(src.y,dest.y,repeatCount);
+
+      tfuncx = new QuarticEase(src.x,dest.x,repeatCount);
+      tfuncy = new QuarticEase(src.y,dest.y,repeatCount);
+
       
       this.dest = dest;
       this.src = src;
@@ -136,7 +141,7 @@ class MoveAnimator extends  SikuliGuideAnimator{
          
          Rectangle r1 = comp.getBounds();
          
-         comp.setLocation(x,y); 
+         comp.setActualLocation(x,y); 
          
          Rectangle r2 = comp.getBounds();
          r1.add(r2);
@@ -154,7 +159,7 @@ class MoveAnimator extends  SikuliGuideAnimator{
    }
    
    public void start(){
-      comp.setLocation(src.x,src.y);
+      comp.setActualLocation(src.x,src.y);
       super.start();
    }
    

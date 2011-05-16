@@ -46,7 +46,7 @@ public class Step {
          
          
          SikuliGuideRectangle rect = new SikuliGuideRectangle(m);
-         guide.addComponent(rect);
+         guide.addToFront(rect);
 
          guide.addTracker(pattern, m, rect);
          
@@ -62,12 +62,12 @@ public class Step {
             
             rect.addFollower(comp);
             
-            guide.addComponent(comp);
+            guide.addToFront(comp);
          }
          
       }
 
-      guide.setTransition(transition);
+      guide.addTransition(transition);
       guide.showNow();
    }
 

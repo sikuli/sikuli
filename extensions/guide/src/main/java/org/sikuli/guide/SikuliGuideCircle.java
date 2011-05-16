@@ -21,7 +21,7 @@ public class SikuliGuideCircle extends SikuliGuideComponent{
       if (region != null){
          Rectangle rect = region.getRect();
          rect.grow(3,3);
-         setBounds(rect);
+         setActualBounds(rect);
       }
       setForeground(Color.red);
    }
@@ -32,8 +32,8 @@ public class SikuliGuideCircle extends SikuliGuideComponent{
    }
 
 
-   public void paint(Graphics g){
-      super.paint(g);
+   public void paintComponent(Graphics g){
+      super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
 
       
@@ -43,7 +43,7 @@ public class SikuliGuideCircle extends SikuliGuideComponent{
          Stroke pen = new BasicStroke(3.0F);    
          g2d.setStroke(pen);
 
-         Rectangle r = new Rectangle(getBounds());
+         Rectangle r = new Rectangle(getActualBounds());
          r.grow(-2,-2);
 
          g2d.translate(2, 2);

@@ -35,6 +35,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.model.GUIModel;
 import org.sikuli.guide.model.GUINode;
 import org.sikuli.guide.util.SortedListModel;
@@ -173,12 +174,12 @@ public class TreeSearchDialog extends SearchDialog{
       if (m != null){
          guide.setVisible(true);
          guide.clear();
-         guide.addComponent(new SikuliGuideRectangle(m));
+         guide.addToFront(new SikuliGuideRectangle(m));
          
          SikuliGuideFlag flag = new SikuliGuideFlag("      ");
-         flag.setLocationRelativeToRegion(m, SikuliGuideComponent.LEFT);
+         flag.setLocationRelativeToRegion(m, Layout.LEFT);
 
-         guide.addComponent(flag);
+         guide.addToFront(flag);
          guide.startAnimation();
          guide.repaint();
       }

@@ -3,6 +3,7 @@
  */
 package org.sikuli.guide;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
+import org.sikuli.script.Screen;
+
+import com.sun.crypto.provider.RSACipher;
 
 public class SikuliGuideArea extends SikuliGuideComponent 
 implements ComponentListener{
@@ -22,28 +26,33 @@ implements ComponentListener{
    ArrayList<SikuliGuideComponent> landmarks = new ArrayList<SikuliGuideComponent>();
 
    public SikuliGuideArea(){         
-      super();
+      super();      
+      // default to transparent so it can be faded in when it becomes visible later
+      setOpacity(0);
    }
 
    public static final int BOUNDING = 0;
    public static final int INTERSECTION = 1;
-
 
    int relationship = BOUNDING;
    public void setRelationship(int relationship){
       this.relationship = relationship;      
    }
 
+   int mode = 0;
+   public static int VERTICAL = 1;   
+   public static int HORIZONTAL = 2;
+   public void setMode(int mode){
+      this.mode = mode;      
+   }
 
    // update the bounds to the union of all the rectangles
    void updateBounds(){
 
       Rectangle rect = null;
-
-
+      Screen s = new Screen();
 
       for (SikuliGuideComponent comp : landmarks){
-
 
          if (rect == null){
             rect = new Rectangle(comp.getBounds());
@@ -65,55 +74,64 @@ implements ComponentListener{
       }else{
          setVisible(true);
          
+//         for (SikuliGuideComponent sklComp : getFollowers())
          // hack to get the locations of the followers to update
-         setLocation(rect.x,rect.y);
-         setSize(rect.getSize());
+         
+         if (mode == 0){
+            setActualLocation(rect.x,rect.y);
+            setActualSize(rect.getSize());
+         } else if (mode == VERTICAL){
+            setActualLocation(rect.x,0);
+            setActualSize(rect.width, s.h);            
+         } else if (mode == HORIZONTAL){
+            setActualLocation(0, rect.y);
+            setActualSize(s.w, rect.height);            
+         }
       }
+      
+      updateVisibility();
    }
 
 
    public void addLandmark(SikuliGuideComponent comp){
       landmarks.add(comp);    
       updateBounds();
-
       comp.addComponentListener(this);
-
    }
-
-
-
 
    public void addRegion(Region region){
 
       if (regions.isEmpty()){
 
-         setBounds(region.getRect());
+         setActualBounds(region.getRect());
 
       }else{         
 
          Rectangle bounds = getBounds();
          bounds.add(region.getRect());
-         setBounds(bounds);
+         setActualBounds(bounds);
 
       }
 
       regions.add(region);
    }
 
-   public void paint(Graphics g){
-      super.paint(g);
+   public void paintComponent(Graphics g){
+      super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
 
-      Rectangle r = getBounds();
+      if (false){
+      Rectangle r = getActualBounds();
       g2d.setColor(Color.black);
       g2d.drawRect(0,0,r.width-1,r.height-1);
-      g2d.setColor(Color.white);
+      //g2d.setColor(Color.white);
+      g2d.setColor(Color.green);
+      g2d.setStroke(new BasicStroke(3f));
       g2d.drawRect(1,1,r.width-3,r.height-3);
+      }
    }
 
-
-   @Override
-   public void componentHidden(ComponentEvent e) {
+   private void updateVisibility(){
       boolean allHidden = true;
       for (SikuliGuideComponent landmark : landmarks){
          allHidden = allHidden && !landmark.isVisible();
@@ -123,13 +141,27 @@ implements ComponentListener{
          //Debug.info("Area is hidden");
       }
       setVisible(!allHidden);
+      
+      // if area is visible, do fadein
+      if (isVisible()){
+         addFadeinAnimation();
+         startAnimation();
+      }
+   }
+
+   @Override
+   public void componentHidden(ComponentEvent e) {
+      updateVisibility();
    }
 
 
    @Override
    public void componentMoved(ComponentEvent e) {
+      Rectangle r = getBounds();
       updateBounds();
-      repaint();
+      r.add(getBounds());
+      if (getTopLevelAncestor() != null)
+         getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
    }
 
    @Override

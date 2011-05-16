@@ -139,7 +139,7 @@ public class TransitionDialog extends TransparentWindow implements Transition{
       pack();
    }   
    
-   public String waitForTransition(){
+   public String waitForTransition(TransitionListener token){
       
       // must be set visible 
       setVisible(true);

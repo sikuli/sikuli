@@ -252,7 +252,7 @@ implements Transition{
    
 
    @Override
-   public String waitForTransition() {
+   public String waitForTransition(TransitionListener token) {
 
       setBounds(guide.getRegion().getRect());
       setVisible(true);

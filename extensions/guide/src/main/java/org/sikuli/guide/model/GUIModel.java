@@ -69,7 +69,7 @@ public class GUIModel extends DefaultTreeModel {
          Match m = matched_node.findOnScreen();
          if (m != null){
             
-            guide.addComponent(new SikuliGuideRectangle(m));
+            guide.addToFront(new SikuliGuideRectangle(m));
 
             
          }else{

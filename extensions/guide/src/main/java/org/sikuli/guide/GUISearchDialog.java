@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.util.SortedListModel;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FindFailed;
@@ -59,7 +60,7 @@ public class GUISearchDialog extends SearchDialog{
       guide.clear();
       for (Region cr : regions){
          SikuliGuideCircle c = new SikuliGuideCircle(cr);
-         guide.addComponent(c);
+         guide.addToFront(c);
       }
       guide.repaint();
    }
@@ -75,11 +76,11 @@ public class GUISearchDialog extends SearchDialog{
       guide.clear();
       for (Region cr : regions){
          SikuliGuideCircle c = new SikuliGuideCircle(cr);
-         guide.addComponent(c);
+         guide.addToFront(c);
       }
       SikuliGuideFlag flag = new SikuliGuideFlag("This");
-      flag.setLocationRelativeToRegion(r, SikuliGuideComponent.LEFT);      		
-      guide.addComponent(flag);
+      flag.setLocationRelativeToRegion(r, Layout.LEFT);      		
+      guide.addToFront(flag);
       guide.startAnimation();
       guide.repaint();
    }

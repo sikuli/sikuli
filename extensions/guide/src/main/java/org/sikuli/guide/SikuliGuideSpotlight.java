@@ -24,14 +24,17 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
    int shape = RECTANGLE;
    
    Region region;
+   
+   public SikuliGuideSpotlight(){         
+      setShape(RECTANGLE);
+   }
+   
    public SikuliGuideSpotlight(Region region){         
       super();
       this.region = region;
       
       if (region != null)
-         setBounds(region.getRect());
-      
-      
+         setActualBounds(region.getRect());
       
       setShape(RECTANGLE);
    }
@@ -40,9 +43,19 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
       this.shape = shape_constant;
    }
    
+   @Override
+   public void paint(Graphics g){
+      //paintComponent(g);////super.paint(g);
+      super.paintPlain(g);
+   }
+   
+   @Override
    public void paintComponent(Graphics g){
       super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
+      
+      if (opacity == 0)
+         return;
       
       Rectangle r = getBounds();
       
@@ -52,6 +65,8 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
 
       if (shape == RECTANGLE){
          g2d.fillRect(0,0,r.width-1,r.height-1);
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f*(1 - opacity)));        
+         g2d.fillRect(0,0,r.width-1,r.height-1);
 
       }else if (shape == CIRCLE){
          Ellipse2D.Double ellipse =
@@ -59,7 +74,7 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
          g2d.fill(ellipse);         
 
          // adding visual ringing effect
-         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
          
          int ds[] =  {0,2,4,6};
          float bs[] = {0.25f,0.15f,0.1f};
@@ -67,7 +82,7 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
          for (int i = 0; i < 3; ++i){
             int d = ds[i];
             float b = bs[i];
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 
             ellipse =
                new Ellipse2D.Double(d,d,r.width-2*d,r.height-2*d);
@@ -75,17 +90,21 @@ public class SikuliGuideSpotlight extends SikuliGuideComponent{
             g2d.fill(ellipse);
             
             d = ds[i+1];
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));        
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 1.0f));        
              ellipse =
                 new Ellipse2D.Double(d,d,r.width-2*d,r.height-2*d);
              g2d.setColor(Color.black);
              g2d.fill(ellipse);
+             
+             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f*(1 - opacity)));        
+             g2d.fill(ellipse);//0,0,r.width-1,r.height-1);
+
          }
          
 
       }
       
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));        
+     // g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));        
 
    } 
 

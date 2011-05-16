@@ -4,16 +4,12 @@
 package org.sikuli.guide;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -25,24 +21,29 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
 
+import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
-import org.sikuli.script.Region;
 
-public class OverviewWindow extends JWindow {
+public class OverviewWindow extends JPanel {
 
    ArrayList<StepThumbnail> stepThumbnails = new ArrayList<StepThumbnail>();
 
    Color selectionColor = new Color(240,255,255);
    
    JPanel panel;
-   public OverviewWindow(Frame owner){         
-      super(owner);
+   
+   SelectionBox selectionBox;
+   public OverviewWindow(){         
+      //super(owner);
+      
+      //setLayout(null);
+      setLayout(new BorderLayout());
 
       panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+      panel.setLayout(null);
+      //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
       panel.setSize(240,600);    
       //panel.setBackground(new Color(255,245,238,150));
@@ -52,12 +53,31 @@ public class OverviewWindow extends JWindow {
       add(panel);
 
       setSize(panel.getSize());
+      
+      
+      selectionBox = new SelectionBox();
+//      SikuliGuideShadow sh = new SikuliGuideShadow(selectionBox);
+
+      panel.add(selectionBox,-1);
+  //    panel.add(sh,-1);
 
       ComponentMover cm = new ComponentMover();
       cm.registerComponent(this);
    }
 
 
+   
+   class SelectionBox extends SikuliGuideComponent {
+      
+      public SelectionBox(){
+         setForeground(selectionColor);
+      }
+      public void paintComponent(Graphics g){
+         super.paintComponent(g);
+         Graphics2D g2d = (Graphics2D) g;   
+         g2d.fillRect(0,0,getWidth(),getHeight());
+      }
+   }
 
    class MyImage extends JComponent {
       BufferedImage image;
@@ -100,7 +120,7 @@ public class OverviewWindow extends JWindow {
 
          add(c);
          
-         setSize(label.getWidth() + myImage.getWidth(), myImage.getHeight()+20);
+         setActualSize(label.getWidth() + myImage.getWidth()+2, myImage.getHeight()+20);
          //setMaximumSize(new Dimension(500,150));
          //setPreferredSize(new Dimension(300,300));
       }
@@ -115,20 +135,20 @@ public class OverviewWindow extends JWindow {
 
          Graphics2D g2d = (Graphics2D) g;
          
-         if (selected){
-            g2d.setStroke(new BasicStroke(3f));
-            g2d.setColor(selectionColor);
-            g2d.fillRect(0,0,getWidth()-1,getHeight()-1);
-            
-          //  g2d.drawImage(image,15,0,null,null);
-
-         }else{
-            
-         //   g2d.drawImage(image,15,0,null,null);
-            g2d.setColor(Color.black);
-           // g2d.drawRect(15,0,image.getWidth()-1,image.getHeight()-1);
-
-         }
+//         if (selected){
+//            g2d.setStroke(new BasicStroke(3f));
+//            g2d.setColor(selectionColor);
+//            g2d.fillRect(0,0,getWidth()-1,getHeight()-1);
+//            
+//          //  g2d.drawImage(image,15,0,null,null);
+//
+//         }else{
+//            
+//         //   g2d.drawImage(image,15,0,null,null);
+//            g2d.setColor(Color.black);
+//           // g2d.drawRect(15,0,image.getWidth()-1,image.getHeight()-1);
+//
+//         }
          
          
 
@@ -137,6 +157,7 @@ public class OverviewWindow extends JWindow {
 
       void setSelected(boolean selected){
          this.selected = selected;
+         selectionBox.setLocationRelativeToComponent(this, Layout.OVER);
          repaint();
       }
 
@@ -167,13 +188,17 @@ public class OverviewWindow extends JWindow {
    private EditorWindow editor;
    public void addStep(Step step){            
       StepThumbnail stepThumbnail = new StepThumbnail(step);
-
+      
+      stepThumbnail.setActualLocation(8, 20+step.getIndex()*200);      
+      stepThumbnail.setShadow(10,2);
       stepThumbnails.add(stepThumbnail);
+      
+      selectionBox.setMargin(5,2,5,2);
+      selectionBox.setShadow(10,2);
+      selectionBox.setLocationRelativeToComponent(stepThumbnail, Layout.OVER);
+      
+      panel.add(stepThumbnail,0);
 
-
-      panel.add(Box.createRigidArea(new Dimension(0,10)));
-      panel.add(stepThumbnail);
-      //panel.setSize(panel.getPreferredSize());
       repaint();
    }
 
