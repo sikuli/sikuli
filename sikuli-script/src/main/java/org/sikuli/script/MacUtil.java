@@ -52,7 +52,7 @@ public class MacUtil implements OSUtil {
       Debug.history("closeApp: \"" + appName +"\"");
       try{
          String cmd[] = {"sh", "-c", 
-            "ps aux |  grep " + appName + " | awk '{print $2}' | xargs kill"};
+            "ps aux |  grep \"" + appName + "\" | awk '{print $2}' | xargs kill"};
          Debug.history("closeApp: " + appName);
          Process p = Runtime.getRuntime().exec(cmd);
          p.waitFor();
