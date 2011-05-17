@@ -69,7 +69,7 @@ public class App {
    }
 
    public App open() {
-      if(Env.isWindows()){
+      if(Env.isWindows() || Env.isLinux()){
          int pid = _osUtil.openApp(_appName);
          _pid = pid;
          Debug.history("App.open " + this.toString());
@@ -90,8 +90,10 @@ public class App {
 
    public int close(){
       Debug.history("App.close " + this.toString());
-      if(_pid != 0)
-         return _osUtil.closeApp(_pid);
+      if(_pid != 0){
+         int ret = _osUtil.closeApp(_pid);
+         if(ret>=0) return ret;
+      }
       return close(_appName);
    }
 
