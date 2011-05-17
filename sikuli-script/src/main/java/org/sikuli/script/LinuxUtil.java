@@ -91,17 +91,21 @@ public class LinuxUtil implements OSUtil {
    }
 
    private Region findRegion(String appName, int winNum,SearchType type){
-      String winLine[]=findWindow(appName,winNum,type);
-      return new Region(
-	 Integer.parseInt(winLine[3]),
-	 Integer.parseInt(winLine[4]),
-	 Integer.parseInt(winLine[5]),
-	 Integer.parseInt(winLine[6])
-	 );
+      String[] winLine = findWindow(appName,winNum,type);
+      if(winLine.length>=7){
+         int x = new Integer(winLine[3]);
+         int y = Integer.parseInt(winLine[4]);
+         int w = Integer.parseInt(winLine[5]);
+         int h = Integer.parseInt(winLine[6]);
+         Region r = new Region(x, y, w, h);
+         return r;
+      }
+      return null;
    }
 
    private String[] findWindow(String appName, int winNum,SearchType type){
-      String found[]=null;
+      //Debug.log("findWindow: " + appName + " " + winNum + " " + type);
+      String[] found = {};
       int numFound=0;
       try {
 	 String cmd[] = {"wmctrl", "-lpGx"};
@@ -120,6 +124,7 @@ public class LinuxUtil implements OSUtil {
 	    appName=appName.toLowerCase();
 	 }
 	 while ((str = bufin.readLine()) !=null) {
+            //Debug.log("read: " + str);
 	    String winLine[]=str.split("\\s+");
 	    boolean ok=false;
 
@@ -158,6 +163,7 @@ public class LinuxUtil implements OSUtil {
 
 	    if(ok) {
 	       if(numFound>=winNum) {
+                  //Debug.log("Found window" + winLine);
 		  found=winLine;
 		  break;
 	       }
@@ -186,10 +192,9 @@ public class LinuxUtil implements OSUtil {
    }
 
    public int closeApp(int pid){
-      Debug.log("close: " + pid);
+      Debug.log(3, "close: " + pid);
       String winLine[]=findWindow(""+pid,0,SearchType.PID);
       if(winLine==null) return -1;
-      Debug.log("winLine " + winLine[0]);
       String cmd[] = {"wmctrl", "-ic", winLine[0]};
       try {
 	 Process p = Runtime.getRuntime().exec(cmd);
