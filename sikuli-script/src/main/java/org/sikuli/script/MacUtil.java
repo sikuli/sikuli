@@ -7,7 +7,7 @@ package org.sikuli.script;
 
 import java.io.*;
 import java.awt.Window;
-import javax.swing.JWindow;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.awt.Rectangle;
 import com.wapmx.nativeutils.jniloader.NativeLoader;
@@ -118,7 +118,7 @@ public class MacUtil implements OSUtil {
       return null;
    }
 
-   public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
+   public native void bringWindowToFront(Window win, boolean ignoreMouse);
    public static native boolean _openApp(String appName);
    public static native int getPID(String appName);
    public static native Rectangle getRegion(int pid, int winNum);
@@ -126,11 +126,11 @@ public class MacUtil implements OSUtil {
    public static native boolean isAxEnabled();
    public static native void openAxSetting();
 
-   public void setWindowOpacity(JWindow win, float alpha){
-      win.getRootPane().putClientProperty("Window.alpha", new Float(alpha));
+   public void setWindowOpacity(Window win, float alpha){
+      ((JFrame)win).getRootPane().putClientProperty("Window.alpha", new Float(alpha));
    }
 
-   public void setWindowOpaque(JWindow win, boolean opaque){
+   public void setWindowOpaque(Window win, boolean opaque){
       AWTUtilities.setWindowOpaque(win, opaque);
    }
 

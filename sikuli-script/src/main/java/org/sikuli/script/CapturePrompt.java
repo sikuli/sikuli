@@ -206,6 +206,17 @@ public class CapturePrompt extends TransparentWindow implements Subject{
             repaint(); 
          }
       });
+
+      addKeyListener( new KeyAdapter(){
+         public void keyPressed(KeyEvent e){
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+               _canceled = true;
+               notifyObserver();
+               CapturePrompt.this.close();
+            }
+         }
+      });
+
    }
 
    public void close(){
@@ -308,6 +319,7 @@ public class CapturePrompt extends TransparentWindow implements Subject{
             Debug.log("Fullscreen mode is not supported.");
          }
       }
+      this.requestFocus();
    }
 
 

@@ -4,6 +4,7 @@ from __future__ import with_statement
 from sikuli.Sikuli import *
 
 
+assert(selectRegion("cancel this selection") == None)
 assert(selectRegion("customized selectRegion message") != None)
 assert(capture("customized capture message") != None)
 print Rectangle(0,0,100,100)
