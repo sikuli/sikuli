@@ -70,17 +70,17 @@ public class Win32Util implements OSUtil {
       return null;
    }
 
-   public native void bringWindowToFront(JWindow win, boolean ignoreMouse);
+   public native void bringWindowToFront(Window win, boolean ignoreMouse);
    public static native long getHwnd(String appName, int winNum);
    public static native long getHwnd(int pid, int winNum);
    public static native Rectangle getRegion(long hwnd, int winNum);
    public static native Rectangle getFocusedRegion();
 
-   public void setWindowOpacity(JWindow win, float alpha){
+   public void setWindowOpacity(Window win, float alpha){
       AWTUtilities.setWindowOpacity(win, alpha);
    }
 
-   public void setWindowOpaque(JWindow win, boolean opaque){
+   public void setWindowOpaque(Window win, boolean opaque){
       AWTUtilities.setWindowOpaque(win, opaque);
    }
 
