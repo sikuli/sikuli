@@ -18,10 +18,10 @@
       <path refid="classpath.base" />
    </path>
    <target name="test">
-      <junit fork="yes" haltonfailure="no">
+      <junit fork="yes" haltonfailure="no" >
          <classpath refid="classpath.test" />
          <formatter type="xml"/>
-         <test name="org.sikuli.ide.SikuliIDETestSuite"/>
+         <test name="org.sikuli.ide.SikuliIDETestSuite" todir="build"/>
       </junit>
    </target>
   <target name="all" depends="test" />

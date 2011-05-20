@@ -20,7 +20,7 @@
       <junit fork="yes" haltonfailure="no">
          <classpath refid="classpath.test" />
          <formatter type="xml"/>
-         <test name="org.sikuli.script.SikuliScriptTestSuite"/>
+         <test name="org.sikuli.script.SikuliScriptTestSuite" todir="build"/>
       </junit>
    </target>
   <target name="all" depends="test" />

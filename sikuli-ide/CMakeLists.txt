@@ -374,6 +374,13 @@ add_dependencies( java-test
         java-test.test-res
 )
 
+add_custom_target( all-test
+)
+
+add_dependencies( all-test
+   java-test   
+)
+
 ## Dependencies
 
 add_dependencies( ${JAR_FILE}.prepare
@@ -391,4 +398,5 @@ ADD_SUBDIRECTORY( ${JAVA_SRC_DIR} )
 ADD_SUBDIRECTORY( ${NATIVE_SRC_DIR} )
 ADD_SUBDIRECTORY( ${JAVA_TEST_DIR} )
 
-INCLUDE(CTest)
+
+
