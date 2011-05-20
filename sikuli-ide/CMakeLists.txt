@@ -33,6 +33,11 @@ SET(JAR_DIR "${BINARY_DIR}/jar")
 SET(RESOURCE_DIR "${BASE_DIR}/resources")
 SET(RELEASE_DIR "${BASE_DIR}/../release")
 
+SET(JAVA_TEST_DIR "${BASE_DIR}/src/test/java")
+SET(TEST_RESOURCE_DIR "test-res")
+SET(JAVA_TEST_FOR_HUDSON_XML "../hudson-test.xml")
+SET(TEST_CLASS_DIR "${CMAKE_BINARY_DIR}/test") 
+
 SET(SIKULI_SCRIPT_JAR "${COMMON_LIB_DIR}/sikuli-script.jar")
 SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(SWING_LAYOUT_JAR "${COMMON_LIB_DIR}/swing-layout-1.0.1.jar")
@@ -48,6 +53,7 @@ SET(FORMS_JAR "${COMMON_LIB_DIR}/forms-1.2.1.jar")
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
 FILE(MAKE_DIRECTORY ${BINARY_CLASS_DIR})
 FILE(MAKE_DIRECTORY ${JAR_DIR})
+FILE(MAKE_DIRECTORY ${TEST_CLASS_DIR})
 
 ## Sikuli IDE
 
@@ -346,6 +352,28 @@ install(FILES
 
 # type "make package" to generate release packages
 
+
+## tests
+
+SET(MAIN_TEST_SUITE ${PACKAGE}.SikuliIDETestSuite)
+
+add_custom_target( java-test.test-res
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${BASE_DIR}/${TEST_RESOURCE_DIR} ${CMAKE_BINARY_DIR}/${TEST_RESOURCE_DIR}
+   COMMENT "Copy test resource"
+)
+
+add_custom_target( java-test
+   #   COMMAND ${JAVA_RUNTIME} -cp ${TEST_CLASS_DIR}${SEP}${BINARY_DIR}/${JAR_FILE}${SEP}${JUNIT_JAR} junit.textui.TestRunner ${MAIN_TEST_SUITE}
+   COMMAND ant -f ${JAVA_TEST_FOR_HUDSON_XML}
+   COMMENT "Run Java unit tests"
+)
+
+add_dependencies( java-test
+        ${JAR_FILE}
+        ${PROJECT_NAME}.test.classes
+        java-test.test-res
+)
+
 ## Dependencies
 
 add_dependencies( ${JAR_FILE}.prepare
@@ -361,5 +389,6 @@ add_dependencies( app ${APP_FILE})
 
 ADD_SUBDIRECTORY( ${JAVA_SRC_DIR} )
 ADD_SUBDIRECTORY( ${NATIVE_SRC_DIR} )
+ADD_SUBDIRECTORY( ${JAVA_TEST_DIR} )
 
 INCLUDE(CTest)
