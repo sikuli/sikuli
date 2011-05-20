@@ -147,7 +147,7 @@ ADD_SUBDIRECTORY(${JAVA_TEST_DIR})
 
 SET(MAIN_TEST_SUITE ${PACKAGE}.SikuliScriptTestSuite)
 
-add_custom_target( java-test.test-res
+add_custom_target( test-res
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BASE_DIR}/${TEST_RESOURCE_DIR} ${CMAKE_BINARY_DIR}/${TEST_RESOURCE_DIR}
    COMMENT "Copy test resource"
 )
@@ -161,30 +161,31 @@ add_custom_target( java-test
 add_dependencies( java-test
         ${JAR_FILE}
         ${PROJECT_NAME}.test.classes
-        java-test.test-res
+        test-res
 )
 
 
 ## Python level tests
 
-
-SET(PYTHON_TESTS
-   basic bundle capture click dragdrop env findAll 
-   keys mouse multiscreen observe region 
-   showActions sikuli type vdict wait with
-   ocr imageurl wheel imagepath findfailed
-   pattern mac linux
-)
-
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")
 SET(JYTHON_CLASS org.python.util.jython)
 
-FOREACH(TEST_TARGET ${PYTHON_TESTS})
-   ADD_TEST(Jar_${TEST_TARGET} ${CMAKE_COMMAND} -E chdir ${BASE_DIR} 
-                  java -Dsikuli.Debug=3 -cp ${BINARY_DIR}/${JAR_FILE} 
-                  -Dpython.home=${BINARY_DIR}/${JAR_FILE} 
-                  ${JYTHON_CLASS} ${PY_TEST_DIR}/test-${TEST_TARGET}.py
-   )
-ENDFOREACH(TEST_TARGET)
+add_custom_target( python-test
+   COMMAND ${JAVA_RUNTIME} -cp ${BINARY_DIR}/${JAR_FILE} ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py
+   COMMENT "Run Python unit tests"
+)
 
-INCLUDE(CTest)
+add_dependencies( python-test
+   ${JAR_FILE}
+   test-res
+)
+
+
+# run all test cases
+add_custom_target( all-test
+)
+
+add_dependencies( all-test
+   java-test
+   python-test
+)
