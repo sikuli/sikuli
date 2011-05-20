@@ -1,0 +1,27 @@
+<!-- 
+   Copyright 2010-2011, Sikuli.org
+   Released under the MIT License.
+
+   This file is for generating JUnit XML output for Hudson.
+   Run this with ant -f <XML-FILE>
+-->
+
+<project default="all">
+   <property name="tst-dir" location="build/test" />
+   <path id="classpath.base">
+      <pathelement location="target/sikuli-script.jar" />
+   </path>
+   <path id="classpath.test">
+      <pathelement location="../lib/junit-3.8.1.jar" />
+      <pathelement location="${tst-dir}" />
+      <path refid="classpath.base" />
+   </path>
+   <target name="test">
+      <junit fork="yes" haltonfailure="no">
+         <classpath refid="classpath.test" />
+         <formatter type="xml"/>
+         <test name="org.sikuli.script.SikuliScriptTestSuite"/>
+      </junit>
+   </target>
+  <target name="all" depends="test" />
+</project>

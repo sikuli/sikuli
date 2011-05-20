@@ -29,6 +29,10 @@ SET(DOC_DIR "${BASE_DIR}/doc")
 SET(JAVA_SRC_DIR "${BASE_DIR}/src/main/java")
 SET(NATIVE_SRC_DIR "${BASE_DIR}/src/main/native")
 SET(PYTHON_SRC_DIR "${BASE_DIR}/src/main/python")
+SET(JAVA_TEST_DIR "${BASE_DIR}/src/test/java")
+SET(TEST_RESOURCE_DIR "test-res")
+SET(JAVA_TEST_FOR_HUDSON_XML "../hudson-test.xml")
+
 SET(CMAKE_SWIG_OUTDIR ${CMAKE_BINARY_DIR}/${NATIVE_PACKAGE_DIR})
 
 SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
@@ -36,9 +40,11 @@ SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
 SET(INCLUDE_LIB_DIR "${COMMON_LIB_DIR}/mx-native-loader-1.2/target/classes")
 SET(BINARY_DIR "${BASE_DIR}/target")
 SET(BINARY_CLASS_DIR "${BINARY_DIR}/classes")
+SET(TEST_CLASS_DIR "${CMAKE_BINARY_DIR}/test")
 SET(BINARY_LIB_DIR "${BINARY_DIR}/lib")
 SET(JAR_DIR "${BINARY_DIR}/jar")
 
+SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(JYTHON_JAR "${COMMON_LIB_DIR}/jython-2.5.1.jar")
 SET(JYTHON_LIB_FILE "${COMMON_LIB_DIR}/jython-lib-2.5.1.tgz")
 
@@ -48,6 +54,7 @@ SET(CLASSPATH
 
 FILE(MAKE_DIRECTORY ${BINARY_DIR})
 FILE(MAKE_DIRECTORY ${BINARY_CLASS_DIR})
+FILE(MAKE_DIRECTORY ${TEST_CLASS_DIR})
 FILE(MAKE_DIRECTORY ${JAR_DIR})
 
 SET(JAR_FILE sikuli-script.jar)
@@ -132,11 +139,34 @@ add_dependencies(${JAR_FILE}
         ${JAR_FILE}.jython-libs-in-jar
 )
 
-
 ADD_SUBDIRECTORY(${NATIVE_SRC_DIR})
 ADD_SUBDIRECTORY(${JAVA_SRC_DIR})
+ADD_SUBDIRECTORY(${JAVA_TEST_DIR})
 
-# Tests
+# Java level tests
+
+SET(MAIN_TEST_SUITE ${PACKAGE}.SikuliScriptTestSuite)
+
+add_custom_target( java-test.test-res
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${BASE_DIR}/${TEST_RESOURCE_DIR} ${CMAKE_BINARY_DIR}/${TEST_RESOURCE_DIR}
+   COMMENT "Copy test resource"
+)
+
+add_custom_target( java-test
+   #   COMMAND ${JAVA_RUNTIME} -cp ${TEST_CLASS_DIR}${SEP}${BINARY_DIR}/${JAR_FILE}${SEP}${JUNIT_JAR} junit.textui.TestRunner ${MAIN_TEST_SUITE}
+   COMMAND ant -f ${JAVA_TEST_FOR_HUDSON_XML}
+   COMMENT "Run Java unit tests"
+)
+
+add_dependencies( java-test
+        ${JAR_FILE}
+        ${PROJECT_NAME}.test.classes
+        java-test.test-res
+)
+
+
+## Python level tests
+
 
 SET(PYTHON_TESTS
    basic bundle capture click dragdrop env findAll 
