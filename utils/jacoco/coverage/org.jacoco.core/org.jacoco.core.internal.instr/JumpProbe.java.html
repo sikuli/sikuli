@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>JumpProbe.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.instr</a> &gt; <span class="el_source">JumpProbe.java</span></div><h1>JumpProbe.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.instr;
+
+import org.jacoco.core.internal.flow.LabelInfo;
+import org.objectweb.asm.Label;
+
+/**
+ * Probe to be inserted into a control flow edge along a jump instruction. This
+ * is implemented by replacing the original jump target by an intermediate
+ * target followed by the probe and a GOTO instruction back to the original
+ * target. This internal data structure stores all required information to
+ * append such jump probes at the end of a method.
+ */
+class JumpProbe {
+
+	private final Label target;
+
+	private final int probeid;
+
+	private final Label intermediate;
+
+<span class="fc" id="L32">	JumpProbe(final Label target, final int probeid) {</span>
+<span class="fc" id="L33">		this.intermediate = new Label();</span>
+<span class="fc" id="L34">		this.target = target;</span>
+<span class="fc" id="L35">		this.probeid = probeid;</span>
+<span class="fc" id="L36">		LabelInfo.setIntermediateLabel(target, this.intermediate);</span>
+<span class="fc" id="L37">	}</span>
+
+	JumpProbe(final Label target) {
+<span class="fc" id="L40">		this(target, LabelInfo.getProbeId(target));</span>
+<span class="fc" id="L41">	}</span>
+
+	/**
+	 * Returns the original jump target.
+	 * 
+	 * @return original jump target
+	 */
+	public Label getTarget() {
+<span class="fc" id="L49">		return target;</span>
+	}
+
+	/**
+	 * Returns the corresponding probe id.
+	 * 
+	 * @return corresponding probe id
+	 */
+	public int getProbeId() {
+<span class="fc" id="L58">		return probeid;</span>
+	}
+
+	/**
+	 * Returns the label of the intermediate jump target
+	 * 
+	 * @return intermediate jump target
+	 */
+	public Label getIntermediate() {
+<span class="fc" id="L67">		return intermediate;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

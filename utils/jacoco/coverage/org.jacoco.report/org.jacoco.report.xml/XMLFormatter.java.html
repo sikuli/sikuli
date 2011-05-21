@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>XMLFormatter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.xml</a> &gt; <span class="el_source">XMLFormatter.java</span></div><h1>XMLFormatter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak -initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.xml;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
+
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.data.SessionInfo;
+import org.jacoco.report.IReportVisitor;
+import org.jacoco.report.ISourceFileLocator;
+import org.jacoco.report.internal.AbstractGroupVisitor;
+import org.jacoco.report.internal.xml.XMLCoverageWriter;
+import org.jacoco.report.internal.xml.XMLDocument;
+import org.jacoco.report.internal.xml.XMLElement;
+import org.jacoco.report.internal.xml.XMLGroupVisitor;
+
+/**
+ * Report formatter that creates a single XML file for a coverage session
+ */
+<span class="fc" id="L33">public class XMLFormatter {</span>
+
+	private static final String PUBID = &quot;-//JACOCO//DTD Report 1.0//EN&quot;;
+
+	private static final String SYSTEM = &quot;report.dtd&quot;;
+
+<span class="fc" id="L39">	private String outputEncoding = &quot;UTF-8&quot;;</span>
+
+	/**
+	 * Sets the encoding used for generated XML document. Default is UTF-8.
+	 * 
+	 * @param outputEncoding
+	 *            XML output encoding
+	 */
+	public void setOutputEncoding(final String outputEncoding) {
+<span class="fc" id="L48">		this.outputEncoding = outputEncoding;</span>
+<span class="fc" id="L49">	}</span>
+
+	/**
+	 * Creates a new visitor to write a report to the given stream.
+	 * 
+	 * @param output
+	 *            output stream to write the report to
+	 * @return visitor to emit the report data to
+	 * @throws IOException
+	 *             in case of problems with the output stream
+	 */
+	public IReportVisitor createVisitor(final OutputStream output)
+			throws IOException {
+<span class="fc" id="L62">		final XMLElement root = new XMLDocument(&quot;report&quot;, PUBID, SYSTEM,</span>
+				outputEncoding, true, output);
+		class RootVisitor extends XMLGroupVisitor implements IReportVisitor {
+
+<span class="fc" id="L66">			RootVisitor(final XMLElement element) throws IOException {</span>
+<span class="fc" id="L67">				super(element, null);</span>
+<span class="fc" id="L68">			}</span>
+
+			private List&lt;SessionInfo&gt; sessionInfos;
+
+			public void visitInfo(final List&lt;SessionInfo&gt; sessionInfos,
+					final Collection&lt;ExecutionData&gt; executionData)
+					throws IOException {
+<span class="fc" id="L75">				this.sessionInfos = sessionInfos;</span>
+<span class="fc" id="L76">			}</span>
+
+			@Override
+			protected void handleBundle(final IBundleCoverage bundle,
+					final ISourceFileLocator locator) throws IOException {
+<span class="fc" id="L81">				writeHeader(bundle.getName());</span>
+<span class="fc" id="L82">				XMLCoverageWriter.writeBundle(bundle, element);</span>
+<span class="fc" id="L83">			}</span>
+
+			@Override
+			protected AbstractGroupVisitor handleGroup(final String name)
+					throws IOException {
+<span class="fc" id="L88">				writeHeader(name);</span>
+<span class="fc" id="L89">				return new XMLGroupVisitor(element, name);</span>
+			}
+
+			private void writeHeader(final String name) throws IOException {
+<span class="fc" id="L93">				element.attr(&quot;name&quot;, name);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">				for (final SessionInfo i : sessionInfos) {</span>
+<span class="fc" id="L95">					final XMLElement sessioninfo = root.element(&quot;sessioninfo&quot;);</span>
+<span class="fc" id="L96">					sessioninfo.attr(&quot;id&quot;, i.getId());</span>
+<span class="fc" id="L97">					sessioninfo.attr(&quot;start&quot;, i.getStartTimeStamp());</span>
+<span class="fc" id="L98">					sessioninfo.attr(&quot;dump&quot;, i.getDumpTimeStamp());</span>
+<span class="fc" id="L99">				}</span>
+<span class="fc" id="L100">			}</span>
+
+			@Override
+			protected void handleEnd() throws IOException {
+<span class="fc" id="L104">				element.close();</span>
+<span class="fc" id="L105">			}</span>
+		}
+<span class="fc" id="L107">		return new RootVisitor(root);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

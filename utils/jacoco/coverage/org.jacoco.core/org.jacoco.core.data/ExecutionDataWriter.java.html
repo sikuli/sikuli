@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ExecutionDataWriter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">ExecutionDataWriter.java</span></div><h1>ExecutionDataWriter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.jacoco.core.internal.data.CompactDataOutput;
+
+/**
+ * Serialization of execution data into binary streams.
+ */
+public class ExecutionDataWriter implements ISessionInfoVisitor,
+		IExecutionDataVisitor {
+
+	/** File format version, will be incremented for each incompatible change. */
+	public static final char FORMAT_VERSION = 0x1006;
+
+	/** Magic number in header for file format identification. */
+	public static final char MAGIC_NUMBER = 0xC0C0;
+
+	/** Block identifier for file headers. */
+	public static final byte BLOCK_HEADER = 0x01;
+
+	/** Block identifier for session information. */
+	public static final byte BLOCK_SESSIONINFO = 0x10;
+
+	/** Block identifier for execution data of a single class. */
+	public static final byte BLOCK_EXECUTIONDATA = 0x11;
+
+	/** Underlying data output */
+	protected final CompactDataOutput out;
+
+	/**
+	 * Creates a new writer based on the given output stream. Depending on the
+	 * nature of the underlying stream output should be buffered as most data is
+	 * written in single bytes.
+	 * 
+	 * @param output
+	 *            binary stream to write execution data to
+	 * @throws IOException
+	 *             if the header can't be written
+	 */
+<span class="fc" id="L54">	public ExecutionDataWriter(final OutputStream output) throws IOException {</span>
+<span class="fc" id="L55">		this.out = new CompactDataOutput(output);</span>
+<span class="fc" id="L56">		writeHeader();</span>
+<span class="fc" id="L57">	}</span>
+
+	/**
+	 * Writes an file header to identify the stream and its protocol version.
+	 * 
+	 * @throws IOException
+	 */
+	private void writeHeader() throws IOException {
+<span class="fc" id="L65">		out.writeByte(BLOCK_HEADER);</span>
+<span class="fc" id="L66">		out.writeChar(MAGIC_NUMBER);</span>
+<span class="fc" id="L67">		out.writeChar(FORMAT_VERSION);</span>
+<span class="fc" id="L68">	}</span>
+
+	/**
+	 * Flushes the underlying stream.
+	 * 
+	 * @throws IOException
+	 */
+	public void flush() throws IOException {
+<span class="fc" id="L76">		out.flush();</span>
+<span class="fc" id="L77">	}</span>
+
+	public void visitSessionInfo(final SessionInfo info) {
+		try {
+<span class="fc" id="L81">			out.writeByte(BLOCK_SESSIONINFO);</span>
+<span class="fc" id="L82">			out.writeUTF(info.getId());</span>
+<span class="fc" id="L83">			out.writeLong(info.getStartTimeStamp());</span>
+<span class="fc" id="L84">			out.writeLong(info.getDumpTimeStamp());</span>
+<span class="fc" id="L85">		} catch (final IOException e) {</span>
+<span class="fc" id="L86">			throw new RuntimeException(e);</span>
+<span class="fc" id="L87">		}</span>
+<span class="fc" id="L88">	}</span>
+
+	public void visitClassExecution(final ExecutionData data) {
+		try {
+<span class="fc" id="L92">			out.writeByte(BLOCK_EXECUTIONDATA);</span>
+<span class="fc" id="L93">			out.writeLong(data.getId());</span>
+<span class="fc" id="L94">			out.writeUTF(data.getName());</span>
+<span class="fc" id="L95">			out.writeBooleanArray(data.getData());</span>
+<span class="fc" id="L96">		} catch (final IOException e) {</span>
+<span class="fc" id="L97">			throw new RuntimeException(e);</span>
+<span class="fc" id="L98">		}</span>
+<span class="fc" id="L99">	}</span>
+
+	/**
+	 * Returns the first bytes of a file that represents a valid execution data
+	 * file. In any case every execution data file starts with the three bytes
+	 * &lt;code&gt;0x01 0xC0 0xC0&lt;/code&gt;.
+	 * 
+	 * @return first bytes of a execution data file
+	 */
+	public static final byte[] getFileHeader() {
+<span class="fc" id="L109">		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();</span>
+		try {
+<span class="fc" id="L111">			new ExecutionDataWriter(buffer);</span>
+<span class="nc" id="L112">		} catch (final IOException e) {</span>
+			// Must not happen with ByteArrayOutputStream
+<span class="nc" id="L114">			throw new AssertionError(e);</span>
+<span class="fc" id="L115">		}</span>
+<span class="fc" id="L116">		return buffer.toByteArray();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

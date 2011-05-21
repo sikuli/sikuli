@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Instrumenter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.instr</a> &gt; <span class="el_source">Instrumenter.java</span></div><h1>Instrumenter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.instr;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.jacoco.core.internal.data.CRC64;
+import org.jacoco.core.internal.flow.ClassProbesAdapter;
+import org.jacoco.core.internal.instr.ClassInstrumenter;
+import org.jacoco.core.runtime.IRuntime;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+
+/**
+ * Several APIs to instrument Java class definitions for coverage tracing.
+ */
+public class Instrumenter {
+
+	private final IRuntime runtime;
+
+	/**
+	 * Creates a new instance based on the given runtime.
+	 * 
+	 * @param runtime
+	 *            runtime used by the instrumented classes
+	 */
+<span class="fc" id="L38">	public Instrumenter(final IRuntime runtime) {</span>
+<span class="fc" id="L39">		this.runtime = runtime;</span>
+<span class="fc" id="L40">	}</span>
+
+	/**
+	 * Creates a ASM adapter for a class with the given id.
+	 * 
+	 * @param classid
+	 *            id of the class calculated with {@link CRC64}
+	 * @param cv
+	 *            next class visitor in the chain
+	 * @return new visitor to write class definition to
+	 */
+	private ClassVisitor createInstrumentingVisitor(final long classid,
+			final ClassVisitor cv) {
+<span class="fc" id="L53">		return new ClassProbesAdapter(new ClassInstrumenter(classid, runtime,</span>
+				cv));
+	}
+
+	/**
+	 * Creates a instrumented version of the given class if possible.
+	 * 
+	 * @param reader
+	 *            definition of the class as ASM reader
+	 * @return instrumented definition or &lt;code&gt;null&lt;/code&gt;
+	 * 
+	 */
+	public byte[] instrument(final ClassReader reader) {
+<span class="fc" id="L66">		final ClassWriter writer = new ClassWriter(reader, 0);</span>
+<span class="fc" id="L67">		final ClassVisitor visitor = createInstrumentingVisitor(</span>
+				CRC64.checksum(reader.b), writer);
+<span class="fc" id="L69">		reader.accept(visitor, ClassReader.EXPAND_FRAMES);</span>
+<span class="fc" id="L70">		return writer.toByteArray();</span>
+	}
+
+	/**
+	 * Creates a instrumented version of the given class if possible.
+	 * 
+	 * @param buffer
+	 *            definition of the class
+	 * @return instrumented definition or &lt;code&gt;null&lt;/code&gt;
+	 * 
+	 */
+	public byte[] instrument(final byte[] buffer) {
+<span class="nc" id="L82">		return instrument(new ClassReader(buffer));</span>
+	}
+
+	/**
+	 * Creates a instrumented version of the given class if possible.
+	 * 
+	 * @param input
+	 *            stream to read class definition from
+	 * @return instrumented definition or &lt;code&gt;null&lt;/code&gt;
+	 * @throws IOException
+	 *             if reading data from the stream fails
+	 * 
+	 */
+	public byte[] instrument(final InputStream input) throws IOException {
+<span class="fc" id="L96">		return instrument(new ClassReader(input));</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

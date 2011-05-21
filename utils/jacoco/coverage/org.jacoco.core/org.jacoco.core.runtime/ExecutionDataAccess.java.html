@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ExecutionDataAccess.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.runtime</a> &gt; <span class="el_source">ExecutionDataAccess.java</span></div><h1>ExecutionDataAccess.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.runtime;
+
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.internal.instr.InstrSupport;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * This class implements the access from instrumented classes to execution data
+ * storage in the runtime. Instead of directly referencing JaCoCo implementation
+ * classes the access is decoupled through a JRE API. This avoids dependencies
+ * from instrumented classes on JaCoCo APIs.
+ * 
+ * The JRE interface method used is {@link Object#equals(Object)} where the
+ * passed argument is an {@link Object} array containing the class id (
+ * {@link Long}), the class vm name ({@link String}) and the probe count (
+ * {@link Integer}). After the method call the probe array instance is stored in
+ * the first slot of the {@link Object} array.
+ */
+class ExecutionDataAccess {
+
+	private final ExecutionDataStore store;
+
+<span class="fc" id="L35">	ExecutionDataAccess(final ExecutionDataStore store) {</span>
+<span class="fc" id="L36">		this.store = store;</span>
+<span class="fc" id="L37">	}</span>
+
+	/**
+	 * Retrieves the execution probe array for a given class. The passed
+	 * {@link Object} array instance is used for parameters and the return value
+	 * as follows. Call parameters:
+	 * 
+	 * &lt;ul&gt;
+	 * &lt;li&gt;args[0]: class id ({@link Long})
+	 * &lt;li&gt;args[1]: vm class name ({@link String})
+	 * &lt;li&gt;args[2]: probe count ({@link Integer})
+	 * &lt;/ul&gt;
+	 * 
+	 * Return value:
+	 * 
+	 * &lt;ul&gt;
+	 * &lt;li&gt;args[0]: probe array (&lt;code&gt;boolean[]&lt;/code&gt;)
+	 * &lt;/ul&gt;
+	 * 
+	 * @param args
+	 *            parameter array of length 3
+	 */
+	public void getExecutionData(final Object[] args) {
+<span class="fc" id="L60">		final Long classid = (Long) args[0];</span>
+<span class="fc" id="L61">		final String name = (String) args[1];</span>
+<span class="fc" id="L62">		final int probecount = ((Integer) args[2]).intValue();</span>
+<span class="fc" id="L63">		synchronized (store) {</span>
+<span class="fc" id="L64">			args[0] = store.get(classid, name, probecount).getData();</span>
+<span class="pc" id="L65">		}</span>
+<span class="fc" id="L66">	}</span>
+
+	/**
+	 * Generates code that creates the argument array for the
+	 * &lt;code&gt;getExecutionData()&lt;/code&gt; method. The array instance is left on the
+	 * operand stack. The generated code requires a stack size of 5.
+	 * 
+	 * @param classid
+	 *            class identifier
+	 * @param classname
+	 *            VM class name
+	 * @param probecount
+	 *            probe count for this class
+	 * @param mv
+	 *            visitor to emit generated code
+	 */
+	public static void generateArgumentArray(final long classid,
+			final String classname, final int probecount, final MethodVisitor mv) {
+<span class="fc" id="L84">		mv.visitInsn(Opcodes.ICONST_3);</span>
+<span class="fc" id="L85">		mv.visitTypeInsn(Opcodes.ANEWARRAY, &quot;java/lang/Object&quot;);</span>
+
+		// Class Id:
+<span class="fc" id="L88">		mv.visitInsn(Opcodes.DUP);</span>
+<span class="fc" id="L89">		mv.visitInsn(Opcodes.ICONST_0);</span>
+<span class="fc" id="L90">		mv.visitLdcInsn(Long.valueOf(classid));</span>
+<span class="fc" id="L91">		mv.visitMethodInsn(Opcodes.INVOKESTATIC, &quot;java/lang/Long&quot;, &quot;valueOf&quot;,</span>
+				&quot;(J)Ljava/lang/Long;&quot;);
+<span class="fc" id="L93">		mv.visitInsn(Opcodes.AASTORE);</span>
+
+		// Class Name:
+<span class="fc" id="L96">		mv.visitInsn(Opcodes.DUP);</span>
+<span class="fc" id="L97">		mv.visitInsn(Opcodes.ICONST_1);</span>
+<span class="fc" id="L98">		mv.visitLdcInsn(classname);</span>
+<span class="fc" id="L99">		mv.visitInsn(Opcodes.AASTORE);</span>
+
+		// Probe Count:
+<span class="fc" id="L102">		mv.visitInsn(Opcodes.DUP);</span>
+<span class="fc" id="L103">		mv.visitInsn(Opcodes.ICONST_2);</span>
+<span class="fc" id="L104">		InstrSupport.push(mv, probecount);</span>
+<span class="fc" id="L105">		mv.visitMethodInsn(Opcodes.INVOKESTATIC, &quot;java/lang/Integer&quot;,</span>
+				&quot;valueOf&quot;, &quot;(I)Ljava/lang/Integer;&quot;);
+<span class="fc" id="L107">		mv.visitInsn(Opcodes.AASTORE);</span>
+<span class="fc" id="L108">	}</span>
+
+	/**
+	 * Generates the code that calls the runtime data access through the JRE API
+	 * method {@link Object#equals(Object)}. The code pops a {@link Object}
+	 * instance from the stack and pushes the probe array of type
+	 * &lt;code&gt;boolean[]&lt;/code&gt; on the operand stack. The generated code requires
+	 * a stack size of 6.
+	 * 
+	 * @param classid
+	 * @param classname
+	 * @param probecount
+	 * @param mv
+	 */
+	public static void generateAccessCall(final long classid,
+			final String classname, final int probecount, final MethodVisitor mv) {
+		// stack[0]: Ljava/lang/Object;
+
+<span class="fc" id="L126">		generateArgumentArray(classid, classname, probecount, mv);</span>
+
+		// stack[1]: [Ljava/lang/Object;
+		// stack[0]: Ljava/lang/Object;
+
+<span class="fc" id="L131">		mv.visitInsn(Opcodes.DUP_X1);</span>
+
+		// stack[2]: [Ljava/lang/Object;
+		// stack[1]: Ljava/lang/Object;
+		// stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L137">		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, &quot;java/lang/Object&quot;, &quot;equals&quot;,</span>
+				&quot;(Ljava/lang/Object;)Z&quot;);
+<span class="fc" id="L139">		mv.visitInsn(Opcodes.POP);</span>
+
+		// stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L143">		mv.visitInsn(Opcodes.ICONST_0);</span>
+<span class="fc" id="L144">		mv.visitInsn(Opcodes.AALOAD);</span>
+
+		// stack[0]: [Z
+
+<span class="fc" id="L148">		mv.visitTypeInsn(Opcodes.CHECKCAST, InstrSupport.DATAFIELD_DESC);</span>
+<span class="fc" id="L149">	}</span>
+
+	/**
+	 * In violation of the regular semantic of {@link Object#equals(Object)}
+	 * this implementation is used as the interface to the execution data store.
+	 * 
+	 * @param args
+	 *            the arguments as an {@link Object} array
+	 * @return has no meaning
+	 */
+	@Override
+	public boolean equals(final Object args) {
+<span class="fc" id="L161">		getExecutionData((Object[]) args);</span>
+<span class="fc" id="L162">		return false;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

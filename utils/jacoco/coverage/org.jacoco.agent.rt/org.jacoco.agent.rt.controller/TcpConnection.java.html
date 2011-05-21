@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>TcpConnection.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.agent.rt</a> &gt; <a href="index.html" class="el_package">org.jacoco.agent.rt.controller</a> &gt; <span class="el_source">TcpConnection.java</span></div><h1>TcpConnection.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.agent.rt.controller;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+import org.jacoco.core.runtime.IRemoteCommandVisitor;
+import org.jacoco.core.runtime.IRuntime;
+import org.jacoco.core.runtime.RemoteControlReader;
+import org.jacoco.core.runtime.RemoteControlWriter;
+
+/**
+ * Handler for a single socket based remote connection.
+ */
+class TcpConnection implements IRemoteCommandVisitor {
+
+	private final IRuntime runtime;
+
+	private final Socket socket;
+
+	private RemoteControlWriter writer;
+
+	private RemoteControlReader reader;
+
+	private boolean initialized;
+
+<span class="fc" id="L38">	public TcpConnection(Socket socket, IRuntime runtime) {</span>
+<span class="fc" id="L39">		this.socket = socket;</span>
+<span class="fc" id="L40">		this.runtime = runtime;</span>
+<span class="fc" id="L41">		this.initialized = false;</span>
+<span class="fc" id="L42">	}</span>
+
+	public void init() throws IOException {
+<span class="fc" id="L45">		this.writer = new RemoteControlWriter(socket.getOutputStream());</span>
+<span class="fc" id="L46">		this.reader = new RemoteControlReader(socket.getInputStream());</span>
+<span class="fc" id="L47">		this.reader.setRemoteCommandVisitor(this);</span>
+<span class="fc" id="L48">		this.initialized = true;</span>
+<span class="fc" id="L49">	}</span>
+
+	/**
+	 * Processes all requests for this session until the socket is closed.
+	 */
+	public void run() throws IOException {
+		try {
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">			while (reader.read()) {</span>
+			}
+<span class="fc" id="L58">		} catch (SocketException e) {</span>
+			// If the local socket is closed while polling for commands the
+			// SocketException is expected.
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">			if (!socket.isClosed()) {</span>
+<span class="nc" id="L62">				throw e;</span>
+			}
+		} finally {
+<span class="fc" id="L65">			close();</span>
+<span class="fc" id="L66">		}</span>
+<span class="fc" id="L67">	}</span>
+
+	/**
+	 * Dumps the current execution data if the connection is already initialized
+	 * and the underlying socket is still open.
+	 * 
+	 * @throws IOException
+	 */
+	public void writeExecutionData() throws IOException {
+<span class="pc bpc" id="L76" title="1 of 4 branches missed.">		if (initialized &amp;&amp; !socket.isClosed()) {</span>
+<span class="fc" id="L77">			visitDumpCommand(true, false);</span>
+		}
+<span class="fc" id="L79">	}</span>
+
+	/**
+	 * Closes the underlying socket if not closed yet.
+	 * 
+	 * @throws IOException
+	 */
+	public void close() throws IOException {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">		if (!socket.isClosed()) {</span>
+<span class="fc" id="L88">			socket.close();</span>
+		}
+<span class="fc" id="L90">	}</span>
+
+	// === IRemoteCommandVisitor ===
+
+	public void visitDumpCommand(boolean dump, boolean reset)
+			throws IOException {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">		if (dump) {</span>
+<span class="fc" id="L97">			runtime.collect(writer, writer, reset);</span>
+		} else {
+<span class="fc bfc" id="L99" title="All 2 branches covered.">			if (reset) {</span>
+<span class="fc" id="L100">				runtime.reset();</span>
+			}
+		}
+<span class="fc" id="L103">		writer.sendCmdOk();</span>
+<span class="fc" id="L104">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

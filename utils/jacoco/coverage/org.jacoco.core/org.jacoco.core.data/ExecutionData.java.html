@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ExecutionData.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">ExecutionData.java</span></div><h1>ExecutionData.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+import static java.lang.String.format;
+
+import java.util.Arrays;
+
+/**
+ * Execution data for a single Java class. While instances are immutable care
+ * has to be taken about the probe data array of type &lt;code&gt;boolean[]&lt;/code&gt;
+ * which can be modified.
+ */
+public final class ExecutionData {
+
+	private final long id;
+
+	private final String name;
+
+	private final boolean[] data;
+
+	/**
+	 * Creates a new {@link ExecutionData} object with the given probe data.
+	 * 
+	 * @param id
+	 *            class identifier
+	 * @param name
+	 *            VM name
+	 * @param data
+	 *            probe data
+	 */
+<span class="fc" id="L41">	public ExecutionData(final long id, final String name, final boolean[] data) {</span>
+<span class="fc" id="L42">		this.id = id;</span>
+<span class="fc" id="L43">		this.name = name;</span>
+<span class="fc" id="L44">		this.data = data;</span>
+<span class="fc" id="L45">	}</span>
+
+	/**
+	 * Creates a new {@link ExecutionData} object with the given probe data
+	 * length. All probes are set to &lt;code&gt;false&lt;/code&gt;.
+	 * 
+	 * @param id
+	 *            class identifier
+	 * @param name
+	 *            VM name
+	 * @param dataLength
+	 *            probe data length
+	 */
+<span class="fc" id="L58">	public ExecutionData(final long id, final String name, final int dataLength) {</span>
+<span class="fc" id="L59">		this.id = id;</span>
+<span class="fc" id="L60">		this.name = name;</span>
+<span class="fc" id="L61">		this.data = new boolean[dataLength];</span>
+<span class="fc" id="L62">	}</span>
+
+	/**
+	 * Return the unique identifier for this class. The identifier is the CRC64
+	 * checksum of the raw class file definition.
+	 * 
+	 * @return class identifier
+	 */
+	public long getId() {
+<span class="fc" id="L71">		return id;</span>
+	}
+
+	/**
+	 * The VM name of the class.
+	 * 
+	 * @return VM name
+	 */
+	public String getName() {
+<span class="fc" id="L80">		return name;</span>
+	}
+
+	/**
+	 * Returns the execution data probes. A value of &lt;code&gt;true&lt;/code&gt; indicates
+	 * that the corresponding probe was executed.
+	 * 
+	 * @return execution data
+	 */
+	public boolean[] getData() {
+<span class="fc" id="L90">		return data;</span>
+	}
+
+	/**
+	 * Sets all probe data entries to &lt;code&gt;false&lt;/code&gt;.
+	 */
+	public void reset() {
+<span class="fc" id="L97">		Arrays.fill(data, false);</span>
+<span class="fc" id="L98">	}</span>
+
+	/**
+	 * Merges the given execution data into the probe data of this object. I.e.
+	 * a probe entry in this object is marked as executed (&lt;code&gt;true&lt;/code&gt;) if
+	 * this probe or the corresponding other probe was executed. The probe array
+	 * of the other object is not modified.
+	 * 
+	 * @param other
+	 */
+	public void merge(final ExecutionData other) {
+<span class="fc" id="L109">		assertCompatibility(other.getId(), other.getName(),</span>
+				other.getData().length);
+<span class="fc" id="L111">		final boolean[] otherData = other.getData();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		for (int i = 0; i &lt; data.length; i++) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">			if (otherData[i]) {</span>
+<span class="fc" id="L114">				data[i] = true;</span>
+			}
+		}
+<span class="fc" id="L117">	}</span>
+
+	/**
+	 * Asserts that this execution data object is compatible with the given
+	 * parameters. The purpose of this check is to detect a very unlikely class
+	 * id collision.
+	 * 
+	 * @param id
+	 *            other class id, must be the same
+	 * @param name
+	 *            other name, must be equal to this name
+	 * @param dataLength
+	 *            probe data length, must be the same as for this data
+	 * @throws IllegalStateException
+	 *             if the given parameters do not match this instance
+	 */
+	public void assertCompatibility(final long id, final String name,
+			final int dataLength) throws IllegalStateException {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (this.id != id) {</span>
+<span class="fc" id="L136">			throw new IllegalStateException(format(</span>
+					&quot;Different ids (%016x and %016x).&quot;, Long.valueOf(this.id),
+					Long.valueOf(id)));
+		}
+<span class="fc bfc" id="L140" title="All 2 branches covered.">		if (!this.name.equals(name)) {</span>
+<span class="fc" id="L141">			throw new IllegalStateException(format(</span>
+					&quot;Different class names %s and %s for id %016x.&quot;, this.name,
+					name, Long.valueOf(id)));
+		}
+<span class="fc bfc" id="L145" title="All 2 branches covered.">		if (this.data.length != dataLength) {</span>
+<span class="fc" id="L146">			throw new IllegalStateException(format(</span>
+					&quot;Incompatible execution data for class %s with id %016x.&quot;,
+					name, Long.valueOf(id)));
+		}
+<span class="fc" id="L150">	}</span>
+
+	@Override
+	public String toString() {
+<span class="fc" id="L154">		return String.format(&quot;ExecutionData [name=%s, id=%016x]&quot;, name,</span>
+				Long.valueOf(id));
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

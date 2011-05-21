@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>RemoteControlWriter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.runtime</a> &gt; <span class="el_source">RemoteControlWriter.java</span></div><h1>RemoteControlWriter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.runtime;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.jacoco.core.data.ExecutionDataWriter;
+
+/**
+ * {@link ExecutionDataWriter} with commands added for runtime remote control.
+ */
+public class RemoteControlWriter extends ExecutionDataWriter implements
+		IRemoteCommandVisitor {
+
+	/** Block identifier to confirm successful command execution. */
+	public static final byte BLOCK_CMDOK = 0x20;
+
+	/** Block identifier for dump command */
+	public static final byte BLOCK_CMDDUMP = 0x40;
+
+	/**
+	 * Creates a new writer based on the given output stream.
+	 * 
+	 * @param output
+	 *            stream to write commands to
+	 * @throws IOException
+	 *             if the header can't be written
+	 */
+	public RemoteControlWriter(final OutputStream output) throws IOException {
+<span class="fc" id="L40">		super(output);</span>
+<span class="fc" id="L41">	}</span>
+
+	/**
+	 * Sends a confirmation that a commands has been successfully executed and
+	 * the response is completed.
+	 * 
+	 * @throws IOException
+	 *             in case of problems with the remote connection
+	 */
+	public void sendCmdOk() throws IOException {
+<span class="fc" id="L51">		out.writeByte(RemoteControlWriter.BLOCK_CMDOK);</span>
+<span class="fc" id="L52">	}</span>
+
+	public void visitDumpCommand(final boolean dump, final boolean reset)
+			throws IOException {
+<span class="fc" id="L56">		out.writeByte(RemoteControlWriter.BLOCK_CMDDUMP);</span>
+<span class="fc" id="L57">		out.writeBoolean(dump);</span>
+<span class="fc" id="L58">		out.writeBoolean(reset);</span>
+<span class="fc" id="L59">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

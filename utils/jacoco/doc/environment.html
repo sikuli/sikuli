@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <link rel="stylesheet" href=".resources/doc.css" charset="ISO-8859-1" type="text/css" />
+  <link rel="shortcut icon" href=".resources/report.gif" type="image/gif" />
+  <title>JaCoCo - Development Environment</title>
+</head>
+<body>
+
+<div class="breadcrumb">
+  <a href="../index.html" class="el_report">JaCoCo</a> &gt;
+  <a href="index.html" class="el_group">Documentation</a> &gt;
+  <span class="el_source">Development Environment</span>
+</div>
+<div id="content"> 
+
+<h1>Development Environment</h1>
+
+<p>
+  With this version JaCoCo is hosted at
+  <a href="http://www.sourceforge.net/">SourceForge</a> as part of the
+  <a href="http://www.sourceforge.net/projects/eclemma">EclEmma project</a>.
+  This document provides an overview of the local and shared tools used for
+  JaCoCo development.
+</p>
+
+<h3>IDE</h3>
+
+<p>
+  JaCoCo development is done with the latest Eclipse version 3.6.x. JaCoCo
+  projects are OSGi bundles, therefore the PDE feature is required. Project
+  specific Eclipse settings exist for the projects
+</p>
+
+<ul>
+  <li><code>org.jacoco.core</code></li>
+  <li><code>org.jacoco.core.test</code></li>
+</ul>
+
+<p>
+  All other projects and test projects link to these settings.
+</p>
+
+<h3>JRE/JDK</h3>
+
+<p>
+  The minimum JRE version to execute JaCoCo is Java 1.5. However to guarantee
+  compatibility the JaCoCo build scripts enforce the use of a 1.5 JDK for the
+  <code>deliver</code> target.  
+</p>
+
+<h3>Third Party Dependencies</h3>
+
+<p>
+  JaCoCo has dependencies to the following third party bundles:
+</p>
+
+<ul>
+  <li>Apache Ant 1.7.x</li>
+  <li>JUnit 4</li>
+  <li>Objectweb ASM 3.2.x</li>
+</ul>
+
+<p>
+  
+  These bundles are included with Eclipse 3.6.x and are not part of the JaCoCo
+  source tree.
+</p>
+
+<h3>Source Control</h3>
+
+<p>
+  The JaCoCo source code is maintained in a subversion repository at
+</p>
+
+<pre>
+  https://eclemma.svn.sourceforge.net/svnroot/eclemma/jacoco
+</pre>
+
+<p>
+  You will find the latest version as several Eclipse projects in the
+  <code>trunk</code> folder. You might also browse the source code online via our
+  <a href="http://eclemma.svn.sourceforge.net/viewvc/eclemma/jacoco/">ViewVC</a>
+  or <a href="https://sourceforge.net/apps/trac/eclemma/browser/jacoco">Trac</a>
+  web interface.
+</p>
+
+<h3>Planning</h3>
+
+<p>
+  A <a href="https://sourceforge.net/apps/trac/eclemma">Trac Instance</a> is
+  used for milestone planning and task tracking.
+</p>
+
+<h3>Communication</h3>
+
+<p>
+  The development team communicates through a mailing list. The list is closed
+  for non-developers but the archive is
+  <a href="https://sourceforge.net/mailarchive/forum.php?forum_name=eclemma-jacoco-dev">public</a>.
+  Please use the <a href="support.html">support channels</a> to get in touch
+  with the development team.
+</p>
+
+</div>
+<div class="footer">
+  <span class="right"><a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>
+  <a href="license.html">Copyright</a> &copy; 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+</div>
+
+</body>
+</html>

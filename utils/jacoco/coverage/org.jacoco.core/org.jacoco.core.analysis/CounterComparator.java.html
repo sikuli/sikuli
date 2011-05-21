@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>CounterComparator.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.analysis</a> &gt; <span class="el_source">CounterComparator.java</span></div><h1>CounterComparator.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.analysis;
+
+import java.util.Comparator;
+
+import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
+
+/**
+ * Collection of comparators to compare {@link ICounter} objects by different
+ * criteria.
+ */
+<span class="fc" id="L22">public abstract class CounterComparator implements Comparator&lt;ICounter&gt; {</span>
+
+	/**
+	 * Compares the absolute number of total items.
+	 */
+<span class="fc" id="L27">	public static final CounterComparator TOTALITEMS = new CounterComparator() {</span>
+<span class="fc" id="L28">		public int compare(final ICounter c1, final ICounter c2) {</span>
+<span class="fc" id="L29">			return c1.getTotalCount() - c2.getTotalCount();</span>
+		}
+	};
+
+	/**
+	 * Compares the absolute number of covered items.
+	 */
+<span class="fc" id="L36">	public static final CounterComparator COVEREDITEMS = new CounterComparator() {</span>
+<span class="fc" id="L37">		public int compare(final ICounter c1, final ICounter c2) {</span>
+<span class="fc" id="L38">			return c1.getCoveredCount() - c2.getCoveredCount();</span>
+		}
+	};
+
+	/**
+	 * Compares the absolute number of missed items.
+	 */
+<span class="fc" id="L45">	public static final CounterComparator MISSEDITEMS = new CounterComparator() {</span>
+<span class="fc" id="L46">		public int compare(final ICounter c1, final ICounter c2) {</span>
+<span class="fc" id="L47">			return c1.getMissedCount() - c2.getMissedCount();</span>
+		}
+	};
+
+	/**
+	 * Compares the ratio of covered items.
+	 */
+<span class="fc" id="L54">	public static final CounterComparator COVEREDRATIO = new CounterComparator() {</span>
+<span class="fc" id="L55">		public int compare(final ICounter c1, final ICounter c2) {</span>
+<span class="fc" id="L56">			return Double.compare(c1.getCoveredRatio(), c2.getCoveredRatio());</span>
+		}
+	};
+
+	/**
+	 * Compares the ratio of missed items.
+	 */
+<span class="fc" id="L63">	public static final CounterComparator MISSEDRATIO = new CounterComparator() {</span>
+<span class="fc" id="L64">		public int compare(final ICounter c1, final ICounter c2) {</span>
+<span class="fc" id="L65">			return Double.compare(c1.getMissedRatio(), c2.getMissedRatio());</span>
+		}
+	};
+
+	/**
+	 * Creates a new version of this comparator that sorts in reverse order.
+	 * 
+	 * @return reverse comparator
+	 */
+	public CounterComparator reverse() {
+<span class="fc" id="L75">		final CounterComparator original = this;</span>
+<span class="fc" id="L76">		return new CounterComparator() {</span>
+<span class="fc" id="L77">			public int compare(final ICounter o1, final ICounter o2) {</span>
+<span class="fc" id="L78">				return original.compare(o2, o1);</span>
+			}
+		};
+	}
+
+	/**
+	 * Creates a new comparator for {@link ICoverageNode} counters of the given
+	 * entity based on this counter sorting criteria.
+	 * 
+	 * @param entity
+	 *            counter entity to sort on
+	 * @return comparator for {@link ICoverageNode} elements
+	 */
+	public NodeComparator on(final CounterEntity entity) {
+<span class="fc" id="L92">		return new NodeComparator(this, entity);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

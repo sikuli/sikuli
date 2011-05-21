@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ContentTypeDetector.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.analysis</a> &gt; <span class="el_source">ContentTypeDetector.java</span></div><h1>ContentTypeDetector.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.analysis;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.objectweb.asm.Opcodes;
+
+/**
+ * Detector for content types of binary streams based on a magic headers.
+ */
+public class ContentTypeDetector {
+
+	/** Unknown file type */
+	public static final int UNKNOWN = -1;
+
+	/** File type Java class */
+	public static final int CLASSFILE = 0xcafebabe;
+
+	/** File type ZIP archive */
+	public static final int ZIPFILE = 0x504b0304;
+
+	private static final int BUFFER_SIZE = 8;
+
+	private final InputStream in;
+
+	private final int type;
+
+	/**
+	 * Creates a new detector based on the given input. To process the complete
+	 * original input afterwards use the stream returned by
+	 * {@link #getInputStream()}.
+	 * 
+	 * @param in
+	 *            input to read the header from
+	 * @throws IOException
+	 */
+<span class="fc" id="L49">	public ContentTypeDetector(final InputStream in) throws IOException {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (in.markSupported()) {</span>
+<span class="fc" id="L51">			this.in = in;</span>
+		} else {
+<span class="fc" id="L53">			this.in = new BufferedInputStream(in, BUFFER_SIZE);</span>
+		}
+<span class="fc" id="L55">		this.in.mark(BUFFER_SIZE);</span>
+<span class="fc" id="L56">		this.type = determineType(this.in);</span>
+<span class="fc" id="L57">		this.in.reset();</span>
+<span class="fc" id="L58">	}</span>
+
+	private static int determineType(final InputStream in) throws IOException {
+<span class="fc bfc" id="L61" title="All 3 branches covered.">		switch (readInt(in)) {</span>
+		case ZIPFILE:
+<span class="fc" id="L63">			return ZIPFILE;</span>
+		case CLASSFILE:
+			// also verify version to distinguish from Mach Object files:
+<span class="fc bfc" id="L66" title="All 2 branches covered.">			switch (readInt(in)) {</span>
+			case Opcodes.V1_1:
+			case Opcodes.V1_2:
+			case Opcodes.V1_3:
+			case Opcodes.V1_4:
+			case Opcodes.V1_5:
+			case Opcodes.V1_6:
+			case Opcodes.V1_7:
+<span class="fc" id="L74">				return CLASSFILE;</span>
+			}
+		}
+<span class="fc" id="L77">		return UNKNOWN;</span>
+	}
+
+	private static int readInt(final InputStream in) throws IOException {
+<span class="fc" id="L81">		return in.read() &lt;&lt; 24 | in.read() &lt;&lt; 16 | in.read() &lt;&lt; 8 | in.read();</span>
+	}
+
+	/**
+	 * Returns an input stream instance to read the complete content (including
+	 * the header) of the underlying stream.
+	 * 
+	 * @return input stream containing the complete content
+	 */
+	public InputStream getInputStream() {
+<span class="fc" id="L91">		return in;</span>
+	}
+
+	/**
+	 * Returns the detected file type.
+	 * 
+	 * @return file type
+	 */
+	public int getType() {
+<span class="fc" id="L100">		return type;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

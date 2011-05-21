@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>LoggerRuntime.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.runtime</a> &gt; <span class="el_source">LoggerRuntime.java</span></div><h1>LoggerRuntime.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.runtime;
+
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import org.jacoco.core.internal.instr.InstrSupport;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * This {@link IRuntime} implementation uses the Java logging API to report
+ * coverage data.
+ * &lt;p&gt;
+ * 
+ * The implementation uses a dedicated log channel. Instrumented classes call
+ * {@link Logger#log(Level, String, Object[])} with the class identifier in the
+ * first slot of the parameter array. The runtime implements a {@link Handler}
+ * for this channel that puts the probe data structure into the first slot of
+ * the parameter array.
+ */
+public class LoggerRuntime extends AbstractRuntime {
+
+	private static final String CHANNEL = &quot;jacoco-runtime&quot;;
+
+	private final String key;
+
+	private final Logger logger;
+
+	private final Handler handler;
+
+	/**
+	 * Creates a new runtime.
+	 */
+<span class="fc" id="L47">	public LoggerRuntime() {</span>
+<span class="fc" id="L48">		this.key = Integer.toHexString(hashCode());</span>
+<span class="fc" id="L49">		this.logger = configureLogger();</span>
+<span class="fc" id="L50">		this.handler = new RuntimeHandler();</span>
+<span class="fc" id="L51">	}</span>
+
+	private Logger configureLogger() {
+<span class="fc" id="L54">		final Logger l = Logger.getLogger(CHANNEL);</span>
+<span class="fc" id="L55">		l.setUseParentHandlers(false);</span>
+<span class="fc" id="L56">		l.setLevel(Level.ALL);</span>
+<span class="fc" id="L57">		return l;</span>
+	}
+
+	public int generateDataAccessor(final long classid, final String classname,
+			final int probecount, final MethodVisitor mv) {
+
+		// The data accessor performs the following steps:
+		//
+		// final Object[] args = new Object[3];
+		// args[0] = Long.valueOf(classid);
+		// args[1] = classname;
+		// args[2] = Integer.valueOf(probecount);
+		// Logger.getLogger(CHANNEL).log(Level.INFO, key, args);
+		// final byte[] probedata = (byte[]) args[0];
+		//
+		// Note that local variable 'args' is used at two places. As were not
+		// allowed to allocate local variables we have to keep this value with
+		// DUP and SWAP operations on the operand stack.
+
+		// 1. Create parameter array:
+
+<span class="fc" id="L78">		ExecutionDataAccess.generateArgumentArray(classid, classname,</span>
+				probecount, mv);
+
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L83">		mv.visitInsn(Opcodes.DUP);</span>
+
+		// Stack[1]: [Ljava/lang/Object;
+		// Stack[0]: [Ljava/lang/Object;
+
+		// 2. Call Logger:
+
+<span class="fc" id="L90">		mv.visitLdcInsn(CHANNEL);</span>
+<span class="fc" id="L91">		mv.visitMethodInsn(Opcodes.INVOKESTATIC, &quot;java/util/logging/Logger&quot;,</span>
+				&quot;getLogger&quot;, &quot;(Ljava/lang/String;)Ljava/util/logging/Logger;&quot;);
+
+		// Stack[2]: Ljava/util/logging/Logger;
+		// Stack[1]: [Ljava/lang/Object;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L98">		mv.visitInsn(Opcodes.SWAP);</span>
+
+		// Stack[2]: [Ljava/lang/Object;
+		// Stack[1]: Ljava/util/logging/Logger;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L104">		mv.visitFieldInsn(Opcodes.GETSTATIC, &quot;java/util/logging/Level&quot;, &quot;INFO&quot;,</span>
+				&quot;Ljava/util/logging/Level;&quot;);
+
+		// Stack[3]: Ljava/util/logging/Level;
+		// Stack[2]: [Ljava/lang/Object;
+		// Stack[1]: Ljava/util/logging/Logger;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L112">		mv.visitInsn(Opcodes.SWAP);</span>
+
+		// Stack[3]: [Ljava/lang/Object;
+		// Stack[2]: Ljava/util/logging/Level;
+		// Stack[1]: Ljava/util/logging/Logger;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L119">		mv.visitLdcInsn(key);</span>
+
+		// Stack[4]: Ljava/lang/String;
+		// Stack[3]: [Ljava/lang/Object;
+		// Stack[2]: Ljava/util/logging/Level;
+		// Stack[1]: Ljava/util/logging/Logger;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L127">		mv.visitInsn(Opcodes.SWAP);</span>
+
+		// Stack[4]: [Ljava/lang/Object;
+		// Stack[3]: Ljava/lang/String;
+		// Stack[2]: Ljava/util/logging/Level;
+		// Stack[1]: Ljava/util/logging/Logger;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L135">		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, &quot;java/util/logging/Logger&quot;,</span>
+				&quot;log&quot;,
+				&quot;(Ljava/util/logging/Level;Ljava/lang/String;[Ljava/lang/Object;)V&quot;);
+
+		// Stack[0]: [Ljava/lang/Object;
+
+		// 3. Load data structure from parameter array:
+
+<span class="fc" id="L143">		mv.visitInsn(Opcodes.ICONST_0);</span>
+<span class="fc" id="L144">		mv.visitInsn(Opcodes.AALOAD);</span>
+<span class="fc" id="L145">		mv.visitTypeInsn(Opcodes.CHECKCAST, InstrSupport.DATAFIELD_DESC);</span>
+
+		// Stack[0]: [Z
+
+<span class="fc" id="L149">		return 5; // Maximum local stack size is 5</span>
+	}
+
+	public void startup() {
+<span class="fc" id="L153">		setStartTimeStamp();</span>
+<span class="fc" id="L154">		this.logger.addHandler(handler);</span>
+<span class="fc" id="L155">	}</span>
+
+	public void shutdown() {
+<span class="fc" id="L158">		this.logger.removeHandler(handler);</span>
+<span class="fc" id="L159">	}</span>
+
+<span class="fc" id="L161">	private class RuntimeHandler extends Handler {</span>
+
+		@Override
+		public void publish(final LogRecord record) {
+<span class="fc bfc" id="L165" title="All 2 branches covered.">			if (key.equals(record.getMessage())) {</span>
+<span class="fc" id="L166">				access.getExecutionData(record.getParameters());</span>
+			}
+<span class="fc" id="L168">		}</span>
+
+		@Override
+		public void flush() {
+<span class="nc" id="L172">		}</span>
+
+		@Override
+		public void close() throws SecurityException {
+			// The Java logging framework removes and closes all handlers on JVM
+			// shutdown. As soon as our handler has been removed, all classes
+			// that might get instrumented during shutdown (e.g. loaded by other
+			// shutdown hooks) will fail to initialize. Therefore we add ourself
+			// again here. This is a nasty hack that might fail in some Java
+			// implementations.
+<span class="nc" id="L182">			logger.addHandler(handler);</span>
+<span class="nc" id="L183">		}</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ZipMultiReportOutput.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report</a> &gt; <span class="el_source">ZipMultiReportOutput.java</span></div><h1>ZipMultiReportOutput.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+/**
+ * Implementation of {@link IMultiReportOutput} that writes files into a
+ * {@link ZipOutputStream}.
+ */
+public class ZipMultiReportOutput implements IMultiReportOutput {
+
+	private final ZipOutputStream zip;
+
+	private OutputStream currentEntry;
+
+	/**
+	 * Creates a new instance based on the given {@link ZipOutputStream}.
+	 * 
+	 * @param zip
+	 *            stream to write file entries to
+	 */
+<span class="fc" id="L35">	public ZipMultiReportOutput(final ZipOutputStream zip) {</span>
+<span class="fc" id="L36">		this.zip = zip;</span>
+<span class="fc" id="L37">	}</span>
+
+	/**
+	 * Creates a new instance based on the given {@link OutputStream}.
+	 * 
+	 * @param out
+	 *            stream to write file entries to
+	 */
+<span class="nc" id="L45">	public ZipMultiReportOutput(final OutputStream out) {</span>
+<span class="nc" id="L46">		this.zip = new ZipOutputStream(out);</span>
+<span class="nc" id="L47">	}</span>
+
+	public OutputStream createFile(final String path) throws IOException {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (currentEntry != null) {</span>
+<span class="fc" id="L51">			currentEntry.close();</span>
+		}
+<span class="fc" id="L53">		final ZipEntry entry = new ZipEntry(path);</span>
+<span class="fc" id="L54">		zip.putNextEntry(entry);</span>
+<span class="fc" id="L55">		currentEntry = new EntryOutput();</span>
+<span class="fc" id="L56">		return currentEntry;</span>
+	}
+
+	public void close() throws IOException {
+<span class="nc" id="L60">		zip.close();</span>
+<span class="nc" id="L61">	}</span>
+
+<span class="fc" id="L63">	private final class EntryOutput extends OutputStream {</span>
+
+<span class="fc" id="L65">		private boolean closed = false;</span>
+
+		@Override
+		public void write(final byte[] b, final int off, final int len)
+				throws IOException {
+<span class="fc" id="L70">			ensureNotClosed();</span>
+<span class="fc" id="L71">			zip.write(b, off, len);</span>
+<span class="fc" id="L72">		}</span>
+
+		@Override
+		public void write(final byte[] b) throws IOException {
+<span class="fc" id="L76">			ensureNotClosed();</span>
+<span class="fc" id="L77">			zip.write(b);</span>
+<span class="fc" id="L78">		}</span>
+
+		@Override
+		public void write(final int b) throws IOException {
+<span class="fc" id="L82">			ensureNotClosed();</span>
+<span class="fc" id="L83">			zip.write(b);</span>
+<span class="fc" id="L84">		}</span>
+
+		@Override
+		public void flush() throws IOException {
+<span class="fc" id="L88">			ensureNotClosed();</span>
+<span class="fc" id="L89">			zip.flush();</span>
+<span class="fc" id="L90">		}</span>
+
+		@Override
+		public void close() throws IOException {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">			if (!closed) {</span>
+<span class="fc" id="L95">				closed = true;</span>
+<span class="fc" id="L96">				zip.closeEntry();</span>
+			}
+<span class="fc" id="L98">		}</span>
+
+		private void ensureNotClosed() throws IOException {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			if (closed) {</span>
+<span class="fc" id="L102">				throw new IOException(&quot;Zip entry already closed.&quot;);</span>
+			}
+<span class="fc" id="L104">		}</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>XMLGroupVisitor.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.xml</a> &gt; <span class="el_source">XMLGroupVisitor.java</span></div><h1>XMLGroupVisitor.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak - initial API and implementation
+ *    Marc R. Hoffmann - generalized structure, line info
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.xml;
+
+import java.io.IOException;
+
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.report.IReportGroupVisitor;
+import org.jacoco.report.ISourceFileLocator;
+import org.jacoco.report.internal.AbstractGroupVisitor;
+
+/**
+ * {@link IReportGroupVisitor} that transforms the report structure into XML
+ * elements.
+ */
+public class XMLGroupVisitor extends AbstractGroupVisitor {
+
+	/** XML element of this group */
+	protected final XMLElement element;
+
+	/**
+	 * New handler for a group with the given name.
+	 * 
+	 * @param element
+	 *            XML-Element representing this coverage node. The start tag
+	 *            must not be closed yet to allow adding additional attributes.
+	 * @param name
+	 *            name of the group
+	 * @throws IOException
+	 *             in case of problems with the underlying writer
+	 */
+	public XMLGroupVisitor(final XMLElement element, final String name)
+			throws IOException {
+<span class="fc" id="L44">		super(name);</span>
+<span class="fc" id="L45">		this.element = element;</span>
+<span class="fc" id="L46">	}</span>
+
+	@Override
+	protected void handleBundle(final IBundleCoverage bundle,
+			final ISourceFileLocator locator) throws IOException {
+<span class="fc" id="L51">		final XMLElement child = createChild(bundle.getName());</span>
+<span class="fc" id="L52">		XMLCoverageWriter.writeBundle(bundle, child);</span>
+<span class="fc" id="L53">	}</span>
+
+	@Override
+	protected AbstractGroupVisitor handleGroup(final String name)
+			throws IOException {
+<span class="fc" id="L58">		final XMLElement child = createChild(name);</span>
+<span class="fc" id="L59">		return new XMLGroupVisitor(child, name);</span>
+	}
+
+	@Override
+	protected void handleEnd() throws IOException {
+<span class="fc" id="L64">		XMLCoverageWriter.writeCounters(total, element);</span>
+<span class="fc" id="L65">	}</span>
+
+	private XMLElement createChild(final String name) throws IOException {
+<span class="fc" id="L68">		return XMLCoverageWriter.createChild(element, &quot;group&quot;, name);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

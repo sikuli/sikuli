@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>SessionsPage.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.page</a> &gt; <span class="el_source">SessionsPage.java</span></div><h1>SessionsPage.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.page;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.data.SessionInfo;
+import org.jacoco.report.ILanguageNames;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.HTMLElement;
+import org.jacoco.report.internal.html.IHTMLReportContext;
+import org.jacoco.report.internal.html.index.ElementIndex;
+import org.jacoco.report.internal.html.resources.Styles;
+
+/**
+ * Page to display information about sessions covered by this report.
+ */
+public class SessionsPage extends ReportPage {
+
+	private static final String MSG_SESSIONS = &quot;This coverage report is based &quot;
+			+ &quot;on execution data from the following sessions:&quot;;
+
+	private static final String MSG_NO_SESSIONS = &quot;No session information available.&quot;;
+
+	private static final String MSG_EXECDATA = &quot;Execution data for the &quot;
+			+ &quot;following classes is considered in this report:&quot;;
+
+	private static final String MSG_NO_EXECDATA = &quot;No execution data available.&quot;;
+
+	private final List&lt;SessionInfo&gt; sessionInfos;
+
+	private final DateFormat dateFormat;
+
+	private final List&lt;ExecutionData&gt; executionData;
+
+	private final ElementIndex index;
+
+	/**
+	 * Creates a new page page to display session information.
+	 * 
+	 * @param sessionInfos
+	 * @param executionData
+	 * @param index
+	 * @param parent
+	 * @param folder
+	 * @param context
+	 */
+	public SessionsPage(final List&lt;SessionInfo&gt; sessionInfos,
+			final Collection&lt;ExecutionData&gt; executionData,
+			final ElementIndex index, final ReportPage parent,
+			final ReportOutputFolder folder, final IHTMLReportContext context) {
+<span class="fc" id="L69">		super(parent, folder, context);</span>
+<span class="fc" id="L70">		this.sessionInfos = sessionInfos;</span>
+<span class="fc" id="L71">		this.executionData = new ArrayList&lt;ExecutionData&gt;(executionData);</span>
+<span class="fc" id="L72">		this.index = index;</span>
+<span class="fc" id="L73">		dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT,</span>
+				DateFormat.DEFAULT, context.getLocale());
+<span class="fc" id="L75">		final ILanguageNames names = context.getLanguageNames();</span>
+<span class="fc" id="L76">		Collections.sort(this.executionData, new Comparator&lt;ExecutionData&gt;() {</span>
+<span class="fc" id="L77">			public int compare(final ExecutionData e1, final ExecutionData e2) {</span>
+<span class="fc" id="L78">				return names.getQualifiedClassName(e1.getName()).compareTo(</span>
+						names.getQualifiedClassName(e2.getName()));
+			}
+		});
+<span class="fc" id="L82">	}</span>
+
+	@Override
+	protected void content(final HTMLElement body) throws IOException {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (sessionInfos.isEmpty()) {</span>
+<span class="fc" id="L87">			body.p().text(MSG_NO_SESSIONS);</span>
+		} else {
+<span class="fc" id="L89">			body.p().text(MSG_SESSIONS);</span>
+<span class="fc" id="L90">			sessionTable(body);</span>
+		}
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		if (executionData.isEmpty()) {</span>
+<span class="fc" id="L93">			body.p().text(MSG_NO_EXECDATA);</span>
+		} else {
+<span class="fc" id="L95">			body.p().text(MSG_EXECDATA);</span>
+<span class="fc" id="L96">			executionDataTable(body);</span>
+		}
+<span class="fc" id="L98">	}</span>
+
+	private void sessionTable(final HTMLElement body) throws IOException {
+<span class="fc" id="L101">		final HTMLElement table = body.table(Styles.COVERAGETABLE);</span>
+		{
+<span class="fc" id="L103">			final HTMLElement tr = table.thead().tr();</span>
+<span class="fc" id="L104">			tr.td().text(&quot;Session&quot;);</span>
+<span class="fc" id="L105">			tr.td().text(&quot;Start Time&quot;);</span>
+<span class="fc" id="L106">			tr.td().text(&quot;Dump Time&quot;);</span>
+		}
+<span class="fc" id="L108">		final HTMLElement tbody = table.tbody();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		for (final SessionInfo i : sessionInfos) {</span>
+<span class="fc" id="L110">			final HTMLElement tr = tbody.tr();</span>
+<span class="fc" id="L111">			tr.td().span(Styles.EL_SESSION).text(i.getId());</span>
+<span class="fc" id="L112">			tr.td().text(dateFormat.format(new Date(i.getStartTimeStamp())));</span>
+<span class="fc" id="L113">			tr.td().text(dateFormat.format(new Date(i.getDumpTimeStamp())));</span>
+<span class="fc" id="L114">		}</span>
+<span class="fc" id="L115">	}</span>
+
+	private void executionDataTable(final HTMLElement body) throws IOException {
+<span class="fc" id="L118">		final HTMLElement table = body.table(Styles.COVERAGETABLE);</span>
+		{
+<span class="fc" id="L120">			final HTMLElement tr = table.thead().tr();</span>
+<span class="fc" id="L121">			tr.td().text(&quot;Class&quot;);</span>
+<span class="fc" id="L122">			tr.td().text(&quot;Id&quot;);</span>
+		}
+<span class="fc" id="L124">		final HTMLElement tbody = table.tbody();</span>
+<span class="fc" id="L125">		final ILanguageNames names = context.getLanguageNames();</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		for (final ExecutionData e : executionData) {</span>
+<span class="fc" id="L127">			final HTMLElement tr = tbody.tr();</span>
+<span class="fc" id="L128">			final String link = index.getLinkToClass(e.getId());</span>
+<span class="fc" id="L129">			final String qualifiedName = names.getQualifiedClassName(e</span>
+					.getName());
+<span class="fc bfc" id="L131" title="All 2 branches covered.">			if (link == null) {</span>
+<span class="fc" id="L132">				tr.td().span(Styles.EL_CLASS).text(qualifiedName);</span>
+			} else {
+<span class="fc" id="L134">				tr.td().a(link, Styles.EL_CLASS).text(qualifiedName);</span>
+			}
+<span class="fc" id="L136">			final String id = String.format(&quot;%016x&quot;, Long.valueOf(e.getId()));</span>
+<span class="fc" id="L137">			tr.td().code().text(id);</span>
+<span class="fc" id="L138">		}</span>
+<span class="fc" id="L139">	}</span>
+
+	@Override
+	protected String getFileName() {
+<span class="fc" id="L143">		return &quot;.sessions.html&quot;;</span>
+	}
+
+	public String getLinkStyle() {
+<span class="fc" id="L147">		return Styles.EL_SESSION;</span>
+	}
+
+	public String getLinkLabel() {
+<span class="fc" id="L151">		return &quot;Sessions&quot;;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

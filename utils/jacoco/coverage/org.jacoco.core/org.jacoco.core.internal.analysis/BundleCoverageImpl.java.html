@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>BundleCoverageImpl.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.analysis</a> &gt; <span class="el_source">BundleCoverageImpl.java</span></div><h1>BundleCoverageImpl.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.analysis;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.jacoco.core.analysis.CoverageNodeImpl;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.analysis.IPackageCoverage;
+import org.jacoco.core.analysis.ISourceFileCoverage;
+
+/**
+ * Implementation of {@link IBundleCoverage}.
+ */
+public class BundleCoverageImpl extends CoverageNodeImpl implements
+		IBundleCoverage {
+
+	private final Collection&lt;IPackageCoverage&gt; packages;
+
+	/**
+	 * Creates a new instance of a bundle with the given name.
+	 * 
+	 * @param name
+	 *            name of this bundle
+	 * @param packages
+	 *            collection of all packages contained in this bundle
+	 */
+	public BundleCoverageImpl(final String name,
+			final Collection&lt;IPackageCoverage&gt; packages) {
+<span class="fc" id="L46">		super(ElementType.BUNDLE, name);</span>
+<span class="fc" id="L47">		this.packages = packages;</span>
+<span class="fc" id="L48">		increment(packages);</span>
+<span class="fc" id="L49">	}</span>
+
+	/**
+	 * Creates a new instance of a bundle with the given name. The packages are
+	 * calculated from the given classes and source files.
+	 * 
+	 * @param name
+	 *            name of this bundle
+	 * @param classes
+	 *            all classes in this bundle
+	 * @param sourcefiles
+	 *            all source files in this bundle
+	 */
+	public BundleCoverageImpl(final String name,
+			final Collection&lt;IClassCoverage&gt; classes,
+			final Collection&lt;ISourceFileCoverage&gt; sourcefiles) {
+<span class="fc" id="L65">		this(name, groupByPackage(classes, sourcefiles));</span>
+<span class="fc" id="L66">	}</span>
+
+	private static Collection&lt;IPackageCoverage&gt; groupByPackage(
+			final Collection&lt;IClassCoverage&gt; classes,
+			final Collection&lt;ISourceFileCoverage&gt; sourcefiles) {
+<span class="fc" id="L71">		final Map&lt;String, Collection&lt;IClassCoverage&gt;&gt; classesByPackage = new HashMap&lt;String, Collection&lt;IClassCoverage&gt;&gt;();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		for (final IClassCoverage c : classes) {</span>
+<span class="fc" id="L73">			addByName(classesByPackage, c.getPackageName(), c);</span>
+		}
+
+<span class="fc" id="L76">		final Map&lt;String, Collection&lt;ISourceFileCoverage&gt;&gt; sourceFilesByPackage = new HashMap&lt;String, Collection&lt;ISourceFileCoverage&gt;&gt;();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		for (final ISourceFileCoverage s : sourcefiles) {</span>
+<span class="fc" id="L78">			addByName(sourceFilesByPackage, s.getPackageName(), s);</span>
+		}
+
+<span class="fc" id="L81">		final Set&lt;String&gt; packageNames = new HashSet&lt;String&gt;();</span>
+<span class="fc" id="L82">		packageNames.addAll(classesByPackage.keySet());</span>
+<span class="fc" id="L83">		packageNames.addAll(sourceFilesByPackage.keySet());</span>
+
+<span class="fc" id="L85">		final Collection&lt;IPackageCoverage&gt; result = new ArrayList&lt;IPackageCoverage&gt;();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		for (final String name : packageNames) {</span>
+<span class="fc" id="L87">			Collection&lt;IClassCoverage&gt; c = classesByPackage.get(name);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">			if (c == null) {</span>
+<span class="fc" id="L89">				c = Collections.emptyList();</span>
+			}
+<span class="fc" id="L91">			Collection&lt;ISourceFileCoverage&gt; s = sourceFilesByPackage.get(name);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">			if (s == null) {</span>
+<span class="fc" id="L93">				s = Collections.emptyList();</span>
+			}
+<span class="fc" id="L95">			result.add(new PackageCoverageImpl(name, c, s));</span>
+<span class="fc" id="L96">		}</span>
+<span class="fc" id="L97">		return result;</span>
+	}
+
+	private static &lt;T&gt; void addByName(final Map&lt;String, Collection&lt;T&gt;&gt; map,
+			final String name, final T value) {
+<span class="fc" id="L102">		Collection&lt;T&gt; list = map.get(name);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		if (list == null) {</span>
+<span class="fc" id="L104">			list = new ArrayList&lt;T&gt;();</span>
+<span class="fc" id="L105">			map.put(name, list);</span>
+		}
+<span class="fc" id="L107">		list.add(value);</span>
+<span class="fc" id="L108">	}</span>
+
+	// === IBundleCoverage implementation ===
+
+	public Collection&lt;IPackageCoverage&gt; getPackages() {
+<span class="fc" id="L113">		return packages;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

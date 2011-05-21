@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>CounterColumn.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.table</a> &gt; <span class="el_source">CounterColumn.java</span></div><h1>CounterColumn.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.table;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
+import org.jacoco.core.analysis.CounterComparator;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.HTMLElement;
+import org.jacoco.report.internal.html.resources.Resources;
+
+/**
+ * Column that prints the counter values of entities for each item and a summary
+ * in the footer. If the total number of items is zero, no column is emitted at
+ * all. The implementation is stateful, instances must not be used in parallel.
+ */
+public abstract class CounterColumn implements IColumnRenderer {
+
+	/**
+	 * Creates a new column that shows the total count for the given entity.
+	 * 
+	 * @param entity
+	 *            counter entity for this column
+	 * @param locale
+	 *            locale for rendering numbers
+	 * @return column instance
+	 */
+	public static CounterColumn newTotal(final CounterEntity entity,
+			final Locale locale) {
+<span class="fc" id="L47">		return new CounterColumn(entity, locale, CounterComparator.TOTALITEMS</span>
+				.reverse().on(entity)) {
+			@Override
+<span class="fc" id="L50">			protected int getValue(final ICounter counter) {</span>
+<span class="fc" id="L51">				return counter.getTotalCount();</span>
+			}
+		};
+	}
+
+	/**
+	 * Creates a new column that shows the missed count for the given entity.
+	 * 
+	 * @param entity
+	 *            counter entity for this column
+	 * @param locale
+	 *            locale for rendering numbers
+	 * @return column instance
+	 */
+	public static CounterColumn newMissed(final CounterEntity entity,
+			final Locale locale) {
+<span class="fc" id="L67">		return new CounterColumn(entity, locale, CounterComparator.MISSEDITEMS</span>
+				.reverse().on(entity)) {
+			@Override
+<span class="fc" id="L70">			protected int getValue(final ICounter counter) {</span>
+<span class="fc" id="L71">				return counter.getMissedCount();</span>
+			}
+		};
+	}
+
+	/**
+	 * Creates a new column that shows the covered count for the given entity.
+	 * 
+	 * @param entity
+	 *            counter entity for this column
+	 * @param locale
+	 *            locale for rendering numbers
+	 * @return column instance
+	 */
+	public static CounterColumn newCovered(final CounterEntity entity,
+			final Locale locale) {
+<span class="fc" id="L87">		return new CounterColumn(entity, locale, CounterComparator.COVEREDITEMS</span>
+				.reverse().on(entity)) {
+			@Override
+<span class="fc" id="L90">			protected int getValue(final ICounter counter) {</span>
+<span class="fc" id="L91">				return counter.getCoveredCount();</span>
+			}
+		};
+	}
+
+	private final CounterEntity entity;
+
+	private final NumberFormat integerFormat;
+
+	private final Comparator&lt;ITableItem&gt; comparator;
+
+	/**
+	 * Creates a new column that is based on the {@link ICounter} for the given
+	 * entity.
+	 * 
+	 * @param entity
+	 *            counter entity for this column
+	 * @param locale
+	 *            locale for rendering numbers
+	 * @param comparator
+	 *            comparator for the nodes of this column
+	 */
+	protected CounterColumn(final CounterEntity entity, final Locale locale,
+<span class="fc" id="L114">			final Comparator&lt;ICoverageNode&gt; comparator) {</span>
+<span class="fc" id="L115">		this.entity = entity;</span>
+<span class="fc" id="L116">		this.integerFormat = DecimalFormat.getIntegerInstance(locale);</span>
+<span class="fc" id="L117">		this.comparator = new TableItemComparator(comparator);</span>
+<span class="fc" id="L118">	}</span>
+
+	public boolean init(final List&lt;? extends ITableItem&gt; items,
+			final ICoverageNode total) {
+<span class="fc bfc" id="L122" title="All 2 branches covered.">		for (final ITableItem i : items) {</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">			if (i.getNode().getCounter(entity).getTotalCount() &gt; 0) {</span>
+<span class="fc" id="L124">				return true;</span>
+			}
+		}
+<span class="fc" id="L127">		return false;</span>
+	}
+
+	public void footer(final HTMLElement td, final ICoverageNode total,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L133">		cell(td, total);</span>
+<span class="fc" id="L134">	}</span>
+
+	public void item(final HTMLElement td, final ITableItem item,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L139">		cell(td, item.getNode());</span>
+<span class="fc" id="L140">	}</span>
+
+	private void cell(final HTMLElement td, final ICoverageNode node)
+			throws IOException {
+<span class="fc" id="L144">		final int value = getValue(node.getCounter(entity));</span>
+<span class="fc" id="L145">		td.text(integerFormat.format(value));</span>
+<span class="fc" id="L146">	}</span>
+
+	public Comparator&lt;ITableItem&gt; getComparator() {
+<span class="fc" id="L149">		return comparator;</span>
+	}
+
+	/**
+	 * Retrieves the respective value from the counter.
+	 * 
+	 * @param counter
+	 *            counter object
+	 * @return value of interest
+	 */
+	protected abstract int getValue(ICounter counter);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

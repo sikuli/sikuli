@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Styles.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.resources</a> &gt; <span class="el_source">Styles.java</span></div><h1>Styles.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.resources;
+
+/**
+ * Constants for styles defined by the report style sheet.
+ */
+public final class Styles {
+
+	/** Breadcrumb bar */
+	public static final String BREADCRUMB = &quot;breadcrumb&quot;;
+
+	/** Footer */
+	public static final String FOOTER = &quot;footer&quot;;
+
+	/** Text block aligned to the right */
+	public static final String RIGHT = &quot;right&quot;;
+
+	/** Report element */
+	public static final String EL_REPORT = &quot;el_report&quot;;
+
+	/** Sessions element */
+	public static final String EL_SESSION = &quot;el_session&quot;;
+
+	/** Group element */
+	public static final String EL_GROUP = &quot;el_group&quot;;
+
+	/** Bundle element */
+	public static final String EL_BUNDLE = &quot;el_bundle&quot;;
+
+	/** Package element */
+	public static final String EL_PACKAGE = &quot;el_package&quot;;
+
+	/** Source file element */
+	public static final String EL_SOURCE = &quot;el_source&quot;;
+
+	/** Class element */
+	public static final String EL_CLASS = &quot;el_class&quot;;
+
+	/** Method element */
+	public static final String EL_METHOD = &quot;el_method&quot;;
+
+	/** Coverage table */
+	public static final String COVERAGETABLE = &quot;coverage&quot;;
+
+	/** Table cells for a graphical bar */
+	public static final String BAR = &quot;bar&quot;;
+
+	/** Table cells for the first column of a counter */
+	public static final String CTR1 = &quot;ctr1&quot;;
+
+	/** Table cells for the second column of a counter */
+	public static final String CTR2 = &quot;ctr2&quot;;
+
+	/** Table header for sortable columns */
+	public static final String SORTABLE = &quot;sortable&quot;;
+
+	/** Table header for column sorted upwards */
+	public static final String UP = &quot;up&quot;;
+
+	/** Table header for column sorted downwards */
+	public static final String DOWN = &quot;down&quot;;
+
+	/** Block of source code */
+	public static final String SOURCE = &quot;source&quot;;
+
+	/** Line number before each source line */
+	public static final String NR = &quot;nr&quot;;
+
+	/** Part of source code where instructions are not covered */
+	public static final String NOT_COVERED = &quot;nc&quot;;
+
+	/** Part of source code where instructions are partly covered */
+	public static final String PARTLY_COVERED = &quot;pc&quot;;
+
+	/** Part of source code where instructions are is fully covered */
+	public static final String FULLY_COVERED = &quot;fc&quot;;
+
+	/** Part of source code where branches are not covered */
+	public static final String BRANCH_NOT_COVERED = &quot;bnc&quot;;
+
+	/** Part of source code where branches are partly covered */
+	public static final String BRANCH_PARTLY_COVERED = &quot;bpc&quot;;
+
+	/** Part of source code where branches are fully covered */
+	public static final String BRANCH_FULLY_COVERED = &quot;bfc&quot;;
+
+	/**
+	 * Returns a combined style from the given styles.
+	 * 
+	 * @param styles
+	 *            list of separate styles, entries might be null
+	 * @return combined style or &lt;code&gt;null&lt;/code&gt; if no style is given
+	 */
+	public static String combine(final String... styles) {
+<span class="fc" id="L105">		final StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		for (final String style : styles) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">			if (style != null) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">				if (sb.length() &gt; 0) {</span>
+<span class="fc" id="L109">					sb.append(&quot; &quot;);</span>
+				}
+<span class="fc" id="L111">				sb.append(style);</span>
+			}
+		}
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		return sb.length() == 0 ? null : sb.toString();</span>
+	}
+
+<span class="nc" id="L117">	private Styles() {</span>
+<span class="nc" id="L118">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

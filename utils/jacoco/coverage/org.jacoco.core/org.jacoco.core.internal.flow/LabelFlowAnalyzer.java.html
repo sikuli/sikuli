@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>LabelFlowAnalyzer.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.flow</a> &gt; <span class="el_source">LabelFlowAnalyzer.java</span></div><h1>LabelFlowAnalyzer.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.flow;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * Method visitor to collect flow related information about the {@link Label}s
+ * within a class. It calculates the properties &quot;multitarget&quot; and &quot;successor&quot;
+ * that can afterwards be obtained via {@link LabelInfo}.
+ */
+<span class="fc" id="L25">public final class LabelFlowAnalyzer implements MethodVisitor {</span>
+
+	/**
+	 * &lt;code&gt;true&lt;/code&gt; if the current instruction is a potential successor of
+	 * the previous instruction. Accessible for testing.
+	 */
+<span class="fc" id="L31">	boolean successor = false;</span>
+
+	/**
+	 * &lt;code&gt;true&lt;/code&gt; for the very first instruction only. Accessible for
+	 * testing.
+	 */
+<span class="fc" id="L37">	boolean first = true;</span>
+
+	public void visitTryCatchBlock(final Label start, final Label end,
+			final Label handler, final String type) {
+		// Enforce probes at the beginning and end of the block:
+<span class="fc" id="L42">		LabelInfo.setTarget(start);</span>
+<span class="fc" id="L43">		LabelInfo.setTarget(handler);</span>
+<span class="fc" id="L44">	}</span>
+
+	public void visitJumpInsn(final int opcode, final Label label) {
+<span class="fc" id="L47">		LabelInfo.setTarget(label);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		if (opcode == Opcodes.JSR) {</span>
+<span class="fc" id="L49">			throw new AssertionError(&quot;Subroutines not supported.&quot;);</span>
+		}
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		successor = opcode != Opcodes.GOTO;</span>
+<span class="fc" id="L52">		first = false;</span>
+<span class="fc" id="L53">	}</span>
+
+	public void visitLabel(final Label label) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (first) {</span>
+<span class="fc" id="L57">			LabelInfo.setTarget(label);</span>
+		}
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		if (successor) {</span>
+<span class="fc" id="L60">			LabelInfo.setSuccessor(label);</span>
+		}
+<span class="fc" id="L62">	}</span>
+
+	public void visitTableSwitchInsn(final int min, final int max,
+			final Label dflt, final Label[] labels) {
+<span class="fc" id="L66">		visitSwitchInsn(dflt, labels);</span>
+<span class="fc" id="L67">	}</span>
+
+	public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
+			final Label[] labels) {
+<span class="fc" id="L71">		visitSwitchInsn(dflt, labels);</span>
+<span class="fc" id="L72">	}</span>
+
+	private void visitSwitchInsn(final Label dflt, final Label[] labels) {
+<span class="fc" id="L75">		LabelInfo.resetDone(dflt);</span>
+<span class="fc" id="L76">		LabelInfo.resetDone(labels);</span>
+<span class="fc" id="L77">		setTargetIfNotDone(dflt);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		for (final Label l : labels) {</span>
+<span class="fc" id="L79">			setTargetIfNotDone(l);</span>
+		}
+<span class="fc" id="L81">		successor = false;</span>
+<span class="fc" id="L82">		first = false;</span>
+<span class="fc" id="L83">	}</span>
+
+	private static void setTargetIfNotDone(final Label label) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (!LabelInfo.isDone(label)) {</span>
+<span class="fc" id="L87">			LabelInfo.setTarget(label);</span>
+<span class="fc" id="L88">			LabelInfo.setDone(label);</span>
+		}
+<span class="fc" id="L90">	}</span>
+
+	public void visitInsn(final int opcode) {
+<span class="fc bfc" id="L93" title="All 3 branches covered.">		switch (opcode) {</span>
+		case Opcodes.RET:
+<span class="fc" id="L95">			throw new AssertionError(&quot;Subroutines not supported.&quot;);</span>
+		case Opcodes.IRETURN:
+		case Opcodes.LRETURN:
+		case Opcodes.FRETURN:
+		case Opcodes.DRETURN:
+		case Opcodes.ARETURN:
+		case Opcodes.RETURN:
+		case Opcodes.ATHROW:
+<span class="fc" id="L103">			successor = false;</span>
+<span class="fc" id="L104">			break;</span>
+		default:
+<span class="fc" id="L106">			successor = true;</span>
+			break;
+		}
+<span class="fc" id="L109">		first = false;</span>
+<span class="fc" id="L110">	}</span>
+
+	public void visitIntInsn(final int opcode, final int operand) {
+<span class="fc" id="L113">		successor = true;</span>
+<span class="fc" id="L114">		first = false;</span>
+<span class="fc" id="L115">	}</span>
+
+	public void visitVarInsn(final int opcode, final int var) {
+<span class="fc" id="L118">		successor = true;</span>
+<span class="fc" id="L119">		first = false;</span>
+<span class="fc" id="L120">	}</span>
+
+	public void visitTypeInsn(final int opcode, final String type) {
+<span class="fc" id="L123">		successor = true;</span>
+<span class="fc" id="L124">		first = false;</span>
+<span class="fc" id="L125">	}</span>
+
+	public void visitFieldInsn(final int opcode, final String owner,
+			final String name, final String desc) {
+<span class="fc" id="L129">		successor = true;</span>
+<span class="fc" id="L130">		first = false;</span>
+<span class="fc" id="L131">	}</span>
+
+	public void visitMethodInsn(final int opcode, final String owner,
+			final String name, final String desc) {
+<span class="fc" id="L135">		successor = true;</span>
+<span class="fc" id="L136">		first = false;</span>
+<span class="fc" id="L137">	}</span>
+
+	public void visitLdcInsn(final Object cst) {
+<span class="fc" id="L140">		successor = true;</span>
+<span class="fc" id="L141">		first = false;</span>
+<span class="fc" id="L142">	}</span>
+
+	public void visitIincInsn(final int var, final int increment) {
+<span class="fc" id="L145">		successor = true;</span>
+<span class="fc" id="L146">		first = false;</span>
+<span class="fc" id="L147">	}</span>
+
+	public void visitMultiANewArrayInsn(final String desc, final int dims) {
+<span class="fc" id="L150">		successor = true;</span>
+<span class="fc" id="L151">		first = false;</span>
+<span class="fc" id="L152">	}</span>
+
+	// Not relevant:
+
+	public void visitAttribute(final Attribute attr) {
+<span class="nc" id="L157">	}</span>
+
+	public AnnotationVisitor visitAnnotationDefault() {
+<span class="nc" id="L160">		return null;</span>
+	}
+
+	public AnnotationVisitor visitAnnotation(final String desc,
+			final boolean visible) {
+<span class="fc" id="L165">		return null;</span>
+	}
+
+	public AnnotationVisitor visitParameterAnnotation(final int parameter,
+			final String desc, final boolean visible) {
+<span class="nc" id="L170">		return null;</span>
+	}
+
+	public void visitLocalVariable(final String name, final String desc,
+			final String signature, final Label start, final Label end,
+			final int index) {
+<span class="fc" id="L176">	}</span>
+
+	public void visitCode() {
+<span class="fc" id="L179">	}</span>
+
+	public void visitLineNumber(final int line, final Label start) {
+<span class="fc" id="L182">	}</span>
+
+	public void visitFrame(final int type, final int nLocal,
+			final Object[] local, final int nStack, final Object[] stack) {
+<span class="nc" id="L186">	}</span>
+
+	public void visitMaxs(final int maxStack, final int maxLocals) {
+<span class="fc" id="L189">	}</span>
+
+	public void visitEnd() {
+<span class="fc" id="L192">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ReportOutputFolder.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal</a> &gt; <span class="el_source">ReportOutputFolder.java</span></div><h1>ReportOutputFolder.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jacoco.report.IMultiReportOutput;
+
+/**
+ * Logical representation of a folder in the output structure. This utility
+ * ensures valid and unique file names and helps to create relative links.
+ */
+public class ReportOutputFolder {
+
+	private final IMultiReportOutput output;
+
+	private final ReportOutputFolder parent;
+
+	private final String path;
+
+	/** Cached sub-folder instances to guarantee stable normalization */
+<span class="fc" id="L34">	private final Map&lt;String, ReportOutputFolder&gt; subFolders = new HashMap&lt;String, ReportOutputFolder&gt;();</span>
+
+	private final NormalizedFileNames fileNames;
+
+	/**
+	 * Creates a new root folder for the given output.
+	 * 
+	 * @param output
+	 *            output for generated files
+	 */
+	public ReportOutputFolder(final IMultiReportOutput output) {
+<span class="fc" id="L45">		this(output, null, &quot;&quot;);</span>
+<span class="fc" id="L46">	}</span>
+
+	/**
+	 * Creates a new root folder for the given output.
+	 * 
+	 * @param output
+	 *            output for generated files
+	 */
+	private ReportOutputFolder(final IMultiReportOutput output,
+<span class="fc" id="L55">			final ReportOutputFolder parent, final String path) {</span>
+<span class="fc" id="L56">		this.output = output;</span>
+<span class="fc" id="L57">		this.parent = parent;</span>
+<span class="fc" id="L58">		this.path = path;</span>
+<span class="fc" id="L59">		fileNames = new NormalizedFileNames();</span>
+<span class="fc" id="L60">	}</span>
+
+	/**
+	 * Creates a sub-folder with the given name.
+	 * 
+	 * @param name
+	 *            name of the sub-folder
+	 * @return handle for output into the sub-folder
+	 */
+	public ReportOutputFolder subFolder(final String name) {
+<span class="fc" id="L70">		final String normalizedName = normalize(name);</span>
+<span class="fc" id="L71">		ReportOutputFolder folder = subFolders.get(normalizedName);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		if (folder != null) {</span>
+<span class="fc" id="L73">			return folder;</span>
+		}
+<span class="fc" id="L75">		folder = new ReportOutputFolder(output, this, path + normalizedName</span>
+				+ &quot;/&quot;);
+<span class="fc" id="L77">		subFolders.put(normalizedName, folder);</span>
+<span class="fc" id="L78">		return folder;</span>
+	}
+
+	/**
+	 * Creates a new file in this folder with the given local name.
+	 * 
+	 * @param name
+	 *            name of the sub-folder
+	 * @return handle for output into the sub-folder
+	 * @throws IOException
+	 *             if the file creation fails
+	 */
+	public OutputStream createFile(final String name) throws IOException {
+<span class="fc" id="L91">		return output.createFile(path + normalize(name));</span>
+	}
+
+	/**
+	 * Returns a link relative to a given base to a resource within this folder.
+	 * 
+	 * @param base
+	 *            base to create the relative link from
+	 * @param name
+	 *            name of the file or folder in this folder
+	 * @return relative link
+	 * @throws IllegalArgumentException
+	 *             if this folder and the base do not have the same root
+	 */
+	public String getLink(final ReportOutputFolder base, final String name) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (base.isAncestorOf(this)) {</span>
+<span class="fc" id="L107">			return this.path.substring(base.path.length()) + normalize(name);</span>
+		}
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		if (base.parent == null) {</span>
+<span class="fc" id="L110">			throw new IllegalArgumentException(&quot;Folders with different roots.&quot;);</span>
+		}
+<span class="fc" id="L112">		return &quot;../&quot; + this.getLink(base.parent, name);</span>
+	}
+
+	private boolean isAncestorOf(final ReportOutputFolder folder) {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">		if (this == folder) {</span>
+<span class="fc" id="L117">			return true;</span>
+		}
+<span class="fc bfc" id="L119" title="All 2 branches covered.">		return folder.parent == null ? false : isAncestorOf(folder.parent);</span>
+	}
+
+	private String normalize(final String name) {
+<span class="fc" id="L123">		return fileNames.getFileName(name);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

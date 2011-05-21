@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Analyzer.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.analysis</a> &gt; <span class="el_source">Analyzer.java</span></div><h1>Analyzer.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.analysis;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.internal.analysis.ClassAnalyzer;
+import org.jacoco.core.internal.analysis.ContentTypeDetector;
+import org.jacoco.core.internal.analysis.StringPool;
+import org.jacoco.core.internal.data.CRC64;
+import org.jacoco.core.internal.flow.ClassProbesAdapter;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+
+/**
+ * An {@link Analyzer} instance processes a set of Java class files and
+ * calculates coverage data for them. For each class file the result is reported
+ * to a given {@link ICoverageVisitor} instance. In addition the
+ * {@link Analyzer} requires a {@link ExecutionDataStore} instance that holds
+ * the execution data for the classes to analyze. The {@link Analyzer} offers
+ * several methods to analyze classes from a variety of sources.
+ */
+public class Analyzer {
+
+	private final ExecutionDataStore executionData;
+
+	private final ICoverageVisitor structureVisitor;
+
+	private final StringPool stringPool;
+
+	/**
+	 * Creates a new analyzer reporting to the given output.
+	 * 
+	 * @param executionData
+	 *            execution data
+	 * @param structureVisitor
+	 *            the output instance that will receive all structure data
+	 */
+	public Analyzer(final ExecutionDataStore executionData,
+<span class="fc" id="L57">			final ICoverageVisitor structureVisitor) {</span>
+<span class="fc" id="L58">		this.executionData = executionData;</span>
+<span class="fc" id="L59">		this.structureVisitor = structureVisitor;</span>
+<span class="fc" id="L60">		this.stringPool = new StringPool();</span>
+<span class="fc" id="L61">	}</span>
+
+	/**
+	 * Creates an ASM class visitor for analysis.
+	 * 
+	 * @param classid
+	 *            id of the class calculated with {@link CRC64}
+	 * @return ASM visitor to write class definition to
+	 */
+	private ClassVisitor createAnalyzingVisitor(final long classid) {
+<span class="fc" id="L71">		final ExecutionData data = executionData.get(classid);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		final boolean[] classExec = data == null ? null : data.getData();</span>
+<span class="fc" id="L73">		final ClassAnalyzer analyzer = new ClassAnalyzer(classid, classExec,</span>
+				stringPool) {
+			@Override
+<span class="fc" id="L76">			public void visitEnd() {</span>
+<span class="fc" id="L77">				super.visitEnd();</span>
+<span class="fc" id="L78">				structureVisitor.visitCoverage(getCoverage());</span>
+<span class="fc" id="L79">			}</span>
+		};
+<span class="fc" id="L81">		return new ClassProbesAdapter(analyzer);</span>
+	}
+
+	/**
+	 * Analyzes the class given as a ASM reader.
+	 * 
+	 * @param reader
+	 *            reader with class definitions
+	 */
+	public void analyzeClass(final ClassReader reader) {
+<span class="fc" id="L91">		final ClassVisitor visitor = createAnalyzingVisitor(CRC64</span>
+				.checksum(reader.b));
+<span class="fc" id="L93">		reader.accept(visitor, 0);</span>
+<span class="fc" id="L94">	}</span>
+
+	/**
+	 * Analyzes the class definition from a given in-memory buffer.
+	 * 
+	 * @param buffer
+	 *            class definitions
+	 */
+	public void analyzeClass(final byte[] buffer) {
+<span class="fc" id="L103">		analyzeClass(new ClassReader(buffer));</span>
+<span class="fc" id="L104">	}</span>
+
+	/**
+	 * Analyzes the class definition from a given input stream.
+	 * 
+	 * @param input
+	 *            stream to read class definition from
+	 * @throws IOException
+	 */
+	public void analyzeClass(final InputStream input) throws IOException {
+<span class="fc" id="L114">		analyzeClass(new ClassReader(input));</span>
+<span class="fc" id="L115">	}</span>
+
+	/**
+	 * Analyzes all classes contained in the ZIP archive (jar, war, ear, etc.)
+	 * given as an input stream. Contained archives are read recursively.
+	 * 
+	 * @param input
+	 *            ZIP archive data
+	 * @return number of class files found
+	 * @throws IOException
+	 */
+	public int analyzeArchive(final InputStream input) throws IOException {
+<span class="fc" id="L127">		final ZipInputStream zip = new ZipInputStream(input);</span>
+<span class="fc" id="L128">		int count = 0;</span>
+		while (true) {
+<span class="fc" id="L130">			final ZipEntry entry = zip.getNextEntry();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">			if (entry == null) {</span>
+<span class="fc" id="L132">				break;</span>
+			}
+<span class="fc" id="L134">			count += analyzeAll(zip);</span>
+<span class="fc" id="L135">		}</span>
+<span class="fc" id="L136">		return count;</span>
+	}
+
+	/**
+	 * Analyzes all classes found in the given input stream. The input stream
+	 * may either represent a single class file or a ZIP archive that is
+	 * searched recursively for class files. All other content types are
+	 * ignored.
+	 * 
+	 * @param input
+	 *            input data
+	 * @return number of class files found
+	 * @throws IOException
+	 */
+	public int analyzeAll(final InputStream input) throws IOException {
+<span class="fc" id="L151">		final ContentTypeDetector detector = new ContentTypeDetector(input);</span>
+<span class="fc bfc" id="L152" title="All 3 branches covered.">		switch (detector.getType()) {</span>
+		case ContentTypeDetector.CLASSFILE:
+<span class="fc" id="L154">			analyzeClass(detector.getInputStream());</span>
+<span class="fc" id="L155">			return 1;</span>
+		case ContentTypeDetector.ZIPFILE:
+<span class="fc" id="L157">			return analyzeArchive(detector.getInputStream());</span>
+		}
+<span class="fc" id="L159">		return 0;</span>
+	}
+
+	/**
+	 * Analyzes all class files contained in the given file or folder. Class
+	 * files as well as ZIP files are considered. Folders are searched
+	 * recursively.
+	 * 
+	 * @param file
+	 *            file or folder to look for class files
+	 * @return number of class files found
+	 * @throws IOException
+	 */
+	public int analyzeAll(final File file) throws IOException {
+<span class="nc" id="L173">		int count = 0;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">		if (file.isDirectory()) {</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">			for (final File f : file.listFiles()) {</span>
+<span class="nc" id="L176">				count += analyzeAll(f);</span>
+			}
+		} else {
+<span class="nc" id="L179">			final InputStream in = new FileInputStream(file);</span>
+<span class="nc" id="L180">			count += analyzeAll(in);</span>
+<span class="nc" id="L181">			in.close();</span>
+		}
+<span class="nc" id="L183">		return count;</span>
+	}
+
+	/**
+	 * Analyzes all classes from the given class path. Directories containing
+	 * class files as well as archive files are considered.
+	 * 
+	 * @param path
+	 *            path definition
+	 * @param basedir
+	 *            optional base directory, if &lt;code&gt;null&lt;/code&gt; the current
+	 *            working directory is used as the base for relative path
+	 *            entries
+	 * @return number of class files found
+	 * @throws IOException
+	 */
+	public int analyzeAll(final String path, final File basedir)
+			throws IOException {
+<span class="nc" id="L201">		int count = 0;</span>
+<span class="nc" id="L202">		final StringTokenizer st = new StringTokenizer(path, File.pathSeparator);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">		while (st.hasMoreTokens()) {</span>
+<span class="nc" id="L204">			count += analyzeAll(new File(basedir, st.nextToken()));</span>
+		}
+<span class="nc" id="L206">		return count;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

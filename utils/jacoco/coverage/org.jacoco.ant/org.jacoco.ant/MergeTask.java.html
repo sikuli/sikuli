@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>MergeTask.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.ant</a> &gt; <a href="index.html" class="el_package">org.jacoco.ant</a> &gt; <span class="el_source">MergeTask.java</span></div><h1>MergeTask.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.ant;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Resource;
+import org.apache.tools.ant.types.ResourceCollection;
+import org.apache.tools.ant.types.resources.Union;
+import org.apache.tools.ant.util.FileUtils;
+import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.ExecutionDataWriter;
+import org.jacoco.core.data.SessionInfoStore;
+
+/**
+ * Task for merging a set of execution data store files into a single file
+ */
+<span class="fc" id="L37">public class MergeTask extends Task {</span>
+
+	private File destfile;
+
+<span class="fc" id="L41">	private final Union files = new Union();</span>
+
+	/**
+	 * Sets the location of the merged data store
+	 * 
+	 * @param destfile
+	 *            Destination data store location
+	 */
+	public void setDestfile(final File destfile) {
+<span class="fc" id="L50">		this.destfile = destfile;</span>
+<span class="fc" id="L51">	}</span>
+
+	/**
+	 * This task accepts any number of execution data resources.
+	 * 
+	 * @param resources
+	 *            Execution data resources
+	 */
+	public void addConfigured(final ResourceCollection resources) {
+<span class="fc" id="L60">		files.add(resources);</span>
+<span class="fc" id="L61">	}</span>
+
+	@Override
+	public void execute() throws BuildException {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">		if (destfile == null) {</span>
+<span class="fc" id="L66">			throw new BuildException(&quot;Destination file must be supplied&quot;);</span>
+		}
+
+<span class="pc bpc" id="L69" title="2 of 6 branches missed.">		if (destfile.exists() &amp;&amp; (!destfile.canWrite() || !destfile.isFile())) {</span>
+<span class="fc" id="L70">			throw new BuildException(&quot;Unable to write to destination file&quot;);</span>
+		}
+
+<span class="fc" id="L73">		final SessionInfoStore infoStore = new SessionInfoStore();</span>
+<span class="fc" id="L74">		final ExecutionDataStore dataStore = new ExecutionDataStore();</span>
+
+<span class="fc" id="L76">		loadSourceFiles(infoStore, dataStore);</span>
+
+<span class="fc" id="L78">		OutputStream outputStream = null;</span>
+		try {
+<span class="fc" id="L80">			FileUtils.getFileUtils().createNewFile(destfile, true);</span>
+
+<span class="fc" id="L82">			outputStream = new BufferedOutputStream(new FileOutputStream(</span>
+					destfile));
+<span class="fc" id="L84">			final ExecutionDataWriter dataWriter = new ExecutionDataWriter(</span>
+					outputStream);
+<span class="fc" id="L86">			infoStore.accept(dataWriter);</span>
+<span class="fc" id="L87">			dataStore.accept(dataWriter);</span>
+<span class="nc" id="L88">		} catch (final IOException e) {</span>
+<span class="nc" id="L89">			throw new BuildException(String.format(</span>
+					&quot;Unable to write merged file %s&quot;, destfile.getName()), e);
+		} finally {
+<span class="pc" id="L92">			FileUtils.close(outputStream);</span>
+<span class="fc" id="L93">		}</span>
+
+<span class="fc" id="L95">	}</span>
+
+	private void loadSourceFiles(final SessionInfoStore infoStore,
+			final ExecutionDataStore dataStore) {
+<span class="fc" id="L99">		int numFilesMerged = 0;</span>
+
+<span class="fc" id="L101">		final Iterator&lt;?&gt; resourceIterator = files.iterator();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">		while (resourceIterator.hasNext()) {</span>
+<span class="fc" id="L103">			final Resource resource = (Resource) resourceIterator.next();</span>
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">			if (resource.isDirectory()) {</span>
+<span class="fc" id="L106">				continue;</span>
+			}
+
+<span class="fc" id="L109">			log(String.format(&quot;Merging %s&quot;, resource.getName()),</span>
+					Project.MSG_DEBUG);
+
+<span class="fc" id="L112">			InputStream resourceStream = null;</span>
+			try {
+<span class="fc" id="L114">				resourceStream = resource.getInputStream();</span>
+<span class="fc" id="L115">				final ExecutionDataReader reader = new ExecutionDataReader(</span>
+						resourceStream);
+<span class="fc" id="L117">				reader.setSessionInfoVisitor(infoStore);</span>
+<span class="fc" id="L118">				reader.setExecutionDataVisitor(dataStore);</span>
+<span class="fc" id="L119">				reader.read();</span>
+
+<span class="fc" id="L121">				numFilesMerged++;</span>
+<span class="fc" id="L122">			} catch (final IOException e) {</span>
+<span class="fc" id="L123">				throw new BuildException(String.format(&quot;Unable to read %s&quot;,</span>
+						resource.getName()), e);
+			} finally {
+<span class="fc" id="L126">				FileUtils.close(resourceStream);</span>
+<span class="fc" id="L127">			}</span>
+<span class="fc" id="L128">		}</span>
+
+<span class="fc" id="L130">		log(String.format(&quot;%d files merged&quot;, Integer.valueOf(numFilesMerged)),</span>
+				Project.MSG_INFO);
+<span class="fc" id="L132">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

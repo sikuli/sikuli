@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>SortIndex.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.table</a> &gt; <span class="el_source">SortIndex.java</span></div><h1>SortIndex.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *
+ *******************************************************************************/
+package org.jacoco.report.internal.html.table;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * A index on a list of items sorted with a given {@link Comparator}. The index
+ * does not change the list itself.
+ * 
+ * @param &lt;T&gt;
+ *            type of the items
+ */
+final class SortIndex&lt;T&gt; {
+
+	private final Comparator&lt;? super T&gt; comparator;
+
+	private class Entry implements Comparable&lt;Entry&gt; {
+
+		final int idx;
+
+		final T item;
+
+<span class="fc" id="L36">		Entry(final int idx, final T item) {</span>
+<span class="fc" id="L37">			this.idx = idx;</span>
+<span class="fc" id="L38">			this.item = item;</span>
+<span class="fc" id="L39">		}</span>
+
+		public int compareTo(final Entry o) {
+<span class="fc" id="L42">			return comparator.compare(item, o.item);</span>
+		}
+
+	}
+
+<span class="fc" id="L47">	private final List&lt;Entry&gt; list = new ArrayList&lt;Entry&gt;();</span>
+
+	private int[] positions;
+
+	/**
+	 * Creates a new index based in the given comparator.
+	 * 
+	 * @param comparator
+	 *            comparator to sort items
+	 */
+<span class="fc" id="L57">	public SortIndex(final Comparator&lt;? super T&gt; comparator) {</span>
+<span class="fc" id="L58">		this.comparator = comparator;</span>
+<span class="fc" id="L59">	}</span>
+
+	/**
+	 * Initializes the index for the given list of items.
+	 * 
+	 * @param items
+	 *            list of items
+	 */
+	public void init(final List&lt;? extends T&gt; items) {
+<span class="fc" id="L68">		this.list.clear();</span>
+<span class="fc" id="L69">		int idx = 0;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		for (final T i : items) {</span>
+<span class="fc" id="L71">			final Entry entry = new Entry(idx++, i);</span>
+<span class="fc" id="L72">			this.list.add(entry);</span>
+<span class="fc" id="L73">		}</span>
+<span class="fc" id="L74">		Collections.sort(list);</span>
+<span class="fc bfc" id="L75" title="All 4 branches covered.">		if (positions == null || positions.length &lt; items.size()) {</span>
+<span class="fc" id="L76">			positions = new int[items.size()];</span>
+		}
+<span class="fc" id="L78">		int pos = 0;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (final Entry e : this.list) {</span>
+<span class="fc" id="L80">			positions[e.idx] = pos++;</span>
+		}
+<span class="fc" id="L82">	}</span>
+
+	/**
+	 * Returns the sorted position of the element with the given index in the
+	 * items list provided to the {@link #init(List)} method.
+	 * 
+	 * @param idx
+	 *            index of a element of the list
+	 * @return its position in a sorted list
+	 */
+	public int getPosition(final int idx) {
+<span class="fc" id="L93">		return positions[idx];</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AbstractCoverageTask.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.ant</a> &gt; <a href="index.html" class="el_package">org.jacoco.ant</a> &gt; <span class="el_source">AbstractCoverageTask.java</span></div><h1>AbstractCoverageTask.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.ant;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.jacoco.agent.AgentJar;
+import org.jacoco.core.runtime.AgentOptions;
+
+/**
+ * Base class for all coverage tasks that require agent options
+ */
+public class AbstractCoverageTask extends Task {
+
+	private final AgentOptions agentOptions;
+
+	private boolean enabled;
+
+	/**
+	 * Create default agent options
+	 */
+<span class="fc" id="L34">	protected AbstractCoverageTask() {</span>
+<span class="fc" id="L35">		agentOptions = new AgentOptions();</span>
+<span class="fc" id="L36">		enabled = true;</span>
+<span class="fc" id="L37">	}</span>
+
+	/**
+	 * @return Whether or not the current task is enabled
+	 */
+	public boolean isEnabled() {
+<span class="fc" id="L43">		return enabled;</span>
+	}
+
+	/**
+	 * Sets whether or not the current task is enabled
+	 * 
+	 * @param enabled
+	 *            Enablement state of the task
+	 */
+	public void setEnabled(final boolean enabled) {
+<span class="fc" id="L53">		this.enabled = enabled;</span>
+<span class="fc" id="L54">	}</span>
+
+	/**
+	 * Gets the currently configured agent options for this task
+	 * 
+	 * @return Configured agent options
+	 */
+	public AgentOptions getAgentOptions() {
+<span class="fc" id="L62">		return agentOptions;</span>
+	}
+
+	/**
+	 * Sets the location to write coverage execution data. Default is current
+	 * working directory
+	 * 
+	 * @param file
+	 *            Location to write coverage execution data
+	 */
+	public void setDestfile(final File file) {
+<span class="fc" id="L73">		agentOptions.setDestfile(file.getAbsolutePath());</span>
+<span class="fc" id="L74">	}</span>
+
+	/**
+	 * Append execution coverage data if a coverage file is already present.
+	 * Default is &lt;code&gt;true&lt;/code&gt;
+	 * 
+	 * @param append
+	 *            &lt;code&gt;true&lt;/code&gt; to append execution data to an existing file
+	 */
+	public void setAppend(final boolean append) {
+<span class="fc" id="L84">		agentOptions.setAppend(append);</span>
+<span class="fc" id="L85">	}</span>
+
+	/**
+	 * List of wildcard patterns classes to include for instrumentation. Default
+	 * is &lt;code&gt;*&lt;/code&gt;
+	 * 
+	 * @param includes
+	 *            Wildcard pattern of included classes
+	 */
+	public void setIncludes(final String includes) {
+<span class="fc" id="L95">		agentOptions.setIncludes(includes);</span>
+<span class="fc" id="L96">	}</span>
+
+	/**
+	 * List of wildcard patterns classes to exclude from instrumentation.
+	 * Default is the empty string, no classes excluded
+	 * 
+	 * @param excludes
+	 *            Wildcard pattern of excluded classes
+	 */
+	public void setExcludes(final String excludes) {
+<span class="fc" id="L106">		agentOptions.setExcludes(excludes);</span>
+<span class="fc" id="L107">	}</span>
+
+	/**
+	 * List of wildcard patterns for classloaders that JaCoCo will not
+	 * instrument classes from. Default is
+	 * &lt;code&gt;sun.reflect.DelegatingClassLoader&lt;/code&gt;
+	 * 
+	 * @param exclClassLoader
+	 *            Wildcard pattern of class loaders to exclude
+	 */
+	public void setExclClassLoader(final String exclClassLoader) {
+<span class="fc" id="L118">		agentOptions.setExclClassloader(exclClassLoader);</span>
+<span class="fc" id="L119">	}</span>
+
+	/**
+	 * Sets the session identifier. Default is a auto-generated id
+	 * 
+	 * @param id
+	 *            session identifier
+	 */
+	public void setSessionId(final String id) {
+<span class="fc" id="L128">		agentOptions.setSessionId(id);</span>
+<span class="fc" id="L129">	}</span>
+
+	/**
+	 * Dump coverage data on VM termination. Default is &lt;code&gt;true&lt;/code&gt;
+	 * 
+	 * @param dumpOnExit
+	 *            &lt;code&gt;true&lt;/code&gt; to write coverage data on VM termination
+	 */
+	public void setDumpOnExit(final boolean dumpOnExit) {
+<span class="fc" id="L138">		agentOptions.setDumpOnExit(dumpOnExit);</span>
+<span class="fc" id="L139">	}</span>
+
+	/**
+	 * Sets the output method. Default is &lt;code&gt;file&lt;/code&gt;
+	 * 
+	 * @param output
+	 *            Output method
+	 */
+	public void setOutput(final String output) {
+<span class="fc" id="L148">		agentOptions.setOutput(output);</span>
+<span class="fc" id="L149">	}</span>
+
+	/**
+	 * Sets the IP address or hostname to bind to when output method is tcp
+	 * server or connect to when the output method is tcp client. Default is
+	 * &lt;code&gt;localhost&lt;/code&gt;
+	 * 
+	 * @param address
+	 *            Address to bind or connect to
+	 */
+	public void setAddress(final String address) {
+<span class="fc" id="L160">		agentOptions.setAddress(address);</span>
+<span class="fc" id="L161">	}</span>
+
+	/**
+	 * Sets the Port to bind to when the output method is tcp server or connect
+	 * to when the output method is tcp client. Default is &lt;code&gt;6300&lt;/code&gt;
+	 * 
+	 * @param port
+	 */
+	public void setPort(final int port) {
+<span class="fc" id="L170">		agentOptions.setPort(port);</span>
+<span class="fc" id="L171">	}</span>
+
+	/**
+	 * Creates JVM argument to launch with the specified JaCoCo agent jar and
+	 * the current options
+	 * 
+	 * @return JVM Argument to pass to new VM
+	 */
+	protected String getLaunchingArgument() {
+<span class="fc" id="L180">		return getAgentOptions().getVMArgument(getAgentFile());</span>
+	}
+
+	private File getAgentFile() {
+		try {
+<span class="fc" id="L185">			File agentFile = null;</span>
+<span class="fc" id="L186">			final String agentFileLocation = getProject().getProperty(</span>
+					&quot;_jacoco.agentFile&quot;);
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">			if (agentFileLocation != null) {</span>
+<span class="nc" id="L189">				agentFile = new File(agentFileLocation);</span>
+			} else {
+<span class="fc" id="L191">				agentFile = AgentJar.extractToTempLocation();</span>
+<span class="fc" id="L192">				getProject().setProperty(&quot;_jacoco.agentFile&quot;,</span>
+						agentFile.toString());
+			}
+
+<span class="fc" id="L196">			return agentFile;</span>
+<span class="nc" id="L197">		} catch (final IOException e) {</span>
+<span class="nc" id="L198">			throw new BuildException(&quot;Unable to extract agent jar&quot;, e);</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

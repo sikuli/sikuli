@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>LocalController.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.agent.rt</a> &gt; <a href="index.html" class="el_package">org.jacoco.agent.rt.controller</a> &gt; <span class="el_source">LocalController.java</span></div><h1>LocalController.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.agent.rt.controller;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.jacoco.core.data.ExecutionDataWriter;
+import org.jacoco.core.runtime.AgentOptions;
+import org.jacoco.core.runtime.IRuntime;
+
+/**
+ * Local only agent controller that will write coverage data to the filesystem.
+ * This controller uses the following agent options:
+ * &lt;ul&gt;
+ * &lt;li&gt;destfile&lt;/li&gt;
+ * &lt;li&gt;append&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+<span class="fc" id="L32">public class LocalController implements IAgentController {</span>
+
+	private IRuntime runtime;
+
+	private OutputStream output;
+
+	public final void startup(final AgentOptions options, final IRuntime runtime)
+			throws IOException {
+<span class="fc" id="L40">		this.runtime = runtime;</span>
+<span class="fc" id="L41">		final File destFile = new File(options.getDestfile()).getAbsoluteFile();</span>
+<span class="fc" id="L42">		final File folder = destFile.getParentFile();</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">		if (folder != null) {</span>
+<span class="fc" id="L44">			folder.mkdirs();</span>
+		}
+<span class="fc" id="L46">		output = new BufferedOutputStream(new FileOutputStream(destFile,</span>
+				options.getAppend()));
+<span class="fc" id="L48">	}</span>
+
+	public void writeExecutionData() throws IOException {
+<span class="fc" id="L51">		final ExecutionDataWriter writer = new ExecutionDataWriter(output);</span>
+<span class="fc" id="L52">		runtime.collect(writer, writer, false);</span>
+<span class="fc" id="L53">	}</span>
+
+	public void shutdown() throws IOException {
+<span class="fc" id="L56">		output.close();</span>
+<span class="fc" id="L57">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

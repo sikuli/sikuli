@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ExecutionDataStore.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">ExecutionDataStore.java</span></div><h1>ExecutionDataStore.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * In-memory data store for execution data. The data can be added through its
+ * {@link IExecutionDataVisitor} interface. If execution data is provided
+ * multiple times for the same class the data is merged, i.e. a probe is marked
+ * as executed if it is reported as executed at least once. This allows to merge
+ * coverage date from multiple runs. A instance of this class is not thread
+ * safe.
+ */
+<span class="fc" id="L26">public final class ExecutionDataStore implements IExecutionDataVisitor {</span>
+
+<span class="fc" id="L28">	private final Map&lt;Long, ExecutionData&gt; entries = new HashMap&lt;Long, ExecutionData&gt;();</span>
+
+	/**
+	 * Adds the given {@link ExecutionData} object into the store. If there is
+	 * already execution data with this same class id, this structure is merged
+	 * with the given one.
+	 * 
+	 * @param data
+	 *            execution data to add or merge
+	 * @throws IllegalStateException
+	 *             if the given {@link ExecutionData} object is not compatible
+	 *             to a corresponding one, that is already contained
+	 * @see ExecutionData#assertCompatibility(long, String, int)
+	 */
+	public void put(final ExecutionData data) throws IllegalStateException {
+<span class="fc" id="L43">		final Long id = Long.valueOf(data.getId());</span>
+<span class="fc" id="L44">		final ExecutionData entry = entries.get(id);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (entry == null) {</span>
+<span class="fc" id="L46">			entries.put(id, data);</span>
+		} else {
+<span class="fc" id="L48">			entry.merge(data);</span>
+		}
+<span class="fc" id="L50">	}</span>
+
+	/**
+	 * Returns the {@link ExecutionData} entry with the given id if it exists in
+	 * this store.
+	 * 
+	 * @param id
+	 *            class id
+	 * @return execution data or &lt;code&gt;null&lt;/code&gt;
+	 */
+	public ExecutionData get(final long id) {
+<span class="fc" id="L61">		return entries.get(Long.valueOf(id));</span>
+	}
+
+	/**
+	 * Returns the coverage data for the class with the given identifier. If
+	 * there is no data available under the given id a new entry is created.
+	 * 
+	 * @param id
+	 *            class identifier
+	 * @param name
+	 *            VM name of the class
+	 * @param dataLength
+	 *            probe data length
+	 * @return execution data
+	 */
+	public ExecutionData get(final Long id, final String name,
+			final int dataLength) {
+<span class="fc" id="L78">		ExecutionData entry = entries.get(id);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		if (entry == null) {</span>
+<span class="fc" id="L80">			entry = new ExecutionData(id.longValue(), name, dataLength);</span>
+<span class="fc" id="L81">			entries.put(id, entry);</span>
+		} else {
+<span class="fc" id="L83">			entry.assertCompatibility(id.longValue(), name, dataLength);</span>
+		}
+<span class="fc" id="L85">		return entry;</span>
+	}
+
+	/**
+	 * Resets all execution data probes, i.e. marks them as not executed. The
+	 * execution data objects itself are not removed.
+	 */
+	public void reset() {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">		for (final ExecutionData executionData : this.entries.values()) {</span>
+<span class="fc" id="L94">			executionData.reset();</span>
+		}
+<span class="fc" id="L96">	}</span>
+
+	/**
+	 * Returns a collection that represents current contents of the store.
+	 * 
+	 * @return current contents
+	 */
+	public Collection&lt;ExecutionData&gt; getContents() {
+<span class="fc" id="L104">		return entries.values();</span>
+	}
+
+	/**
+	 * Writes the content of the store to the given visitor interface.
+	 * 
+	 * @param visitor
+	 *            interface to write content to
+	 */
+	public void accept(final IExecutionDataVisitor visitor) {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		for (final ExecutionData data : entries.values()) {</span>
+<span class="fc" id="L115">			visitor.visitClassExecution(data);</span>
+		}
+<span class="fc" id="L117">	}</span>
+
+	// === IExecutionDataVisitor ===
+
+	public void visitClassExecution(final ExecutionData data) {
+<span class="fc" id="L122">		put(data);</span>
+<span class="fc" id="L123">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ClassAnalyzer.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.analysis</a> &gt; <span class="el_source">ClassAnalyzer.java</span></div><h1>ClassAnalyzer.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.analysis;
+
+import org.jacoco.core.analysis.IMethodCoverage;
+import org.jacoco.core.internal.flow.IClassProbesVisitor;
+import org.jacoco.core.internal.flow.IMethodProbesVisitor;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * Analyzes the structure of a class.
+ */
+public class ClassAnalyzer implements IClassProbesVisitor {
+
+	private final long classid;
+	private final boolean executionData[];
+	private final StringPool stringPool;
+
+	private ClassCoverageImpl coverage;
+
+	/**
+	 * Creates a new analyzer that builds coverage data for a class.
+	 * 
+	 * @param classid
+	 *            id of the class
+	 * @param executionData
+	 *            execution data for this class or &lt;code&gt;null&lt;/code&gt;
+	 * @param stringPool
+	 *            shared pool to minimize the number of {@link String} instances
+	 */
+	public ClassAnalyzer(final long classid, final boolean[] executionData,
+<span class="fc" id="L44">			final StringPool stringPool) {</span>
+<span class="fc" id="L45">		this.classid = classid;</span>
+<span class="fc" id="L46">		this.executionData = executionData;</span>
+<span class="fc" id="L47">		this.stringPool = stringPool;</span>
+<span class="fc" id="L48">	}</span>
+
+	/**
+	 * Returns the coverage data for this class after this visitor has been
+	 * processed.
+	 * 
+	 * @return coverage data for this class
+	 */
+	public ClassCoverageImpl getCoverage() {
+<span class="fc" id="L57">		return coverage;</span>
+	}
+
+	public void visit(final int version, final int access, final String name,
+			final String signature, final String superName,
+			final String[] interfaces) {
+<span class="fc" id="L63">		this.coverage = new ClassCoverageImpl(stringPool.get(name), classid,</span>
+				stringPool.get(signature), stringPool.get(superName),
+				stringPool.get(interfaces));
+<span class="fc" id="L66">	}</span>
+
+	public void visitSource(final String source, final String debug) {
+<span class="fc" id="L69">		this.coverage.setSourceFileName(stringPool.get(source));</span>
+<span class="fc" id="L70">	}</span>
+
+	public IMethodProbesVisitor visitMethod(final int access,
+			final String name, final String desc, final String signature,
+			final String[] exceptions) {
+
+		// TODO: Use filter hook
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		if ((access &amp; Opcodes.ACC_SYNTHETIC) != 0) {</span>
+<span class="fc" id="L78">			return null;</span>
+		}
+
+<span class="fc" id="L81">		return new MethodAnalyzer(stringPool.get(name), stringPool.get(desc),</span>
+				stringPool.get(signature), executionData) {
+			@Override
+<span class="fc" id="L84">			public void visitEnd() {</span>
+<span class="fc" id="L85">				super.visitEnd();</span>
+<span class="fc" id="L86">				final IMethodCoverage methodCoverage = getCoverage();</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">				if (methodCoverage.getInstructionCounter().getTotalCount() &gt; 0) {</span>
+					// Only consider methods that actually contain code
+<span class="fc" id="L89">					coverage.addMethod(methodCoverage);</span>
+				}
+<span class="fc" id="L91">			}</span>
+		};
+	}
+
+	// Nothing to do here:
+
+	public void visitTotalProbeCount(final int count) {
+<span class="fc" id="L98">	}</span>
+
+	public AnnotationVisitor visitAnnotation(final String desc,
+			final boolean visible) {
+<span class="nc" id="L102">		return null;</span>
+	}
+
+	public void visitAttribute(final Attribute attr) {
+<span class="nc" id="L106">	}</span>
+
+	public FieldVisitor visitField(final int access, final String name,
+			final String desc, final String signature, final Object value) {
+<span class="fc" id="L110">		return null;</span>
+	}
+
+	public void visitInnerClass(final String name, final String outerName,
+			final String innerName, final int access) {
+<span class="fc" id="L115">	}</span>
+
+	public void visitOuterClass(final String owner, final String name,
+			final String desc) {
+<span class="nc" id="L119">	}</span>
+
+	public void visitEnd() {
+<span class="fc" id="L122">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

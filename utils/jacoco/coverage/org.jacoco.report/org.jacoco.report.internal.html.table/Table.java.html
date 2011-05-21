@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Table.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.table</a> &gt; <span class="el_source">Table.java</span></div><h1>Table.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.table;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.HTMLElement;
+import org.jacoco.report.internal.html.resources.Resources;
+import org.jacoco.report.internal.html.resources.Styles;
+
+/**
+ * Renderer for a table of {@link ITableItem}s.
+ */
+public class Table {
+
+	private final List&lt;Column&gt; columns;
+
+	private Comparator&lt;ITableItem&gt; defaultComparator;
+
+	/**
+	 * Create a new table without any columns yet.
+	 */
+<span class="fc" id="L38">	public Table() {</span>
+<span class="fc" id="L39">		this.columns = new ArrayList&lt;Table.Column&gt;();</span>
+<span class="fc" id="L40">	}</span>
+
+	/**
+	 * Adds a new column with the given properties to the table.
+	 * 
+	 * @param header
+	 *            column header caption
+	 * @param style
+	 *            optional CSS style class name for the td-Elements of this
+	 *            column
+	 * @param renderer
+	 *            callback for column rendering
+	 * @param defaultSorting
+	 *            If &lt;code&gt;true&lt;/code&gt;, this column is the default sorting
+	 *            column. Only one column can be selected for default sorting.
+	 * 
+	 */
+	public void add(final String header, final String style,
+			final IColumnRenderer renderer, final boolean defaultSorting) {
+<span class="fc" id="L59">		columns.add(new Column(columns.size(), header, style, renderer,</span>
+				defaultSorting));
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if (defaultSorting) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">			if (defaultComparator != null) {</span>
+<span class="fc" id="L63">				throw new IllegalStateException(</span>
+						&quot;Default sorting only allowed for one column.&quot;);
+			}
+<span class="fc" id="L66">			this.defaultComparator = renderer.getComparator();</span>
+		}
+<span class="fc" id="L68">	}</span>
+
+	/**
+	 * Renders a table for the given icon
+	 * 
+	 * @param parent
+	 *            parent element in which the table is created
+	 * @param items
+	 *            items that will make the table rows
+	 * @param total
+	 *            the summary of all coverage data items in the table static
+	 *            resources that might be referenced
+	 * @param resources
+	 *            static resources that might be referenced
+	 * @param base
+	 *            base folder of the table
+	 * @throws IOException
+	 *             in case of IO problems with the element output
+	 */
+	public void render(final HTMLElement parent,
+			final List&lt;? extends ITableItem&gt; items, final ICoverageNode total,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L91">		final List&lt;? extends ITableItem&gt; sortedItems = sort(items);</span>
+<span class="fc" id="L92">		final HTMLElement table = parent.table(Styles.COVERAGETABLE);</span>
+<span class="fc" id="L93">		table.attr(&quot;id&quot;, &quot;coveragetable&quot;);</span>
+<span class="fc" id="L94">		header(table, sortedItems, total);</span>
+<span class="fc" id="L95">		footer(table, total, resources, base);</span>
+<span class="fc" id="L96">		body(table, sortedItems, resources, base);</span>
+<span class="fc" id="L97">	}</span>
+
+	private void header(final HTMLElement table,
+			final List&lt;? extends ITableItem&gt; items, final ICoverageNode total)
+			throws IOException {
+<span class="fc" id="L102">		final HTMLElement tr = table.thead().tr();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		for (final Column c : columns) {</span>
+<span class="fc" id="L104">			c.init(tr, items, total);</span>
+		}
+<span class="fc" id="L106">	}</span>
+
+	private void footer(final HTMLElement table, final ICoverageNode total,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L111">		final HTMLElement tr = table.tfoot().tr();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		for (final Column c : columns) {</span>
+<span class="fc" id="L113">			c.footer(tr, total, resources, base);</span>
+		}
+<span class="fc" id="L115">	}</span>
+
+	private void body(final HTMLElement table,
+			final List&lt;? extends ITableItem&gt; items, final Resources resources,
+			final ReportOutputFolder base) throws IOException {
+<span class="fc" id="L120">		final HTMLElement tbody = table.tbody();</span>
+<span class="fc" id="L121">		int idx = 0;</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">		for (final ITableItem item : items) {</span>
+<span class="fc" id="L123">			final HTMLElement tr = tbody.tr();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">			for (final Column c : columns) {</span>
+<span class="fc" id="L125">				c.body(tr, idx, item, resources, base);</span>
+			}
+<span class="fc" id="L127">			idx++;</span>
+<span class="fc" id="L128">		}</span>
+<span class="fc" id="L129">	}</span>
+
+	private List&lt;? extends ITableItem&gt; sort(
+			final List&lt;? extends ITableItem&gt; items) {
+<span class="fc bfc" id="L133" title="All 2 branches covered.">		if (defaultComparator != null) {</span>
+<span class="fc" id="L134">			final ArrayList&lt;ITableItem&gt; result = new ArrayList&lt;ITableItem&gt;(</span>
+					items);
+<span class="fc" id="L136">			Collections.sort(result, defaultComparator);</span>
+<span class="fc" id="L137">			return result;</span>
+		}
+<span class="fc" id="L139">		return items;</span>
+	}
+
+	private static class Column {
+
+		private final char idprefix;
+		private final String header;
+		private final IColumnRenderer renderer;
+		private final SortIndex&lt;ITableItem&gt; index;
+		private final String style, headerStyle;
+
+		private boolean visible;
+
+		Column(final int idx, final String header, final String style,
+<span class="fc" id="L153">				final IColumnRenderer renderer, final boolean defaultSorting) {</span>
+<span class="fc" id="L154">			this.idprefix = (char) ('a' + idx);</span>
+<span class="fc" id="L155">			this.header = header;</span>
+<span class="fc" id="L156">			this.renderer = renderer;</span>
+<span class="fc" id="L157">			index = new SortIndex&lt;ITableItem&gt;(renderer.getComparator());</span>
+<span class="fc" id="L158">			this.style = style;</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">			this.headerStyle = Styles.combine(defaultSorting ? Styles.DOWN</span>
+					: null, Styles.SORTABLE, style);
+<span class="fc" id="L161">		}</span>
+
+		void init(final HTMLElement tr, final List&lt;? extends ITableItem&gt; items,
+				final ICoverageNode total) throws IOException {
+<span class="fc" id="L165">			visible = renderer.init(items, total);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">			if (visible) {</span>
+<span class="fc" id="L167">				index.init(items);</span>
+<span class="fc" id="L168">				final HTMLElement td = tr.td(headerStyle);</span>
+<span class="fc" id="L169">				td.attr(&quot;id&quot;, String.valueOf(idprefix));</span>
+<span class="fc" id="L170">				td.attr(&quot;onclick&quot;, &quot;toggleSort(this)&quot;);</span>
+<span class="fc" id="L171">				td.text(header);</span>
+			}
+<span class="fc" id="L173">		}</span>
+
+		void footer(final HTMLElement tr, final ICoverageNode total,
+				final Resources resources, final ReportOutputFolder base)
+				throws IOException {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">			if (visible) {</span>
+<span class="fc" id="L179">				renderer.footer(tr.td(style), total, resources, base);</span>
+			}
+<span class="fc" id="L181">		}</span>
+
+		void body(final HTMLElement tr, final int idx, final ITableItem item,
+				final Resources resources, final ReportOutputFolder base)
+				throws IOException {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">			if (visible) {</span>
+<span class="fc" id="L187">				final HTMLElement td = tr.td(style);</span>
+<span class="fc" id="L188">				td.attr(&quot;id&quot;, idprefix + String.valueOf(index.getPosition(idx)));</span>
+<span class="fc" id="L189">				renderer.item(td, item, resources, base);</span>
+			}
+<span class="fc" id="L191">		}</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

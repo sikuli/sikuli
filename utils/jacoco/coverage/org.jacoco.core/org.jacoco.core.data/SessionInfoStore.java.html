@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>SessionInfoStore.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">SessionInfoStore.java</span></div><h1>SessionInfoStore.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Container to collect and merge session {@link SessionInfo} objects. A
+ * instance of this class is not thread safe.
+ */
+<span class="fc" id="L25">public class SessionInfoStore implements ISessionInfoVisitor {</span>
+
+<span class="fc" id="L27">	private final List&lt;SessionInfo&gt; infos = new ArrayList&lt;SessionInfo&gt;();</span>
+
+	/**
+	 * Tests whether the store is empty.
+	 * 
+	 * @return &lt;code&gt;true&lt;/code&gt; if the store is empty
+	 */
+	public boolean isEmpty() {
+<span class="fc" id="L35">		return infos.isEmpty();</span>
+	}
+
+	/**
+	 * Returns all {@link SessionInfo} objects currently contained in the store.
+	 * The info objects are ordered by its natural ordering (i.e. by the dump
+	 * time stamp).
+	 * 
+	 * @return list of stored {@link SessionInfo} objects
+	 */
+	public List&lt;SessionInfo&gt; getInfos() {
+<span class="fc" id="L46">		final List&lt;SessionInfo&gt; copy = new ArrayList&lt;SessionInfo&gt;(infos);</span>
+<span class="fc" id="L47">		Collections.sort(copy);</span>
+<span class="fc" id="L48">		return copy;</span>
+	}
+
+	/**
+	 * Returns a new session info with the given id that contains a merged
+	 * version from all contained version. The start timestamp is the minimum of
+	 * all contained sessions, the dump timestamp the maximum of all contained
+	 * sessions. If no session is currently contained both timestamps are set to
+	 * &lt;code&gt;0&lt;/code&gt;.
+	 * 
+	 * @param id
+	 *            identifier for the merged session info
+	 * @return new {@link SessionInfo} object
+	 * 
+	 */
+	public SessionInfo getMerged(final String id) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (infos.isEmpty()) {</span>
+<span class="fc" id="L65">			return new SessionInfo(id, 0, 0);</span>
+		}
+<span class="fc" id="L67">		long start = Long.MAX_VALUE;</span>
+<span class="fc" id="L68">		long dump = Long.MIN_VALUE;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		for (final SessionInfo i : infos) {</span>
+<span class="fc" id="L70">			start = min(start, i.getStartTimeStamp());</span>
+<span class="fc" id="L71">			dump = max(dump, i.getDumpTimeStamp());</span>
+		}
+<span class="fc" id="L73">		return new SessionInfo(id, start, dump);</span>
+	}
+
+	/**
+	 * Writes all contained {@link SessionInfo} objects into the given visitor.
+	 * The info objects are emitted in chronological order by dump timestamp.
+	 * 
+	 * @param visitor
+	 *            visitor to emit {@link SessionInfo} objects to
+	 */
+	public void accept(final ISessionInfoVisitor visitor) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		for (final SessionInfo i : getInfos()) {</span>
+<span class="fc" id="L85">			visitor.visitSessionInfo(i);</span>
+		}
+<span class="fc" id="L87">	}</span>
+
+	// === ISessionInfoVisitor ===
+
+	public void visitSessionInfo(final SessionInfo info) {
+<span class="fc" id="L92">		infos.add(info);</span>
+<span class="fc" id="L93">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

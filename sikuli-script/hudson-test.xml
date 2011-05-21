@@ -6,7 +6,10 @@
    Run this with ant -f <XML-FILE>
 -->
 
-<project default="all">
+<project default="all" xmlns:jacoco="antlib:org.jacoco.ant">
+   <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+      <classpath path="../utils/jacoco/lib/jacocoant.jar"/>
+   </taskdef>
    <property name="tst-dir" location="build/test" />
    <path id="classpath.base">
       <pathelement location="target/sikuli-script.jar" />
@@ -17,12 +20,14 @@
       <path refid="classpath.base" />
    </path>
    <target name="test">
-      <junit fork="yes" haltonfailure="no">
-         <classpath refid="classpath.test" />
-         <formatter type="plain" usefile="false"/>
-         <formatter type="xml"/>
-         <test name="org.sikuli.script.SikuliScriptTestSuite" todir="build"/>
-      </junit>
+      <jacoco:coverage>
+         <junit fork="yes" haltonfailure="no" forkmode="once">
+            <classpath refid="classpath.test" />
+            <formatter type="plain" usefile="false"/>
+            <formatter type="xml"/>
+            <test name="org.sikuli.script.SikuliScriptTestSuite" todir="build"/>
+         </junit>
+      </jacoco:coverage>
    </target>
   <target name="all" depends="test" />
 </project>

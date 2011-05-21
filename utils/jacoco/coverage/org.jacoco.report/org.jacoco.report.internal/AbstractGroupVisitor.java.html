@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AbstractGroupVisitor.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal</a> &gt; <span class="el_source">AbstractGroupVisitor.java</span></div><h1>AbstractGroupVisitor.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal;
+
+import java.io.IOException;
+
+import org.jacoco.core.analysis.CoverageNodeImpl;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.ICoverageNode.ElementType;
+import org.jacoco.report.IReportGroupVisitor;
+import org.jacoco.report.ISourceFileLocator;
+
+/**
+ * Internal base visitor to calculate group counter summaries for hierarchical
+ * reports.
+ */
+public abstract class AbstractGroupVisitor implements IReportGroupVisitor {
+
+	/** coverage node for this group to total counters */
+	protected final CoverageNodeImpl total;
+
+	private AbstractGroupVisitor lastChild;
+
+	/**
+	 * Creates a new group with the given name.
+	 * 
+	 * @param name
+	 *            name for the coverage node created internally
+	 */
+<span class="fc" id="L39">	protected AbstractGroupVisitor(final String name) {</span>
+<span class="fc" id="L40">		total = new CoverageNodeImpl(ElementType.GROUP, name);</span>
+<span class="fc" id="L41">	}</span>
+
+	public final void visitBundle(final IBundleCoverage bundle,
+			final ISourceFileLocator locator) throws IOException {
+<span class="fc" id="L45">		total.increment(bundle);</span>
+<span class="fc" id="L46">		handleBundle(bundle, locator);</span>
+<span class="fc" id="L47">	}</span>
+
+	/**
+	 * Called to handle the given bundle in a specific way.
+	 * 
+	 * @param bundle
+	 * @param locator
+	 * @throws IOException
+	 */
+	protected abstract void handleBundle(IBundleCoverage bundle,
+			ISourceFileLocator locator) throws IOException;
+
+	public final IReportGroupVisitor visitGroup(final String name)
+			throws IOException {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">		if (lastChild != null) {</span>
+<span class="nc" id="L62">			lastChild.visitEnd();</span>
+<span class="nc" id="L63">			total.increment(lastChild.total);</span>
+		}
+<span class="fc" id="L65">		lastChild = handleGroup(name);</span>
+<span class="fc" id="L66">		return lastChild;</span>
+	}
+
+	/**
+	 * Called to handle a group with the given name in a specific way.
+	 * 
+	 * @param name
+	 * @return created child group
+	 * @throws IOException
+	 */
+	protected abstract AbstractGroupVisitor handleGroup(final String name)
+			throws IOException;
+
+	/**
+	 * Must be called at the end of every group.
+	 * 
+	 * @throws IOException
+	 */
+	public final void visitEnd() throws IOException {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (lastChild != null) {</span>
+<span class="fc" id="L86">			lastChild.visitEnd();</span>
+<span class="fc" id="L87">			total.increment(lastChild.total);</span>
+		}
+<span class="fc" id="L89">		handleEnd();</span>
+<span class="fc" id="L90">	}</span>
+
+	/**
+	 * Called to handle the end of this group in a specific way.
+	 * 
+	 * @throws IOException
+	 */
+	protected abstract void handleEnd() throws IOException;
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

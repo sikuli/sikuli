@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>SourceHighlighter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.page</a> &gt; <span class="el_source">SourceHighlighter.java</span></div><h1>SourceHighlighter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.page;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Locale;
+
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ILine;
+import org.jacoco.core.analysis.ISourceNode;
+import org.jacoco.report.internal.html.HTMLElement;
+import org.jacoco.report.internal.html.resources.Styles;
+
+/**
+ * Creates a highlighted output of a source file.
+ */
+final class SourceHighlighter {
+
+	private final Locale locale;
+
+	private String lang;
+
+	/**
+	 * Creates a new highlighter with default settings.
+	 * 
+	 * @param locale
+	 *            locale for tooltip rendering
+	 */
+<span class="fc" id="L40">	public SourceHighlighter(final Locale locale) {</span>
+<span class="fc" id="L41">		this.locale = locale;</span>
+<span class="fc" id="L42">		lang = &quot;java&quot;;</span>
+<span class="fc" id="L43">	}</span>
+
+	/**
+	 * Specifies the source language. This value might be used for syntax
+	 * highlighting. Default is &quot;java&quot;.
+	 * 
+	 * @param lang
+	 *            source language identifier
+	 */
+	public void setLanguage(final String lang) {
+<span class="fc" id="L53">		this.lang = lang;</span>
+<span class="fc" id="L54">	}</span>
+
+	/**
+	 * Highlights the given source file.
+	 * 
+	 * @param parent
+	 *            parent HTML element
+	 * @param source
+	 *            highlighting information
+	 * @param contents
+	 *            contents of the source file
+	 * @throws IOException
+	 *             problems while reading the source file or writing the output
+	 */
+	public void render(final HTMLElement parent, final ISourceNode source,
+			final Reader contents) throws IOException {
+<span class="fc" id="L70">		final HTMLElement pre = parent.pre(Styles.SOURCE + &quot; lang-&quot; + lang</span>
+				+ &quot; linenums&quot;);
+<span class="fc" id="L72">		final BufferedReader lineBuffer = new BufferedReader(contents);</span>
+		String line;
+<span class="fc" id="L74">		int nr = 0;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">		while ((line = lineBuffer.readLine()) != null) {</span>
+<span class="fc" id="L76">			nr++;</span>
+<span class="fc" id="L77">			renderCodeLine(pre, line, source.getLine(nr), nr);</span>
+		}
+<span class="fc" id="L79">	}</span>
+
+	private void renderCodeLine(final HTMLElement pre, final String linesrc,
+			final ILine line, final int lineNr) throws IOException {
+<span class="fc" id="L83">		highlight(pre, line, lineNr).text(linesrc);</span>
+<span class="fc" id="L84">		pre.text(&quot;\n&quot;);</span>
+<span class="fc" id="L85">	}</span>
+
+	HTMLElement highlight(final HTMLElement pre, final ILine line,
+			final int lineNr) throws IOException {
+		final String style;
+<span class="fc bfc" id="L90" title="All 4 branches covered.">		switch (line.getStatus()) {</span>
+		case ICounter.NOT_COVERED:
+<span class="fc" id="L92">			style = Styles.NOT_COVERED;</span>
+<span class="fc" id="L93">			break;</span>
+		case ICounter.FULLY_COVERED:
+<span class="fc" id="L95">			style = Styles.FULLY_COVERED;</span>
+<span class="fc" id="L96">			break;</span>
+		case ICounter.PARTLY_COVERED:
+<span class="fc" id="L98">			style = Styles.PARTLY_COVERED;</span>
+<span class="fc" id="L99">			break;</span>
+		default:
+<span class="fc" id="L101">			return pre;</span>
+		}
+
+<span class="fc" id="L104">		final String lineId = &quot;L&quot; + Integer.toString(lineNr);</span>
+<span class="fc" id="L105">		final ICounter branches = line.getBranchCounter();</span>
+<span class="fc bfc" id="L106" title="All 4 branches covered.">		switch (branches.getStatus()) {</span>
+		case ICounter.NOT_COVERED:
+<span class="fc" id="L108">			return span(pre, lineId, style, Styles.BRANCH_NOT_COVERED,</span>
+					&quot;All %2$d branches missed.&quot;, branches);
+		case ICounter.FULLY_COVERED:
+<span class="fc" id="L111">			return span(pre, lineId, style, Styles.BRANCH_FULLY_COVERED,</span>
+					&quot;All %2$d branches covered.&quot;, branches);
+		case ICounter.PARTLY_COVERED:
+<span class="fc" id="L114">			return span(pre, lineId, style, Styles.BRANCH_PARTLY_COVERED,</span>
+					&quot;%1$d of %2$d branches missed.&quot;, branches);
+		default:
+<span class="fc" id="L117">			return pre.span(style, lineId);</span>
+		}
+	}
+
+	private HTMLElement span(final HTMLElement parent, final String id,
+			final String style1, final String style2, final String title,
+			final ICounter branches) throws IOException {
+<span class="fc" id="L124">		final HTMLElement span = parent.span(style1 + &quot; &quot; + style2, id);</span>
+<span class="fc" id="L125">		final Integer missed = Integer.valueOf(branches.getMissedCount());</span>
+<span class="fc" id="L126">		final Integer total = Integer.valueOf(branches.getTotalCount());</span>
+<span class="fc" id="L127">		span.attr(&quot;title&quot;, String.format(locale, title, missed, total));</span>
+<span class="fc" id="L128">		return span;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

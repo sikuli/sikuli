@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AgentJar.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.agent</a> &gt; <a href="index.html" class="el_package">org.jacoco.agent</a> &gt; <span class="el_source">AgentJar.java</span></div><h1>AgentJar.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.agent;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
+/**
+ * API to access the agent JAR file as a resource. While the agent is a JAR file
+ * it is considered as a plain resource that must be configured for the
+ * application under test (target JVM). The agent JAR does not provide any
+ * public Java API.
+ */
+public final class AgentJar {
+
+	/**
+	 * Name of the agent JAR file resource within this bundle.
+	 */
+	private static final String RESOURCE = &quot;/jacocoagent.jar&quot;;
+
+<span class="nc" id="L35">	private AgentJar() {</span>
+<span class="nc" id="L36">	}</span>
+
+	/**
+	 * Returns a URL pointing to the JAR file.
+	 * 
+	 * @return URL of the JAR file
+	 */
+	public static URL getResource() {
+<span class="fc" id="L44">		final URL url = AgentJar.class.getResource(RESOURCE);</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">		if (url == null) {</span>
+<span class="nc" id="L46">			throw new AssertionError(ERRORMSG);</span>
+		}
+<span class="fc" id="L48">		return url;</span>
+	}
+
+	/**
+	 * Returns the content of the JAR file as a stream.
+	 * 
+	 * @return content of the JAR file
+	 */
+	public static InputStream getResourceAsStream() {
+<span class="fc" id="L57">		final InputStream stream = AgentJar.class.getResourceAsStream(RESOURCE);</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		if (stream == null) {</span>
+<span class="nc" id="L59">			throw new AssertionError(ERRORMSG);</span>
+		}
+<span class="fc" id="L61">		return stream;</span>
+	}
+
+	/**
+	 * Extract the JaCoCo agent JAR and put it into a temporary location. This
+	 * file should be deleted on exit, but may not if the VM is terminated
+	 * 
+	 * @return Location of the Agent Jar file in the local file system. The file
+	 *         should exist and be readable.
+	 * @throws IOException
+	 *             Unable to unpack agent jar
+	 */
+	public static File extractToTempLocation() throws IOException {
+<span class="fc" id="L74">		final File agentJar = File.createTempFile(&quot;jacocoagent&quot;, &quot;.jar&quot;);</span>
+<span class="fc" id="L75">		agentJar.deleteOnExit();</span>
+
+<span class="fc" id="L77">		extractTo(agentJar);</span>
+
+<span class="fc" id="L79">		return agentJar;</span>
+	}
+
+	/**
+	 * Extract the JaCoCo agent JAR and put it into the specified location.
+	 * 
+	 * @param destination
+	 *            Location to write JaCoCo Agent Jar to. Must be writeable
+	 * @throws IOException
+	 *             Unable to unpack agent jar
+	 */
+	public static void extractTo(File destination) throws IOException {
+<span class="fc" id="L91">		InputStream inputJarStream = getResourceAsStream();</span>
+<span class="fc" id="L92">		OutputStream outputJarStream = null;</span>
+
+		try {
+
+<span class="fc" id="L96">			outputJarStream = new FileOutputStream(destination);</span>
+
+<span class="fc" id="L98">			final byte[] buffer = new byte[8192];</span>
+
+			int bytesRead;
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			while ((bytesRead = inputJarStream.read(buffer)) != -1) {</span>
+<span class="fc" id="L102">				outputJarStream.write(buffer, 0, bytesRead);</span>
+			}
+		} finally {
+<span class="fc" id="L105">			safeClose(inputJarStream);</span>
+<span class="fc" id="L106">			safeClose(outputJarStream);</span>
+<span class="fc" id="L107">		}</span>
+<span class="fc" id="L108">	}</span>
+
+	/**
+	 * Close a stream ignoring any error
+	 * 
+	 * @param closeable
+	 *            stream to be closed
+	 */
+	private static void safeClose(Closeable closeable) {
+		try {
+<span class="fc bfc" id="L118" title="All 2 branches covered.">			if (closeable != null) {</span>
+<span class="fc" id="L119">				closeable.close();</span>
+			}
+<span class="nc" id="L121">		} catch (IOException e) {</span>
+<span class="fc" id="L122">		}</span>
+<span class="fc" id="L123">	}</span>
+
+<span class="fc" id="L125">	private static final String ERRORMSG = String.format(</span>
+			&quot;The resource %s has not been found. Please see &quot;
+					+ &quot;/org.jacoco.agent/README.TXT for details.&quot;, RESOURCE);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

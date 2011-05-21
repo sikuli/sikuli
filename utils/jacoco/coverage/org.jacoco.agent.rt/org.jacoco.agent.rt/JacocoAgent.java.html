@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>JacocoAgent.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.agent.rt</a> &gt; <a href="index.html" class="el_package">org.jacoco.agent.rt</a> &gt; <span class="el_source">JacocoAgent.java</span></div><h1>JacocoAgent.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.agent.rt;
+
+import java.lang.instrument.Instrumentation;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Random;
+
+import org.jacoco.agent.rt.controller.IAgentController;
+import org.jacoco.agent.rt.controller.LocalController;
+import org.jacoco.agent.rt.controller.TcpClientController;
+import org.jacoco.agent.rt.controller.TcpServerController;
+import org.jacoco.core.runtime.AgentOptions;
+import org.jacoco.core.runtime.AgentOptions.OutputMode;
+import org.jacoco.core.runtime.IRuntime;
+import org.jacoco.core.runtime.ModifiedSystemClassRuntime;
+
+/**
+ * The agent which is referred as the &lt;code&gt;Premain-Class&lt;/code&gt;.
+ */
+public class JacocoAgent {
+
+	private final AgentOptions options;
+
+	private final IExceptionLogger logger;
+
+	private IRuntime runtime;
+
+	private IAgentController controller;
+
+	/**
+	 * Creates a new agent with the given agent options.
+	 * 
+	 * @param options
+	 *            agent options
+	 * @param logger
+	 *            logger used by this agent
+	 */
+<span class="nc" id="L49">	public JacocoAgent(final AgentOptions options, final IExceptionLogger logger) {</span>
+<span class="nc" id="L50">		this.options = options;</span>
+<span class="nc" id="L51">		this.logger = logger;</span>
+<span class="nc" id="L52">	}</span>
+
+	/**
+	 * Creates a new agent with the given agent options string.
+	 * 
+	 * @param options
+	 *            agent options as text string
+	 */
+	public JacocoAgent(String options, IExceptionLogger logger) {
+<span class="nc" id="L61">		this(new AgentOptions(options), logger);</span>
+<span class="nc" id="L62">	}</span>
+
+	/**
+	 * Initializes this agent.
+	 * 
+	 * @param inst
+	 *            instrumentation services
+	 * @throws Exception
+	 *             internal startup problem
+	 */
+	public void init(final Instrumentation inst) throws Exception {
+<span class="nc" id="L73">		runtime = createRuntime(inst);</span>
+<span class="nc" id="L74">		String sessionId = options.getSessionId();</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		if (sessionId == null) {</span>
+<span class="nc" id="L76">			sessionId = createSessionId();</span>
+		}
+<span class="nc" id="L78">		runtime.setSessionId(sessionId);</span>
+<span class="nc" id="L79">		runtime.startup();</span>
+<span class="nc" id="L80">		inst.addTransformer(new CoverageTransformer(runtime, options, logger));</span>
+<span class="nc" id="L81">		controller = createAgentController();</span>
+<span class="nc" id="L82">		controller.startup(options, runtime);</span>
+<span class="nc" id="L83">	}</span>
+
+	private IAgentController createAgentController() {
+<span class="nc" id="L86">		OutputMode controllerType = options.getOutput();</span>
+<span class="nc bnc" id="L87" title="All 4 branches missed.">		switch (controllerType) {</span>
+		case file:
+<span class="nc" id="L89">			return new LocalController();</span>
+		case tcpserver:
+<span class="nc" id="L91">			return new TcpServerController(logger);</span>
+		case tcpclient:
+<span class="nc" id="L93">			return new TcpClientController(logger);</span>
+		default:
+<span class="nc" id="L95">			throw new AssertionError(controllerType);</span>
+		}
+	}
+
+	private String createSessionId() {
+		String host;
+		try {
+<span class="nc" id="L102">			host = InetAddress.getLocalHost().getHostName();</span>
+<span class="nc" id="L103">		} catch (UnknownHostException e) {</span>
+<span class="nc" id="L104">			host = &quot;unknownhost&quot;;</span>
+<span class="nc" id="L105">		}</span>
+<span class="nc" id="L106">		return host + &quot;-&quot; + Integer.toHexString(new Random().nextInt());</span>
+	}
+
+	/**
+	 * Creates the specific coverage runtime implementation.
+	 * 
+	 * @param inst
+	 *            instrumentation services
+	 * @return coverage runtime instance
+	 * @throws Exception
+	 *             creation problem
+	 */
+	protected IRuntime createRuntime(final Instrumentation inst)
+			throws Exception {
+<span class="nc" id="L120">		return ModifiedSystemClassRuntime.createFor(inst, &quot;java/util/UUID&quot;);</span>
+	}
+
+	/**
+	 * Shutdown the agent again.
+	 */
+	public void shutdown() {
+		try {
+<span class="nc bnc" id="L128" title="All 2 branches missed.">			if (options.getDumpOnExit()) {</span>
+<span class="nc" id="L129">				controller.writeExecutionData();</span>
+			}
+<span class="nc" id="L131">			controller.shutdown();</span>
+<span class="nc" id="L132">		} catch (Exception e) {</span>
+<span class="nc" id="L133">			logger.logExeption(e);</span>
+<span class="nc" id="L134">		}</span>
+<span class="nc" id="L135">	}</span>
+
+	/**
+	 * This method is called by the JVM to initialize Java agents.
+	 * 
+	 * @param options
+	 *            agent options
+	 * @param inst
+	 *            instrumentation callback provided by the JVM
+	 */
+	public static void premain(final String options, final Instrumentation inst)
+			throws Exception {
+
+<span class="nc" id="L148">		final JacocoAgent agent = new JacocoAgent(options,</span>
+				new IExceptionLogger() {
+<span class="nc" id="L150">					public void logExeption(Exception ex) {</span>
+<span class="nc" id="L151">						ex.printStackTrace();</span>
+<span class="nc" id="L152">					}</span>
+				});
+
+<span class="nc" id="L155">		agent.init(inst);</span>
+
+<span class="nc" id="L157">		Runtime.getRuntime().addShutdownHook(new Thread() {</span>
+			@Override
+<span class="nc" id="L159">			public void run() {</span>
+<span class="nc" id="L160">				agent.shutdown();</span>
+<span class="nc" id="L161">			}</span>
+		});
+<span class="nc" id="L163">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

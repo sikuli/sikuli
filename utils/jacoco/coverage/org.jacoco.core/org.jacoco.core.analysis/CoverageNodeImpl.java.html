@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>CoverageNodeImpl.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.analysis</a> &gt; <span class="el_source">CoverageNodeImpl.java</span></div><h1>CoverageNodeImpl.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.analysis;
+
+import java.util.Collection;
+
+import org.jacoco.core.internal.analysis.CounterImpl;
+
+/**
+ * Base implementation for coverage data nodes.
+ */
+public class CoverageNodeImpl implements ICoverageNode {
+
+	private final ElementType elementType;
+
+	private final String name;
+
+	/** Counter for branches. */
+	protected CounterImpl branchCounter;
+
+	/** Counter for instructions. */
+	protected CounterImpl instructionCounter;
+
+	/** Counter for lines */
+	protected CounterImpl lineCounter;
+
+	/** Counter for complexity. */
+	protected CounterImpl complexityCounter;
+
+	/** Counter for methods. */
+	protected CounterImpl methodCounter;
+
+	/** Counter for classes. */
+	protected CounterImpl classCounter;
+
+	/**
+	 * Creates a new coverage data node.
+	 * 
+	 * @param elementType
+	 *            type of the element represented by this instance
+	 * @param name
+	 *            name of this node
+	 */
+<span class="fc" id="L53">	public CoverageNodeImpl(final ElementType elementType, final String name) {</span>
+<span class="fc" id="L54">		this.elementType = elementType;</span>
+<span class="fc" id="L55">		this.name = name;</span>
+<span class="fc" id="L56">		this.branchCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L57">		this.instructionCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L58">		this.complexityCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L59">		this.methodCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L60">		this.classCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L61">		this.lineCounter = CounterImpl.COUNTER_0_0;</span>
+<span class="fc" id="L62">	}</span>
+
+	/**
+	 * Increments the counters by the values given by another element.
+	 * 
+	 * @param child
+	 *            counters to add
+	 */
+	public void increment(final ICoverageNode child) {
+<span class="fc" id="L71">		instructionCounter = instructionCounter.increment(child</span>
+				.getInstructionCounter());
+<span class="fc" id="L73">		branchCounter = branchCounter.increment(child.getBranchCounter());</span>
+<span class="fc" id="L74">		lineCounter = lineCounter.increment(child.getLineCounter());</span>
+<span class="fc" id="L75">		complexityCounter = complexityCounter.increment(child</span>
+				.getComplexityCounter());
+<span class="fc" id="L77">		methodCounter = methodCounter.increment(child.getMethodCounter());</span>
+<span class="fc" id="L78">		classCounter = classCounter.increment(child.getClassCounter());</span>
+<span class="fc" id="L79">	}</span>
+
+	/**
+	 * Increments the counters by the values given by the collection of
+	 * elements.
+	 * 
+	 * @param children
+	 *            list of nodes, which counters will be added to this node
+	 */
+	public void increment(final Collection&lt;? extends ICoverageNode&gt; children) {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		for (final ICoverageNode child : children) {</span>
+<span class="fc" id="L90">			increment(child);</span>
+		}
+<span class="fc" id="L92">	}</span>
+
+	// === ICoverageDataNode ===
+
+	public ElementType getElementType() {
+<span class="fc" id="L97">		return elementType;</span>
+	}
+
+	public String getName() {
+<span class="fc" id="L101">		return name;</span>
+	}
+
+	public ICounter getInstructionCounter() {
+<span class="fc" id="L105">		return instructionCounter;</span>
+	}
+
+	public ICounter getBranchCounter() {
+<span class="fc" id="L109">		return branchCounter;</span>
+	}
+
+	public ICounter getLineCounter() {
+<span class="fc" id="L113">		return lineCounter;</span>
+	}
+
+	public ICounter getComplexityCounter() {
+<span class="fc" id="L117">		return complexityCounter;</span>
+	}
+
+	public ICounter getMethodCounter() {
+<span class="fc" id="L121">		return methodCounter;</span>
+	}
+
+	public ICounter getClassCounter() {
+<span class="fc" id="L125">		return classCounter;</span>
+	}
+
+	public ICounter getCounter(final CounterEntity entity) {
+<span class="pc bpc" id="L129" title="1 of 7 branches missed.">		switch (entity) {</span>
+		case INSTRUCTION:
+<span class="fc" id="L131">			return getInstructionCounter();</span>
+		case BRANCH:
+<span class="fc" id="L133">			return getBranchCounter();</span>
+		case LINE:
+<span class="fc" id="L135">			return getLineCounter();</span>
+		case COMPLEXITY:
+<span class="fc" id="L137">			return getComplexityCounter();</span>
+		case METHOD:
+<span class="fc" id="L139">			return getMethodCounter();</span>
+		case CLASS:
+<span class="fc" id="L141">			return getClassCounter();</span>
+		}
+<span class="nc" id="L143">		throw new AssertionError(entity);</span>
+	}
+
+	public ICoverageNode getPlainCopy() {
+<span class="fc" id="L147">		final CoverageNodeImpl copy = new CoverageNodeImpl(elementType, name);</span>
+<span class="fc" id="L148">		copy.instructionCounter = CounterImpl.getInstance(instructionCounter);</span>
+<span class="fc" id="L149">		copy.branchCounter = CounterImpl.getInstance(branchCounter);</span>
+<span class="fc" id="L150">		copy.lineCounter = CounterImpl.getInstance(lineCounter);</span>
+<span class="fc" id="L151">		copy.complexityCounter = CounterImpl.getInstance(complexityCounter);</span>
+<span class="fc" id="L152">		copy.methodCounter = CounterImpl.getInstance(methodCounter);</span>
+<span class="fc" id="L153">		copy.classCounter = CounterImpl.getInstance(classCounter);</span>
+<span class="fc" id="L154">		return copy;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L159">		final StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L160">		sb.append(name).append(&quot; [&quot;).append(elementType).append(&quot;]&quot;);</span>
+<span class="fc" id="L161">		return sb.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

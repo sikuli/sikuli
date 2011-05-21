@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>MethodItem.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.page</a> &gt; <span class="el_source">MethodItem.java</span></div><h1>MethodItem.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.page;
+
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.IMethodCoverage;
+import org.jacoco.core.analysis.ISourceNode;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.ILinkable;
+import org.jacoco.report.internal.html.resources.Styles;
+import org.jacoco.report.internal.html.table.ITableItem;
+
+/**
+ * Table items representing a method.
+ */
+final class MethodItem implements ITableItem {
+
+	private final IMethodCoverage node;
+
+	private final String label;
+
+	private final ILinkable sourcePage;
+
+	MethodItem(final IMethodCoverage node, final String label,
+<span class="fc" id="L34">			final ILinkable sourcePage) {</span>
+<span class="fc" id="L35">		this.node = node;</span>
+<span class="fc" id="L36">		this.label = label;</span>
+<span class="fc" id="L37">		this.sourcePage = sourcePage;</span>
+<span class="fc" id="L38">	}</span>
+
+	public String getLinkLabel() {
+<span class="fc" id="L41">		return label;</span>
+	}
+
+	public String getLinkStyle() {
+<span class="fc" id="L45">		return Styles.EL_METHOD;</span>
+	}
+
+	public String getLink(final ReportOutputFolder base) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		if (sourcePage == null) {</span>
+<span class="fc" id="L50">			return null;</span>
+		}
+<span class="fc" id="L52">		final String link = sourcePage.getLink(base);</span>
+<span class="fc" id="L53">		final int first = node.getFirstLine();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		return first != ISourceNode.UNKNOWN_LINE ? link + &quot;#L&quot; + first : link;</span>
+	}
+
+	public ICoverageNode getNode() {
+<span class="fc" id="L58">		return node;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

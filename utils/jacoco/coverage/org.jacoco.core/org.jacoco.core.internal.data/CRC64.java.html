@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>CRC64.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.data</a> &gt; <span class="el_source">CRC64.java</span></div><h1>CRC64.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.data;
+
+/**
+ * CRC64 checksum calculator based on the polynom specified in ISO 3309. The
+ * implementation is based on the following publications:
+ * 
+ * &lt;ul&gt;
+ * &lt;li&gt;http://en.wikipedia.org/wiki/Cyclic_redundancy_check&lt;/li&gt;
+ * &lt;li&gt;http://www.geocities.com/SiliconValley/Pines/8659/crc.htm&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+public final class CRC64 {
+
+	private static final long POLY64REV = 0xd800000000000000L;
+
+	private static final long[] LOOKUPTABLE;
+
+	static {
+<span class="fc" id="L30">		LOOKUPTABLE = new long[0x100];</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">		for (int i = 0; i &lt; 0x100; i++) {</span>
+<span class="fc" id="L32">			long v = i;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">			for (int j = 0; j &lt; 8; j++) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">				if ((v &amp; 1) == 1) {</span>
+<span class="fc" id="L35">					v = (v &gt;&gt;&gt; 1) ^ POLY64REV;</span>
+				} else {
+<span class="fc" id="L37">					v = (v &gt;&gt;&gt; 1);</span>
+				}
+			}
+<span class="fc" id="L40">			LOOKUPTABLE[i] = v;</span>
+		}
+<span class="fc" id="L42">	}</span>
+
+	/**
+	 * Calculates the CRC64 checksum for the given data array.
+	 * 
+	 * @param data
+	 *            data to calculate checksum for
+	 * @return checksum value
+	 */
+	public static long checksum(final byte[] data) {
+<span class="fc" id="L52">		long sum = 0;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		for (int i = 0; i &lt; data.length; i++) {</span>
+<span class="fc" id="L54">			final int lookupidx = ((int) sum ^ data[i]) &amp; 0xff;</span>
+<span class="fc" id="L55">			sum = (sum &gt;&gt;&gt; 8) ^ LOOKUPTABLE[lookupidx];</span>
+		}
+<span class="fc" id="L57">		return sum;</span>
+	}
+
+<span class="nc" id="L60">	private CRC64() {</span>
+<span class="nc" id="L61">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

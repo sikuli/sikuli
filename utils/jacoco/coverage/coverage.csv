@@ -1,0 +1,159 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JaCoCo/org.jacoco.agent,org.jacoco.agent,AgentJar,17,80,2,6,5,25,3,8,1,6
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,TcpClientController,8,54,0,0,1,16,1,4,1,4
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,TcpServerController,20,72,1,5,2,22,2,7,1,5
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,TcpServerController.new Runnable() {...},3,63,0,4,0,12,0,4,0,2
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,TcpClientController.new Runnable() {...},1,18,0,0,0,6,0,2,0,2
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,LocalController,0,50,1,1,0,13,1,4,0,4
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt.controller,TcpConnection,7,97,3,11,1,28,3,10,0,6
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt,JacocoAgent.new Thread() {...},10,0,0,0,3,0,2,0,2,0
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt,JacocoAgent,154,0,8,0,39,0,13,0,8,0
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt,CoverageTransformer,20,124,1,13,4,22,1,12,0,6
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt,JacocoAgent.new IExceptionLogger() {...},6,0,0,0,3,0,2,0,2,0
+JaCoCo/org.jacoco.agent.rt,org.jacoco.agent.rt,JacocoAgent.new Object() {...},29,0,0,0,1,0,1,0,1,0
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask,37,275,2,20,9,63,2,21,0,12
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.SourceFileCollection,8,82,1,7,1,18,1,7,0,4
+JaCoCo/org.jacoco.ant,org.jacoco.ant,DumpTask,11,127,1,5,4,36,2,9,1,7
+JaCoCo/org.jacoco.ant,org.jacoco.ant,CoverageTask.JavaLikeTaskEnhancer,0,66,1,3,0,18,1,5,0,4
+JaCoCo/org.jacoco.ant,org.jacoco.ant,CoverageTask,0,123,0,12,0,27,0,10,0,4
+JaCoCo/org.jacoco.ant,org.jacoco.ant,MergeTask,27,172,2,10,2,43,2,9,0,5
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.CSVFormatterElement,0,38,0,2,0,11,0,5,0,4
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.XMLFormatterElement,0,38,0,2,0,11,0,5,0,4
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.HTMLFormatterElement,4,85,0,6,2,26,1,9,1,6
+JaCoCo/org.jacoco.ant,org.jacoco.ant,CoverageTask.TestNGTaskEnhancer,5,8,0,0,2,3,1,1,1,1
+JaCoCo/org.jacoco.ant,org.jacoco.ant,AgentTask,3,34,1,5,1,8,2,5,1,3
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.GroupElement,0,39,0,0,0,11,0,5,0,5
+JaCoCo/org.jacoco.ant,org.jacoco.ant,AbstractCoverageTask,14,97,1,1,3,35,1,16,0,16
+JaCoCo/org.jacoco.ant,org.jacoco.ant,DumpTask.Nul,0,4,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.ant,org.jacoco.ant,ReportTask.SourceFilesElement,4,20,0,2,2,7,1,3,1,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,BundleCoverageImpl,0,140,0,12,0,33,0,11,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,SourceNodeImpl,0,269,0,34,0,56,0,25,0,8
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,MethodCoverageImpl,0,71,0,4,0,16,0,7,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,LineImpl,0,176,0,22,0,29,0,19,0,8
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,ContentTypeDetector,0,65,0,7,0,16,0,9,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,MethodAnalyzer.Jump,0,9,0,0,0,4,0,1,0,1
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,ClassAnalyzer.new MethodAnalyzer() {...},0,25,1,1,0,6,1,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,CounterImpl.Var,0,19,0,0,0,5,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,SourceFileCoverageImpl,0,11,0,0,0,4,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,CounterImpl,0,195,0,18,0,36,0,23,0,14
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,CounterImpl.Fix,0,15,0,0,0,3,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,StringPool,0,62,0,10,0,17,0,9,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,MethodAnalyzer,12,412,2,36,7,115,7,48,5,31
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,ClassAnalyzer,4,77,0,2,3,17,3,10,3,9
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,LineImpl.Fix,0,20,0,0,0,3,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,ClassCoverageImpl,0,79,0,4,0,23,0,12,0,10
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,LineImpl.Var,0,20,0,0,0,5,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.analysis,PackageCoverageImpl,0,37,0,4,0,10,0,5,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,NodeComparator.new NodeComparator() {...},0,30,0,2,0,3,0,3,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CoverageNodeImpl.new Object() {...},12,41,0,0,0,1,0,1,0,1
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,ICoverageNode.CounterEntity,5,73,0,0,0,7,1,3,1,3
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,Analyzer,69,108,6,7,13,30,5,11,2,7
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CoverageBuilder,0,116,0,10,0,23,0,11,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,NodeComparator,0,46,0,0,0,12,0,4,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,ICoverageNode.ElementType,9,69,0,0,0,7,2,2,2,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CoverageNodeImpl,5,191,1,8,1,46,1,20,0,14
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,15,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,Analyzer.new ClassAnalyzer() {...},0,18,0,0,0,4,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator.new CounterComparator() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.analysis,CounterComparator,0,38,0,0,0,9,0,4,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,ProbeVariableInserter,0,228,1,25,0,52,1,21,0,9
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,ClassInstrumenter.InterfaceTypeStrategy,0,22,0,0,0,3,0,3,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,InstrSupport,3,39,0,12,2,8,1,7,1,1
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,ClassInstrumenter.ClassTypeStrategy,0,124,0,0,0,26,0,6,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,ClassInstrumenter,0,119,0,6,0,27,0,11,0,8
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,MethodInstrumenter,0,243,0,14,0,67,0,21,0,14
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.instr,JumpProbe,0,33,0,0,0,11,0,5,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.instr,Instrumenter,7,44,0,0,1,9,1,4,1,4
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,MethodProbesAdapter,0,149,0,20,0,37,0,17,0,7
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,Instruction,0,51,0,4,0,16,0,9,0,7
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,ClassProbesAdapter.new JSRInlinerAdapter() {...},0,54,0,2,0,9,0,3,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,LabelInfo,0,187,0,26,0,53,0,30,0,17
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,ClassProbesAdapter,0,80,0,6,0,19,0,9,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,ClassProbesAdapter.ProbeCounter,0,14,0,0,0,3,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,ClassProbesAdapter.new IMethodProbesVisitor() {...},4,4,0,0,4,2,4,2,4,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.flow,LabelFlowAnalyzer,6,177,0,15,4,70,4,31,4,23
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,AgentOptions,0,393,0,28,0,82,0,48,0,34
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,AgentOptions.OutputMode,0,48,0,0,0,4,0,4,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,AbstractRuntime,14,81,0,4,0,25,0,9,0,7
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,LoggerRuntime,0,98,0,0,0,28,0,5,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,LoggerRuntime.RuntimeHandler,9,20,0,2,3,4,2,3,2,2
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,SystemPropertiesRuntime,0,54,0,0,0,13,0,4,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,ModifiedSystemClassRuntime.new ClassAdapter() {...},0,15,0,0,0,4,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,ModifiedSystemClassRuntime.new ClassFileTransformer() {...},0,21,0,2,0,4,0,3,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,RemoteControlWriter,0,22,0,0,0,8,0,3,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,ExecutionDataAccess,7,133,0,0,0,37,0,5,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,URLStreamHandlerRuntime.new URLConnection() {...},4,13,0,0,1,2,1,2,1,2
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,URLStreamHandlerRuntime.new URLStreamHandler() {...},0,10,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,RemoteControlReader,0,42,0,5,0,15,0,7,0,4
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,ModifiedSystemClassRuntime,17,112,0,0,4,25,1,7,1,7
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,URLStreamHandlerRuntime,0,125,0,0,0,31,0,5,0,5
+JaCoCo/org.jacoco.core,org.jacoco.core.runtime,WildcardMatcher,0,108,0,10,0,23,0,8,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.data,CRC64,3,71,0,8,2,14,1,6,1,2
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.data,CompactDataInput,0,61,0,8,0,14,0,7,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.internal.data,CompactDataOutput,0,74,0,10,0,20,0,8,0,3
+JaCoCo/org.jacoco.core,org.jacoco.core.data,ExecutionDataWriter,9,95,0,0,2,30,0,6,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core.data,ExecutionData,0,160,0,10,0,29,0,14,0,9
+JaCoCo/org.jacoco.core,org.jacoco.core.data,ExecutionDataStore,0,110,0,8,0,24,0,12,0,8
+JaCoCo/org.jacoco.core,org.jacoco.core.data,ExecutionDataReader,1,171,0,18,0,46,0,18,0,8
+JaCoCo/org.jacoco.core,org.jacoco.core.data,SessionInfo,0,57,0,6,0,16,0,9,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core.data,SessionInfoStore,0,88,0,6,0,19,0,9,0,6
+JaCoCo/org.jacoco.core,org.jacoco.core,JaCoCo,10,23,0,0,4,8,1,1,1,1
+JaCoCo/org.jacoco.report,org.jacoco.report,ZipMultiReportOutput,13,31,0,2,5,9,2,3,2,2
+JaCoCo/org.jacoco.report,org.jacoco.report,FileMultiReportOutput,1,42,0,2,1,9,1,3,1,2
+JaCoCo/org.jacoco.report,org.jacoco.report,MultiReportVisitor,0,39,0,4,0,9,0,5,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report,DirectorySourceFileLocator,0,43,0,2,0,11,0,4,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report,JavaNames,0,227,0,32,0,50,0,24,0,8
+JaCoCo/org.jacoco.report,org.jacoco.report,ZipMultiReportOutput.EntryOutput,0,62,0,4,0,21,0,9,0,7
+JaCoCo/org.jacoco.report,org.jacoco.report,MultiGroupVisitor,0,50,0,4,0,10,0,5,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.csv,DelimitedWriter,0,131,0,10,0,31,0,15,0,10
+JaCoCo/org.jacoco.report,org.jacoco.report.csv,ClassRowWriter,0,157,0,4,0,22,0,6,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.csv,CSVGroupHandler,0,79,0,6,0,15,0,8,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.csv,CSVFormatter.new IReportVisitor() {...},0,18,0,0,0,6,0,3,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.csv,CSVFormatter,0,46,0,0,0,11,0,5,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal,AbstractGroupVisitor,9,45,1,3,2,14,1,5,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal,NormalizedFileNames,0,143,0,12,0,32,0,11,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal,ReportOutputFolder,0,144,0,10,0,26,0,12,0,7
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.index,ElementIndex,0,29,0,0,0,7,0,3,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.resources,Styles,3,41,0,8,2,7,1,5,1,1
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.resources,Resources,12,122,1,8,1,40,1,11,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.resources,Resources.new Object() {...},12,41,0,0,0,1,0,1,0,1
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html,HTMLGroupVisitor,20,49,0,0,3,12,1,4,1,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html,HTMLElement,0,263,0,2,0,69,0,26,0,25
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html,HTMLDocument,0,48,0,0,0,11,0,5,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.xml,XMLFormatter.new IReportVisitor() {...},0,80,0,2,0,20,0,7,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.xml,XMLFormatter,0,28,0,0,0,6,0,3,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.html,HTMLFormatter.new IReportVisitor() {...},0,89,0,2,0,18,0,7,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.html,HTMLFormatter,0,188,0,2,0,43,0,17,0,16
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,PackagePage,21,103,1,5,3,24,1,9,0,7
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,SessionsPage,0,240,0,10,0,50,0,12,0,7
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,SourceFilePage,0,81,0,0,0,14,0,5,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,MethodItem,0,50,0,4,0,13,0,7,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,SessionsPage.new Comparator() {...},0,21,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,TablePage,0,50,0,0,0,11,0,4,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,SourceHighlighter,0,167,0,10,0,36,0,13,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,GroupPage,0,11,0,0,0,4,0,3,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,ClassPage,0,109,0,4,0,16,0,7,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,BundlePage,2,70,1,3,0,18,1,6,0,5
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,NodePage,0,26,0,2,0,8,0,5,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.page,ReportPage,0,200,0,4,0,46,0,14,0,12
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,SortIndex.Entry,0,21,0,0,0,5,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,LabelColumn.new Comparator() {...},0,11,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,TableItemComparator,0,14,0,0,0,4,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,Table,0,169,0,14,0,38,0,14,0,7
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,CounterColumn,0,98,0,4,0,20,0,11,0,9
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,Table.Column,0,130,0,8,0,24,0,8,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,PercentageColumn,0,58,0,2,0,17,0,7,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,CounterColumn.new CounterColumn() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,SortIndex,0,83,0,8,0,18,0,7,0,3
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,BarColumn,0,134,2,6,0,27,2,8,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,CounterColumn.new CounterColumn() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,CounterColumn.new CounterColumn() {...},0,9,0,0,0,2,0,2,0,2
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.html.table,LabelColumn,0,23,0,0,0,8,0,6,0,6
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.xml,XMLCoverageWriter,3,229,2,16,2,50,3,16,1,9
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.xml,XMLElement,0,253,0,29,0,71,0,27,0,11
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.xml,XMLDocument,0,77,0,4,0,15,0,6,0,4
+JaCoCo/org.jacoco.report,org.jacoco.report.internal.xml,XMLGroupVisitor,0,38,0,0,0,11,0,5,0,5

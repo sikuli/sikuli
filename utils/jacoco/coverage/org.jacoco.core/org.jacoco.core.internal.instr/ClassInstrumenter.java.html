@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ClassInstrumenter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.instr</a> &gt; <span class="el_source">ClassInstrumenter.java</span></div><h1>ClassInstrumenter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.instr;
+
+import static java.lang.String.format;
+
+import org.jacoco.core.internal.flow.IClassProbesVisitor;
+import org.jacoco.core.internal.flow.IMethodProbesVisitor;
+import org.jacoco.core.runtime.IExecutionDataAccessorGenerator;
+import org.objectweb.asm.ClassAdapter;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * Adapter that instruments a class for coverage tracing.
+ */
+public class ClassInstrumenter extends ClassAdapter implements
+		IClassProbesVisitor {
+
+<span class="fc" id="L32">	private static final Object[] STACK_ARRZ = new Object[] { InstrSupport.DATAFIELD_DESC };</span>
+<span class="fc" id="L33">	private static final Object[] NO_LOCALS = new Object[0];</span>
+
+	private final long id;
+
+	private final IExecutionDataAccessorGenerator accessorGenerator;
+
+	private IProbeArrayStrategy probeArrayStrategy;
+
+	private String className;
+
+	private int probeCount;
+
+	/**
+	 * Emits a instrumented version of this class to the given class visitor.
+	 * 
+	 * @param id
+	 *            unique identifier given to this class
+	 * @param accessorGenerator
+	 *            this generator will be used for instrumentation
+	 * @param cv
+	 *            next delegate in the visitor chain will receive the
+	 *            instrumented class
+	 */
+	public ClassInstrumenter(final long id,
+			final IExecutionDataAccessorGenerator accessorGenerator,
+			final ClassVisitor cv) {
+<span class="fc" id="L59">		super(cv);</span>
+<span class="fc" id="L60">		this.id = id;</span>
+<span class="fc" id="L61">		this.accessorGenerator = accessorGenerator;</span>
+<span class="fc" id="L62">	}</span>
+
+	@Override
+	public void visit(final int version, final int access, final String name,
+			final String signature, final String superName,
+			final String[] interfaces) {
+<span class="fc" id="L68">		this.className = name;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		if ((access &amp; Opcodes.ACC_INTERFACE) == 0) {</span>
+<span class="fc" id="L70">			this.probeArrayStrategy = new ClassTypeStrategy();</span>
+		} else {
+<span class="fc" id="L72">			this.probeArrayStrategy = new InterfaceTypeStrategy();</span>
+		}
+<span class="fc" id="L74">		super.visit(version, access, name, signature, superName, interfaces);</span>
+<span class="fc" id="L75">	}</span>
+
+	@Override
+	public FieldVisitor visitField(final int access, final String name,
+			final String desc, final String signature, final Object value) {
+<span class="fc" id="L80">		assertNotInstrumented(name, InstrSupport.DATAFIELD_NAME);</span>
+<span class="fc" id="L81">		return super.visitField(access, name, desc, signature, value);</span>
+	}
+
+	@Override
+	public IMethodProbesVisitor visitMethod(final int access,
+			final String name, final String desc, final String signature,
+			final String[] exceptions) {
+
+<span class="fc" id="L89">		assertNotInstrumented(name, InstrSupport.INITMETHOD_NAME);</span>
+
+<span class="fc" id="L91">		final MethodVisitor mv = super.visitMethod(access, name, desc,</span>
+				signature, exceptions);
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (mv == null) {</span>
+<span class="fc" id="L95">			return null;</span>
+		}
+<span class="fc" id="L97">		return new MethodInstrumenter(mv, access, desc, probeArrayStrategy);</span>
+	}
+
+	public void visitTotalProbeCount(final int count) {
+<span class="fc" id="L101">		probeCount = count;</span>
+<span class="fc" id="L102">	}</span>
+
+	@Override
+	public void visitEnd() {
+<span class="fc" id="L106">		probeArrayStrategy.addMembers(cv);</span>
+<span class="fc" id="L107">		super.visitEnd();</span>
+<span class="fc" id="L108">	}</span>
+
+	/**
+	 * Ensures that the given member does not correspond to a internal member
+	 * created by the instrumentation process. This would mean that the class
+	 * has been instrumented twice.
+	 * 
+	 * @param member
+	 *            name of the member to check
+	 * @param instrMember
+	 *            name of a instrumentation member
+	 * @throws IllegalStateException
+	 *             thrown if the member has the same name than the
+	 *             instrumentation member
+	 */
+	private void assertNotInstrumented(final String member,
+			final String instrMember) throws IllegalStateException {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		if (member.equals(instrMember)) {</span>
+<span class="fc" id="L126">			throw new IllegalStateException(format(</span>
+					&quot;Class %s is already instrumented.&quot;, className));
+		}
+<span class="fc" id="L129">	}</span>
+
+	// === probe array strategies ===
+
+<span class="fc" id="L133">	private class ClassTypeStrategy implements IProbeArrayStrategy {</span>
+
+		public int pushInstance(final MethodVisitor mv) {
+<span class="fc" id="L136">			mv.visitMethodInsn(Opcodes.INVOKESTATIC, className,</span>
+					InstrSupport.INITMETHOD_NAME, InstrSupport.INITMETHOD_DESC);
+<span class="fc" id="L138">			return 1;</span>
+		}
+
+		public void addMembers(final ClassVisitor delegate) {
+<span class="fc" id="L142">			createDataField();</span>
+<span class="fc" id="L143">			createInitMethod(probeCount);</span>
+<span class="fc" id="L144">		}</span>
+
+		private void createDataField() {
+<span class="fc" id="L147">			cv.visitField(InstrSupport.DATAFIELD_ACC,</span>
+					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC,
+					null, null);
+<span class="fc" id="L150">		}</span>
+
+		private void createInitMethod(final int probeCount) {
+<span class="fc" id="L153">			final MethodVisitor mv = cv.visitMethod(</span>
+					InstrSupport.INITMETHOD_ACC, InstrSupport.INITMETHOD_NAME,
+					InstrSupport.INITMETHOD_DESC, null, null);
+<span class="fc" id="L156">			mv.visitCode();</span>
+
+			// Load the value of the static data field:
+<span class="fc" id="L159">			mv.visitFieldInsn(Opcodes.GETSTATIC, className,</span>
+					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
+<span class="fc" id="L161">			mv.visitInsn(Opcodes.DUP);</span>
+
+			// Stack[1]: [Z
+			// Stack[0]: [Z
+
+			// Skip initialization when we already have a data array:
+<span class="fc" id="L167">			final Label alreadyInitialized = new Label();</span>
+<span class="fc" id="L168">			mv.visitJumpInsn(Opcodes.IFNONNULL, alreadyInitialized);</span>
+
+			// Stack[0]: [Z
+
+<span class="fc" id="L172">			mv.visitInsn(Opcodes.POP);</span>
+<span class="fc" id="L173">			final int size = genInitializeDataField(mv, probeCount);</span>
+
+			// Stack[0]: [Z
+
+			// Return the class' probe array:
+<span class="fc" id="L178">			mv.visitFrame(Opcodes.F_FULL, 0, NO_LOCALS, 1, STACK_ARRZ);</span>
+<span class="fc" id="L179">			mv.visitLabel(alreadyInitialized);</span>
+<span class="fc" id="L180">			mv.visitInsn(Opcodes.ARETURN);</span>
+
+<span class="fc" id="L182">			mv.visitMaxs(Math.max(size, 2), 0); // Maximum local stack size is 2</span>
+<span class="fc" id="L183">			mv.visitEnd();</span>
+<span class="fc" id="L184">		}</span>
+
+		/**
+		 * Generates the byte code to initialize the static coverage data field
+		 * within this class.
+		 * 
+		 * The code will push the [Z data array on the operand stack.
+		 * 
+		 * @param mv
+		 *            generator to emit code to
+		 */
+		private int genInitializeDataField(final MethodVisitor mv,
+				final int probeCount) {
+<span class="fc" id="L197">			final int size = accessorGenerator.generateDataAccessor(id,</span>
+					className, probeCount, mv);
+
+			// Stack[0]: [Z
+
+<span class="fc" id="L202">			mv.visitInsn(Opcodes.DUP);</span>
+
+			// Stack[1]: [Z
+			// Stack[0]: [Z
+
+<span class="fc" id="L207">			mv.visitFieldInsn(Opcodes.PUTSTATIC, className,</span>
+					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
+
+			// Stack[0]: [Z
+
+<span class="fc" id="L212">			return Math.max(size, 2); // Maximum local stack size is 2</span>
+		}
+	}
+
+<span class="fc" id="L216">	private class InterfaceTypeStrategy implements IProbeArrayStrategy {</span>
+
+		public int pushInstance(final MethodVisitor mv) {
+<span class="fc" id="L219">			return accessorGenerator.generateDataAccessor(id, className,</span>
+					probeCount, mv);
+		}
+
+		public void addMembers(final ClassVisitor delegate) {
+<span class="fc" id="L224">		}</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

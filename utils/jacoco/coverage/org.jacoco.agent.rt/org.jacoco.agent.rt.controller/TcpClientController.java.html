@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>TcpClientController.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.agent.rt</a> &gt; <a href="index.html" class="el_package">org.jacoco.agent.rt.controller</a> &gt; <span class="el_source">TcpClientController.java</span></div><h1>TcpClientController.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.agent.rt.controller;
+
+import java.io.IOException;
+import java.net.Socket;
+
+import org.jacoco.agent.rt.IExceptionLogger;
+import org.jacoco.core.runtime.AgentOptions;
+import org.jacoco.core.runtime.IRuntime;
+
+/**
+ * Controller that connects to a TCP port. This controller uses the following
+ * agent options:
+ * &lt;ul&gt;
+ * &lt;li&gt;address&lt;/li&gt;
+ * &lt;li&gt;port&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+public class TcpClientController implements IAgentController {
+
+	private final IExceptionLogger logger;
+
+	private TcpConnection connection;
+
+	private Thread worker;
+
+<span class="fc" id="L37">	public TcpClientController(final IExceptionLogger logger) {</span>
+<span class="fc" id="L38">		this.logger = logger;</span>
+<span class="fc" id="L39">	}</span>
+
+	public void startup(final AgentOptions options, final IRuntime runtime)
+			throws IOException {
+<span class="fc" id="L43">		final Socket socket = createSocket(options);</span>
+<span class="fc" id="L44">		connection = new TcpConnection(socket, runtime);</span>
+<span class="fc" id="L45">		connection.init();</span>
+<span class="fc" id="L46">		worker = new Thread(new Runnable() {</span>
+<span class="fc" id="L47">			public void run() {</span>
+				try {
+<span class="fc" id="L49">					connection.run();</span>
+<span class="fc" id="L50">				} catch (IOException e) {</span>
+<span class="fc" id="L51">					logger.logExeption(e);</span>
+<span class="fc" id="L52">				}</span>
+<span class="fc" id="L53">			}</span>
+		});
+<span class="fc" id="L55">		worker.setName(getClass().getName());</span>
+<span class="fc" id="L56">		worker.setDaemon(true);</span>
+<span class="fc" id="L57">		worker.start();</span>
+<span class="fc" id="L58">	}</span>
+
+	public void shutdown() throws Exception {
+<span class="fc" id="L61">		connection.close();</span>
+<span class="fc" id="L62">		worker.join();</span>
+<span class="fc" id="L63">	}</span>
+
+	public void writeExecutionData() throws IOException {
+<span class="fc" id="L66">		connection.writeExecutionData();</span>
+<span class="fc" id="L67">	}</span>
+
+	/**
+	 * Open a socket based on the given configuration.
+	 * 
+	 * @param options
+	 *            address and port configuration
+	 * @return opened socket
+	 * @throws IOException
+	 */
+	protected Socket createSocket(final AgentOptions options)
+			throws IOException {
+<span class="nc" id="L79">		return new Socket(options.getAddress(), options.getPort());</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

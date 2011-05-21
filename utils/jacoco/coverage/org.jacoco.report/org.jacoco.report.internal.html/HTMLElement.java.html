@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>HTMLElement.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html</a> &gt; <span class="el_source">HTMLElement.java</span></div><h1>HTMLElement.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.xml.XMLElement;
+
+/**
+ * A {@link XMLElement} with utility methods to create XHTML documents. It
+ * provides methods of HTML tags to avoid magic strings in the generators.
+ */
+public class HTMLElement extends XMLElement {
+
+	/**
+	 * Creates a new element for a HTML document.
+	 * 
+	 * @param writer
+	 *            all output will be written directly to this
+	 * @param name
+	 *            element name
+	 */
+	protected HTMLElement(final Writer writer, final String name) {
+<span class="fc" id="L35">		super(writer, name);</span>
+<span class="fc" id="L36">	}</span>
+
+	@Override
+	public HTMLElement element(final String name) throws IOException {
+<span class="fc" id="L40">		final HTMLElement element = new HTMLElement(writer, name);</span>
+<span class="fc" id="L41">		addChildElement(element);</span>
+<span class="fc" id="L42">		return element;</span>
+	}
+
+	/**
+	 * Creates a 'meta' element.
+	 * 
+	 * @param httpequivattr
+	 *            value of the http-equiv attribute
+	 * @param contentattr
+	 *            value for the content attribute
+	 * @return 'meta' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement meta(final String httpequivattr, final String contentattr)
+			throws IOException {
+<span class="fc" id="L58">		final HTMLElement meta = element(&quot;meta&quot;);</span>
+<span class="fc" id="L59">		meta.attr(&quot;http-equiv&quot;, httpequivattr);</span>
+<span class="fc" id="L60">		meta.attr(&quot;content&quot;, contentattr);</span>
+<span class="fc" id="L61">		return meta;</span>
+	}
+
+	/**
+	 * Creates a 'link' element.
+	 * 
+	 * @param relattr
+	 *            value of the rel attribute
+	 * @param hrefattr
+	 *            value for the href attribute
+	 * @param typeattr
+	 *            value for the type attribute
+	 * @return 'link' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement link(final String relattr, final String hrefattr,
+			final String typeattr) throws IOException {
+<span class="fc" id="L79">		final HTMLElement link = element(&quot;link&quot;);</span>
+<span class="fc" id="L80">		link.attr(&quot;rel&quot;, relattr);</span>
+<span class="fc" id="L81">		link.attr(&quot;href&quot;, hrefattr);</span>
+<span class="fc" id="L82">		link.attr(&quot;type&quot;, typeattr);</span>
+<span class="fc" id="L83">		return link;</span>
+	}
+
+	/**
+	 * Creates a 'title' element.
+	 * 
+	 * @return 'title' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement title() throws IOException {
+<span class="fc" id="L94">		return element(&quot;title&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'h1' element.
+	 * 
+	 * @return 'h1' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement h1() throws IOException {
+<span class="fc" id="L105">		return element(&quot;h1&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'p' element.
+	 * 
+	 * @return 'p' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement p() throws IOException {
+<span class="fc" id="L116">		return element(&quot;p&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'span' element.
+	 * 
+	 * @return 'span' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement span() throws IOException {
+<span class="fc" id="L127">		return element(&quot;span&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'span' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'span' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement span(final String classattr) throws IOException {
+<span class="fc" id="L140">		final HTMLElement span = span();</span>
+<span class="fc" id="L141">		span.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L142">		return span;</span>
+	}
+
+	/**
+	 * Creates a 'span' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @param idattr
+	 *            value of the id attribute
+	 * @return 'span' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement span(final String classattr, final String idattr)
+			throws IOException {
+<span class="fc" id="L158">		final HTMLElement span = span(classattr);</span>
+<span class="fc" id="L159">		span.attr(&quot;id&quot;, idattr);</span>
+<span class="fc" id="L160">		return span;</span>
+	}
+
+	/**
+	 * Creates a 'div' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'div' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement div(final String classattr) throws IOException {
+<span class="fc" id="L173">		final HTMLElement div = element(&quot;div&quot;);</span>
+<span class="fc" id="L174">		div.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L175">		return div;</span>
+	}
+
+	/**
+	 * Creates a 'code' element.
+	 * 
+	 * @return 'code' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement code() throws IOException {
+<span class="fc" id="L186">		return element(&quot;code&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'pre' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'pre' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement pre(final String classattr) throws IOException {
+<span class="fc" id="L199">		final HTMLElement pre = element(&quot;pre&quot;);</span>
+<span class="fc" id="L200">		pre.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L201">		return pre;</span>
+	}
+
+	/**
+	 * Creates a 'a' element.
+	 * 
+	 * @param hrefattr
+	 *            value of the href attribute
+	 * @return 'a' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement a(final String hrefattr) throws IOException {
+<span class="fc" id="L214">		final HTMLElement a = element(&quot;a&quot;);</span>
+<span class="fc" id="L215">		a.attr(&quot;href&quot;, hrefattr);</span>
+<span class="fc" id="L216">		return a;</span>
+	}
+
+	/**
+	 * Creates a 'a' element.
+	 * 
+	 * @param hrefattr
+	 *            value of the href attribute
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'a' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement a(final String hrefattr, final String classattr)
+			throws IOException {
+<span class="fc" id="L232">		final HTMLElement a = a(hrefattr);</span>
+<span class="fc" id="L233">		a.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L234">		return a;</span>
+	}
+
+	/**
+	 * Creates a link to the given {@link ILinkable}.
+	 * 
+	 * @param linkable
+	 *            object to link to
+	 * @param base
+	 *            base folder where the link should be placed
+	 * @return 'a' element or 'span' element, if the link target does not exist
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement a(final ILinkable linkable, final ReportOutputFolder base)
+			throws IOException {
+		final HTMLElement a;
+<span class="fc" id="L251">		final String link = linkable.getLink(base);</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">		if (link == null) {</span>
+<span class="fc" id="L253">			a = span(linkable.getLinkStyle());</span>
+		} else {
+<span class="fc" id="L255">			a = a(link, linkable.getLinkStyle());</span>
+		}
+<span class="fc" id="L257">		a.text(linkable.getLinkLabel());</span>
+<span class="fc" id="L258">		return a;</span>
+	}
+
+	/**
+	 * Creates a 'table' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'table' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement table(final String classattr) throws IOException {
+<span class="fc" id="L271">		final HTMLElement table = element(&quot;table&quot;);</span>
+<span class="fc" id="L272">		table.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L273">		table.attr(&quot;cellspacing&quot;, &quot;0&quot;);</span>
+<span class="fc" id="L274">		return table;</span>
+	}
+
+	/**
+	 * Creates a 'thead' element.
+	 * 
+	 * @return 'thead' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement thead() throws IOException {
+<span class="fc" id="L285">		return element(&quot;thead&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'tfoot' element.
+	 * 
+	 * @return 'tfoot' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement tfoot() throws IOException {
+<span class="fc" id="L296">		return element(&quot;tfoot&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'tbody' element.
+	 * 
+	 * @return 'tbody' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement tbody() throws IOException {
+<span class="fc" id="L307">		return element(&quot;tbody&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'tr' element.
+	 * 
+	 * @return 'tr' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement tr() throws IOException {
+<span class="fc" id="L318">		return element(&quot;tr&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'td' element.
+	 * 
+	 * @return 'td' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement td() throws IOException {
+<span class="fc" id="L329">		return element(&quot;td&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'td' element.
+	 * 
+	 * @param classattr
+	 *            value of the class attribute
+	 * @return 'td' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement td(final String classattr) throws IOException {
+<span class="fc" id="L342">		final HTMLElement td = td();</span>
+<span class="fc" id="L343">		td.attr(&quot;class&quot;, classattr);</span>
+<span class="fc" id="L344">		return td;</span>
+	}
+
+	/**
+	 * Creates a 'img' element.
+	 * 
+	 * @param srcattr
+	 *            value of the src attribute
+	 * @param widthattr
+	 *            value of the width attribute
+	 * @param heightattr
+	 *            value of the height attribute
+	 * @param titleattr
+	 *            value of the title and alt attribute
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public void img(final String srcattr, final int widthattr,
+			final int heightattr, final String titleattr) throws IOException {
+<span class="fc" id="L363">		final HTMLElement img = element(&quot;img&quot;);</span>
+<span class="fc" id="L364">		img.attr(&quot;src&quot;, srcattr);</span>
+<span class="fc" id="L365">		img.attr(&quot;width&quot;, widthattr);</span>
+<span class="fc" id="L366">		img.attr(&quot;height&quot;, heightattr);</span>
+<span class="fc" id="L367">		img.attr(&quot;title&quot;, titleattr);</span>
+<span class="fc" id="L368">		img.attr(&quot;alt&quot;, titleattr);</span>
+<span class="fc" id="L369">		img.close();</span>
+<span class="fc" id="L370">	}</span>
+
+	/**
+	 * Creates a 'script' element.
+	 * 
+	 * @param typeattr
+	 *            value of the type attribute
+	 * @param srcattr
+	 *            value of the src attribute
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public void script(final String typeattr, final String srcattr)
+			throws IOException {
+<span class="fc" id="L384">		final HTMLElement script = element(&quot;script&quot;);</span>
+<span class="fc" id="L385">		script.attr(&quot;type&quot;, typeattr);</span>
+<span class="fc" id="L386">		script.attr(&quot;src&quot;, srcattr);</span>
+		// Enforce open and closing tag otherwise it won't work in browsers:
+<span class="fc" id="L388">		script.text(&quot;&quot;);</span>
+<span class="fc" id="L389">		script.close();</span>
+<span class="fc" id="L390">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

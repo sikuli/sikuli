@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ExecutionDataReader.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">ExecutionDataReader.java</span></div><h1>ExecutionDataReader.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+import static java.lang.String.format;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.jacoco.core.internal.data.CompactDataInput;
+
+/**
+ * Deserialization of execution data from binary streams.
+ */
+public class ExecutionDataReader {
+
+	/** Underlying data input */
+	protected final CompactDataInput in;
+
+<span class="fc" id="L30">	private ISessionInfoVisitor sessionInfoVisitor = null;</span>
+
+<span class="fc" id="L32">	private IExecutionDataVisitor executionDataVisitor = null;</span>
+
+<span class="fc" id="L34">	private boolean firstBlock = true;</span>
+
+	/**
+	 * Creates a new reader based on the given input stream input. Depending on
+	 * the nature of the underlying stream input should be buffered as most data
+	 * is read in single bytes.
+	 * 
+	 * @param input
+	 *            input stream to read execution data from
+	 */
+<span class="fc" id="L44">	public ExecutionDataReader(final InputStream input) {</span>
+<span class="fc" id="L45">		this.in = new CompactDataInput(input);</span>
+<span class="fc" id="L46">	}</span>
+
+	/**
+	 * Sets an listener for session information.
+	 * 
+	 * @param visitor
+	 */
+	public void setSessionInfoVisitor(final ISessionInfoVisitor visitor) {
+<span class="fc" id="L54">		this.sessionInfoVisitor = visitor;</span>
+<span class="fc" id="L55">	}</span>
+
+	/**
+	 * Sets an listener for execution data.
+	 * 
+	 * @param visitor
+	 */
+	public void setExecutionDataVisitor(final IExecutionDataVisitor visitor) {
+<span class="fc" id="L63">		this.executionDataVisitor = visitor;</span>
+<span class="fc" id="L64">	}</span>
+
+	/**
+	 * Reads all data and reports it to the corresponding visitors. The stream
+	 * is read until its end or a command confirmation has been sent.
+	 * 
+	 * @return &lt;code&gt;true&lt;/code&gt; if additional data can be expected after a
+	 *         command has been executed. &lt;code&gt;false&lt;/code&gt; if the end of the
+	 *         stream has been reached.
+	 * @throws IOException
+	 *             might be thrown by the underlying input stream
+	 */
+	public boolean read() throws IOException {
+		try {
+			byte type;
+			do {
+<span class="fc" id="L80">				type = in.readByte();</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">				if (firstBlock &amp;&amp; type != ExecutionDataWriter.BLOCK_HEADER) {</span>
+<span class="fc" id="L82">					throw new IOException(&quot;Invalid execution data file.&quot;);</span>
+				}
+<span class="fc" id="L84">				firstBlock = false;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">			} while (readBlock(type));</span>
+<span class="fc" id="L86">			return true;</span>
+<span class="fc" id="L87">		} catch (final EOFException e) {</span>
+<span class="fc" id="L88">			return false;</span>
+		}
+	}
+
+	/**
+	 * Reads a block of data identified by the given id. Subclasses may
+	 * overwrite this method to support additional block types.
+	 * 
+	 * @param blocktype
+	 *            block type
+	 * @return &lt;code&gt;true&lt;/code&gt; if there are more blocks to read
+	 * @throws IOException
+	 *             might be thrown by the underlying input stream
+	 */
+	protected boolean readBlock(final byte blocktype) throws IOException {
+<span class="fc bfc" id="L103" title="All 4 branches covered.">		switch (blocktype) {</span>
+		case ExecutionDataWriter.BLOCK_HEADER:
+<span class="fc" id="L105">			readHeader();</span>
+<span class="fc" id="L106">			return true;</span>
+		case ExecutionDataWriter.BLOCK_SESSIONINFO:
+<span class="fc" id="L108">			readSessionInfo();</span>
+<span class="fc" id="L109">			return true;</span>
+		case ExecutionDataWriter.BLOCK_EXECUTIONDATA:
+<span class="fc" id="L111">			readExecutionData();</span>
+<span class="fc" id="L112">			return true;</span>
+		default:
+<span class="fc" id="L114">			throw new IOException(format(&quot;Unknown block type %x.&quot;,</span>
+					Byte.valueOf(blocktype)));
+		}
+	}
+
+	private void readHeader() throws IOException {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">		if (in.readChar() != ExecutionDataWriter.MAGIC_NUMBER) {</span>
+<span class="fc" id="L121">			throw new IOException(&quot;Invalid execution data file.&quot;);</span>
+		}
+<span class="fc" id="L123">		final char version = in.readChar();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">		if (version != ExecutionDataWriter.FORMAT_VERSION) {</span>
+<span class="fc" id="L125">			throw new IOException(format(&quot;Incompatible version %x.&quot;,</span>
+					Integer.valueOf(version)));
+		}
+<span class="fc" id="L128">	}</span>
+
+	private void readSessionInfo() throws IOException {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">		if (sessionInfoVisitor == null) {</span>
+<span class="fc" id="L132">			throw new IOException(&quot;No session info visitor.&quot;);</span>
+		}
+<span class="fc" id="L134">		final String id = in.readUTF();</span>
+<span class="fc" id="L135">		final long start = in.readLong();</span>
+<span class="fc" id="L136">		final long dump = in.readLong();</span>
+<span class="fc" id="L137">		sessionInfoVisitor.visitSessionInfo(new SessionInfo(id, start, dump));</span>
+<span class="fc" id="L138">	}</span>
+
+	private void readExecutionData() throws IOException {
+<span class="fc bfc" id="L141" title="All 2 branches covered.">		if (executionDataVisitor == null) {</span>
+<span class="fc" id="L142">			throw new IOException(&quot;No execution data visitor.&quot;);</span>
+		}
+<span class="fc" id="L144">		final long id = in.readLong();</span>
+<span class="fc" id="L145">		final String name = in.readUTF();</span>
+<span class="fc" id="L146">		final boolean[] data = in.readBooleanArray();</span>
+<span class="fc" id="L147">		executionDataVisitor.visitClassExecution(new ExecutionData(id, name,</span>
+				data));
+<span class="fc" id="L149">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

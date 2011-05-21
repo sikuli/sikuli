@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>HTMLDocument.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html</a> &gt; <span class="el_source">HTMLDocument.java</span></div><h1>HTMLDocument.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+
+import org.jacoco.report.internal.xml.XMLDocument;
+
+/**
+ * {@link XMLDocument} that declares its content type to be XHTML 1.0 Strict and
+ * produces {@link HTMLElement}s as children.
+ */
+public class HTMLDocument extends XMLDocument {
+
+	private static final String ROOT = &quot;html&quot;;
+
+	private static final String PUBID = &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;;
+
+	private static final String SYSTEM = &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;;
+
+	private static final String XMLNS = &quot;xmlns&quot;;
+
+	private static final String XHTML_NAMESPACE_URL = &quot;http://www.w3.org/1999/xhtml&quot;;
+
+	/**
+	 * Creates a new HTML document based on the given writer.
+	 * 
+	 * @param writer
+	 *            writer for content output
+	 * @param encoding
+	 *            document encoding
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLDocument(final Writer writer, final String encoding)
+			throws IOException {
+<span class="fc" id="L48">		super(ROOT, PUBID, SYSTEM, encoding, false, writer);</span>
+<span class="fc" id="L49">		attr(XMLNS, XHTML_NAMESPACE_URL);</span>
+<span class="fc" id="L50">	}</span>
+
+	/**
+	 * Creates a new HTML document based on the given stream.
+	 * 
+	 * @param output
+	 *            stream for content output
+	 * @param encoding
+	 *            document encoding
+	 * @throws IOException
+	 *             in case of problems with the stream
+	 */
+	public HTMLDocument(final OutputStream output, final String encoding)
+			throws IOException {
+<span class="fc" id="L64">		super(ROOT, PUBID, SYSTEM, encoding, false, output);</span>
+<span class="fc" id="L65">		attr(XMLNS, XHTML_NAMESPACE_URL);</span>
+<span class="fc" id="L66">	}</span>
+
+	@Override
+	public HTMLElement element(final String name) throws IOException {
+<span class="fc" id="L70">		final HTMLElement element = new HTMLElement(writer, name);</span>
+<span class="fc" id="L71">		addChildElement(element);</span>
+<span class="fc" id="L72">		return element;</span>
+	}
+
+	/**
+	 * Creates a 'head' element.
+	 * 
+	 * @return 'head' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement head() throws IOException {
+<span class="fc" id="L83">		return element(&quot;head&quot;);</span>
+	}
+
+	/**
+	 * Creates a 'body' element.
+	 * 
+	 * @return 'body' element
+	 * @throws IOException
+	 *             in case of problems with the writer
+	 */
+	public HTMLElement body() throws IOException {
+<span class="fc" id="L94">		return element(&quot;body&quot;);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

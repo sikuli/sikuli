@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ICoverageNode.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.analysis</a> &gt; <span class="el_source">ICoverageNode.java</span></div><h1>ICoverageNode.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.analysis;
+
+/**
+ * Interface for hierarchical coverage data nodes with different coverage
+ * counters.
+ */
+public interface ICoverageNode {
+
+	/**
+	 * Type of a Java element represented by a {@link ICoverageNode} instance.
+	 */
+<span class="pc" id="L23">	public enum ElementType {</span>
+
+		/** Method */
+<span class="fc" id="L26">		METHOD,</span>
+
+		/** Class */
+<span class="fc" id="L29">		CLASS,</span>
+
+		/** Source File */
+<span class="fc" id="L32">		SOURCEFILE,</span>
+
+		/** Java Package */
+<span class="fc" id="L35">		PACKAGE,</span>
+
+		/** Bundle of Packages */
+<span class="fc" id="L38">		BUNDLE,</span>
+
+		/** Logical Group of Bundles */
+<span class="fc" id="L41">		GROUP,</span>
+
+	}
+
+	/**
+	 * Different counter types supported by JaCoCo.
+	 */
+<span class="pc" id="L48">	public enum CounterEntity {</span>
+
+		/** Counter for instructions */
+<span class="fc" id="L51">		INSTRUCTION,</span>
+
+		/** Counter for branches */
+<span class="fc" id="L54">		BRANCH,</span>
+
+		/** Counter for source lines */
+<span class="fc" id="L57">		LINE,</span>
+
+		/** Counter for cyclomatic complexity */
+<span class="fc" id="L60">		COMPLEXITY,</span>
+
+		/** Counter for methods */
+<span class="fc" id="L63">		METHOD,</span>
+
+		/** Counter for classes */
+<span class="fc" id="L66">		CLASS</span>
+	}
+
+	/**
+	 * Returns the type of element represented by this node.
+	 * 
+	 * @return type of this node
+	 */
+	public abstract ElementType getElementType();
+
+	/**
+	 * Returns the name of this node.
+	 * 
+	 * @return name of this node
+	 */
+	public String getName();
+
+	/**
+	 * Returns the counter for byte code instructions.
+	 * 
+	 * @return counter for instructions
+	 */
+	public abstract ICounter getInstructionCounter();
+
+	/**
+	 * Returns the counter for branches.
+	 * 
+	 * @return counter for branches
+	 */
+	public ICounter getBranchCounter();
+
+	/**
+	 * Returns the counter for lines.
+	 * 
+	 * @return counter for lines
+	 */
+	public ICounter getLineCounter();
+
+	/**
+	 * Returns the counter for cyclomatic complexity.
+	 * 
+	 * @return counter for complexity
+	 */
+	public ICounter getComplexityCounter();
+
+	/**
+	 * Returns the counter for methods.
+	 * 
+	 * @return counter for methods
+	 */
+	public ICounter getMethodCounter();
+
+	/**
+	 * Returns the counter for classes.
+	 * 
+	 * @return counter for classes
+	 */
+	public ICounter getClassCounter();
+
+	/**
+	 * Generic access to the the counters.
+	 * 
+	 * @param entity
+	 *            entity we're we want to have the counter for
+	 * @return counter for the given entity
+	 */
+	public ICounter getCounter(CounterEntity entity);
+
+	/**
+	 * Creates a plain copy of this node. While {@link ICoverageNode}
+	 * implementations may contain heavy data structures, the copy returned by
+	 * this method is reduced to the counters only. This helps to save memory
+	 * while processing huge structures.
+	 * 
+	 * @return copy with counters only
+	 */
+	public ICoverageNode getPlainCopy();
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

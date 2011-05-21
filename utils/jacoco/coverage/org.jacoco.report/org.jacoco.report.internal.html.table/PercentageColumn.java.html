@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>PercentageColumn.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.table</a> &gt; <span class="el_source">PercentageColumn.java</span></div><h1>PercentageColumn.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.table;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
+import org.jacoco.core.analysis.CounterComparator;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.HTMLElement;
+import org.jacoco.report.internal.html.resources.Resources;
+
+/**
+ * Column that prints the coverage percentage for each item and the total
+ * percentage in the footer. The implementation is stateless, instances might be
+ * used in parallel.
+ */
+public class PercentageColumn implements IColumnRenderer {
+
+	private final CounterEntity entity;
+
+	private final NumberFormat percentageFormat;
+
+	private final Comparator&lt;ITableItem&gt; comparator;
+
+	/**
+	 * Creates a new column that is based on the {@link ICounter} for the given
+	 * entity.
+	 * 
+	 * @param entity
+	 *            counter entity for this column
+	 * @param locale
+	 *            locale for rendering numbers
+	 */
+<span class="fc" id="L51">	public PercentageColumn(final CounterEntity entity, final Locale locale) {</span>
+<span class="fc" id="L52">		this.entity = entity;</span>
+<span class="fc" id="L53">		this.percentageFormat = DecimalFormat.getPercentInstance(locale);</span>
+<span class="fc" id="L54">		comparator = new TableItemComparator(</span>
+				CounterComparator.MISSEDRATIO.on(entity));
+<span class="fc" id="L56">	}</span>
+
+	public boolean init(final List&lt;? extends ITableItem&gt; items,
+			final ICoverageNode total) {
+<span class="fc" id="L60">		return true;</span>
+	}
+
+	public void footer(final HTMLElement td, final ICoverageNode total,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L66">		cell(td, total);</span>
+<span class="fc" id="L67">	}</span>
+
+	public void item(final HTMLElement td, final ITableItem item,
+			final Resources resources, final ReportOutputFolder base)
+			throws IOException {
+<span class="fc" id="L72">		cell(td, item.getNode());</span>
+<span class="fc" id="L73">	}</span>
+
+	private void cell(final HTMLElement td, final ICoverageNode node)
+			throws IOException {
+<span class="fc" id="L77">		final ICounter counter = node.getCounter(entity);</span>
+<span class="fc" id="L78">		final int total = counter.getTotalCount();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		if (total == 0) {</span>
+<span class="fc" id="L80">			td.text(&quot;n/a&quot;);</span>
+		} else {
+<span class="fc" id="L82">			td.text(percentageFormat.format(counter.getCoveredRatio()));</span>
+		}
+<span class="fc" id="L84">	}</span>
+
+	public Comparator&lt;ITableItem&gt; getComparator() {
+<span class="fc" id="L87">		return comparator;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

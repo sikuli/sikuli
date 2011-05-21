@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>SessionInfo.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.data</a> &gt; <span class="el_source">SessionInfo.java</span></div><h1>SessionInfo.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.data;
+
+/**
+ * Data object describing a session which was the source of execution data.
+ * {@link SessionInfo} instances can be sorted by dump date through the
+ * {@link Comparable} interface.
+ */
+public class SessionInfo implements Comparable&lt;SessionInfo&gt; {
+
+	private final String id;
+
+	private final long start;
+
+	private final long dump;
+
+	/**
+	 * Create a immutable session info with the given data.
+	 * 
+	 * @param id
+	 *            arbitrary session identifier, must not be &lt;code&gt;null&lt;/code&gt;
+	 * @param start
+	 *            the epoc based time stamp when execution data recording has
+	 *            been started
+	 * @param dump
+	 *            the epoc based time stamp when execution data was collected
+	 */
+<span class="fc" id="L38">	public SessionInfo(final String id, final long start, final long dump) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (id == null) {</span>
+<span class="fc" id="L40">			throw new NullPointerException();</span>
+		}
+<span class="fc" id="L42">		this.id = id;</span>
+<span class="fc" id="L43">		this.start = start;</span>
+<span class="fc" id="L44">		this.dump = dump;</span>
+<span class="fc" id="L45">	}</span>
+
+	/**
+	 * @return identifier for this session
+	 */
+	public String getId() {
+<span class="fc" id="L51">		return id;</span>
+	}
+
+	/**
+	 * @return the epoc based time stamp when execution data recording has been
+	 *         started
+	 */
+	public long getStartTimeStamp() {
+<span class="fc" id="L59">		return start;</span>
+	}
+
+	/**
+	 * @return the epoc based time stamp when execution data was collected
+	 */
+	public long getDumpTimeStamp() {
+<span class="fc" id="L66">		return dump;</span>
+	}
+
+	public int compareTo(final SessionInfo other) {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		if (this.dump &lt; other.dump) {</span>
+<span class="fc" id="L71">			return -1;</span>
+		}
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (this.dump &gt; other.dump) {</span>
+<span class="fc" id="L74">			return +1;</span>
+		}
+<span class="fc" id="L76">		return 0;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L81">		return &quot;SessionInfo [&quot; + id + &quot;]&quot;;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ClassProbesAdapter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.flow</a> &gt; <span class="el_source">ClassProbesAdapter.java</span></div><h1>ClassProbesAdapter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.flow;
+
+import org.objectweb.asm.ClassAdapter;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
+
+/**
+ * A {@link ClassVisitor} that calculates probes for every method.
+ */
+public class ClassProbesAdapter extends ClassAdapter implements
+		IProbeIdGenerator {
+
+	private static final IMethodProbesVisitor EMPTY_METHOD_PROBES_VISITOR;
+
+	static {
+<span class="fc" id="L31">		class Impl extends EmptyVisitor implements IMethodProbesVisitor {</span>
+
+			public void visitProbe(final int probeId) {
+<span class="nc" id="L34">			}</span>
+
+			public void visitJumpInsnWithProbe(final int opcode,
+					final Label label, final int probeId) {
+<span class="nc" id="L38">			}</span>
+
+			public void visitInsnWithProbe(final int opcode, final int probeId) {
+<span class="fc" id="L41">			}</span>
+
+			public void visitTableSwitchInsnWithProbes(final int min,
+					final int max, final Label dflt, final Label[] labels) {
+<span class="nc" id="L45">			}</span>
+
+			public void visitLookupSwitchInsnWithProbes(final Label dflt,
+					final int[] keys, final Label[] labels) {
+<span class="nc" id="L49">			}</span>
+		}
+<span class="fc" id="L51">		EMPTY_METHOD_PROBES_VISITOR = new Impl();</span>
+<span class="fc" id="L52">	}</span>
+
+<span class="fc" id="L54">	private static class ProbeCounter implements IProbeIdGenerator {</span>
+<span class="fc" id="L55">		int count = 0;</span>
+
+		public int nextId() {
+<span class="fc" id="L58">			return count++;</span>
+		}
+	}
+
+	private final IClassProbesVisitor cv;
+
+<span class="fc" id="L64">	private int counter = 0;</span>
+
+	private boolean interfaceType;
+
+	/**
+	 * Creates a new adapter that delegates to the given visitor.
+	 * 
+	 * @param cv
+	 *            instance to delegate to
+	 */
+	public ClassProbesAdapter(final IClassProbesVisitor cv) {
+<span class="fc" id="L75">		super(cv);</span>
+<span class="fc" id="L76">		this.cv = cv;</span>
+<span class="fc" id="L77">	}</span>
+
+	@Override
+	public void visit(final int version, final int access, final String name,
+			final String signature, final String superName,
+			final String[] interfaces) {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">		interfaceType = (access &amp; Opcodes.ACC_INTERFACE) != 0;</span>
+<span class="fc" id="L84">		super.visit(version, access, name, signature, superName, interfaces);</span>
+<span class="fc" id="L85">	}</span>
+
+	@Override
+	public final MethodVisitor visitMethod(final int access, final String name,
+			final String desc, final String signature, final String[] exceptions) {
+		final IMethodProbesVisitor methodProbes;
+<span class="fc" id="L91">		final IMethodProbesVisitor mv = cv.visitMethod(access, name, desc,</span>
+				signature, exceptions);
+<span class="fc bfc" id="L93" title="All 2 branches covered.">		if (mv == null) {</span>
+			// We need to visit the method in any case, otherwise probe ids
+			// are not reproducible
+<span class="fc" id="L96">			methodProbes = EMPTY_METHOD_PROBES_VISITOR;</span>
+		} else {
+<span class="fc" id="L98">			methodProbes = mv;</span>
+		}
+<span class="fc" id="L100">		return new JSRInlinerAdapter(null, access, name, desc, signature,</span>
+				exceptions) {
+			@Override
+<span class="fc" id="L103">			public void visitEnd() {</span>
+<span class="fc" id="L104">				super.visitEnd();</span>
+<span class="fc" id="L105">				this.accept(new LabelFlowAnalyzer());</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">				if (interfaceType) {</span>
+<span class="fc" id="L107">					final ProbeCounter counter = new ProbeCounter();</span>
+<span class="fc" id="L108">					this.accept(new MethodProbesAdapter(</span>
+							EMPTY_METHOD_PROBES_VISITOR, counter));
+<span class="fc" id="L110">					cv.visitTotalProbeCount(counter.count);</span>
+				}
+<span class="fc" id="L112">				this.accept(new MethodProbesAdapter(methodProbes,</span>
+						ClassProbesAdapter.this));
+<span class="fc" id="L114">			}</span>
+		};
+	}
+
+	@Override
+	public void visitEnd() {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">		if (!interfaceType) {</span>
+<span class="fc" id="L121">			cv.visitTotalProbeCount(counter);</span>
+		}
+<span class="fc" id="L123">		super.visitEnd();</span>
+<span class="fc" id="L124">	}</span>
+
+	// === IProbeIdGenerator ===
+
+	public int nextId() {
+<span class="fc" id="L129">		return counter++;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

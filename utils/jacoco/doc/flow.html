@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <link rel="stylesheet" href=".resources/doc.css" charset="ISO-8859-1" type="text/css" />
+  <link rel="stylesheet" href="../coverage/.resources/prettify.css" charset="ISO-8859-1" type="text/css" />
+  <link rel="shortcut icon" href=".resources/report.gif" type="image/gif" />
+  <script type="text/javascript" src="../coverage/.resources/prettify.js"></script>
+  <title>JaCoCo - Control Flow Analysis</title>
+</head>
+<body onload="prettyPrint()">
+
+<div class="breadcrumb">
+  <a href="../index.html" class="el_report">JaCoCo</a> &gt;
+  <a href="index.html" class="el_group">Documentation</a> &gt;
+  <span class="el_source">Control Flow Analysis</span>
+</div>
+<div id="content"> 
+
+<h1>Control Flow Analysis for Java Methods</h1>
+
+<p style="font-weight:bold;">
+  DRAFT - This document does not reflect the current JaCoCo implementation. 
+</p>
+
+<p class="hint">
+  Implementing a coverage tool that supports statement (C0) as well as branch
+  coverage coverage (C1) requires detailed analysis of the internal control flow
+  of Java methods. Due to the architecture of JaCoCo this analysis happens on
+  compiled class files (bytecode). This document defines graph structures for 
+  control flow analysis of Java bytecode and discusses strategies for probe
+  insertion. Marc R. Hoffmann, November 2010
+</p>
+
+<h2>Control Flow Graphs for Java Bytecode</h2>
+
+<p> 
+  As an starting point we take the following example method that contains a
+  single branching point:
+</p>
+
+<pre class="source lang-java linenums">
+public static void example() {
+    a();
+    if (cond()) {
+        b();
+    } else {
+        c();
+    }
+    d();
+}
+</pre>
+
+<p>
+  A Java compiler will create the following bytecode from this example method.
+  Java bytecode is a linear sequence of instructions. Control flow is
+  implemented with <i>jump</i> instructions like the conditional
+  <code>IFEQ</code> or the unconditional <code>GOTO</code> opcode. The jump
+  targets are technically relative offsets to the target instruction. For better
+  readability we use symbolic labels (<code>L1</code>, <code>L2</code>) instead
+  (also the ASM API uses such symbolic labels):  
+</p>
+
+<pre class="source linenums">
+public static example()V
+    INVOKESTATIC a()V
+    INVOKESTATIC cond()Z
+    IFEQ L1
+    INVOKESTATIC b()V
+    GOTO L2
+    INVOKESTATIC c()V
+    INVOKESTATIC d()V
+    RETURN
+</pre>
+
+<p>
+  The possible control flow in the bytecode above can be represented by a graph.
+  The nodes are byte code instruction, the edged of the graph represent the
+  possible control flow between the instructions:
+</p>
+
+<img src=".resources/flow-1.png" alt="Bytecode contol flow"/>
+
+<h3>Flow Edges</h3>
+
+<p>
+  The control flow graph of a Java method defined by Java byte code may have
+  the following Edges. Each edge connects a source instruction with a target
+  instruction. In some cases the source instruction or the target instruction
+  does not exist (virtual edges for method entry and exit) or cannot be
+  exactly specified (exception handlers). 
+</p>
+
+<table class="coverage">
+  <thead>
+    <tr>
+      <td>Type</td>
+      <td>Source</td>
+      <td>Target</td>
+      <td>Remarks</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ENTRY</td>
+      <td>-</td>
+      <td>First instruction in method</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SEQUENCE</td>
+      <td>Instruction, except <code>GOTO</code>, <code>xRETURN</code>, 
+        <code>THROW</code>, <code>TABLESWITCH</code> and <code>LOOKUPSWITCH</code></td>
+      <td>Subsequent instruction</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>JUMP</td>
+      <td><code>GOTO</code>, <code>IFx</code>, <code>TABLESWITCH</code> or
+        <code>LOOKUPSWITCH</code>  instruction</td>
+      <td>Target instruction</td>
+      <td><code>TABLESWITCH</code> and <code>LOOKUPSWITCH</code> will define
+        multiple edges.</td>
+    </tr>
+    <tr>
+      <td>EXHANDLER</td>
+      <td>Any instruction in handler scope</td>
+      <td>Target instruction</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>EXIT</td>
+      <td><code>xRETURN</code> or <code>THROW</code> instruction</td>
+      <td>-</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>EXEXIT</td>
+      <td>Any instruction</td>
+      <td>-</td>
+      <td>Unhandled exception.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  For the first implementation approach we ignore edges caused by exceptions
+  and the the method entry. This means we consider SEQUENCE, JUMP and EXIT.
+</p>
+
+<h2>Probe Insertion Strategy</h2>
+
+<p>
+  Probes are additional instructions that can be inserted between existing
+  instructions. Probes record the fact that they have been executed. One can
+  think probes are placed on edges of the control flow graph. Therefore if a
+  probe has been executed we know that the corresponding edge has been visited.
+  From this edge we can conclude to other preceding nodes and edges: 
+</p>
+
+<ul>
+  <li>If a edge has been visited, we know that the source node of the this edge
+      has been executed.</li>
+  <li>If a node has been executed and the node is the target of only one edge
+      we know that this edge has been visited.</li>
+</ul>
+
+<p>
+  With this observations we only need probes at the following edges:
+</p>
+
+<ul>
+  <li>At every EXIT.</li>
+  <li>At every edge where the target instruction is the target of more than one
+      edge.</li>
+</ul>
+
+<p>
+  Given the example method above we see that <code>INVOKE d()</code> is the only
+  node with more than one incoming edge. So we need to place probes on those
+  edges and another probe on the only exit node:
+</p>
+
+<img src=".resources/flow-2.png" alt="Probe positions"/>
+
+<table class="coverage">
+  <thead>
+    <tr>
+      <td>Type</td>
+      <td>Before</td>
+      <td>After</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SEQUENCE</td>
+      <td><img src=".resources/flow-3a.png" alt="SEQUENCE"/></td>
+      <td><img src=".resources/flow-3b.png" alt="SEQUENCE with Probe"/></td>
+    </tr>
+    <tr>
+      <td>JUMP (unconditional)</td>
+      <td><img src=".resources/flow-4a.png" alt="JUMP"/></td>
+      <td><img src=".resources/flow-4b.png" alt="JUMP with Probe"/></td>
+    </tr>
+    <tr>
+      <td>JUMP (conditional)</td>
+      <td><img src=".resources/flow-5a.png" alt="JUMP"/></td>
+      <td><img src=".resources/flow-5b.png" alt="JUMP with Probe"/></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Coverage Analysis</h2>
+
+<p>
+  The execution status of all other edges and instructions can be derived from
+  the status of this probes by recursively applying the rules above. 
+</p>
+
+<h2>Probe Implementation</h2>
+
+<p>
+  Code coverage analysis is a runtime metric that provides execution details
+  of the software under test. This requires detailed recording about the
+  instructions (instruction coverage) that have been executed. For branch
+  coverage also the outcome of decisions has to be recorded. In any case
+  execution data is collected by so called probes:
+</p>
+
+<p class="hint">
+  A <b>probe</b> is a sequence of bytecode instructions that can be inserted
+  into a Java method. When the probe is executed, this fact is recorded and can
+  be reported by the coverage runtime.
+</p>
+
+<p>
+  The only purpose of the probe is to record that it has been executed at least
+  once. The probe does not record the number of times it has been called or
+  collect any timing information. The latter is out of scope for code coverage
+  analysis and more in the objective of a performance analysis tool. Typically
+  multiple probes needs to be inserted into each method, therefore probes needs
+  to be identified. Also the probe implementation and the storage mechanism it
+  depends on needs to be thread safe as multi-threaded execution is a common
+  scenario for java applications (albeit not for plain unit tests). Probes must
+  not have any side effects on the original code of the method. Also they should
+  add minimal overhead.
+</p>
+
+<p>
+  So to summarize the requirements for execution probes:
+</p>
+
+<ul>
+  <li>Record execution</li>
+  <li>Identification for different probes</li>
+  <li>Thread safe</li>
+  <li>No side effects on application code</li>
+  <li>Minimal runtime overhead</li>
+</ul>
+
+<p>
+  JaCoCo implements probes with a <code>boolean[]</code> array instance per
+  class. Each probe corresponds to a entry in this array. Whenever the probe is
+  executed the entry is set to <code>true</code> with the following four
+  bytecode instructions:
+</p>
+
+<pre class="source">
+ALOAD    probearray
+xPUSH    probeid
+ICONST_1
+BASTORE
+</pre>
+
+<p>
+  Note that this probe code is thread safe, does not modify the operand stack
+  or modify local variables and is also thread safe. It does also not leave the
+  method though an external call. The only prerequisite is that the probe array
+  is available as a local variable. For this at the beginning of each method
+  additional instrumentation code needs to be added to obtain the array instance
+  associated with the belonging class. To avoid code duplication the
+  initialization is delegated to a static private method
+  <code>$jacocoinit()</code> which is added to every non-interface class.
+</p>
+
+<p>
+  The size of the probe code above depends on the position of the probe array
+  variable and the value of the probe identifier as different opcodes can be
+  used. As calculated in the table below the overhead per probe ranges between 4
+  and 7 bytes of additional bytecode: 
+</p>
+
+<table class="coverage">
+  <thead>
+    <tr>
+      <td>Possible Opcodes</td>
+      <td>Min. Size [bytes]</td>
+      <td>Max. Size [bytes]</td>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td>Total:</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr>
+      <td><code>ALOAD_x</code>, <code>ALOAD</code> <sup>1</sup></td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td><code>ICONST_x</code>, <code>BIPUSH</code>, <code>SIPUSH</code>, <code>LDC</code>, <code>LDC_W</code> <sup>2</sup></td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td><code>ICONST_1</code></td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><code>BASTORE</code></td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  <sup>1</sup> The probe array is the first variable after the arguments.
+  If the method arguments do not consume more that 3 slots the 1-byte opcode can
+  be used.<br/>
+  <sup>2</sup> 1-byte opcodes for ids 0 to 5, 2-byte opcode for ids up to 127,
+  3-byte opcode for ids up to 32767. Ids values of 32768 or more require an
+  additional constant pool entry. For normal class files it is very unlikely to
+  require more than 32,000 probes.
+</p>
+
+<ul>
+  <li>Limitation: Only proves that the probe itself has been executed,
+      assumptions about the surrounding application code is interpolation</li>
+  <li>Probe in every edge of the control flow graph</li>
+  <li>Every exit path known (branch coverage)</li>
+  <li>Block entry known (exceptions within blocks)</li>
+</ul>
+
+<h2>Refernces</h2>
+
+<ul>
+  <li>ASM</li>
+  <li><a href="http://andrei.gmxhome.de/bytecode/index.html">Bytecode Outline Plug-In</a> by Andrei Loskutov</li>
+  <li><a href="http://en.wikipedia.org/wiki/Glossary_of_graph_theory">Wikipedia: Glossary of Graph Theory</a></li>
+</ul>
+
+
+</div>
+<div class="footer">
+  <div class="versioninfo"><a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</div>
+  <a href="license.html">Copyright</a> &copy; 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+</div>
+
+</body>
+</html>

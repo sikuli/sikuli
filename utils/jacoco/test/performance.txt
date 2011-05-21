@@ -1,0 +1,14 @@
+JaCoCo Performance Data
+
+JaCoCo Version:  0.5.2.20110519202509
+JVM Vendor:      Apple Inc.
+JVM Version:     1.5.0_20-141
+
+scenario                         instr     ref    overhead
+----------------------------------------------------------
+plain method calls               50.98   15.83 ms     222%
+loop only                        18.86   19.20 ms      -2%
+game of life                     37.39   14.97 ms     150%
+instrumented class                4159    3171 bytes   31%
+instrumenting 1000 classes      306.05         ms    
+analysing 1000 classes          344.55         ms    

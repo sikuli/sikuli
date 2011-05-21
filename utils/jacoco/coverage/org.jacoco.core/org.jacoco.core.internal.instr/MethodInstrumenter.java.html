@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>MethodInstrumenter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.instr</a> &gt; <span class="el_source">MethodInstrumenter.java</span></div><h1>MethodInstrumenter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.instr;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.jacoco.core.internal.flow.IMethodProbesVisitor;
+import org.jacoco.core.internal.flow.LabelInfo;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * This method adapter inserts probes as requested by the
+ * {@link IMethodProbesVisitor} events.
+ */
+class MethodInstrumenter extends ProbeVariableInserter implements
+		IMethodProbesVisitor {
+
+	private final IProbeArrayStrategy probeArrayStrategy;
+
+	private int accessorStackSize;
+
+	private Collection&lt;JumpProbe&gt; jumpProbes;
+
+	/**
+	 * Create a new instrumenter instance for the given method.
+	 * 
+	 * @param mv
+	 *            next method visitor in the chain
+	 * @param access
+	 *            access flags for the method
+	 * @param desc
+	 *            description of the method
+	 * @param probeArrayStrategy
+	 *            strategy to get access to the probe array
+	 */
+	public MethodInstrumenter(final MethodVisitor mv, final int access,
+			final String desc, final IProbeArrayStrategy probeArrayStrategy) {
+<span class="fc" id="L50">		super(access, desc, mv);</span>
+<span class="fc" id="L51">		this.probeArrayStrategy = probeArrayStrategy;</span>
+<span class="fc" id="L52">		this.jumpProbes = null;</span>
+<span class="fc" id="L53">	}</span>
+
+	@Override
+	public void visitCode() {
+<span class="fc" id="L57">		super.visitCode();</span>
+		// At the very beginning of the method we load the boolean[] array into
+		// a local variable that stores the probes for this class.
+<span class="fc" id="L60">		accessorStackSize = probeArrayStrategy.pushInstance(mv);</span>
+
+		// Stack[0]: [Z
+
+<span class="fc" id="L64">		mv.visitVarInsn(Opcodes.ASTORE, variable);</span>
+<span class="fc" id="L65">	}</span>
+
+	@Override
+	public void visitMaxs(final int maxStack, final int maxLocals) {
+<span class="fc" id="L69">		insertJumpProbes();</span>
+
+		// Max stack size of the probe code is 3 which can add to the
+		// original stack size depending on the probe locations. The accessor
+		// stack size is an absolute maximum, as the accessor code is inserted
+		// at the very beginning of each method when the stack size is empty.
+<span class="fc" id="L75">		final int increasedStack = Math.max(maxStack + 3, accessorStackSize);</span>
+<span class="fc" id="L76">		super.visitMaxs(increasedStack, maxLocals);</span>
+<span class="fc" id="L77">	}</span>
+
+	private void insertProbe(final int id) {
+		// For a probe we set the corresponding position in the boolean[] array
+		// to true.
+
+<span class="fc" id="L83">		mv.visitVarInsn(Opcodes.ALOAD, variable);</span>
+
+		// Stack[0]: [Z
+
+<span class="fc" id="L87">		InstrSupport.push(mv, id);</span>
+
+		// Stack[1]: I
+		// Stack[0]: [Z
+
+<span class="fc" id="L92">		mv.visitInsn(Opcodes.ICONST_1);</span>
+
+		// Stack[2]: I
+		// Stack[1]: I
+		// Stack[0]: [Z
+
+<span class="fc" id="L98">		visitInsn(Opcodes.BASTORE);</span>
+<span class="fc" id="L99">	}</span>
+
+	// === IMethodProbesVisitor ===
+
+	public void visitProbe(final int probeId) {
+<span class="fc" id="L104">		insertProbe(probeId);</span>
+<span class="fc" id="L105">	}</span>
+
+	public void visitInsnWithProbe(final int opcode, final int probeId) {
+<span class="fc" id="L108">		insertProbe(probeId);</span>
+<span class="fc" id="L109">		mv.visitInsn(opcode);</span>
+<span class="fc" id="L110">	}</span>
+
+	public void visitJumpInsnWithProbe(final int opcode, final Label label,
+			final int probeId) {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (opcode == Opcodes.GOTO) {</span>
+<span class="fc" id="L115">			insertProbe(probeId);</span>
+<span class="fc" id="L116">			mv.visitJumpInsn(Opcodes.GOTO, label);</span>
+		} else {
+<span class="fc" id="L118">			final JumpProbe probe = new JumpProbe(label, probeId);</span>
+<span class="fc" id="L119">			addJumpProbe(probe);</span>
+<span class="fc" id="L120">			mv.visitJumpInsn(opcode, probe.getIntermediate());</span>
+		}
+<span class="fc" id="L122">	}</span>
+
+	public void visitTableSwitchInsnWithProbes(final int min, final int max,
+			final Label dflt, final Label[] labels) {
+<span class="fc" id="L126">		LabelInfo.resetDone(dflt);</span>
+<span class="fc" id="L127">		LabelInfo.resetDone(labels);</span>
+<span class="fc" id="L128">		final Label newDflt = createIntermediate(dflt);</span>
+<span class="fc" id="L129">		final Label[] newLabels = createIntermediates(labels);</span>
+<span class="fc" id="L130">		mv.visitTableSwitchInsn(min, max, newDflt, newLabels);</span>
+<span class="fc" id="L131">	}</span>
+
+	public void visitLookupSwitchInsnWithProbes(final Label dflt,
+			final int[] keys, final Label[] labels) {
+<span class="fc" id="L135">		LabelInfo.resetDone(dflt);</span>
+<span class="fc" id="L136">		LabelInfo.resetDone(labels);</span>
+<span class="fc" id="L137">		final Label newDflt = createIntermediate(dflt);</span>
+<span class="fc" id="L138">		final Label[] newLabels = createIntermediates(labels);</span>
+<span class="fc" id="L139">		mv.visitLookupSwitchInsn(newDflt, keys, newLabels);</span>
+<span class="fc" id="L140">	}</span>
+
+	private Label[] createIntermediates(final Label[] labels) {
+<span class="fc" id="L143">		final Label[] intermediates = new Label[labels.length];</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		for (int i = 0; i &lt; labels.length; i++) {</span>
+<span class="fc" id="L145">			intermediates[i] = createIntermediate(labels[i]);</span>
+		}
+<span class="fc" id="L147">		return intermediates;</span>
+	}
+
+	private Label createIntermediate(final Label label) {
+		final Label intermediate;
+<span class="fc bfc" id="L152" title="All 2 branches covered.">		if (LabelInfo.getProbeId(label) == LabelInfo.NO_PROBE) {</span>
+<span class="fc" id="L153">			intermediate = label;</span>
+		} else {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">			if (LabelInfo.isDone(label)) {</span>
+<span class="fc" id="L156">				intermediate = LabelInfo.getIntermediateLabel(label);</span>
+			} else {
+<span class="fc" id="L158">				final JumpProbe probe = new JumpProbe(label);</span>
+<span class="fc" id="L159">				addJumpProbe(probe);</span>
+<span class="fc" id="L160">				intermediate = probe.getIntermediate();</span>
+<span class="fc" id="L161">				LabelInfo.setDone(label);</span>
+			}
+		}
+<span class="fc" id="L164">		return intermediate;</span>
+	}
+
+	private void addJumpProbe(final JumpProbe probe) {
+<span class="fc bfc" id="L168" title="All 2 branches covered.">		if (jumpProbes == null) {</span>
+<span class="fc" id="L169">			jumpProbes = new ArrayList&lt;JumpProbe&gt;();</span>
+		}
+<span class="fc" id="L171">		jumpProbes.add(probe);</span>
+<span class="fc" id="L172">	}</span>
+
+	private void insertJumpProbes() {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">		if (jumpProbes != null) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">			for (final JumpProbe probe : jumpProbes) {</span>
+<span class="fc" id="L177">				insertJumpProbe(probe);</span>
+			}
+		}
+<span class="fc" id="L180">	}</span>
+
+	private void insertJumpProbe(final JumpProbe probe) {
+<span class="fc" id="L183">		mv.visitLabel(probe.getIntermediate());</span>
+<span class="fc" id="L184">		insertProbeFrame(probe.getTarget());</span>
+<span class="fc" id="L185">		visitProbe(probe.getProbeId());</span>
+<span class="fc" id="L186">		mv.visitJumpInsn(Opcodes.GOTO, probe.getTarget());</span>
+<span class="fc" id="L187">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

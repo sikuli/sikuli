@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>InstrSupport.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.instr</a> &gt; <span class="el_source">InstrSupport.java</span></div><h1>InstrSupport.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.instr;
+
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.GeneratorAdapter;
+
+/**
+ * Constants and utilities for byte code instrumentation.
+ */
+public final class InstrSupport {
+
+<span class="nc" id="L23">	private InstrSupport() {</span>
+<span class="nc" id="L24">	}</span>
+
+	// === Data Field ===
+
+	/**
+	 * Name of the field that stores coverage information of a class.
+	 */
+	public static final String DATAFIELD_NAME = &quot;$jacocoData&quot;;
+
+	/**
+	 * Access modifiers of the field that stores coverage information of a
+	 * class.
+	 */
+	public static final int DATAFIELD_ACC = Opcodes.ACC_SYNTHETIC
+			| Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
+			| Opcodes.ACC_TRANSIENT;
+
+	/**
+	 * Data type of the field that stores coverage information for a class (
+	 * &lt;code&gt;boolean[]&lt;/code&gt;).
+	 */
+	public static final String DATAFIELD_DESC = &quot;[Z&quot;;
+
+	// === Init Method ===
+
+	/**
+	 * Name of the initialization method.
+	 */
+	public static final String INITMETHOD_NAME = &quot;$jacocoInit&quot;;
+
+	/**
+	 * Descriptor of the initialization method.
+	 */
+	public static final String INITMETHOD_DESC = &quot;()[Z&quot;;
+
+	/**
+	 * Access modifiers of the initialization method.
+	 */
+	public static final int INITMETHOD_ACC = Opcodes.ACC_SYNTHETIC
+			| Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+
+	// === Utilities ===
+
+	/**
+	 * Generates the instruction to push the given int value on the stack.
+	 * Implementation taken from {@link GeneratorAdapter#push(int)}.
+	 * 
+	 * @param mv
+	 *            visitor to emit the instruction
+	 * @param value
+	 *            the value to be pushed on the stack.
+	 */
+	public static void push(final MethodVisitor mv, final int value) {
+<span class="fc bfc" id="L77" title="All 4 branches covered.">		if (value &gt;= -1 &amp;&amp; value &lt;= 5) {</span>
+<span class="fc" id="L78">			mv.visitInsn(Opcodes.ICONST_0 + value);</span>
+<span class="fc bfc" id="L79" title="All 4 branches covered.">		} else if (value &gt;= Byte.MIN_VALUE &amp;&amp; value &lt;= Byte.MAX_VALUE) {</span>
+<span class="fc" id="L80">			mv.visitIntInsn(Opcodes.BIPUSH, value);</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">		} else if (value &gt;= Short.MIN_VALUE &amp;&amp; value &lt;= Short.MAX_VALUE) {</span>
+<span class="fc" id="L82">			mv.visitIntInsn(Opcodes.SIPUSH, value);</span>
+		} else {
+<span class="fc" id="L84">			mv.visitLdcInsn(Integer.valueOf(value));</span>
+		}
+<span class="fc" id="L86">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

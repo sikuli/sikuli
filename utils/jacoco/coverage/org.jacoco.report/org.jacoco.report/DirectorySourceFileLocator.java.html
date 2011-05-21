@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>DirectorySourceFileLocator.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report</a> &gt; <span class="el_source">DirectorySourceFileLocator.java</span></div><h1>DirectorySourceFileLocator.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+/**
+ * Locator for source files that picks source files from a given directory in
+ * the file system.
+ */
+public class DirectorySourceFileLocator implements ISourceFileLocator {
+
+	private final File directory;
+
+	private final String encoding;
+
+	private final int tabWidth;
+
+	/**
+	 * Creates a new locator that searches for source files in the given
+	 * directory.
+	 * 
+	 * @param directory
+	 *            directory to search for source file
+	 * @param encoding
+	 *            encoding of the source files
+	 * @param tabWidth
+	 *            tab width in source files as number of blanks
+	 * 
+	 */
+	public DirectorySourceFileLocator(final File directory,
+<span class="fc" id="L45">			final String encoding, final int tabWidth) {</span>
+<span class="fc" id="L46">		this.directory = directory;</span>
+<span class="fc" id="L47">		this.encoding = encoding;</span>
+<span class="fc" id="L48">		this.tabWidth = tabWidth;</span>
+<span class="fc" id="L49">	}</span>
+
+	public Reader getSourceFile(final String packageName, final String fileName)
+			throws IOException {
+<span class="fc" id="L53">		final File dir = new File(directory, packageName);</span>
+<span class="fc" id="L54">		final File file = new File(dir, fileName);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (file.exists()) {</span>
+<span class="fc" id="L56">			return new InputStreamReader(new FileInputStream(file), encoding);</span>
+		}
+<span class="fc" id="L58">		return null;</span>
+	}
+
+	public int getTabWidth() {
+<span class="fc" id="L62">		return tabWidth;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

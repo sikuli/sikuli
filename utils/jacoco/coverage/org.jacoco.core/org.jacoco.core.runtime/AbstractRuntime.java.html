@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AbstractRuntime.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.runtime</a> &gt; <span class="el_source">AbstractRuntime.java</span></div><h1>AbstractRuntime.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.runtime;
+
+import java.util.Random;
+
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.IExecutionDataVisitor;
+import org.jacoco.core.data.ISessionInfoVisitor;
+import org.jacoco.core.data.SessionInfo;
+
+/**
+ * Base {@link IRuntime} implementation.
+ */
+public abstract class AbstractRuntime implements IRuntime {
+
+	/** store for execution data */
+	protected final ExecutionDataStore store;
+
+	/** access for this runtime instance */
+	protected final ExecutionDataAccess access;
+
+	private long startTimeStamp;
+
+	private String sessionId;
+
+	/**
+	 * Creates a new runtime.
+	 */
+<span class="fc" id="L39">	protected AbstractRuntime() {</span>
+<span class="fc" id="L40">		store = new ExecutionDataStore();</span>
+<span class="fc" id="L41">		access = new ExecutionDataAccess(store);</span>
+<span class="fc" id="L42">		sessionId = generateSessionId();</span>
+<span class="fc" id="L43">	}</span>
+
+	/**
+	 * Subclasses need to call this method in their {@link #startup()}
+	 * implementation to record the timestamp of session startup.
+	 */
+	protected final void setStartTimeStamp() {
+<span class="fc" id="L50">		startTimeStamp = System.currentTimeMillis();</span>
+<span class="fc" id="L51">	}</span>
+
+	public void setSessionId(final String id) {
+<span class="fc" id="L54">		sessionId = id;</span>
+<span class="fc" id="L55">	}</span>
+
+	public String getSessionId() {
+<span class="fc" id="L58">		return sessionId;</span>
+	}
+
+	public final void collect(final IExecutionDataVisitor executionDataVisitor,
+			final ISessionInfoVisitor sessionInfoVisitor, final boolean reset) {
+<span class="fc" id="L63">		synchronized (store) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">			if (sessionInfoVisitor != null) {</span>
+<span class="fc" id="L65">				final SessionInfo info = new SessionInfo(sessionId,</span>
+						startTimeStamp, System.currentTimeMillis());
+<span class="fc" id="L67">				sessionInfoVisitor.visitSessionInfo(info);</span>
+			}
+<span class="fc" id="L69">			store.accept(executionDataVisitor);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (reset) {</span>
+<span class="fc" id="L71">				reset();</span>
+			}
+<span class="pc" id="L73">		}</span>
+<span class="fc" id="L74">	}</span>
+
+	public final void reset() {
+<span class="fc" id="L77">		synchronized (store) {</span>
+<span class="fc" id="L78">			store.reset();</span>
+<span class="fc" id="L79">			setStartTimeStamp();</span>
+<span class="pc" id="L80">		}</span>
+<span class="fc" id="L81">	}</span>
+
+	private String generateSessionId() {
+<span class="fc" id="L84">		return Integer.toHexString(new Random().nextInt());</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

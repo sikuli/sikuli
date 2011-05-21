@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>PackagePage.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.internal.html.page</a> &gt; <span class="el_source">PackagePage.java</span></div><h1>PackagePage.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.internal.html.page;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.analysis.IPackageCoverage;
+import org.jacoco.core.analysis.ISourceFileCoverage;
+import org.jacoco.report.ISourceFileLocator;
+import org.jacoco.report.internal.ReportOutputFolder;
+import org.jacoco.report.internal.html.IHTMLReportContext;
+import org.jacoco.report.internal.html.ILinkable;
+
+/**
+ * Page showing coverage information for a Java package. The page contains a
+ * table with all classes of the package.
+ */
+public class PackagePage extends TablePage&lt;IPackageCoverage&gt; {
+
+	private final ISourceFileLocator locator;
+
+	/**
+	 * Creates a new visitor in the given context.
+	 * 
+	 * @param node
+	 * @param parent
+	 * @param locator
+	 * @param folder
+	 * @param context
+	 */
+	public PackagePage(final IPackageCoverage node, final ReportPage parent,
+			final ISourceFileLocator locator, final ReportOutputFolder folder,
+			final IHTMLReportContext context) {
+<span class="fc" id="L47">		super(node, parent, folder, context);</span>
+<span class="fc" id="L48">		this.locator = locator;</span>
+<span class="fc" id="L49">	}</span>
+
+	@Override
+	public void render() throws IOException {
+<span class="fc" id="L53">		final Map&lt;String, ILinkable&gt; sourceFiles = renderSourceFiles();</span>
+<span class="fc" id="L54">		renderClasses(sourceFiles);</span>
+<span class="fc" id="L55">		super.render();</span>
+<span class="fc" id="L56">	}</span>
+
+	private final Map&lt;String, ILinkable&gt; renderSourceFiles() throws IOException {
+<span class="fc" id="L59">		final Map&lt;String, ILinkable&gt; sourceFiles = new HashMap&lt;String, ILinkable&gt;();</span>
+<span class="fc" id="L60">		final String packagename = getNode().getName();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		for (final ISourceFileCoverage s : getNode().getSourceFiles()) {</span>
+<span class="fc" id="L62">			final String sourcename = s.getName();</span>
+<span class="fc" id="L63">			final Reader reader = locator</span>
+					.getSourceFile(packagename, sourcename);
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">			if (reader != null) {</span>
+<span class="nc" id="L66">				final SourceFilePage sourcePage = new SourceFilePage(s, reader,</span>
+						locator.getTabWidth(), this, folder, context);
+<span class="nc" id="L68">				sourcePage.render();</span>
+<span class="nc" id="L69">				sourceFiles.put(sourcename, sourcePage);</span>
+			}
+
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">		return sourceFiles;</span>
+	}
+
+	private void renderClasses(final Map&lt;String, ILinkable&gt; sourceFiles)
+			throws IOException {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		for (final IClassCoverage c : getNode().getClasses()) {</span>
+<span class="fc" id="L79">			final ClassPage page = new ClassPage(c, this, sourceFiles.get(c</span>
+					.getSourceFileName()), folder, context);
+<span class="fc" id="L81">			page.render();</span>
+<span class="fc" id="L82">			addItem(page);</span>
+<span class="fc" id="L83">		}</span>
+<span class="fc" id="L84">	}</span>
+
+	@Override
+	protected String getOnload() {
+<span class="fc" id="L88">		return &quot;initialSort(['breadcrumb', 'coveragetable'])&quot;;</span>
+	}
+
+	@Override
+	protected String getFileName() {
+<span class="fc" id="L93">		return &quot;index.html&quot;;</span>
+	}
+
+	@Override
+	public String getLinkLabel() {
+<span class="fc" id="L98">		return context.getLanguageNames().getPackageName(getNode().getName());</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

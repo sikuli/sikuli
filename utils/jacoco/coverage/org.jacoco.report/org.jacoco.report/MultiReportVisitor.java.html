@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>MultiReportVisitor.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report</a> &gt; <span class="el_source">MultiReportVisitor.java</span></div><h1>MultiReportVisitor.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.data.SessionInfo;
+
+/**
+ * A report visitor that is composed from multiple other visitors. This can be
+ * used to create more than one report format in one run.
+ */
+public class MultiReportVisitor extends MultiGroupVisitor implements
+		IReportVisitor {
+
+	private final List&lt;IReportVisitor&gt; visitors;
+
+	/**
+	 * New visitor delegating to all given visitors.
+	 * 
+	 * @param visitors
+	 *            visitors to delegate to
+	 */
+	public MultiReportVisitor(final List&lt;IReportVisitor&gt; visitors) {
+<span class="fc" id="L39">		super(visitors);</span>
+<span class="fc" id="L40">		this.visitors = visitors;</span>
+<span class="fc" id="L41">	}</span>
+
+	public void visitInfo(final List&lt;SessionInfo&gt; sessionInfos,
+			final Collection&lt;ExecutionData&gt; executionData) throws IOException {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		for (final IReportVisitor v : visitors) {</span>
+<span class="fc" id="L46">			v.visitInfo(sessionInfos, executionData);</span>
+		}
+<span class="fc" id="L48">	}</span>
+
+	public void visitEnd() throws IOException {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		for (final IReportVisitor v : visitors) {</span>
+<span class="fc" id="L52">			v.visitEnd();</span>
+		}
+<span class="fc" id="L54">	}</span>
+
+}
+
+class MultiGroupVisitor implements IReportGroupVisitor {
+
+	private final List&lt;? extends IReportGroupVisitor&gt; visitors;
+
+<span class="fc" id="L62">	MultiGroupVisitor(final List&lt;? extends IReportGroupVisitor&gt; visitors) {</span>
+<span class="fc" id="L63">		this.visitors = visitors;</span>
+<span class="fc" id="L64">	}</span>
+
+	public void visitBundle(final IBundleCoverage bundle,
+			final ISourceFileLocator locator) throws IOException {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		for (final IReportGroupVisitor v : visitors) {</span>
+<span class="fc" id="L69">			v.visitBundle(bundle, locator);</span>
+		}
+<span class="fc" id="L71">	}</span>
+
+	public IReportGroupVisitor visitGroup(final String name) throws IOException {
+<span class="fc" id="L74">		final List&lt;IReportGroupVisitor&gt; children = new ArrayList&lt;IReportGroupVisitor&gt;();</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">		for (final IReportGroupVisitor v : visitors) {</span>
+<span class="fc" id="L76">			children.add(v.visitGroup(name));</span>
+		}
+<span class="fc" id="L78">		return new MultiGroupVisitor(children);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

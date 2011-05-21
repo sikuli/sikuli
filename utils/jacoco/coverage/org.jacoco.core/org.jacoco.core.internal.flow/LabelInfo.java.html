@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>LabelInfo.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.flow</a> &gt; <span class="el_source">LabelInfo.java</span></div><h1>LabelInfo.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.flow;
+
+import org.objectweb.asm.Label;
+
+/**
+ * Data container that is attached to {@link Label#info} objects to store flow
+ * and instrumentation specific information. The information is only valid
+ * locally in specific contexts.
+ */
+public final class LabelInfo {
+
+	/**
+	 * Reserved ID for &quot;no probe&quot;.
+	 */
+	public static final int NO_PROBE = -1;
+
+<span class="fc" id="L28">	private boolean target = false;</span>
+
+<span class="fc" id="L30">	private boolean multiTarget = false;</span>
+
+<span class="fc" id="L32">	private boolean successor = false;</span>
+
+<span class="fc" id="L34">	private boolean done = false;</span>
+
+<span class="fc" id="L36">	private int probeid = NO_PROBE;</span>
+
+<span class="fc" id="L38">	private Label intermediate = null;</span>
+
+<span class="fc" id="L40">	private Instruction instruction = null;</span>
+
+	// instances are only created within this class
+<span class="fc" id="L43">	private LabelInfo() {</span>
+<span class="fc" id="L44">	}</span>
+
+	/**
+	 * Defines that the given label is a jump target.
+	 * 
+	 * @param label
+	 *            label to define
+	 */
+	public static void setTarget(final Label label) {
+<span class="fc" id="L53">		final LabelInfo info = create(label);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">		if (info.target || info.successor) {</span>
+<span class="fc" id="L55">			info.multiTarget = true;</span>
+		} else {
+<span class="fc" id="L57">			info.target = true;</span>
+		}
+<span class="fc" id="L59">	}</span>
+
+	/**
+	 * Defines that the given label is the possible successor of the previous
+	 * instruction in the method.
+	 * 
+	 * @param label
+	 *            label to define
+	 */
+	public static void setSuccessor(final Label label) {
+<span class="fc" id="L69">		final LabelInfo info = create(label);</span>
+<span class="fc" id="L70">		info.successor = true;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">		if (info.target) {</span>
+<span class="fc" id="L72">			info.multiTarget = true;</span>
+		}
+<span class="fc" id="L74">	}</span>
+
+	/**
+	 * Checks whether multiple control paths lead to a label. Control flow path
+	 * to a certain label are: jump targets, exception handlers and normal
+	 * control flow from its predecessor instruction (unless this a
+	 * unconditional jump or method exit).
+	 * 
+	 * @param label
+	 *            label to check
+	 * @return &lt;code&gt;true&lt;/code&gt; if the given multiple control paths lead to the
+	 *         given label
+	 */
+	public static boolean isMultiTarget(final Label label) {
+<span class="fc" id="L88">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		return info == null ? false : info.multiTarget;</span>
+	}
+
+	/**
+	 * Checks whether this label is the possible successor of the previous
+	 * instruction in the method. This is the case if the predecessor isn't a
+	 * unconditional jump or method exit instruction.
+	 * 
+	 * @param label
+	 *            label to check
+	 * @return &lt;code&gt;true&lt;/code&gt; if the label is a possible instruction
+	 *         successor
+	 */
+	public static boolean isSuccessor(final Label label) {
+<span class="fc" id="L103">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		return info == null ? false : info.successor;</span>
+	}
+
+	/**
+	 * Mark a given label as done.
+	 * 
+	 * @param label
+	 *            label to mark
+	 */
+	public static void setDone(final Label label) {
+<span class="fc" id="L114">		create(label).done = true;</span>
+<span class="fc" id="L115">	}</span>
+
+	/**
+	 * Resets the &quot;done&quot; status of a given label.
+	 * 
+	 * @param label
+	 *            label to reset
+	 */
+	public static void resetDone(final Label label) {
+<span class="fc" id="L124">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		if (info != null) {</span>
+<span class="fc" id="L126">			info.done = false;</span>
+		}
+<span class="fc" id="L128">	}</span>
+
+	/**
+	 * Resets the &quot;done&quot; status of all given labels.
+	 * 
+	 * @param labels
+	 *            labels to reset
+	 */
+	public static void resetDone(final Label[] labels) {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		for (final Label label : labels) {</span>
+<span class="fc" id="L138">			resetDone(label);</span>
+		}
+<span class="fc" id="L140">	}</span>
+
+	/**
+	 * Checks whether this label is marked as done.
+	 * 
+	 * @param label
+	 *            label to check
+	 * @return &lt;code&gt;true&lt;/code&gt; if this label is marked as done
+	 */
+	public static boolean isDone(final Label label) {
+<span class="fc" id="L150">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">		return info == null ? false : info.done;</span>
+	}
+
+	/**
+	 * Sets the given probe id to the given label.
+	 * 
+	 * @param label
+	 *            label to assign a probe to
+	 * @param id
+	 *            id of the probe
+	 */
+	public static void setProbeId(final Label label, final int id) {
+<span class="fc" id="L163">		create(label).probeid = id;</span>
+<span class="fc" id="L164">	}</span>
+
+	/**
+	 * Returns the assigned probe id.
+	 * 
+	 * @param label
+	 *            label to check
+	 * @return probe id or {@link #NO_PROBE} if no probe is assigned to the
+	 *         label
+	 */
+	public static int getProbeId(final Label label) {
+<span class="fc" id="L175">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">		return info == null ? NO_PROBE : info.probeid;</span>
+	}
+
+	/**
+	 * Defines an intermediate label for the given label. Such intermediate
+	 * labels are required during instrumentation to add probes to jump targets.
+	 * 
+	 * @param label
+	 *            label to define for
+	 * @param intermediate
+	 *            intermediate label
+	 */
+	public static void setIntermediateLabel(final Label label,
+			final Label intermediate) {
+<span class="fc" id="L190">		create(label).intermediate = intermediate;</span>
+<span class="fc" id="L191">	}</span>
+
+	/**
+	 * Returns the intermediate label for the given label if one has been
+	 * defined.
+	 * 
+	 * @param label
+	 *            label to look for
+	 * @return intermediate label or &lt;code&gt;null&lt;/code&gt;
+	 */
+	public static Label getIntermediateLabel(final Label label) {
+<span class="fc" id="L202">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">		return info == null ? null : info.intermediate;</span>
+	}
+
+	/**
+	 * Sets the instruction corresponding to this label.
+	 * 
+	 * @param label
+	 *            label to set the instruction for
+	 * @param instruction
+	 *            corresponding instruction
+	 */
+	public static void setInstruction(final Label label,
+			final Instruction instruction) {
+<span class="fc" id="L216">		create(label).instruction = instruction;</span>
+<span class="fc" id="L217">	}</span>
+
+	/**
+	 * Returns the corresponding instruction for the given label if one has been
+	 * defined.
+	 * 
+	 * @param label
+	 *            label to look for
+	 * @return corresponding instruction or &lt;code&gt;null&lt;/code&gt;
+	 */
+	public static Instruction getInstruction(final Label label) {
+<span class="fc" id="L228">		final LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		return info == null ? null : info.instruction;</span>
+	}
+
+	private static LabelInfo get(final Label label) {
+<span class="fc" id="L233">		final Object info = label.info;</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">		return info instanceof LabelInfo ? (LabelInfo) info : null;</span>
+	}
+
+	private static LabelInfo create(final Label label) {
+<span class="fc" id="L238">		LabelInfo info = get(label);</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">		if (info == null) {</span>
+<span class="fc" id="L240">			info = new LabelInfo();</span>
+<span class="fc" id="L241">			label.info = info;</span>
+		}
+<span class="fc" id="L243">		return info;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

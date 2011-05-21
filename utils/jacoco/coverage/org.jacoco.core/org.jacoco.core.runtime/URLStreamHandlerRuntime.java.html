@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>URLStreamHandlerRuntime.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.runtime</a> &gt; <span class="el_source">URLStreamHandlerRuntime.java</span></div><h1>URLStreamHandlerRuntime.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.runtime;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.util.Map;
+
+import org.jacoco.core.internal.instr.InstrSupport;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * This {@link IRuntime} implementation registers a special
+ * {@link URLStreamHandler} to process coverage data. The handler is not
+ * actually used for opening a URL, but to get access to the runtime object.
+ */
+public class URLStreamHandlerRuntime extends AbstractRuntime {
+
+	private static final String PROTOCOLPREFIX = &quot;jacoco-&quot;;
+
+	private final String protocol;
+
+	private Map&lt;String, URLStreamHandler&gt; handlers;
+
+	/**
+	 * Creates a new runtime.
+	 */
+<span class="fc" id="L41">	public URLStreamHandlerRuntime() {</span>
+<span class="fc" id="L42">		protocol = PROTOCOLPREFIX + Integer.toHexString(hashCode());</span>
+<span class="fc" id="L43">	}</span>
+
+	public void startup() throws Exception {
+<span class="fc" id="L46">		setStartTimeStamp();</span>
+<span class="fc" id="L47">		handlers = getHandlersReference();</span>
+<span class="fc" id="L48">		handlers.put(protocol, handler);</span>
+<span class="fc" id="L49">	}</span>
+
+	private Map&lt;String, URLStreamHandler&gt; getHandlersReference()
+			throws Exception {
+<span class="fc" id="L53">		final Field field = URL.class.getDeclaredField(&quot;handlers&quot;);</span>
+<span class="fc" id="L54">		field.setAccessible(true);</span>
+		@SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L56">		final Map&lt;String, URLStreamHandler&gt; handlers = (Map&lt;String, URLStreamHandler&gt;) field</span>
+				.get(null);
+<span class="fc" id="L58">		return handlers;</span>
+	}
+
+	public void shutdown() {
+<span class="fc" id="L62">		handlers.remove(protocol);</span>
+<span class="fc" id="L63">	}</span>
+
+	public int generateDataAccessor(final long classid, final String classname,
+			final int probecount, final MethodVisitor mv) {
+
+		// The data accessor performs the following steps:
+		//
+		// final URL url = new URL(protocol, null, &quot;&quot;);
+		// final URLConnection connection = url.openConnection();
+		// final Object[] args = new Object[3];
+		// args[0] = Long.valueOf(classid);
+		// args[1] = classname;
+		// args[2] = Integer.valueOf(probecount);
+		// connection.equals(args);
+		// final byte[] probedata = (byte[]) args[0];
+
+<span class="fc" id="L79">		ExecutionDataAccess.generateArgumentArray(classid, classname,</span>
+				probecount, mv);
+<span class="fc" id="L81">		mv.visitInsn(Opcodes.DUP);</span>
+
+		// Stack[1]: [Ljava/lang/Object;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L86">		mv.visitTypeInsn(Opcodes.NEW, &quot;java/net/URL&quot;);</span>
+<span class="fc" id="L87">		mv.visitInsn(Opcodes.DUP);</span>
+<span class="fc" id="L88">		mv.visitLdcInsn(protocol);</span>
+<span class="fc" id="L89">		mv.visitInsn(Opcodes.ACONST_NULL);</span>
+<span class="fc" id="L90">		mv.visitLdcInsn(&quot;&quot;);</span>
+<span class="fc" id="L91">		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, &quot;java/net/URL&quot;, &quot;&lt;init&gt;&quot;,</span>
+				&quot;(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V&quot;);
+
+		// Stack[2]: [Ljava/net/URL;
+		// Stack[1]: [Ljava/lang/Object;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L98">		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, &quot;java/net/URL&quot;,</span>
+				&quot;openConnection&quot;, &quot;()Ljava/net/URLConnection;&quot;);
+
+		// Stack[2]: [Ljava/net/URLConnection;
+		// Stack[1]: [Ljava/lang/Object;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L105">		mv.visitInsn(Opcodes.SWAP);</span>
+
+		// Stack[2]: [Ljava/lang/Object;
+		// Stack[1]: [Ljava/net/URLConnection;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L111">		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, &quot;java/lang/Object&quot;, &quot;equals&quot;,</span>
+				&quot;(Ljava/lang/Object;)Z&quot;);
+
+		// Stack[1]: Z;
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L117">		mv.visitInsn(Opcodes.POP);</span>
+
+		// Stack[0]: [Ljava/lang/Object;
+
+<span class="fc" id="L121">		mv.visitInsn(Opcodes.ICONST_0);</span>
+<span class="fc" id="L122">		mv.visitInsn(Opcodes.AALOAD);</span>
+<span class="fc" id="L123">		mv.visitTypeInsn(Opcodes.CHECKCAST, InstrSupport.DATAFIELD_DESC);</span>
+
+<span class="fc" id="L125">		return 7;</span>
+	}
+
+<span class="fc" id="L128">	private final URLStreamHandler handler = new URLStreamHandler() {</span>
+		@Override
+<span class="fc" id="L130">		protected URLConnection openConnection(final URL u) throws IOException {</span>
+<span class="fc" id="L131">			return connection;</span>
+		}
+	};
+
+<span class="fc" id="L135">	private final URLConnection connection = new URLConnection(null) {</span>
+		@Override
+		public void connect() throws IOException {
+<span class="nc" id="L138">			throw new AssertionError();</span>
+		}
+
+		@Override
+<span class="fc" id="L142">		public boolean equals(final Object obj) {</span>
+<span class="fc" id="L143">			return access.equals(obj);</span>
+		}
+	};
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

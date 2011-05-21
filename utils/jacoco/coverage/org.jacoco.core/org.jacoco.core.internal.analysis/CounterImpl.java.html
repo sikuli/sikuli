@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>CounterImpl.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.core</a> &gt; <a href="index.html" class="el_package">org.jacoco.core.internal.analysis</a> &gt; <span class="el_source">CounterImpl.java</span></div><h1>CounterImpl.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.core.internal.analysis;
+
+import org.jacoco.core.analysis.ICounter;
+
+/**
+ * {@link ICounter} implementations. Implementing a factory pattern allows to
+ * share counter instances.
+ */
+public abstract class CounterImpl implements ICounter {
+
+	/** Max counter value for which singletons are created */
+	private static final int SINGLETON_LIMIT = 30;
+
+<span class="fc" id="L25">	private static final CounterImpl[][] SINGLETONS = new CounterImpl[SINGLETON_LIMIT + 1][];</span>
+
+	static {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">		for (int i = 0; i &lt;= SINGLETON_LIMIT; i++) {</span>
+<span class="fc" id="L29">			SINGLETONS[i] = new CounterImpl[SINGLETON_LIMIT + 1];</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">			for (int j = 0; j &lt;= SINGLETON_LIMIT; j++) {</span>
+<span class="fc" id="L31">				SINGLETONS[i][j] = new Fix(i, j);</span>
+			}
+		}
+	}
+
+	/** Constant for Counter with 0/0 values. */
+<span class="fc" id="L37">	public static final CounterImpl COUNTER_0_0 = SINGLETONS[0][0];</span>
+
+	/** Constant for Counter with 1/0 values. */
+<span class="fc" id="L40">	public static final CounterImpl COUNTER_1_0 = SINGLETONS[1][0];</span>
+
+	/** Constant for Counter with 0/1 values. */
+<span class="fc" id="L43">	public static final CounterImpl COUNTER_0_1 = SINGLETONS[0][1];</span>
+
+	/**
+	 * Mutable version of the counter.
+	 */
+	private static class Var extends CounterImpl {
+		public Var(final int missed, final int covered) {
+<span class="fc" id="L50">			super(missed, covered);</span>
+<span class="fc" id="L51">		}</span>
+
+		@Override
+		public CounterImpl increment(final int missed, final int covered) {
+<span class="fc" id="L55">			this.missed += missed;</span>
+<span class="fc" id="L56">			this.covered += covered;</span>
+<span class="fc" id="L57">			return this;</span>
+		}
+	}
+
+	/**
+	 * Immutable version of the counter.
+	 */
+	private static class Fix extends CounterImpl {
+		public Fix(final int missed, final int covered) {
+<span class="fc" id="L66">			super(missed, covered);</span>
+<span class="fc" id="L67">		}</span>
+
+		@Override
+		public CounterImpl increment(final int missed, final int covered) {
+<span class="fc" id="L71">			return getInstance(this.missed + missed, this.covered + covered);</span>
+		}
+	}
+
+	/**
+	 * Factory method to retrieve a counter with the given number of items.
+	 * 
+	 * @param missed
+	 *            number of missed items
+	 * @param covered
+	 *            number of covered items
+	 * @return counter instance
+	 */
+	public static CounterImpl getInstance(final int missed, final int covered) {
+<span class="fc bfc" id="L85" title="All 4 branches covered.">		if (missed &lt;= SINGLETON_LIMIT &amp;&amp; covered &lt;= SINGLETON_LIMIT) {</span>
+<span class="fc" id="L86">			return SINGLETONS[missed][covered];</span>
+		} else {
+<span class="fc" id="L88">			return new Var(missed, covered);</span>
+		}
+	}
+
+	/**
+	 * Factory method to retrieve a clone of the given counter.
+	 * 
+	 * @param counter
+	 *            counter to copy
+	 * @return counter instance
+	 */
+	public static CounterImpl getInstance(final ICounter counter) {
+<span class="fc" id="L100">		return getInstance(counter.getMissedCount(), counter.getCoveredCount());</span>
+	}
+
+	/** number of missed items */
+	protected int missed;
+
+	/** number of covered items */
+	protected int covered;
+
+	/**
+	 * Creates a new instance with the given numbers.
+	 * 
+	 * @param missed
+	 *            number of missed items
+	 * @param covered
+	 *            number of covered items
+	 */
+<span class="fc" id="L117">	protected CounterImpl(final int missed, final int covered) {</span>
+<span class="fc" id="L118">		this.missed = missed;</span>
+<span class="fc" id="L119">		this.covered = covered;</span>
+<span class="fc" id="L120">	}</span>
+
+	/**
+	 * Returns a counter with values incremented by the numbers of the given
+	 * counter. It is up to the implementation whether this counter instance is
+	 * modified or a new instance is returned.
+	 * 
+	 * @param counter
+	 *            number of additional total and covered items
+	 * @return counter instance with incremented values
+	 */
+	public CounterImpl increment(final ICounter counter) {
+<span class="fc" id="L132">		return increment(counter.getMissedCount(), counter.getCoveredCount());</span>
+	}
+
+	/**
+	 * Returns a counter with values incremented by the given numbers. It is up
+	 * to the implementation whether this counter instance is modified or a new
+	 * instance is returned.
+	 * 
+	 * @param missed
+	 *            number of missed items
+	 * @param covered
+	 *            number of covered items
+	 * @return counter instance with incremented values
+	 */
+	public abstract CounterImpl increment(int missed, int covered);
+
+	// === ICounter implementation ===
+
+	public int getTotalCount() {
+<span class="fc" id="L151">		return missed + covered;</span>
+	}
+
+	public int getCoveredCount() {
+<span class="fc" id="L155">		return covered;</span>
+	}
+
+	public int getMissedCount() {
+<span class="fc" id="L159">		return missed;</span>
+	}
+
+	public double getCoveredRatio() {
+<span class="fc" id="L163">		return (double) covered / (missed + covered);</span>
+	}
+
+	public double getMissedRatio() {
+<span class="fc" id="L167">		return (double) missed / (missed + covered);</span>
+	}
+
+	public int getStatus() {
+<span class="fc bfc" id="L171" title="All 2 branches covered.">		int status = covered &gt; 0 ? FULLY_COVERED : EMPTY;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">		if (missed &gt; 0) {</span>
+<span class="fc" id="L173">			status |= NOT_COVERED;</span>
+		}
+<span class="fc" id="L175">		return status;</span>
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+<span class="fc bfc" id="L180" title="All 2 branches covered.">		if (obj instanceof ICounter) {</span>
+<span class="fc" id="L181">			final ICounter that = (ICounter) obj;</span>
+<span class="fc bfc" id="L182" title="All 4 branches covered.">			return this.missed == that.getMissedCount()</span>
+					&amp;&amp; this.covered == that.getCoveredCount();
+		} else {
+<span class="fc" id="L185">			return false;</span>
+		}
+	}
+
+	@Override
+	public int hashCode() {
+<span class="fc" id="L191">		return missed ^ covered * 17;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L196">		final StringBuilder b = new StringBuilder(&quot;Counter[&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L197">		b.append(getMissedCount());</span>
+<span class="fc" id="L198">		b.append('/').append(getCoveredCount());</span>
+<span class="fc" id="L199">		b.append(']');</span>
+<span class="fc" id="L200">		return b.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>DelimitedWriter.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">JaCoCo</a> &gt; <a href="../index.html" class="el_bundle">org.jacoco.report</a> &gt; <a href="index.html" class="el_package">org.jacoco.report.csv</a> &gt; <span class="el_source">DelimitedWriter.java</span></div><h1>DelimitedWriter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright (c) 2009, 2011 Mountainminds GmbH &amp; Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Brock Janiczak - initial API and implementation
+ *    
+ *******************************************************************************/
+package org.jacoco.report.csv;
+
+import java.io.IOException;
+import java.io.Writer;
+
+/**
+ * Helper class for writing out CSV or tab delimited files.
+ * &lt;p&gt;
+ * &lt;strong&gt;Example Usage:&lt;/strong&gt;
+ * 
+ * &lt;pre&gt;
+ * delimitedWriter.writeFields(&amp;quot;header1&amp;quot;, &amp;quot;header2&amp;quot;, ...);
+ * for each line to be written {
+ *   delimitedWriter.writeField(value1);
+ *   delimitedWriter.writeField(value2);
+ *   delimitedWriter.nextLine();
+ * }
+ * delimitedWriter.close();
+ * &lt;/pre&gt;
+ * 
+ * &lt;/p&gt;
+ */
+class DelimitedWriter {
+	private static final String QUOTE = &quot;\&quot;&quot;;
+	private static final String ESCAPED_QUOTE = &quot;\&quot;\&quot;&quot;;
+
+	private static final char DEFAULT_DELIMITER = ',';
+<span class="fc" id="L39">	private static final String NEW_LINE = System.getProperty(&quot;line.separator&quot;);</span>
+	private final char delimiter;
+	private final Writer delegate;
+<span class="fc" id="L42">	private int fieldPosition = 0;</span>
+
+	/**
+	 * Creates a new Delimited writer using the default delimiter
+	 * 
+	 * @param delegate
+	 *            Writer to delegate all writes to
+	 */
+	public DelimitedWriter(final Writer delegate) {
+<span class="fc" id="L51">		this(delegate, DEFAULT_DELIMITER);</span>
+<span class="fc" id="L52">	}</span>
+
+	/**
+	 * Creates a new Delimited writer using the default delimiter
+	 * 
+	 * @param delegate
+	 *            Writer to delegate all writes to
+	 * @param delimiter
+	 *            delimiter to use (usually a comma, tab or space)
+	 */
+<span class="fc" id="L62">	public DelimitedWriter(final Writer delegate, final char delimiter) {</span>
+<span class="fc" id="L63">		this.delegate = delegate;</span>
+<span class="fc" id="L64">		this.delimiter = delimiter;</span>
+<span class="fc" id="L65">	}</span>
+
+	/**
+	 * Write multiple fields at once. Values will be auto escaped and quoted as
+	 * needed. Each value will be separated using the current delimiter
+	 * 
+	 * @param fields
+	 *            Values to write
+	 * @throws IOException
+	 *             Error writing to the underlying writer object
+	 */
+	public void write(final String... fields) throws IOException {
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		for (final String field : fields) {</span>
+<span class="fc" id="L78">			write(field);</span>
+		}
+<span class="fc" id="L80">	}</span>
+
+	/**
+	 * Write a single value. Values will be auto escaped and quoted as needed.
+	 * If this is not the first field of the current line the value will be
+	 * prepended with the current delimiter
+	 * 
+	 * @param field
+	 *            Value to write
+	 * @throws IOException
+	 *             Error writing to the underlying writer object
+	 */
+	public void write(final String field) throws IOException {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">		if (fieldPosition != 0) {</span>
+<span class="fc" id="L94">			delegate.write(delimiter);</span>
+		}
+<span class="fc" id="L96">		delegate.write(escape(field));</span>
+<span class="fc" id="L97">		fieldPosition++;</span>
+<span class="fc" id="L98">	}</span>
+
+	/**
+	 * Write a single integer value.
+	 * 
+	 * @param value
+	 *            Value to write
+	 * @throws IOException
+	 *             Error writing to the underlying writer object
+	 */
+	public void write(final int value) throws IOException {
+<span class="fc" id="L109">		write(Integer.toString(value));</span>
+<span class="fc" id="L110">	}</span>
+
+	/**
+	 * Write muliple integer values
+	 * 
+	 * @param values
+	 *            values to write
+	 * @throws IOException
+	 *             Error writing to the underlying writer object
+	 */
+	public void write(final int... values) throws IOException {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		for (final int value : values) {</span>
+<span class="fc" id="L122">			write(Integer.toString(value));</span>
+		}
+<span class="fc" id="L124">	}</span>
+
+	/**
+	 * Output a new line and advance the writer to the next line. The line
+	 * delimiter is the default for the platform.
+	 * 
+	 * @throws IOException
+	 *             Error writing to the underlying writer object
+	 */
+	public void nextLine() throws IOException {
+<span class="fc" id="L134">		delegate.write(NEW_LINE);</span>
+<span class="fc" id="L135">		fieldPosition = 0;</span>
+<span class="fc" id="L136">	}</span>
+
+	/**
+	 * Close the underlying writer object. Once closed all write operations will
+	 * fail
+	 * 
+	 * @throws IOException
+	 *             Error closing the underlying writer object
+	 */
+	public void close() throws IOException {
+<span class="fc" id="L146">		delegate.close();</span>
+<span class="fc" id="L147">	}</span>
+
+	/**
+	 * Escapes any occurrences of the quote character in value by replacing it
+	 * with a double quote. Also Quotes the value if a quote or delimiter value
+	 * is found.
+	 * 
+	 * @param value
+	 *            String that needs escaping
+	 * @return New string with all values escaped
+	 */
+	private String escape(final String value) {
+<span class="fc" id="L159">		String escapedValue = value;</span>
+
+		// Escape and quote if the source value contains the delimiter
+		// or the quote character
+<span class="fc bfc" id="L163" title="All 4 branches covered.">		if (value.indexOf(QUOTE) != -1 || value.indexOf(delimiter) != -1) {</span>
+<span class="fc" id="L164">			escapedValue = value.replace(QUOTE, ESCAPED_QUOTE);</span>
+<span class="fc" id="L165">			escapedValue = QUOTE + escapedValue + QUOTE;</span>
+		}
+
+<span class="fc" id="L168">		return escapedValue;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.5.2.20110519202509</span>Code Coverage Report for JaCoCo 0.5.2.20110519202509</div></body></html>
