@@ -36,14 +36,23 @@ public class VDictTest
         return new TestSuite( VDictTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
     public void test_vdict_init()
     {
        VDictProxy dict = new VDictProxy();
        assertTrue(dict.size() == 0);
        assertTrue(dict.empty() == true);
+    }
+
+    public void test_vdict_insert_not_exist_file() 
+    {
+       try{
+          VDictProxy dict = new VDictProxy();
+          dict.insert("not-exist-file.png", 1);
+          fail("VDict doesn't throw out a FileNotFoundException.");
+       }
+       catch(FileNotFoundException e){
+          assertNotNull(e);
+       }
     }
 
     public void test_vdict_insert() throws FileNotFoundException

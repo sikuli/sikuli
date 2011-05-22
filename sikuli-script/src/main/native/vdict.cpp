@@ -129,7 +129,7 @@ VizDict::preprocess(IplImage** img){
 
 VizRecord 
 VizDict::load_image(string filename){
-  cerr << "VizDict::load_image: " + filename << endl;
+  //cerr << "VizDict::load_image: " + filename << endl;
 
   IplImage* img = cvLoadImage(filename.c_str());  
 
