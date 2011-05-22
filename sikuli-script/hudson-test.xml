@@ -15,7 +15,7 @@
       <pathelement location="target/sikuli-script.jar" />
    </path>
    <path id="classpath.test">
-      <pathelement location="../lib/junit-3.8.1.jar" />
+      <pathelement location="../lib/junit-4.8.2.jar" />
       <pathelement location="${tst-dir}" />
       <path refid="classpath.base" />
    </path>
@@ -26,7 +26,11 @@
             <classpath refid="classpath.test" />
             <formatter type="plain" usefile="false"/>
             <formatter type="xml"/>
-            <test name="org.sikuli.script.SikuliScriptTestSuite" todir="build"/>
+            <batchtest fork="yes" todir="build">
+               <fileset dir="src/test/java">
+                  <include name="**/*Test.java"/>
+               </fileset>
+            </batchtest>
          </junit>
       </jacoco:coverage>
    </target>

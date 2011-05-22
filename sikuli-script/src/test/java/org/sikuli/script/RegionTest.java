@@ -5,9 +5,8 @@
  */
 package org.sikuli.script;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.* ;
+import static org.junit.Assert.* ;
 
 import java.awt.event.InputEvent;
 import java.util.Date;
@@ -17,24 +16,30 @@ import javax.swing.*;
 /**
  * Unit test for simple SikuliScript.
  */
-public class RegionTest extends TestCase implements SikuliEventObserver
+public class RegionTest implements SikuliEventObserver
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RegionTest( String testName )
+    @Test
+    public void test_click() throws Exception
     {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( RegionTest.class );
+       JButtons frame = new JButtons();
+       assertEquals(0, frame.getCount()[0]);
+       assertEquals(0, frame.getCount()[1]);
+       assertEquals(0, frame.getCount()[2]);
+       Screen scr = new Screen();
+       Settings.MoveMouseDelay = 0;
+       Pattern ptn = new Pattern("test-res/network.png");
+       int ret = scr.click(ptn, 0);
+       Thread.sleep(500);
+       assertEquals(0, frame.getCount()[0]);
+       assertEquals(0, frame.getCount()[1]);
+       assertEquals(1, frame.getCount()[2]);
+       ptn = new Pattern("test-res/sound.png");
+       ret = scr.click(ptn, 0);
+       Thread.sleep(500);
+       assertEquals(0, frame.getCount()[0]);
+       assertEquals(1, frame.getCount()[1]);
+       assertEquals(1, frame.getCount()[2]);
+       frame.dispose();
     }
 
     public void testRegionClickOffset() throws Exception
@@ -44,9 +49,9 @@ public class RegionTest extends TestCase implements SikuliEventObserver
        assertEquals(0, frame.getCount()[1]);
        assertEquals(0, frame.getCount()[2]);
        Screen scr = new Screen();
-       Pattern ptn = new Pattern("test-res/cup-btn.png").targetOffset(-80,2);
-       Thread.sleep(500);
+       Pattern ptn = new Pattern("test-res/show-all.png").similar(0.9f).targetOffset(-80,2);
        int ret = scr.click(ptn, 0);
+       Thread.sleep(2000);
        assertEquals(1, frame.getCount()[1]);
        assertEquals(0, frame.getCount()[2]);
        frame.dispose();

@@ -5,37 +5,16 @@
  */
 package org.sikuli.script;
 
-import java.util.List;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.* ;
+import static org.junit.Assert.* ;
 
+import java.util.List;
 import java.io.*;
 
-/**
- * Unit test for simple App.
- */
 public class VDictTest 
-    extends TestCase
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public VDictTest( String testName )
-    {
-        super( testName );
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( VDictTest.class );
-    }
-
+    @Test
     public void test_vdict_init()
     {
        VDictProxy dict = new VDictProxy();
@@ -43,6 +22,7 @@ public class VDictTest
        assertTrue(dict.empty() == true);
     }
 
+    @Test
     public void test_vdict_insert_not_exist_file() 
     {
        try{
@@ -55,6 +35,7 @@ public class VDictTest
        }
     }
 
+    @Test
     public void test_vdict_insert() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
@@ -67,6 +48,7 @@ public class VDictTest
        assertTrue(val == 100);
     }
 
+    @Test
     public void test_vdict_lookup() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
@@ -77,6 +59,7 @@ public class VDictTest
     }
 
 
+    @Test
     public void test_vdict_lookup_obj() throws FileNotFoundException
     {
        VDictProxy<String> dict = new VDictProxy();
@@ -86,6 +69,7 @@ public class VDictTest
     }
 
 
+    @Test
     public void test_vdict_erase() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();
@@ -97,6 +81,7 @@ public class VDictTest
     }
 
 
+    @Test
     public void test_vdict_lookup_n() throws FileNotFoundException
     {
        VDictProxy<Integer> dict = new VDictProxy();

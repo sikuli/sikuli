@@ -44,7 +44,7 @@ SET(TEST_CLASS_DIR "${CMAKE_BINARY_DIR}/test")
 SET(BINARY_LIB_DIR "${BINARY_DIR}/lib")
 SET(JAR_DIR "${BINARY_DIR}/jar")
 
-SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
+SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-4.8.2.jar")
 SET(JYTHON_JAR "${COMMON_LIB_DIR}/jython-2.5.1.jar")
 SET(JYTHON_LIB_FILE "${COMMON_LIB_DIR}/jython-lib-2.5.1.tgz")
 
@@ -153,7 +153,6 @@ add_custom_target( test-res
 )
 
 add_custom_target( java-test
-   #   COMMAND ${JAVA_RUNTIME} -cp ${TEST_CLASS_DIR}${SEP}${BINARY_DIR}/${JAR_FILE}${SEP}${JUNIT_JAR} junit.textui.TestRunner ${MAIN_TEST_SUITE}
    COMMAND ant -f ${JAVA_TEST_FOR_HUDSON_XML}
    COMMENT "Run Java unit tests"
 )

@@ -39,8 +39,8 @@ public class JButtons extends JFrame {
     });
     content.add(button1);
 
-    ImageIcon cup = new ImageIcon("test-res/cup.gif");
-    JButton button2 = new JButton(cup);
+    ImageIcon sound = new ImageIcon("test-res/sound.png");
+    JButton button2 = new JButton(sound);
     button2.addActionListener(new ActionListener(){
        public void actionPerformed(ActionEvent ae2){
           count[1]++;
@@ -48,11 +48,11 @@ public class JButtons extends JFrame {
     });
     content.add(button2);
 
-    JButton button3 = new JButton("Java", cup);
+    ImageIcon network = new ImageIcon("test-res/network.png");
+    JButton button3 = new JButton(network);
     button3.addActionListener(new ActionListener(){
        public void actionPerformed(ActionEvent ae2){
           count[2]++;
-          System.out.println("click on button3 " + count[2]);
        }
     });
 
