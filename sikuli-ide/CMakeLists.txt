@@ -59,11 +59,13 @@ FILE(MAKE_DIRECTORY ${TEST_CLASS_DIR})
 
 SET(MAIN_CLASS org.sikuli.ide.SikuliIDE)
 SET(RUN_USER_ARGS -Dsikuli.console=true -Dfile.encoding=UTF-8 
+             -Dsikuli.testing=yes
              -Xms64m -Xmx512m 
    CACHE STRING 
    "The arguments for running Sikuli IDE with 'make run-user'"
 )
 SET(RUN_ARGS -Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
+             -Dsikuli.testing=yes
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
    CACHE STRING 

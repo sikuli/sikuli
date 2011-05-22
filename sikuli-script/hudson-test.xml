@@ -22,6 +22,7 @@
    <target name="test">
       <jacoco:coverage>
          <junit fork="yes" haltonfailure="no" forkmode="once">
+            <sysproperty key="sikuli.testing" value="yes" />
             <classpath refid="classpath.test" />
             <formatter type="plain" usefile="false"/>
             <formatter type="xml"/>

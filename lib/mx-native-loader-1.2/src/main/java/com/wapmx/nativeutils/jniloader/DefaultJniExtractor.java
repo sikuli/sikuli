@@ -12,6 +12,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Vector;
+
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
@@ -44,15 +47,21 @@ public class DefaultJniExtractor implements JniExtractor {
      * @throws IOException if there's a problem creating the dir
      */
     public File getJniDir() throws IOException {
-       String[] libPaths = {
-          "Sikuli-IDE.app/Contents/Frameworks", 
-          "libs",
+       String[] absLibPaths = {
           "/Applications/Sikuli-IDE.app/Contents/Frameworks", 
           System.getenv("SIKULI_HOME") + "libs"
        };
+       String[] relLibPaths = {
+          "Sikuli-IDE.app/Contents/Frameworks", 
+          "libs",
+       };
+       Vector<String> libPaths = new Vector(Arrays.asList(relLibPaths));
+       String isTesting = System.getProperty("sikuli.testing");
+       if(isTesting == null || !isTesting.equals("yes")){
+          libPaths.addAll(Arrays.asList(absLibPaths));
+       }
        if(jniDir == null) {
-          for(int i=0;i<libPaths.length;i++){
-             String path = libPaths[i];
+          for(String path : libPaths){
              jniDir = new File(path);
              if( jniDir.exists() ){
                 System.setProperty("java.library.tmpdir", path);

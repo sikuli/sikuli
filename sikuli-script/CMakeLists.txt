@@ -171,7 +171,7 @@ SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")
 SET(JYTHON_CLASS org.python.util.jython)
 
 add_custom_target( python-test
-   COMMAND ${JAVA_RUNTIME} -cp ${BINARY_DIR}/${JAR_FILE} ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py
+   COMMAND ${JAVA_RUNTIME} -Dsikuli.testing=yes -cp ${BINARY_DIR}/${JAR_FILE} ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py
    COMMENT "Run Python unit tests"
 )
 
