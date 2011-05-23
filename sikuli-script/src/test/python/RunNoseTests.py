@@ -10,7 +10,7 @@ site_dir = os.path.join(os.getcwdu(), 'site-packages')
 if not os.path.exists(site_dir): os.mkdir(site_dir)
 site.addsitedir(site_dir)
 sys.executable = ''
-os.environ['PYTHONPATH'] = ':'.join(sys.path)
+os.environ['PYTHONPATH'] = os.pathsep.join(sys.path)
 
 # Get ez_setup:
 ez_setup_path = os.path.join(site_dir, 'ez_setup.py')
