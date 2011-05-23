@@ -16,7 +16,11 @@ class TestEnv(unittest.TestCase):
          assert System.getProperty("os.name").find("Linux") >= 0
       assert Env.getOSVersion() != None
 
+   #@unittest.skipIf(Env.getOS == OS.LINUX, "XVnc on Linux doesn't support caps lock")
    def testCapsLock(self):
+      if Env.getOS() == OS.LINUX: # XVnc on Linux doesn't support caps lock
+         print "skipped, XVnc on Linux doesn't support caps lock"
+         return
       lock = Env.isLockOn(Key.CAPS_LOCK)
       assert (lock == True or lock == False)
 
