@@ -35,6 +35,7 @@ class TestEnv(unittest.TestCase):
          x = random.randint(b.getX(),b.getWidth())
          y = random.randint(b.getY(),b.getHeight())
          hover(Location(x,y))
+         Thread.sleep(100)
          cursor = Env.getMouseLocation()
          assert cursor.x == x and cursor.y == y
 
