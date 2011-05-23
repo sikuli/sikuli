@@ -37,6 +37,6 @@ except ImportError:
 
 print "find tests in ", TESTS_DIR
 # Run Tests!
-nose.run(argv=['nosetests', '-v', '--with-xunit', '--where='+TESTS_DIR, '--xunit-file='+cwd+'/TEST-Sikuli-Python-Suite.xml'])
+nose.run(argv=['nosetests', '-v', '--with-xunit', '--where='+TESTS_DIR, '--xunit-file='+cwd+'/TEST-Sikuli-Python-Suite.xml'] + sys.argv[1:])
 
 
