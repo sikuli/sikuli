@@ -843,3 +843,12 @@ below:
 	:return: True if the specified key is on, False otherwise
 	
 	Further information about key constants can be found in Class :py:class:`Key`.
+
+
+.. versionadded:: X1.0-rc2
+.. py:method:: Env.getMouseLocation()
+
+	Get the current location of the mouse cursor.
+	
+	:return: a :py:class:`Location` object of the position of the mouse cursor on the screen.
+	
