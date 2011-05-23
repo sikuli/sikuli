@@ -95,3 +95,29 @@ div.sphinxsidebar {
    -moz-box-shadow: 1px 1px 1px gray;
    -webkit-box-shadow: 1px 1px 2px gray;
 }
+
+
+.versionmodified {
+   float: right;
+   position:relative;
+   padding:0;
+   padding-right: 5px;
+   margin:0;
+   color:#000;
+   background: #F7F6A6;
+   height: 20px;
+}
+
+/* creates triangle */
+.versionmodified:before {
+   content:"";
+   display:block; /* reduce the damage in FF3.0 */
+   position:absolute;
+   left: -10px;
+   top: 0;
+   width: 0;
+   height: 0;
+   border-top: 10px solid transparent;
+   border-bottom: 10px solid transparent; 
+   border-right:10px solid #F7F6A6;
+}

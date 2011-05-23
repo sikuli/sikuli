@@ -1193,7 +1193,6 @@ For more sophisticated concepts, you can implement your own exception handling u
 the standard Python construct ``try: ... except: ...`` .
 
 .. versionadded:: X1.0-rc2
-
 These are the possibilities to handle "not found" situations:
 	* generally abort a script, if not handled with ``try: ... except: ...``
 		(the default setting or using :py:meth:`setThrowException(True) <Region.setThrowException>` 
@@ -1264,7 +1263,6 @@ statement, that does nothing, but maintains indentation to form the blocks)::
 	(default region SCREEN) is used. 
 
 	.. versionadded:: X1.0-rc2
-	
 	.. py:method:: setFindFailedResponse(ABORT | SKIP | PROMPT | RETRY)
 	
 		For the specified region set the option, how Sikuli should handle 
