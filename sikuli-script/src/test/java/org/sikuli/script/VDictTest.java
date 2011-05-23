@@ -22,17 +22,11 @@ public class VDictTest
        assertTrue(dict.empty() == true);
     }
 
-    @Test
-    public void test_vdict_insert_not_exist_file() 
+    @Test(expected=FileNotFoundException.class)
+    public void test_vdict_insert_not_exist_file() throws FileNotFoundException
     {
-       try{
-          VDictProxy dict = new VDictProxy();
-          dict.insert("not-exist-file.png", 1);
-          fail("VDict doesn't throw out a FileNotFoundException.");
-       }
-       catch(FileNotFoundException e){
-          assertNotNull(e);
-       }
+       VDictProxy dict = new VDictProxy();
+       dict.insert("not-exist-file.png", 1);
     }
 
     @Test
