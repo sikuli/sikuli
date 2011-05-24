@@ -178,7 +178,7 @@ SET(NOSE_ARGS
    "The arguments for running Python nose tests")
 
 add_custom_target( python-test
-   COMMAND ${JAVA_RUNTIME} ${JACOCO_ARGS} -Dsikuli.testing=yes -cp "${BINARY_DIR}/${JAR_FILE}${SEP}${TEST_CLASS_DIR}" ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py ${NOSE_ARGS}
+   COMMAND ${JAVA_RUNTIME} "${JACOCO_ARGS}" -Dsikuli.testing=yes -cp "${BINARY_DIR}/${JAR_FILE}${SEP}${TEST_CLASS_DIR}" ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py ${NOSE_ARGS}
    COMMENT "Run Python unit tests"
 )
 
