@@ -168,8 +168,12 @@ add_dependencies( java-test
 
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")
 SET(JYTHON_CLASS org.python.util.jython)
+SET(JACOCOAGENT_JAR ${BASE_DIR}/../utils/jacoco/lib/jacocoagent.jar)
+IF(WIN32)
+   STRING(REPLACE "/" "\\" JACOCOAGENT_JAR "${JACOCOAGENT_JAR}")
+ENDIF(WIN32)
 SET(JACOCO_ARGS
-   "-javaagent:${BASE_DIR}/../utils/jacoco/lib/jacocoagent.jar=destfile=${CMAKE_BINARY_DIR}/jacoco.exec,includes=org.sikuli.*"
+   "-javaagent:${JACOCOAGENT_JAR}=destfile=jacoco.exec,includes=org.sikuli.*"
 )
 
 SET(NOSE_ARGS
