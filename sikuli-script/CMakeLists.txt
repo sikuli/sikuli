@@ -168,6 +168,9 @@ add_dependencies( java-test
 
 SET(PY_TEST_DIR "${BASE_DIR}/src/test/python")
 SET(JYTHON_CLASS org.python.util.jython)
+SET(JACOCO_ARGS
+   "-javaagent:${BASE_DIR}/../utils/jacoco/lib/jacocoagent.jar=destfile=${CMAKE_BINARY_DIR}/jacoco.exec,includes=org.sikuli.*"
+)
 
 SET(NOSE_ARGS
    ""
@@ -175,7 +178,7 @@ SET(NOSE_ARGS
    "The arguments for running Python nose tests")
 
 add_custom_target( python-test
-   COMMAND ${JAVA_RUNTIME} -Dsikuli.testing=yes -cp "${BINARY_DIR}/${JAR_FILE}${SEP}${TEST_CLASS_DIR}" ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py ${NOSE_ARGS}
+   COMMAND ${JAVA_RUNTIME} ${JACOCO_ARGS} -Dsikuli.testing=yes -cp "${BINARY_DIR}/${JAR_FILE}${SEP}${TEST_CLASS_DIR}" ${JYTHON_CLASS} ${PY_TEST_DIR}/RunNoseTests.py ${NOSE_ARGS}
    COMMENT "Run Python unit tests"
 )
 
