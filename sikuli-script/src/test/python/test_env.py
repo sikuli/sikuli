@@ -4,6 +4,7 @@ import unittest
 from sikuli import *
 import os
 import random
+import time
 from java.lang import System
 
 class TestEnv(unittest.TestCase):
@@ -35,7 +36,7 @@ class TestEnv(unittest.TestCase):
          x = random.randint(b.getX(),b.getWidth())
          y = random.randint(b.getY(),b.getHeight())
          hover(Location(x,y))
-         Thread.sleep(100)
+         time.sleep(0.1)
          cursor = Env.getMouseLocation()
          assert cursor.x == x and cursor.y == y
 
