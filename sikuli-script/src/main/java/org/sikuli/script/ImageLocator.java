@@ -8,12 +8,13 @@ package org.sikuli.script;
 import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.net.URI;
 import java.net.URL;
 import java.net.MalformedURLException;
 
 public class ImageLocator {
 
-   Map<URL,String> _cache = new HashMap<URL, String>();
+   Map<URI,String> _cache = new HashMap<URI, String>();
    String _cache_dir;
    String _bundle_path;
 
@@ -50,13 +51,18 @@ public class ImageLocator {
 
    public String locateURL(URL url) throws IOException{
       Debug.log(3, "locateURL " + url);
-      if(_cache.containsKey(url))
-         return _cache.get(url);
       try{
+         URI uri = url.toURI();
+         if(_cache.containsKey(uri))
+            return _cache.get(uri);
          String localFile = Util.downloadURL(url, _cache_dir);
-         Debug.log(3, "download " + url + " to local: "  + localFile);
-         _cache.put(url, localFile);
+         Debug.log(3, "download " + uri + " to local: "  + localFile);
+         _cache.put(uri, localFile);
          return localFile;
+      }
+      catch(java.net.URISyntaxException e){
+         Debug.error("URI syntax error: " + url + ", " + e.getMessage());
+         return null;
       }
       catch(IOException e){
          //e.printStackTrace();
