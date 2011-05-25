@@ -181,7 +181,6 @@ public class ImageLocator {
             return filename;
       }
       else{
-         Debug.log("search file " + filename);
          ret = searchFile(filename);
          if(ret != null)
             return ret;
