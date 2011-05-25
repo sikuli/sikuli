@@ -84,12 +84,22 @@ public class ImageLocator {
       path = path.replaceAll("[Hh][Tt][Tt][Pp][Ss]://","__https__//");
       String[] ret = path.split(Env.getSeparator());
       for(int i=0;i<ret.length;i++){
-         if(ret[i].indexOf("__http__")>=0)
+         boolean isURL = false;
+         if(ret[i].indexOf("__http__")>=0){
             ret[i] = ret[i].replaceAll("__http__//", "http://");
-         else if(ret[i].indexOf("__https__")>=0)
+            isURL = true;
+         }
+         else if(ret[i].indexOf("__https__")>=0){
             ret[i] = ret[i].replaceAll("__https__//", "https://");
-         if(!ret[i].endsWith(File.separator))
-            ret[i] += File.separator;
+            isURL = true;
+         }
+         if(isURL){
+            if(!ret[i].endsWith("/")) ret[i] += "/";
+         }
+         else{
+            if(!ret[i].endsWith(File.separator))
+               ret[i] += File.separator;
+         }
       }
       return ret;
    }
@@ -130,15 +140,15 @@ public class ImageLocator {
    }
 
    protected String searchFile(String filename) throws IOException {
-      Debug.log(4,"ImageLocator.searchFile: " + filename + " bundle path: " + _bundle_path);
+      Debug.log("ImageLocator.searchFile: " + filename + " bundle path: " + _bundle_path);
       File f = new File(_bundle_path, filename);
       if( f.exists() ) return f.getAbsolutePath();
       String[] sikuli_img_path = getImagePath();
       for(String path : sikuli_img_path){
-         Debug.log(4, "ImageLocator: env+sys path: " + path);
+         Debug.log("ImageLocator: env+sys path: " + path);
          f = new File(path, filename);
          if( f.exists() ){
-            Debug.log(4, "ImageLocator found " + filename + " in " + path);
+            Debug.log("ImageLocator found " + filename + " in " + path);
             return f.getAbsolutePath();
          }
          URL url = getURL(path);
@@ -171,10 +181,11 @@ public class ImageLocator {
             return filename;
       }
       else{
+         Debug.log("search file " + filename);
          ret = searchFile(filename);
          if(ret != null)
             return ret;
       }
-      throw new FileNotFoundException("File " + ret + " not exists");
+      throw new FileNotFoundException("File " + filename + " not exists");
    }
 }
