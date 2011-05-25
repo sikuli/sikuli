@@ -34,5 +34,21 @@
          </junit>
       </jacoco:coverage>
    </target>
+   <target name="ensure-test-name" unless="test">
+       <fail message="You must run this target with -Dtest=TestName"/>
+   </target>
+
+   <target name="runtest" description="Runs the test you specify on the command line with -Dtest=" depends="ensure-test-name">
+       <junit printsummary="withOutAndErr" fork="yes"> 
+           <classpath refid="classpath.test" />
+           <formatter type="plain" usefile="false"/>
+           <batchtest>
+               <fileset dir="src/test/java">
+                   <include name="**/${test}.java"/>
+               </fileset>
+           </batchtest>
+       </junit>
+   </target>
+
   <target name="all" depends="test" />
 </project>
