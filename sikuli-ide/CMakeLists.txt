@@ -124,11 +124,14 @@ add_custom_target( run
                         ${MAIN_CLASS} ${ARGS}
 )
 
-file(READ ${BASE_DIR}/latest-ver VERSION)
-STRING(STRIP ${VERSION} VERSION)
+if(NOT DEFINED SIKULI_VERSION OR SIKULI_VERSION STREQUAL "")
+   file(READ ${BASE_DIR}/latest-ver SIKULI_VERSION)
+   STRING(STRIP ${SIKULI_VERSION} SIKULI_VERSION)
+ENDIF()
+message("Sikuli Version ${SIKULI_VERSION}")
 
 add_custom_target( update-version
-   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/org/sikuli/ide/IDESettings.java "${VERSION}"
+   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/org/sikuli/ide/IDESettings.java "${SIKULI_VERSION}"
    COMMENT "Update version number in Sikuli-IDE"
 )
 
@@ -201,7 +204,7 @@ IF(APPLE)
 
 ENDIF(APPLE)
 
-SET(RELEASE_FILE "Sikuli-${VERSION}-${OS}")
+SET(RELEASE_FILE "Sikuli-${SIKULI_VERSION}-${OS}")
 
 ## Packaging App
 add_custom_target( ${APP_FILE}
@@ -280,7 +283,7 @@ IF(APPLE)
    )
 
    add_custom_target( ${APP_FILE}.update_ver
-	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion ${VERSION}
+	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion ${SIKULI_VERSION}
 	COMMAND plutil -convert xml1 ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info.plist
    )
 
@@ -338,7 +341,7 @@ else(APPLE)
    )
 endif(APPLE)
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Sikuli ${VERSION}")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Sikuli ${SIKULI_VERSION}")
 SET(CPACK_PACKAGE_VENDOR "Sikuli Development Team")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${BASE_DIR}/../readme.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${BASE_DIR}/../copyright.txt")
@@ -396,9 +399,12 @@ add_dependencies( run-user ${JAR_FILE})
 add_dependencies( run ${JAR_FILE})
 add_dependencies( app ${APP_FILE}) 
 
+
 ADD_SUBDIRECTORY( ${JAVA_SRC_DIR} )
 ADD_SUBDIRECTORY( ${NATIVE_SRC_DIR} )
 ADD_SUBDIRECTORY( ${JAVA_TEST_DIR} )
 
 
+
+SET(SIKULI_VERSION  CACHE INTERNAL "" FORCE)
 
