@@ -215,6 +215,7 @@ add_dependencies( ${APP_FILE} ${JAR_FILE} )
 
 IF(LINUX)
    EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE SYSTEM_ARCH)
+   SET(RELEASE_FILE "${RELEASE_FILE}-${SYSTEM_ARCH}")
    if(SYSTEM_ARCH MATCHES "x86_64")
       SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-64.so")
    else()
