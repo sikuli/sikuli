@@ -50,7 +50,7 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_closeApp__I
 /*
  * Class:     org_sikuli_script_Win32Util
  * Method:    bringWindowToFront
- * Signature: (Ljavax/swing/JWindow;Z)V
+ * Signature: (Ljava/awt/Window;Z)V
  */
 JNIEXPORT void JNICALL Java_org_sikuli_script_Win32Util_bringWindowToFront
   (JNIEnv *, jobject, jobject, jboolean);
