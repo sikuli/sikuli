@@ -130,8 +130,9 @@ if(NOT DEFINED SIKULI_VERSION OR SIKULI_VERSION STREQUAL "")
 ENDIF()
 message("Sikuli Version ${SIKULI_VERSION}")
 
+SET(JYTHON_CLASS org.python.util.jython)
 add_custom_target( update-version
-   COMMAND ${BASE_DIR}/../utils/update-version.sh  ${JAVA_SRC_DIR}/org/sikuli/ide/IDESettings.java "${SIKULI_VERSION}"
+      COMMAND ${JAVA_RUNTIME} -cp ${CLASSPATH} ${JYTHON_CLASS} ${BASE_DIR}/../utils/update-version.py  ${JAVA_SRC_DIR}/org/sikuli/ide/IDESettings.java "${SIKULI_VERSION}"
    COMMENT "Update version number in Sikuli-IDE"
 )
 
