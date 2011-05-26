@@ -12,4 +12,5 @@ for line in f.xreadlines():
 
 output.close()
 f.close()
+os.remove(file)
 os.rename(file+".tmp", file)
