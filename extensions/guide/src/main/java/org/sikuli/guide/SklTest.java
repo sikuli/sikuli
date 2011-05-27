@@ -149,7 +149,7 @@ public class SklTest {
       anchor.setWidth(50);
       anchor.setHeight(50);
       
-      anchor.setPattern(new SklPatternModel("play.png"));
+      //anchor.setPattern(new SklPatternModel());
 
       SklTextModel text1 = new DefaultSklTextModel("Step 1");
       text1.setHasShadow(true);
@@ -174,7 +174,7 @@ public class SklTest {
       anchor.setWidth(25);
       anchor.setHeight(25);
       
-      anchor.setPattern(new SklPatternModel("play.png"));
+      //anchor.setPattern(new SklPatternModel("play.png"));
 
       SklTextModel text1 = new DefaultSklTextModel("Step 2");
       text1.setHasShadow(true);
@@ -198,7 +198,7 @@ public class SklTest {
       anchor.setWidth(50);
       anchor.setHeight(50);
       
-      anchor.setPattern(new SklPatternModel("play.png"));
+      //anchor.setPattern(new SklPatternModel("play.png"));
 
       SklTextModel text1 = new DefaultSklTextModel("Step 3");
       text1.setHasShadow(true);
@@ -213,6 +213,25 @@ public class SklTest {
       step.setReferenceImage(referenceImage);
 
       return step;
+   }
+   @Test
+   public void testEditorLoad() throws IOException{
+      SklEditor e = new SklEditor();
+
+      
+      (e.new LoadAction()).actionPerformed(null);
+      //(e.new NewAction()).actionPerformed(null);
+      //(e.new CaptureAction()).actionPerformed(null);
+      
+      
+      
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
    }
    
    @Test
@@ -237,7 +256,9 @@ public class SklTest {
       
       e.selectStep(0);
       
-      e.removeStep(2);
+      //e.removeStep(2);
+
+      (e.new SaveAction()).actionPerformed(null); 
 
       
       synchronized(e){

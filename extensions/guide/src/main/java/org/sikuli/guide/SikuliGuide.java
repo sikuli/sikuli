@@ -701,6 +701,9 @@ public class SikuliGuide extends TransparentWindow {
       for (Enumeration<?> e = stepListModel.elements() ; e.hasMoreElements() ;) {
           SklStepModel eachStepModel = (SklStepModel) e.nextElement();
           String ret = playStep(eachStepModel);
+          if (ret == null)
+             continue;
+          
           if (ret.equals("Exit")){
              return;
           }

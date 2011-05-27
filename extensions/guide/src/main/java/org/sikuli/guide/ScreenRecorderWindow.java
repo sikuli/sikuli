@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 
@@ -47,12 +48,18 @@ public class ScreenRecorderWindow extends JWindow{
       notifyWaiter();
    }
    
+   JButton stopButton;
+   JLabel statusLabel;
+   
+   // how many to record
+   int counter;
+   
    class BackgroundWindow extends JWindow{
       
       public BackgroundWindow() {
          //setLayout(null);
-         JButton button = new JButton("Stop");         
-         button.addActionListener(new ActionListener(){
+         stopButton = new JButton("Close");         
+         stopButton.addActionListener(new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,6 +69,8 @@ public class ScreenRecorderWindow extends JWindow{
             
          });
          
+         statusLabel = new JLabel("   Click inside the window below to capture a step");
+         statusLabel.setForeground(Color.white);
          
          //add(button);
          //button.setBounds(0,0,100,30);
@@ -69,10 +78,12 @@ public class ScreenRecorderWindow extends JWindow{
          setLayout(new BorderLayout());
          
          JPanel panel = new JPanel();
-         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-         panel.add(button);        
+         //panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+         panel.setLayout(new BorderLayout());
+         panel.add(stopButton, BorderLayout.EAST);        
+         panel.add(statusLabel, BorderLayout.CENTER);
          panel.setLocation(0,0);
-         panel.setBackground(new Color(0f,0f,0f,0.5f));
+         panel.setBackground(new Color(0f,0f,0f,1f));
          panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,30));
          add(panel,BorderLayout.NORTH);
          
@@ -89,14 +100,22 @@ public class ScreenRecorderWindow extends JWindow{
          g.translate(0,30);
          
          Dimension d = getSize();
-         g2d.setStroke(new BasicStroke(3f));
-         g2d.setColor(Color.green);
+         g2d.setStroke(new BasicStroke(1f));
+         g2d.setColor(Color.black);
          g2d.drawRect(0,0,d.width-1,d.height-31);
+         g2d.setColor(Color.white);
+         g2d.drawRect(1,1,d.width-3,d.height-33);
+         g2d.setColor(Color.black);
+         g2d.drawRect(2,2,d.width-5,d.height-35);
+
       }
    }
    
    RectangleSelectionMouseAdapter adapter;
    Point currentMouseLocation;
+   BackgroundWindow bw;
+   
+   
    public ScreenRecorderWindow(JFrame owner){
 
       try {
@@ -105,18 +124,13 @@ public class ScreenRecorderWindow extends JWindow{
          e1.printStackTrace();
       }
       
-      setBounds(new Rectangle(100,100,640,480));
+      //setBounds(new Rectangle(100,100,640,480));
 
       setBackground(null);//Color.black);
       getContentPane().setBackground(null);
       Env.getOSUtil().setWindowOpaque(this, false);
       
-      final BackgroundWindow bw = new BackgroundWindow();
-      Rectangle bwbounds = new Rectangle(getBounds());
-      bwbounds.grow(2,2);
-      bwbounds.y -= 30;
-      bwbounds.height += 30;
-      bw.setBounds(bwbounds);
+      bw = new BackgroundWindow();      
       bw.setVisible(true);
       bw.addComponentListener(new ComponentListener(){
 
@@ -160,6 +174,17 @@ public class ScreenRecorderWindow extends JWindow{
       
    }
 
+   SklEditor editor;
+   
+   public void setBounds(Rectangle bounds){
+      super.setBounds(bounds);
+
+      Rectangle bwbounds = new Rectangle(getBounds());
+      bwbounds.grow(2,2);
+      bwbounds.y -= 30;
+      bwbounds.height += 30;
+      bw.setBounds(bwbounds);      
+   }
 
    public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D) g;
@@ -228,6 +253,8 @@ public class ScreenRecorderWindow extends JWindow{
       public void mousePressed(MouseEvent e) {
             Debug.info("pressed at: " + e.getX() + "," + e.getY());    
             
+            //stopButton.setText("Capturing");
+            
             p = new Point(e.getPoint());
             
             RecordedClickEvent ce = new RecordedClickEvent();
@@ -237,9 +264,16 @@ public class ScreenRecorderWindow extends JWindow{
             BufferedImage image = s.capture(getBounds()).getImage();
             ce.setScreenImage(image);
 
+            
+            
+            // TODO: listener callback
+            if (editor != null)
+               editor.importStep(ce);
+
+            
             clickEvents.add(ce);
             
-            ce.export();            
+            //ce.export();            
             setVisible(false);
             
             Thread t = new Thread(){
@@ -253,6 +287,11 @@ public class ScreenRecorderWindow extends JWindow{
                }
             };
             t.start();
+            
+            counter -= 1;
+            if (counter == 0)
+               stopCapturing();
+               
       }
 
       @Override
@@ -282,8 +321,8 @@ public class ScreenRecorderWindow extends JWindow{
       return new Region(getSelectedRectangle());
    }
 
-
-   public void startModal() {
+   public void startModal(int counter) {
+      this.counter = counter;
       setVisible(true);
       toFront();
       
@@ -294,6 +333,11 @@ public class ScreenRecorderWindow extends JWindow{
             e.printStackTrace();
          }
       }      
+   }
+   
+
+   public void startModal() {
+      startModal(Integer.MAX_VALUE);   
    }
    
    public void focusBelow(){

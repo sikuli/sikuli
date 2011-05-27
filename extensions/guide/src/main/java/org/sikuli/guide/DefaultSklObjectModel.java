@@ -658,7 +658,8 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
          //getParent().repaint(r.x,r.y,r.width,r.height);
          //getParent().repaint();
          // TODO: fix this
-         getTopLevelAncestor().repaint();
+         if (getTopLevelAncestor() != null)
+            getTopLevelAncestor().repaint();
       }
 
    }

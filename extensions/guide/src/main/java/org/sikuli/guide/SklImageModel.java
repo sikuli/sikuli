@@ -60,11 +60,13 @@ public class SklImageModel extends DefaultSklObjectModel {
       setHeight(image.getHeight());
    }
    
+   String bundlePath;
+   
    private BufferedImage image;
    public BufferedImage getImage() {
       if (image == null){         
          try {
-            ImageLocator locator = new ImageLocator();       
+            ImageLocator locator = new ImageLocator(bundlePath);       
             File fin = new File(locator.locate(imageUrl));
             BufferedImage bimage = ImageIO.read(fin);
             setImage(bimage);            

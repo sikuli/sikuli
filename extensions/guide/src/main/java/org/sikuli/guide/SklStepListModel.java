@@ -1,5 +1,6 @@
 package org.sikuli.guide;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -7,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ class SklStepListSelectionModel extends DefaultListSelectionModel {
 //   }
 //}
 
-class SklStepListView extends JPanel {
+class SklStepListView extends JPanel implements KeyListener {
    
 //   EventListenerList listenerList = new EventListenerList();
 //   public void addSelectionListener(ListSelectionListener l) {
@@ -126,6 +129,8 @@ class SklStepListView extends JPanel {
          setLayout(null);
          setOpaque(true);         
          setModel(stepModel);         
+         
+         addKeyListener(SklStepListView.this);
       }
       
       void setModel(SklStepModel model){
@@ -150,10 +155,12 @@ class SklStepListView extends JPanel {
          
          foregroundBounds = getForegroundBounds(stepModel);
          
-         Dimension psize = foregroundBounds.getSize();
-         psize.width += (2*marginSize);
-         psize.height += (2*marginSize);
-         setPreferredSize(psize);      
+//         Dimension psize = foregroundBounds.getSize();
+//         psize.width += (2*marginSize);
+//         psize.height += (2*marginSize);
+//         setPreferredSize(psize);
+         
+         setPreferredSize(new Dimension(200,120));
       }
       
       Rectangle getForegroundBounds(SklStepModel stepModel){
@@ -225,8 +232,9 @@ class SklStepListView extends JPanel {
          
          if (stepModel.isSelected()){
             //Rectangle r = getBounds();
+            g2d.setStroke(new BasicStroke(3f));
             g2d.setColor(Color.red);
-            g2d.drawRect(0,0,r.width - 1,r.height - 1);
+            g2d.drawRect(1,1,r.width - 3,r.height - 3);
          }
          
       }
@@ -275,6 +283,9 @@ class SklStepListView extends JPanel {
             
       setListModel(listModel);
       setSelectionModel(listSelectionModel);
+      
+      list.addKeyListener(this);
+      setFocusable(true);
    }
    
    void setSelectionModel(SklStepListSelectionModel listSelectionModel){
@@ -327,4 +338,24 @@ class SklStepListView extends JPanel {
       this.listModel = listModel;
    }
    
+   
+   @Override
+   public void keyPressed(KeyEvent k) {
+      Debug.log("pressed " + k.getKeyCode());
+      
+      if (k.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+         Debug.log("User pressed DELETE");
+         
+         int index = list.getSelectedIndex();
+         listModel.remove(index);
+      }
+   }
+
+   @Override
+   public void keyReleased(KeyEvent arg0) {
+   }
+
+   @Override
+   public void keyTyped(KeyEvent arg0) {
+   }
 }
