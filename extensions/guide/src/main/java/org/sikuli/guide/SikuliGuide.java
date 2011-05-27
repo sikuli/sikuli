@@ -18,10 +18,13 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import org.sikuli.guide.SikuliGuideAnchor.AnchorListener;
 import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.Transition.TransitionListener;
 import org.sikuli.script.Debug;
@@ -95,16 +98,14 @@ public class SikuliGuide extends TransparentWindow {
 
       setBounds(rect);
 
-      
-      setBackground(null);
 
       // It turns out these are useful after all
       // so that it works on Windows
+      setBackground(null);
       ((JPanel)getContentPane()).setBackground(null);      
-      // content.setBackground(null);
+      content.setBackground(null);
 
       Env.getOSUtil().setWindowOpaque(this, false);
-      //setOpacity(1.0f);
 
       getRootPane().putClientProperty( "Window.shadow", Boolean.FALSE );
       ((JPanel)getContentPane()).setDoubleBuffered(true);
@@ -250,6 +251,10 @@ public class SikuliGuide extends TransparentWindow {
       }
    }
 
+   public void addComponent(JComponent comp){
+      content.add(comp,0);
+   }
+   
    public void addComponent(SikuliGuideComponent comp, int index){
       if (comp instanceof Clickable){
 
@@ -273,6 +278,10 @@ public class SikuliGuide extends TransparentWindow {
    
    public void addToFront(SikuliGuideComponent comp){
       addComponent(comp,0);
+   }
+
+   public void addToFront(JComponent comp){
+      addComponent(comp);
    }
 
    public void removeComponent(Component comp){
@@ -677,7 +686,7 @@ public class SikuliGuide extends TransparentWindow {
          screenOrigin.x = screenshotOrigin.x + (int)(targetOrigin.x*scale);
          screenOrigin.y = screenshotOrigin.y + (int)(targetOrigin.y*scale);
 
-         part.setTargetScreenOrigin(screenOrigin);
+         part.setAnchorScreenLocation(screenOrigin);
       }
       
       playStep(step, scale);
@@ -687,163 +696,156 @@ public class SikuliGuide extends TransparentWindow {
       playStep(step, 1.0f);
    }
    
+
+   public void playStepList(SklStepListModel stepListModel){
+      for (Enumeration<?> e = stepListModel.elements() ; e.hasMoreElements() ;) {
+          SklStepModel eachStepModel = (SklStepModel) e.nextElement();
+          String ret = playStep(eachStepModel);
+          if (ret.equals("Exit")){
+             return;
+          }
+       }
+      
+   }
+   
+   public String playStep(SklStepModel step_){
+      
+      SklStepModel step = null;
+      try {
+         step = (SklStepModel) step_.clone();
+      } catch (CloneNotSupportedException e1) {
+         e1.printStackTrace();
+      }
+      
+      for (SklObjectModel model : step.getModels()){
+         model.setOpacity(0f);         
+         SklObjectView view = SklViewFactory.createView(model);
+         addToFront(view);
+      }
+      
+      
+      SikuliGuideButton btn = new SikuliGuideButton("Exit");
+      btn.setActualLocation(10,50);
+      addToFront(btn);
+
+      SikuliGuideButton skip = new SikuliGuideButton("Skip");
+      skip.setActualLocation(90,50);
+      addToFront(skip);
+      
+      // do these to allow static elements to be drawn
+      setVisible(true);
+      toFront();
+
+      step.startTracking(this);
+      step.startAnimation();
+      
+      String ret = showNow();
+      Debug.info("[SikuliGuide.playStep] ret = " + ret);
+      
+      return ret;      
+   }
+
+   
    public void playStep(Step step, final float scale){
 
+      
+      SikuliGuideImage screenshot = new SikuliGuideImage(step.getScreenImage());     
+      screenshot.setLocationRelativeToRegion(new Screen(), Layout.INSIDE);
+//      screenshot.setOpacity(0);
+//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.1f,0.9f));
+//      // TODO replace these with a Pause animation
+//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
+//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
+//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,1,0));      
+//      addToFront(screenshot);
+      
       for (final Part part : step.getParts()){
 
          Pattern pattern = part.getTargetPattern();
 
-         //Match m = s.wait(pattern,30);         
-            
          BufferedImage patternImage = null;
-
          try {
             patternImage = pattern.getImage();
          } catch (IOException e) {
          }
-         Point scrLoc = part.getTargetScreenOrigin();
-         final Region m = new Region(scrLoc.x,scrLoc.y,patternImage.getWidth(), patternImage.getHeight());            
-         final Dimension patternImageSize = new Dimension(patternImage.getWidth(), patternImage.getHeight());
-         
 
-         Debug.info("patternImageSize.getWidth():" + patternImageSize.getWidth());
-
-         final SikuliGuideAnchor anchor = new SikuliGuideAnchor(m);
+         final SikuliGuideAnchor anchor = new SikuliGuideAnchor(pattern);
          anchor.setEditable(true);
+         anchor.setOpacity(1f);
+         anchor.setAnimateAnchoring(true);
          
-         //float scale = 480f/640f;
-         anchor.setActualSize((int)(anchor.getActualWidth()*scale),(int)(anchor.getActualHeight()*scale));
-         
-         //addTracker(pattern, m, anchor);
-         Tracker tracker = new Tracker(this, pattern, null);
-         trackers.add(tracker);
-         tracker.setAnchor(anchor);
-
-         
+         Point anchorLocation = new Point(part.getTargetOrigin());
+         Point screenshotLocation = screenshot.getActualLocation();
+         anchorLocation.translate(screenshotLocation.x,screenshotLocation.y);
+         anchor.setActualLocation(anchorLocation);
+                  
          Clickable clickable = new Clickable(null);
          clickable.setLocationRelativeToComponent(anchor, Layout.OVER);
          addToFront(clickable);
-         
-         
-         //actualImage 
-         
+
          // add an image to visualize the target pattern
          final SikuliGuideImage sklImage = new SikuliGuideImage(patternImage);
-//         sklImage.setScale(0.5f); // purposely resize this image it won't be detected as a match
-//         sklImage.setLocationRelativeToComponent(anchor, SikuliGuideComponent.TOP);
          sklImage.setLocationRelativeToComponent(anchor, Layout.OVER);
-         
-         
-//         float scale = 480f/640f;
+                  
+         anchor.addListener(new AnchorListener(){
+
+            @Override
+            public void anchored() {
+               sklImage.removeFromLeader();
+               sklImage.setVisible(false);
+               repaint();
+               
+               
+               for (SikuliGuideComponent comp : anchor.getFollowers()){
+                  if (comp instanceof SikuliGuideText || comp instanceof SikuliGuideFlag ){
+                     comp.popin(); 
+                  }
+               }
+
+               anchor.popin();
+            }
+
+            @Override
+            public void found(SikuliGuideAnchor source) {
+            }
+            
+         });
 
          addToFront(sklImage);
          addToFront(anchor);
 
-         final Point o = part.getTargetOrigin();
-         Debug.info("target origin:" + o);         
+         Point o = part.getTargetOrigin();
+         Point p = anchor.getActualLocation();
          
-         tracker.listener = new TrackerListener(){            
-            public void patternAnchored(){
-               Debug.info("Pattern anchored");
-               sklImage.removeFromLeader();
-               sklImage.setVisible(false);
-               
-               float restoreScale = (float) patternImageSize.getWidth() / (float) anchor.getActualWidth();
-
-               
-               for (SikuliGuideComponent comp : anchor.getFollowers()){
-
-                  if (comp instanceof SikuliGuideText || comp instanceof SikuliGuideFlag ){
-                     Debug.info("remove: " + comp);
-                     comp.removeFrom(content);
-                     //comp.removeFromLeader();
-                     comp.setVisible(false); 
-                  }
-               }
-//               repaint();
-
-               
-               for (SikuliGuideComponent comp : part.getAnnotationComponents()){
-
-                  Point loc = comp.getActualLocation();
-                  Point anchorLoc = anchor.getActualLocation(); 
-                  loc.x = (int) ((loc.x-o.x) + anchorLoc.x);
-                  loc.y = (int) ((loc.y-o.y) + anchorLoc.y);
-                  comp.setActualLocation(loc);
-                  comp.setActualSize(comp.getActualWidth(),comp.getActualHeight());
-                  comp.setShadow(10,2);
-                  comp.setLocationRelativeToComponent(anchor);
-                  addToFront(comp);
-                  
-               }
-               
-               anchor.resizeTo(patternImageSize);
-               repaint();
-            }            
-         };
-
-         
-         
-         
-
-   
-
          for (SikuliGuideComponent compo : part.getAnnotationComponents()){
             
             SikuliGuideComponent comp = (SikuliGuideComponent) compo.clone();
 
             Point loc = comp.getActualLocation();
-            loc.x = (int) ((loc.x-o.x)*scale + m.x);
-            loc.y = (int) ((loc.y-o.y)*scale + m.y);
-            comp.setActualLocation(loc);
-            
+            loc.x = (int) ((int) (loc.x-o.x)*scale) + p.x;
+            loc.y = (int) ((int) (loc.y-o.y)*scale) + p.y;
+
+            comp.setActualLocation(loc);            
             comp.setLocationRelativeToComponent(anchor);
             comp.setActualSize((int)(comp.getActualWidth()*scale),(int)(comp.getActualHeight()*scale));
 
-            
-            //compo.setLocationRelativeToComponent(comp, SikuliGuideComponent.BOTTOM);
-            
             addToFront(comp);
-            //addComponent(compo);
-            
-            
-            comp.popup();
+
+            comp.popout();
+
          }
 
-         //sklImage.popup();
-         anchor.popup();
-
+         anchor.popout();
+         
       }
-
-      addTransition(step.getTransition());
-
-      //setVisible();
       
-      //showNow();
+      SikuliGuideButton btn = new SikuliGuideButton("Exit");
+      btn.setActualLocation(50,50);
+      addToFront(btn);
       
-      setVisible(true);
-      toFront();
-      
+      showNow();
 
-      // TODO: fix this
-      String cmd = transition.waitForTransition(null);//this);
-      
-      if (transition instanceof ClickableWindow){
-         // relay the click at the same position
-         //Debug.info("clicking");
-
-         ClickableWindow cw = (ClickableWindow) transition;
-         if (!(cw.getLastClickedClickable() instanceof SikuliGuideButton)){
-            Debug.info("Focusing below");
-            focusBelow();
-            robot.mousePress(InputEvent.BUTTON1_MASK);            
-            robot.mouseRelease(InputEvent.BUTTON1_MASK);                       
-         }
-      }
-
-      reset();
    }
-
    
 
 }

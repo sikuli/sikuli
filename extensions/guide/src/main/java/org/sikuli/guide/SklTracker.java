@@ -12,14 +12,14 @@ import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 
-interface TrackerListener {
+interface SklTrackerListener {
    void patternAnchored();
 }
 
-public class Tracker extends Thread {
+public class SklTracker extends Thread {
 
 
-   SikuliGuide guide;
+   //SikuliGuide guide;
    Pattern pattern;
    Region match;
    Screen screen;
@@ -28,7 +28,9 @@ public class Tracker extends Thread {
 
 
    boolean initialFound = false;
-   public Tracker(Pattern pattern){
+   
+   // TODO: refactor to merge the two constructors
+   public SklTracker(SklPatternModel patternModel){
       //this.guide = guide;    
       //this.match = match;
       screen = new Screen();
@@ -36,8 +38,8 @@ public class Tracker extends Thread {
       BufferedImage image;
       BufferedImage center;
 
-
-      this.pattern = pattern;
+      this.pattern = new Pattern(patternModel.getImageUrl());
+      
       try {
          image = pattern.getImage();
          int w = image.getWidth();
@@ -49,16 +51,16 @@ public class Tracker extends Thread {
       }      
    }
    
-   public Tracker(SikuliGuide guide, Pattern pattern, Region match){
-      this.guide = guide;    
+   public SklTracker(Pattern pattern){
+      //this.guide = guide;    
       //this.match = match;
       screen = new Screen();
 
       BufferedImage image;
       BufferedImage center;
 
-
       this.pattern = pattern;
+      
       try {
          image = pattern.getImage();
          int w = image.getWidth();
@@ -69,36 +71,16 @@ public class Tracker extends Thread {
          e.printStackTrace();
       }      
    }
-
-
-
+   
    ArrayList<SikuliGuideComponent> components = new ArrayList<SikuliGuideComponent>();
    ArrayList<Point> offsets = new ArrayList<Point>();
 
-   SikuliGuideAnchor anchor;
-   public void setAnchor(SikuliGuideComponent component) {           
-      Point loc = component.getLocation();
-      //Point offset = new Point(loc.x - match.x, loc.y - match.y);
-      Point offset = new Point(0,0);//loc.x - match.x, loc.y - match.y);
-      offsets.add(offset);
-      components.add(component);
-
-      anchor = (SikuliGuideAnchor) component; 
+   SklAnchorModel anchor;
+   public void setAnchor(SklAnchorModel anchor) {
+      this.anchor = anchor;
    }
 
-
-   boolean isAnimationStillRunning(){
-      for (SikuliGuideComponent comp : components){
-         if (comp instanceof SikuliGuideAnchor){
-
-            if (comp.animationRunning)
-               return true;;
-         }
-      }
-      return false;
-   }
-
-   TrackerListener listener;
+   SklTrackerListener listener;
    
    boolean isPatternStillThereInTheSameLocation(){
 
@@ -146,25 +128,12 @@ public class Tracker extends Thread {
       Debug.log("[Tracker] Pattern is found for the first time");
       
       
-//      if (true){
+      // TODO:
+      //anchor.found(bounds);
+      anchor.setLocation(match.x, match.y);
+      anchor.setSize(match.w, match.h);
+      SklAnimationFactory.createFadeinAnimation(anchor).start();
          
-         Rectangle bounds = match.getRect();
-         anchor.found(bounds);
-         
-//      }else{
-//         // animate the initial movement to the anchor position
-//
-//         // uncomment this for popup demo
-//         anchor.moveTo(new Point(match.x, match.y), new AnimationListener(){
-//            public void animationCompleted(){
-//               anchor.anchored();
-//               if (listener != null){
-//                  listener.patternAnchored();
-//               }
-//            }
-//         });
-//      }
-//      
       while (running){
 
          if (match != null && isPatternStillThereInTheSameLocation()){
@@ -186,47 +155,28 @@ public class Tracker extends Thread {
          if (newMatch == null){
 
             Debug.log("[Tracker] Pattern is not found on the screen");
-            //anchor.setOpacity(0.0f);
             
-            //not_found_counter += 1;
-
-            //if (not_found_counter > 2){
-               anchor.addFadeoutAnimation();
-               anchor.startAnimation();
-              // not_found_counter = 0;
-            //}
-
+            SklAnimationFactory.createFadeoutAnimation(anchor).start();
 
          }else {
 
             Debug.log("[Tracker] Pattern is found in a new location: " + newMatch);
 
             // make it visible
-            anchor.addFadeinAnimation();
-            anchor.startAnimation();
+            SklAnimationFactory.createFadeinAnimation(anchor).start();
 
-//            anchor.setVisible(true);
+            //               int dest_x = newMatch.x + newMatch.w/2;
+            //               int dest_y = newMatch.y + newMatch.h/2;
 
-//            // if the match is in a different location
-//            if (match.x != newMatch.x || match.y != newMatch.y){
+            int destx = newMatch.x;
+            int desty = newMatch.y;
 
-               //            for (int i=0; i < components.size(); ++i){
-               // comp  = components.get(i);
-               //Point offset = offsets.get(0);
 
-//               int dest_x = newMatch.x + offset.x;
-//               int dest_y = newMatch.y + offset.y;
-               
-               int dest_x = newMatch.x + newMatch.w/2;
-               int dest_y = newMatch.y + newMatch.h/2;
+            Debug.log("[Tracker] Pattern is moving to: (" + destx + "," + desty + ")");
 
-               // comp.setEmphasisAnimation(comp.createMoveAnimator(dest_x, dest_y));                  
-               //comp.startAnimation();
-               
-               Debug.log("[Tracker] Pattern is moving to: (" + dest_x + "," + dest_y + ")");
-               
-               
-               anchor.moveTo(new Point(dest_x, dest_y));     
+            Point newLocation = new Point(destx, desty);
+
+            SklAnimationFactory.createMoveAnimation(anchor, anchor.getLocation(), newLocation).start();
          }
 
 
@@ -234,18 +184,6 @@ public class Tracker extends Thread {
 
 
       } 
-
-      //            if (!initialFound){
-      //            Debug.log("[Tracker] Pattern has disappeared after initial find");
-      //
-      //            
-      //
-      //            for (SikuliGuideComponent comp : components){
-      //               comp.setVisible(false);
-      //            }
-      //            guide.repaint();
-      //         }
-
    }
 
 
@@ -253,18 +191,4 @@ public class Tracker extends Thread {
       running = false;
    }
   
-
-   public boolean isAlreadyTracking(Pattern pattern, Region match) {
-      try {
-         boolean sameMatch = this.match == match; 
-         boolean sameBufferedImage = this.pattern.getImage() == pattern.getImage();
-         boolean sameFilename = (this.pattern.getFilename() != null &&
-               (this.pattern.getFilename().compareTo(pattern.getFilename()) == 0));
-
-         return sameMatch || sameBufferedImage || sameFilename;
-      } catch (IOException e) {
-         return false;
-      }
-   }
-
 }

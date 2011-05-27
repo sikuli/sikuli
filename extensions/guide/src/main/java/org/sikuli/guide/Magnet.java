@@ -215,6 +215,12 @@ implements Transition, GlobalMouseMotionListener {
                allTargetAnchored();
             }
          }
+
+         @Override
+         public void found(SikuliGuideAnchor source) {
+            // TODO Auto-generated method stub
+            
+         }
          
       });
       
