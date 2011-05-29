@@ -12,10 +12,10 @@ import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public class SikuliRobot extends Robot implements IRobot{
+public class DesktopRobot extends Robot implements IRobot{
    final static int MAX_DELAY = 60000;
 
-   public SikuliRobot(GraphicsDevice screen) throws AWTException{
+   public DesktopRobot(GraphicsDevice screen) throws AWTException{
       super(screen);
    
    }

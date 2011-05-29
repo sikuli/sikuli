@@ -29,9 +29,9 @@ public class Screen extends Region implements Observer, IScreen {
 
    private static void initRobots(){
       try{
-         _robots = new SikuliRobot[_gdev.length];
+         _robots = new DesktopRobot[_gdev.length];
          for(int i=0;i<_gdev.length;i++){
-            _robots[i] = new SikuliRobot(_gdev[i]);
+            _robots[i] = new DesktopRobot(_gdev[i]);
             //_robots[i].setAutoWaitForIdle(false); //TODO: make sure we don't need this
             _robots[i].setAutoDelay(10);
          }
