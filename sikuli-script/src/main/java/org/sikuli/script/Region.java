@@ -20,7 +20,7 @@ import javax.swing.JWindow;
 
 public class Region {
    final static float DEFAULT_HIGHLIGHT_TIME = 2f;
-   private Robot _robot;
+   private IRobot _robot;
    private Screen _scr;
    private ScreenHighlighter _overlay = null;
 
@@ -83,6 +83,12 @@ public class Region {
       return String.format("Region[%d,%d %dx%d]@Screen(%d) E:%s, T:%.1f", 
                             x, y, w, h, _scr.getID(),
                             _throwException?"Y":"N", _autoWaitTimeout);
+   }
+
+   // for unit testing only.
+   Region(Rectangle r, IRobot robot) {
+      init(r.x, r.y, r.width, r.height);
+      _robot = robot;
    }
 
    protected Region(){}

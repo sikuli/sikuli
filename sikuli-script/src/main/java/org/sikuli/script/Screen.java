@@ -8,7 +8,7 @@ package org.sikuli.script;
 import java.awt.*;
 import java.awt.image.*;
 
-public class Screen extends Region implements Observer {
+public class Screen extends Region implements Observer, IScreen {
    protected GraphicsDevice _curGD;
    protected int _curID = 0;
    protected static int _primaryScreen = -1;
@@ -19,7 +19,7 @@ public class Screen extends Region implements Observer {
 
    static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
-   static Robot[] _robots;
+   static IRobot[] _robots;
 
    static{
       _genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -29,10 +29,10 @@ public class Screen extends Region implements Observer {
 
    private static void initRobots(){
       try{
-         _robots = new Robot[_gdev.length];
+         _robots = new SikuliRobot[_gdev.length];
          for(int i=0;i<_gdev.length;i++){
             _robots[i] = new SikuliRobot(_gdev[i]);
-            _robots[i].setAutoWaitForIdle(false);
+            //_robots[i].setAutoWaitForIdle(false); //TODO: make sure we don't need this
             _robots[i].setAutoDelay(10);
          }
       }
@@ -46,7 +46,7 @@ public class Screen extends Region implements Observer {
       return _gdev.length;
    }
 
-   public static Robot getRobot(int id){
+   public static IRobot getRobot(int id){
       return _robots[id];
    }
 
@@ -64,7 +64,7 @@ public class Screen extends Region implements Observer {
       return _primaryScreen;
    }
    
-   public Robot getRobot(){
+   public IRobot getRobot(){
       return _robots[_curID];
    }
 
@@ -126,8 +126,7 @@ public class Screen extends Region implements Observer {
       Debug.log(5, "capture: " + rect);
       rect.x -= x;
       rect.y -= y;
-      BufferedImage img = _robots[_curID].createScreenCapture(rect);
-      return new ScreenImage(rect, img);
+      return _robots[_curID].captureScreen(rect);
    }
 
    public ScreenImage capture(Region reg) {

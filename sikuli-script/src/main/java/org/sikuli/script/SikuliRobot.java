@@ -9,8 +9,10 @@ package org.sikuli.script;
 import java.awt.Robot;
 import java.awt.GraphicsDevice;
 import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
-public class SikuliRobot extends Robot {
+public class SikuliRobot extends Robot implements IRobot{
    final static int MAX_DELAY = 60000;
 
    public SikuliRobot(GraphicsDevice screen) throws AWTException{
@@ -26,5 +28,10 @@ public class SikuliRobot extends Robot {
          ms -= MAX_DELAY;
       }
       super.delay(ms);
+   }
+
+   public ScreenImage captureScreen(Rectangle rect){
+      BufferedImage img = createScreenCapture(rect);
+      return new ScreenImage(rect, img);
    }
 }
