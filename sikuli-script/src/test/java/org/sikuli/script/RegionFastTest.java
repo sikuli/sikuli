@@ -19,19 +19,23 @@ import java.io.File;
 
 public class RegionFastTest 
 {
-   private int DESKTOP_X = 0, DESKTOP_Y = 0, DESKTOP_W = 1680, DESKTOP_H = 1050;
-   private Rectangle DESKTOP_RECT = new Rectangle(DESKTOP_X, DESKTOP_Y, DESKTOP_W, DESKTOP_H);
+   static protected int DESKTOP_X = 0, DESKTOP_Y = 0, DESKTOP_W = 1680, DESKTOP_H = 1050;
+   static protected Rectangle DESKTOP_RECT = new Rectangle(DESKTOP_X, DESKTOP_Y, DESKTOP_W, DESKTOP_H);
 
-   @Test
-   public void test_doFind() throws Exception {
+   static protected Screen _mockScr;
+
+   @BeforeClass static public void setupMockScreen() throws Exception{
       BufferedImage desktop_img = ImageIO.read(new File("test-res/mac-desktop.png"));
       ScreenImage desktop_simg = new ScreenImage(DESKTOP_RECT, desktop_img);
 
-      Screen scr = spy(new Screen());
-      doReturn(scr).when(scr).getScreen();
-      doReturn(desktop_simg).when(scr).capture(anyInt(), anyInt(), anyInt(), anyInt());
+      _mockScr = spy(new Screen());
+      doReturn(_mockScr).when(_mockScr).getScreen();
+      doReturn(desktop_simg).when(_mockScr).capture(anyInt(), anyInt(), anyInt(), anyInt());
+   }
 
-      Match m = scr.doFind("test-res/network.png");
+   @Test
+   public void test_doFind() throws Exception {
+      Match m = _mockScr.doFind("test-res/network.png");
       assertEquals(m.x, 792);
       assertEquals(m.y, 391);
       assertEquals(m.w, 52);
