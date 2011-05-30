@@ -47,16 +47,25 @@ public class Finder implements Iterator<Match>{
       destroy();
    }
 
+   /**
+    *  Finder constructor (finding within the desktop screen).
+    */
    public Finder(String screenFilename) throws IOException{
       this(screenFilename, null);
    }
 
+   /**
+    *  Finder constructor (finding within the given region).
+    */
    public Finder(String screenFilename, Region region) throws IOException{
       String fname = findImageFile(screenFilename);
       _findInput.setSource(fname);
       _region = region;
    }
 
+   /**
+    *  Finder constructor (finding within the given region).
+    */
    public Finder(ScreenImage img, Region region){
       Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
       _findInput.setSource(target);
