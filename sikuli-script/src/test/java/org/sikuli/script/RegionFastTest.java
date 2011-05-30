@@ -16,12 +16,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import java.io.File;
+import java.util.Iterator;
 
 public class RegionFastTest 
 {
    static protected int DESKTOP_X = 0, DESKTOP_Y = 0, DESKTOP_W = 1680, DESKTOP_H = 1050;
    static protected Rectangle DESKTOP_RECT = new Rectangle(DESKTOP_X, DESKTOP_Y, DESKTOP_W, DESKTOP_H);
-
+   static protected Rectangle NETWORK_ICON = new Rectangle(792, 391, 52, 54);
    static protected Screen _mockScr;
 
    @BeforeClass static public void setupMockScreen() throws Exception{
@@ -36,10 +37,28 @@ public class RegionFastTest
    @Test
    public void test_doFind() throws Exception {
       Match m = _mockScr.doFind("test-res/network.png");
-      assertEquals(m.x, 792);
-      assertEquals(m.y, 391);
-      assertEquals(m.w, 52);
-      assertEquals(m.h, 54);
+      assertEquals(m.x, NETWORK_ICON.x);
+      assertEquals(m.y, NETWORK_ICON.y);
+      assertEquals(m.w, NETWORK_ICON.width);
+      assertEquals(m.h, NETWORK_ICON.height);
+      assertEquals(m.score, 1.0, 0.01);
    }
+
+   @Test
+   public void test_doFindAll() throws Exception {
+      Iterator<Match> matches = _mockScr.doFindAll("test-res/network.png");
+      int count = 0;
+      while(matches.hasNext()){
+         count++;
+         Match m = matches.next();
+         assertEquals(m.x, NETWORK_ICON.x);
+         assertEquals(m.y, NETWORK_ICON.y);
+         assertEquals(m.w, NETWORK_ICON.width);
+         assertEquals(m.h, NETWORK_ICON.height);
+      }
+      assertEquals(count, 1);
+   }
+
+
 }
 
