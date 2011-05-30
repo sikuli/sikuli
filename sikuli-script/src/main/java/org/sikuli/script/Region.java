@@ -478,7 +478,7 @@ public class Region {
    }
 
    /**
-    *  Check if target exists (wait 3 seconds max)
+    *  Check if target exists (with the default autoWaitTimeout)
     * 
     * @param target A search criteria 
     * @return The element matching
