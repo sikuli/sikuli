@@ -4,6 +4,7 @@
 package org.sikuli.guide;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import org.sikuli.script.Pattern;
@@ -26,7 +27,8 @@ public class Part {
       annotationComponents.add(comp);
    }
    
-   public void setTargetOrigin(Point targetOrigin) {
+   // relative to the origin of the reference image
+   public void setAnchorLocation(Point targetOrigin) {
       this.targetOrigin = targetOrigin;
    }
 
@@ -34,7 +36,7 @@ public class Part {
       return targetOrigin;
    }
 
-   public void setTargetScreenOrigin(Point targetScreenOrigin) {
+   public void setAnchorScreenLocation(Point targetScreenOrigin) {
       this.targetScreenOrigin = targetScreenOrigin;
    }
 

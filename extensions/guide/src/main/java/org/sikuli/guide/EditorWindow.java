@@ -1,10 +1,11 @@
 package org.sikuli.guide;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -32,10 +33,13 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.Timer;
 
+import org.sikuli.guide.Overview.OverviewListener;
 import org.sikuli.guide.SikuliGuideComponent.Layout;
+import org.sikuli.guide.StepView.BackgroundImage;
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Clipboard;
 import org.sikuli.script.Debug;
@@ -67,14 +71,14 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    RectangleSelector rectangleSelector;
    PointSelector pointSelector;
    LocationSelector locationSelector;
-   BackgroundImage backgroundImage;
    Toolbar toolbar;
-   JPanel palletePanel;   
-   private OverviewWindow overview;  
+//   JPanel palletePanel;   
+   private Overview overview;  
    
    JPanel left;
-   JLayeredPane right;
+   EditPane editPane;
 
+   SikuliGuide guide = new SikuliGuide();
 
    interface PointSelectionListener {
       void pointSelectionCompleted(PointSelectionEvent e);
@@ -124,6 +128,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
                doRunAll();
             }else if (e.getActionCommand() == "Export"){
                doExport();
+            }else if (e.getActionCommand() == "Capture"){
+               doCapture();
             }
 
          }
@@ -148,18 +154,20 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          add(new ToolbarButton("Anchor","Anchor"));
          
          add(new ToolbarButton("Text","Text"));
-         add(new ToolbarButton("Callout","Callout"));
+//         add(new ToolbarButton("Callout","Callout"));
          add(new ToolbarButton("Flag","Flag"));
-         add(new ToolbarButton("Hotspot","Hotspot"));
-
-         add(new ToolbarButton("Spotlight","Spotlight"));
-         add(new ToolbarButton("Circle","Circle"));
-         add(new ToolbarButton("Rectangle","Rectangle"));
-         add(new ToolbarButton("Bracket","Bracket"));
-         add(new ToolbarButton("Arrow","Arrow"));
+//         add(new ToolbarButton("Hotspot","Hotspot"));
+//
+//         add(new ToolbarButton("Spotlight","Spotlight"));
+//         add(new ToolbarButton("Circle","Circle"));
+//         add(new ToolbarButton("Rectangle","Rectangle"));
+//         add(new ToolbarButton("Bracket","Bracket"));
+//         add(new ToolbarButton("Arrow","Arrow"));
 
          add(new ToolbarButton("Play","Run"));
-         add(new ToolbarButton("Export","Export"));
+         add(new ToolbarButton("Capture","Capture"));
+
+         //         add(new ToolbarButton("Export","Export"));
 
          //add(new ToolbarButton("Play All","RunAll"));
          //add(new ToolbarButton("Play All","RunAll"));
@@ -276,33 +284,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    }
 
-   class BackgroundImage extends SikuliGuideComponent {
 
-      BufferedImage image;
-      //BufferedImage darkenImage;
-      double scale = (double) SCALE;
-      public BackgroundImage(BufferedImage image){
-         this.image = image;
-         setActualBounds(new Rectangle(0,0,(int)(image.getWidth()*scale),(int)(image.getHeight()*scale)));
-      }
-
-      @Override
-      public void paintComponent(Graphics g){
-         super.paintComponent(g);         
-         Graphics2D g2d = (Graphics2D) g;
-         if (image != null){            
-            Rectangle r = getParent().getBounds();
-            //Debug.info("Image bounds: " + r);
-            //g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
-            g2d.drawImage(image, 0, 0, r.width, r.height, null);
-         }    
-      }
-
-      public BufferedImage crop(Rectangle r) {
-         // TODO Make this boundary safe
-         return image.getSubimage(r.x,r.y,r.width,r.height);
-      }
-   }
 
 
    ArrayList<Target> clickables = new ArrayList<Target>();
@@ -358,30 +340,59 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       return clickLocation;
    }
 
-   SikuliGuide guide;
    GlobalMouseMotionTracker mouseTracker;
    Target lastClickedClickable;
    Button saveButton;
 
 
    JLayeredPane controlLayer;
+   
+   class EditPane extends JLayeredPane {
+      
+      JPanel viewPanel;
+      JPanel palletePanel;
+      public EditPane(){
+         
+         viewPanel = new JPanel();
+         //viewPanel.setLayout(new GridBagLayout());
+         //viewPanel.setLayout(null);
+         viewPanel.setLayout(new BoxLayout(viewPanel,BoxLayout.X_AXIS));
+         
+         palletePanel = new JPanel();
+         palletePanel.setLayout(null);
+         palletePanel.setBackground(null);
+         palletePanel.setOpaque(false);
+         
+         add(viewPanel, JLayeredPane.DEFAULT_LAYER);
+         add(palletePanel, JLayeredPane.PALETTE_LAYER);
+         
+         setMinimumSize(new Dimension(500,100));
+         setPreferredSize(new Dimension(500,100));
+
+         setBorder(BorderFactory.createLoweredBevelBorder());
+         setForeground(Color.green);
+
+      }
+      
+      // this forces the inner panels to be the same size as the container
+      @Override
+      public void setSize(Dimension size){
+         super.setSize(size);
+         viewPanel.setSize(getSize());
+         palletePanel.setSize(getSize());
+      }
+      
+      public void setStep(Step step){
+         viewPanel.removeAll();
+         viewPanel.add(step.getView());
+         
+         validate();
+         repaint();
+      }      
+      
+   }
 
    public EditorWindow(){
-      //super(f);
-
-      // this allows us to layout the components ourselves
-      setLayout(null);
-
-      // this window should cover the same area as the guide
-      //setBounds(new Screen().getRect());//guide.getBounds());
-      //Screen s = new Screen();
-      //setBounds(0,0,(int)(s.w*SCALE),(int)(s.h*SCALE));
-      //setBackground(Color.red);
-
-      //setAlwaysOnTop(true);
-
-
-      //Env.getOSUtil().setWindowOpacity(this, 0.8f);
 
       //Color bg = new Color(1.0f,1.0f,1.0f,1.0f);
       //Color bg = new Color(1.0f,0,0,0.1f);
@@ -391,15 +402,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
       getContentPane().setBackground(bg);
       setBackground(bg);
-
-
-      // This makes the JWindow transparent
-
-      // None of these seemed to work
-      //Env.getOSUtil().setWindowOpacity(this, 0.5f);
-      //Env.getOSUtil().setWindowOpaque(this, false);
-      // Env.getOSUtil().bringWindowToFront(this, true);
-
 
       // TODO: figure out how to make this JWindow non-draggable
       // 1) associate this window with a JFrame and make the JFrame not movable
@@ -417,13 +419,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       rectangleSelector = new RectangleSelector();
       getContentPane().addMouseListener(rectangleSelector);
       getContentPane().addMouseMotionListener(rectangleSelector);
-
-
-      //      getGlassPane().addMouseListener(locationSelector);
-      //      getGlassPane().setVisible(true);
-      //rectangleSelector.addListener(this);
-
-
       getContentPane().addKeyListener(this);
 
       addWindowListener(new WindowAdapter(){
@@ -439,42 +434,32 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
       toolbar = new Toolbar();
-      toolbar.setLocation(0,0);
-      toolbar.setSize(1050,50);
       toolbar.setVisible(true);
-      //toolbar.pack();
-      //toolbar.toFront();
-      
+      toolbar.setMaximumSize(new Dimension(100,100));
       
       left = new JPanel();
-      left.setLayout(null);
+      left.setLayout(new BorderLayout());
+      left.setMinimumSize(new Dimension(150,0));
+
       //left.setBorder(BorderFactory.createLoweredBevelBorder());
+            
+      editPane = new EditPane();
       
-      right = new JLayeredPane();
-      right.setLayout(null);
-      right.setBorder(BorderFactory.createLoweredBevelBorder());
+      JScrollPane scrollPane = new JScrollPane(editPane);
+      scrollPane.setMinimumSize(new Dimension(640,0));
       
-      palletePanel = new JPanel();
-      palletePanel.setLayout(null);
-      palletePanel.setBackground(null);
-      palletePanel.setOpaque(false);      
-      right.add(palletePanel, JLayeredPane.PALETTE_LAYER);      
+//      palletePanel = new JPanel();
+//      palletePanel.setLayout(null);
+//      palletePanel.setBackground(null);
+//      palletePanel.setOpaque(false);      
+//      right.add(palletePanel, 0);
       
-      
-      left.setLocation(0,50);
-      left.setSize(250,640);
-      right.setLocation(250,50);
-      right.setSize(800,640);
       this.setScreenImageSize(new Dimension(800,640));
-
-      setLayout(null);
-      add(toolbar);
-      add(left);
-      add(right);
       
-      setSize(1050,690);
-      setResizable(false);
-
+      JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+            left, scrollPane);
+      splitPane.setDividerLocation(250);
+      
       controlBox = new ControlBox();
       controlBox.setEditor(this);
       addToPaletteLayer(controlBox);      
@@ -483,26 +468,33 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       textPropertyEditor.setVisible(false);
       addToPaletteLayer(textPropertyEditor);
 
-      overview = new OverviewWindow();
-      overview.setLocation(0,0);
-      overview.setEditor(this);
-      overview.setVisible(true);
-      overview.setSize(250,640);
-      overview.setBorder(BorderFactory.createLoweredBevelBorder());
+      overview = new Overview();
+      overview.setVisible(true);      
+      overview.addOverviewListener(new OverviewListener(){
 
-      //overview.toFront();
+         @Override
+         public void selectionChanged(Step step, int index) {
+            selectStep(step);            
+         }
       
-      left.add(overview,0);
+      });
+      
+      left.add(overview,BorderLayout.CENTER);
 
       linkedAnchorVisualization = new RelatedAnchorVisulization();
       addToPaletteLayer(linkedAnchorVisualization);
-      
-      
-      
+            
       locationSelector = new LocationSelector();
-      right.addMouseListener(locationSelector);
+      editPane.addMouseListener(locationSelector);
 
 
+      
+      // Root layout
+      setLayout(new BorderLayout());
+      add(toolbar,BorderLayout.NORTH);
+      add(splitPane,BorderLayout.CENTER);      
+      setSize(1050,690);
+      setResizable(false);
    }
 
    public void addClickableRegion(Region region, String name){
@@ -741,6 +733,104 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       componentSelector.start(new LinkComponentToAnchorAction());
    }
 
+   public Step exportStep(int index){
+      Step source = steps.get(index);
+      return exportStep(source);
+   }
+   
+   public Step exportStep(Step source){
+      
+      Step step = new Step();
+      step.setScreenImage(source.getScreenImage());
+
+      unselectComponent();
+
+      StepView view = source.getView();
+      
+      Component[] components = view.getComponents();
+
+      Debug.info("" + components.length + " components");
+
+      for (Component comp: components){
+         if (comp instanceof SikuliGuideAnchor){
+
+            Debug.info("Adding an anchor to the current step");
+
+            SikuliGuideAnchor anchor = (SikuliGuideAnchor) comp;            
+            Rectangle bounds = anchor.getActualBounds();
+
+            BufferedImage croppedImage = view.getImage(bounds);
+            
+            
+//            try {
+//               ImageIO.write(croppedImage,"png",new File("/Users/tomyeh/Desktop/test.png"));
+//            } catch (IOException e) {
+//               // TODO Auto-generated catch block
+//               e.printStackTrace();
+//            }
+//            BufferedImage croppedImage 
+//               = screenImage.getSubimage(bounds.x, bounds.y, bounds.width, bounds.height);
+
+            Pattern pattern = new Pattern(croppedImage);
+            pattern.setSimilarity(0.9f);
+            Part part = new Part(pattern);
+            // TODO: fold this into target
+            
+            // compute the anchor's location relative to the origin of the screenshot
+            Point anchorLocation = new Point(anchor.getActualLocation());
+            Point origin = view.getOrigin();
+            anchorLocation.x -= origin.x;
+            anchorLocation.y -= origin.y;            
+            part.setAnchorLocation(anchorLocation);
+            
+            
+            
+            // calculate the anchor's location on screen
+            Point screenLocation = new Point(bounds.getLocation());
+//            Point viewLocation = source.getView().getLocation();
+//            Point panelLocation = editPane.getLocation();
+//            Point windowLocation = getLocation();
+//            screenLocation.x += viewLocation.x;
+//            screenLocation.y += viewLocation.y;
+//            screenLocation.x += panelLocation.x;
+//            screenLocation.y += panelLocation.y;            
+//            screenLocation.x += windowLocation.x;
+//            screenLocation.y += windowLocation.y;
+//            screenLocation.y += 22;
+            //part.setTargetScreenOrigin(new Point(anchor.getLocationOnScreen()));
+            part.setAnchorScreenLocation(screenLocation);
+            
+            for (SikuliGuideComponent annotation : anchor.getFollowers()){   
+
+               if (annotation.isVisible() && !(annotation instanceof Connector)){
+                  Debug.info("Adding " + annotation);
+                  SikuliGuideComponent clonedSklComp = (SikuliGuideComponent) annotation.clone();
+                  clonedSklComp.shadowRenderer = null;
+                  part.addComponent(clonedSklComp);
+                  
+                  
+                  
+                  
+                  
+                  clonedSklComp.setActualBounds(annotation.getActualBounds());
+                  
+                  Point location = clonedSklComp.getActualLocation();
+                  location.translate(-origin.x,-origin.y);
+                  clonedSklComp.setActualLocation(location);
+                  
+                  
+                  Debug.info("Added " + clonedSklComp);
+               }
+            }
+
+            step.addPart(part);  
+         }
+
+      }
+      
+      return step;
+   }
+
    public void createStepToPlay(Step step){
       step.clear();
 
@@ -765,12 +855,12 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
             Part part = new Part(new Pattern(croppedImage));
             // TODO: fold this into target
-            part.setTargetOrigin(new Point(bounds.getLocation()));
+            part.setAnchorLocation(new Point(bounds.getLocation()));
             
             // calculate the anchor's location on screen
             Point screenLocation = new Point(bounds.getLocation());
             Point viewLocation = step.getView().getLocation();
-            Point panelLocation = right.getLocation();
+            Point panelLocation = editPane.getLocation();
             Point windowLocation = getLocation();
             screenLocation.x += viewLocation.x;
             screenLocation.y += viewLocation.y;
@@ -780,7 +870,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
             screenLocation.y += windowLocation.y;
             screenLocation.y += 22;
             //part.setTargetScreenOrigin(new Point(anchor.getLocationOnScreen()));
-            part.setTargetScreenOrigin(screenLocation);
+            part.setAnchorScreenLocation(screenLocation);
             
 
             for (SikuliGuideComponent annotation : anchor.getFollowers()){   
@@ -815,15 +905,59 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    }
 
    public void doRun(){
-      setPlayAll(false);
-      Step step = getCurrentStep();
-      createStepToPlay(step);
-      
-      //setVisible(false);
-      synchronized(this){
-         this.notify();
-      }
+      Thread t = new Thread(){
+         @Override
+         public void run(){
+            playStep(getCurrentStep());            
+         }
+      };
+      t.start();
+//      setPlayAll(false);
+//      Step step = getCurrentStep();
+//      createStepToPlay(step);
+//      
+//      //setVisible(false);
+//      synchronized(this){
+//         this.notify();
+//      }
    }
+   
+   public void doCapture(){
+
+      
+      Thread t = new Thread(){
+         
+         @Override 
+         public void run(){
+            setVisible(false);
+            JFrame f = new JFrame("JFrame");
+            f.setSize(0,0);
+            f.setLocation(0,0);
+            f.setUndecorated(true);
+            f.setVisible(true);
+            
+            ScreenRecorderWindow w = 
+               new ScreenRecorderWindow(f);
+            w.startModal();
+            
+            
+            for (RecordedClickEvent e : w.clickEvents){
+               importStep(e);
+            }
+            
+            selectStep(0);
+            
+            setVisible(true);
+            f.setVisible(false);
+            f.dispose();
+
+         }
+      };
+
+      t.start();
+
+   }
+   
    
    public void doExport(){
       
@@ -871,10 +1005,13 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
    void setZoomLevel(float zoomLevel){
+      if (true)
+         return;
+      
       this.zoomLevel = zoomLevel;
 
-      int containerWidth = right.getWidth();
-      int containerHeight = right.getHeight();
+      int containerWidth = editPane.getWidth();
+      int containerHeight = editPane.getHeight();
 
       int w = getScreenImageSize().width;
       int h = getScreenImageSize().height;
@@ -886,9 +1023,12 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       //Debug.info("BEFORE view:" + view);
       
       // TODO no need to recompute shadow
-      view.setSize(w1,h1);      
-      view.setLocation(containerWidth/2 - w1/2, containerHeight/2 - h1/2);
-      palletePanel.setBounds(view.getBounds());
+      //view.setSize(w1,h1);      
+      //view.setLocation(containerWidth/2 - w1/2, containerHeight/2 - h1/2);
+      //view.setLocation(containerWidth/2, containerHeight/2);
+      
+      // TODO: fix this
+      //palletePanel.setBounds(view.getBounds());
       
       
       for (Component comp : view.getComponents()){
@@ -898,9 +1038,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       }
       
       // recompute shadow after the content (i.e., BackgroundImage) is drawn
-      for (SikuliGuideComponent sklComp : view.getFollowers()){
-        // ((SikuliGuideShadow) sklComp).createShadowImage();
-      }
+//      for (SikuliGuideComponent sklComp : view.getFollowers()){
+//        // ((SikuliGuideShadow) sklComp).createShadowImage();
+//      }
       repaint();
 
       //      for (Component comp : palletePanel.getComponents()){
@@ -939,9 +1079,10 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       }else if (k.getKeyCode() == KeyEvent.VK_ESCAPE){         
          doRun();
       }else if (k.getKeyCode() == KeyEvent.VK_LEFT || k.getKeyCode() == KeyEvent.VK_UP){
-         previousStep();                  
+         // TODO: allow this later
+         //previousStep();                  
       }else if (k.getKeyCode() == KeyEvent.VK_RIGHT || k.getKeyCode() == KeyEvent.VK_DOWN){
-         nextStep();
+         //nextStep();
       }else if (k.getKeyCode() == KeyEvent.VK_BACK_SPACE){
          Debug.log("User pressed DELETE");
          deleteSelectedComponent();
@@ -974,7 +1115,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    }
 
-   private Step step;
+   //private Step step;
 
 
 
@@ -1040,27 +1181,13 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
 
-   public void setStep(Step step) {
-      this.step = step;
-   }
-
-   public Step getStep() {
-      return step;
-   }
 
    public Step getStep(int index){
       return steps.get(index);
    }
 
-
-
    TextPropertyEditor textPropertyEditor;
-
-
-
    class EditTextPropertyAction{
-
-
 
       public void componentSelected(SikuliGuideComponent comp) {
          perform(comp);
@@ -1272,7 +1399,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    public SikuliGuideComponent performAddTextAction(Point location){      
       return (new AddTextAction().perform(location));
    }
-   public SikuliGuideComponent performAddAnchorAction(Rectangle rectangle){      
+   public SikuliGuideComponent performAddAnchorAction(Rectangle rectangle){
+      Debug.info("Origin is: " + getCurrentStep().getView().getOrigin());
       return (new AddAnchorAction().perform(rectangle));
    }
    public void performLinkComponentToAnchor(SikuliGuideComponent sourceComponent, SikuliGuideComponent anchor){
@@ -1280,15 +1408,15 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    }
 
 
-   void currentStepContentChanged(){      
+   public void currentStepContentChanged(){      
       Step step = getCurrentStep();
       if (step != null){
          step.refreshThumbnailImage();
 
-         if (overview != null)
-            overview.stepContentChanged(step);
+//         if (overview != null)
+//            overview.stepContentChanged(step);
 
-         repaint();
+//         repaint();
       }
    }
 
@@ -1560,7 +1688,7 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          Point selectedLocation = e.getPoint();
 
          StepView view = getCurrentStep().getView();
-         Point o = view.getLocation();
+         Point o = view.getOrigin();
          selectedLocation.x -= o.x;
          selectedLocation.y -= o.y;
 
@@ -1569,8 +1697,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
          //         p.y = (int) (p.y / zoomLevel);         
          //         Component clickedComponent = getCurrentStep().getStepView().getComponentAt(p);
          //         Debug.info("[LocationSelector] Component at this point is: " + clickedComponent);
-
-         //         if (!(clickedComponent instanceof BackgroundImage)) {
          //            if (action instanceof SelectAction){            
          //               Debug.info("[LocationSelector] User selected: " + clickedComponent);
          //               SikuliGuideComponent sklComponent = (SikuliGuideComponent) clickedComponent;
@@ -1848,11 +1974,11 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
 
    public void addToPaletteLayer(JComponent component){
-      palletePanel.add(component);
+      editPane.palletePanel.add(component);
    }
 
    public void removeFromPaletteLayer(JComponent component){
-      getLayeredPane().remove(component);
+      editPane.palletePanel.remove(component);
    }
 
 
@@ -1866,8 +1992,9 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
    //      getLayeredPane().add(component, layerIndex, index);
    //   }
 
-   public void addToCurrentStep(JComponent component, int index){
-      getCurrentStep().getView().add(component,index);
+   public void addToCurrentStep(SikuliGuideComponent component, int index){
+      //getCurrentStep().getView().add(component,index);
+      getCurrentStep().getView().addComponent(component);
    }
 
    //   public void addToDefaultLayerBelow(JComponent component, int index){
@@ -1913,12 +2040,14 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    public void selectStep(Step selectedStep){
 
-      if (currentStep != null)
-         currentStep.getView().setVisible(false);
-
+//      if (currentStep != null)
+//         currentStep.getView().setVisible(false);
+//
       currentStep = selectedStep;
+      
+      editPane.setStep(selectedStep);
 
-      currentStep.getView().setVisible(true);
+      //currentStep.getView().setVisible(true);
       //      
       //      int layerIndex = getLayereIndexFromStepIndex(currentStepIndex);
       //      setLayerVisiblity(layerIndex, false);
@@ -1930,6 +2059,8 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
       if (overview != null)
          overview.selectStep(selectedStep);
+      
+      
 
       unselectComponent();
 
@@ -2042,25 +2173,11 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    }
 
-   //   public void importStep(BufferedImage screenImage){
-   //      selectStep(0);          
-   //
-   //      BackgroundImage bgImage = new BackgroundImage(screenImage);
-   //      addToDefaultLayer(bgImage,-1);
-   //      Step step = new Step();
-   //      step.setScreenImage(screenImage);
-   //      steps.add(step);
-   //
-   //      stepCount = 1;
-   //   }
-
-
-
-   public BufferedImage createThumbnailForStep(int stepIndex){      
-      StepView stepPanel = stepViews.get(stepIndex);      
-      //      return stepPanel.createThumbnail(0.2f);
-      return stepPanel.createForegroundThumbnail(200,150);
-   }
+//   public BufferedImage createThumbnailForStep(int stepIndex){      
+//      StepView stepPanel = stepViews.get(stepIndex);      
+//      //      return stepPanel.createThumbnail(0.2f);
+//      return stepPanel.createForegroundThumbnail(200,150);
+//   }
 
 
    public void updateStepThumbnail(Step step, StepView panel){
@@ -2089,106 +2206,79 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    int stepCount = 0;
    ArrayList<Step> steps = new ArrayList<Step>(); 
-   ArrayList<StepView> stepViews = new ArrayList<StepView>();
-
+   
    private boolean segmentationEnabled = false;
-
-
+   
    Step currentStep = null;
    public Step importStep(RecordedClickEvent event){
-
 
       // the index of the imported step
       int stepIndex = steps.size();
 
-      Debug.info("Importing a step " + stepIndex);
-
-
-      Step step = new Step();      
+      Debug.info("Importing a step at: " + stepIndex);
+      Step step = new Step();           
       StepView view = new StepView(step);
 
-
-      stepViews.add(view);
       steps.add(step);
-
-
-      step.setIndex(stepIndex);
       step.setView(view);
-
-
+      
       BufferedImage screenImage = event.getScreenImage();
       step.setScreenImage(screenImage);
 
       setScreenImageSize(new Dimension(screenImage.getWidth(),screenImage.getHeight()));
 
-      BackgroundImage bgImage = new BackgroundImage(screenImage);      
-      view.setSize(screenImage.getWidth(), screenImage.getHeight());      
-      view.add(bgImage);
-
+      view.setScreenImage(screenImage);
+      //editPane.addView(view);
+      
       selectStep(step);
-
-      //getLayeredPane().add(view, JLayeredPane.DEFAULT_LAYER);
-      right.add(view,0);
-
-      // this is too slow for large image
-//      SikuliGuideRectangleShadow viewShadow = new SikuliGuideRectangleShadow(view);      
-//      right.add(viewShadow,0);
-//       SikuliGuideRectangle viewShadow = new SikuliGuideRectangle(null);
-//       viewShadow.setMargin(10,10,-10,-10);
-//       viewShadow.setLocationRelativeToComponent(view,-18,-18);
-//       right.add(viewShadow,1);
 
       Point clickLocation = event.getClickLocation();
       Rectangle defaultAnchorBounds = new Rectangle(50,50);
       // center the default anchor at the click location
       defaultAnchorBounds.x = clickLocation.x - defaultAnchorBounds.width/2;
       defaultAnchorBounds.y = clickLocation.y - defaultAnchorBounds.height/2;
-
-
+      
+//      Point origin = view.getOrigin();
+//      defaultAnchorBounds.x += origin.x;
+//      defaultAnchorBounds.y += origin.y;
+//      
       Rectangle small = new Rectangle(20,20);
       small.x = clickLocation.x - small.width/2;
       small.y = clickLocation.y - small.height/2;
 
-
-      //
-
       if (segmentationEnabled){
-         BufferedImage neighoborImage = bgImage.crop(defaultAnchorBounds);
-
-
-         ArrayList<Rectangle> blobs = getBlobRegions(neighoborImage);
-
-         Rectangle mergedBlob = new Rectangle(small);
-         for (Rectangle blob : blobs){
-            blob.x += defaultAnchorBounds.x;
-            blob.y += defaultAnchorBounds.y;
-
-            mergedBlob.add(blob);
-
-         }
-
-         mergedBlob.grow(10,10);
-         performAddAnchorAction(mergedBlob);
+//         BufferedImage neighoborImage = bgImage.crop(defaultAnchorBounds);
+//
+//
+//         ArrayList<Rectangle> blobs = getBlobRegions(neighoborImage);
+//
+//         Rectangle mergedBlob = new Rectangle(small);
+//         for (Rectangle blob : blobs){
+//            blob.x += defaultAnchorBounds.x;
+//            blob.y += defaultAnchorBounds.y;
+//
+//            mergedBlob.add(blob);
+//
+//         }
+//
+//         mergedBlob.grow(10,10);
+//         performAddAnchorAction(mergedBlob);
       }else{
 
          performAddAnchorAction(defaultAnchorBounds);
 
          // TODO chooses the best location automatically (that does not go outside of display bounds) 
-         SikuliGuideText txt = (SikuliGuideText) performAddTextAction(new Point(defaultAnchorBounds.x+50,defaultAnchorBounds.y-20));
+         SikuliGuideText txt = (SikuliGuideText) 
+            performAddTextAction(new Point(defaultAnchorBounds.x+50,defaultAnchorBounds.y-20));
          txt.setText("Click");     
+         currentStepContentChanged();
       }
-
-
-
-      step.refreshThumbnailImage();   
 
       if (overview != null){
          overview.addStep(step);
-         // for some reason, this setVisible needs to be set in order
-         // for the overview window to be drawn correctly...
-         overview.setVisible(true);
       }
-
+      validate();
+     
       return step;
    }
 
@@ -2203,14 +2293,6 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
 
    public ArrayList<Step> getSteps() {
       return steps;
-   }
-
-   public void setOverview(OverviewWindow overview) {
-      this.overview = overview;
-   }
-
-   public OverviewWindow getOverview() {
-      return overview;
    }
 
    public void setSegmentationEnabled(boolean segmentationEnabled) {
@@ -2235,7 +2317,15 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
       return playAll;
    }
 
-   static public int main() throws FindFailed{
+   
+   public static void main(String[] args){
+      EditorWindow ew = new EditorWindow();    
+      ew.setVisible(true);
+      ew.setLocationRelativeTo(null);
+
+   }
+   
+   static public int mainOld() throws FindFailed{
       SikuliGuide g = new SikuliGuide();
       
       SikuliGuideButton btn = new SikuliGuideButton("Start Recording (Select a Region)");
@@ -2328,11 +2418,29 @@ Transition, GlobalMouseMotionListener, MouseMotionListener {
             step.setTransition(g.getTransition());
             g.playStep(step);
          }
-
-
       }
+   }
 
+   public void playStep(int index) {      
+      playStep(steps.get(index));
+   }
 
+   public void playStep(Step step) {      
+
+      
+      Step exportedStep = exportStep(step);      
+
+      setVisible(false);
+      repaint();
+      try {
+         // wait one second to allow the editor to disappear
+         Thread.sleep(1000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+      
+      guide.playStep(exportedStep);      
+      setVisible(true);
    }
 
 }

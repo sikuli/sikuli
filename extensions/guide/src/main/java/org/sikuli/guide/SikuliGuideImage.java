@@ -39,8 +39,6 @@ public class SikuliGuideImage extends SikuliGuideComponent {
       setScale(1.0f);      
    }
    
-   
-   
    public void setScale(float scale){
       this.scale = scale;
       w = (int) (scale*image.getWidth());

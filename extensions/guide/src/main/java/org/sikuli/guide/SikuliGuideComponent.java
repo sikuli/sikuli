@@ -4,26 +4,20 @@
 package org.sikuli.guide;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JComponent;
-import javax.swing.Timer;
 
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
@@ -48,11 +42,10 @@ implements Cloneable{
    
    static boolean DEBUG_BOUNDS = false;
    
-   public interface AnimationListener {   
-      void animationCompleted();
+   public String toString(){
+      return "" + getClass() + " " + "[actualBounds=" + getActualBounds() + "]";
    }
    
-
    public Object clone() {
       SikuliGuideComponent clone;
       try {
@@ -123,26 +116,34 @@ implements Cloneable{
    
    AnimationSequence animationSequence = new AnimationSequence();
    
-   public void addMoveAnimation(Point source, Point destination){
-      animationSequence.add(new NewMoveAnimator(source, destination));
+   AnimationFactory getAnimationFactor(){
+      return new AnimationFactory();
    }
+   
+   public void addAnimation(NewAnimator anim){
+      animationSequence.add(anim);
+   }
+   
+   public void addMoveAnimation(Point source, Point destination){
+      animationSequence.add(AnimationFactory.createMoveAnimation(this, source, destination));
+   }   
 
    public void addResizeAnimation(Dimension currentSize, Dimension targetSize){
-      animationSequence.add(new ResizeAnimator(currentSize, targetSize));
+      animationSequence.add(AnimationFactory.createResizeAnimation(this, currentSize, targetSize));
    }
    
    public void addCircleAnimation(Point origin, float radius){
-      animationSequence.add(new CircleAnimator(origin, radius));
+      animationSequence.add(AnimationFactory.createCircleAnimation(this, origin, radius));
    }
    
    public void addFadeinAnimation(){
       if (opacity < 1f)
-         animationSequence.add(new OpacityAnimator(opacity,1f));
+         animationSequence.add(AnimationFactory.createOpacityAnimation(this,opacity,1f));
    }
    
    public void addFadeoutAnimation(){
       if (opacity > 0f)
-         animationSequence.add(new OpacityAnimator(opacity,0f));
+         animationSequence.add(AnimationFactory.createOpacityAnimation(this,opacity,0f));
    }
    
    public void addSlideAnimation(Point destination, Layout side){
@@ -194,281 +195,13 @@ implements Cloneable{
 //   }
 
    
-   class LinearStepper {
-      float beginVal;
-      float endVal;
-      int step;
-      int steps;
 
-      public LinearStepper(float beginVal, float endVal, int steps){
-         this.step = 0;
-         this.steps = steps;
-         this.beginVal = beginVal;
-         this.endVal = endVal;
-      }
-
-      public float next(){
-         float ret = beginVal + step * (endVal - beginVal) / steps;
-         step += 1;
-         return ret;
-      }
-
-      public boolean hasNext(){
-         return step <= steps;
-      }
-   }
-   
-   class NewAnimator implements ActionListener {
-      Timer timer;      
-      
-      boolean looping = false;
-      
-      NewAnimator(){
-         
-      }      
-      
-      protected void init(){
-         
-      }
-      
-      public void start(){         
-         init();
-         timer = new Timer(25, this);
-         timer.start();
-         animationRunning = true;
-      }
-      
-      protected boolean isRunning(){
-         return animationRunning;
-      }
-      
-      public void setLooping(boolean looping){
-         this.looping = looping;
-      }
-      
-      AnimationListener listener;
-      public void setListener(AnimationListener listener) {
-         this.listener = listener;
-      }
-
-      protected void animate(){
-         
-      }
-      
-      
-      public void actionPerformed(ActionEvent e){
-         if (isRunning()){         
-            
-            Rectangle r = getBounds();
-            
-            //setActualLocation((int) x, (int) y);
-            
-            animate();
-
-            r.add(getBounds());
-            
-            if (getTopLevelAncestor() != null)
-               getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
-
-            
-         }else{            
-            timer.stop();
-            if (looping){
-               start();
-            }else{
-               animationRunning = false;
-               if (listener != null)
-                  listener.animationCompleted();
-            }
-         }
-      }
-   }
-   
    
 
    
-   class NewMoveAnimator extends NewAnimator {
 
-      LinearStepper xStepper;
-      LinearStepper yStepper;
-      
-      Point source;
-      Point destination;
-      NewMoveAnimator(Point source, Point destination){
-         this.source = source;
-         this.destination = destination;
-      }
-            
-      @Override
-      protected void init(){
-         xStepper = new LinearStepper(source.x, destination.x, 10);
-         yStepper = new LinearStepper(source.y, destination.y, 10);                  
-      }
-      
-      @Override
-      protected boolean isRunning(){
-         return xStepper.hasNext();
-      }
-      
-      @Override
-      protected void animate(){
-         float x = xStepper.next();
-         float y = yStepper.next();
-                     
-         setActualLocation((int) x, (int) y);
-      }
-
-   }
-   
-   class CircleAnimator extends NewAnimator {
-      LinearStepper radiusStepper;
-      
-      Point origin;
-      float radius;
-      CircleAnimator(Point origin, float radius){
-         this.radius = radius;
-         this.origin = origin;
-         setLooping(true);
-      }
-      
-      @Override
-      protected void init(){
-         radiusStepper = new LinearStepper(0,(float) (2*Math.PI),20);
-      }
-
-      @Override
-      protected boolean isRunning(){
-         return radiusStepper.hasNext();
-      }
-            
-      @Override
-      protected void animate(){
-         float theta = radiusStepper.next();
-         
-         int x = (int) (origin.x + (int) radius * Math.sin(theta));
-         int y=  (int) (origin.y + (int) radius * Math.cos(theta));
-      
-         setActualLocation((int) x, (int) y);
-      }  
-   }
-
-   class ResizeAnimator extends NewAnimator {
-      LinearStepper widthStepper;
-      LinearStepper heightStepper;
-       
-      Dimension currentSize;
-      Dimension targetSize;
-      ResizeAnimator(Dimension currentSize, Dimension targetSize){
-         this.currentSize = currentSize;
-         this.targetSize = targetSize;                       
-      }
-      
-      @Override
-      protected void init(){
-         widthStepper = new LinearStepper(currentSize.width, targetSize.width, 10);
-         heightStepper = new LinearStepper(currentSize.height, targetSize.height, 10);
-      }
-      
-      @Override
-      protected boolean isRunning(){
-         return widthStepper.hasNext();
-      }
-            
-      @Override
-      protected void animate(){
-            float width = widthStepper.next();
-            float height = heightStepper.next();
-            setActualSize(new Dimension((int) width, (int) height));
-      }       
-   }
-   
-   class OpacityAnimator extends NewAnimator {
-      LinearStepper stepper;
-
-      float sourceOpacity;
-      float targetOpacity;
-      OpacityAnimator(float sourceOpacity, float targetOpacity){
-         this.sourceOpacity = sourceOpacity;
-         this.targetOpacity = targetOpacity;
-      }
-      
-      @Override
-      protected void init(){
-         stepper = new LinearStepper(sourceOpacity, targetOpacity, 10);         
-      }
-
-      @Override
-      protected boolean isRunning(){
-         return stepper.hasNext();
-      }
-
-      @Override
-      public void animate(){
-            float f = stepper.next();
-            setOpacity(f);
-      }
-   }
    
    boolean animationRunning = false;
-   class PopupAnimator implements ActionListener{
-      LinearStepper shadowSizeStepper;
-      LinearStepper offsetStepper;
-      LinearStepper scaleStepper;
-      LinearStepper widthStepper;
-      LinearStepper heightStepper;
-
-       
-      Timer timer;      
-      
-      Point centerLocation;
-      PopupAnimator(){
-         shadowSizeStepper = new LinearStepper(5,13,10);
-         offsetStepper = new LinearStepper(0,10,5);    
-         //scaleStepper = new LinearStepper(1f,1.2f,);
-         widthStepper = new LinearStepper(getActualWidth(),1.0f*getActualWidth()*1.1f,10);
-         heightStepper = new LinearStepper(getActualHeight(),1.0f*getActualHeight()*1.1f,10);
-         
-         centerLocation = new Point(getActualLocation());
-         centerLocation.x = centerLocation.x + getActualWidth()/2;
-         centerLocation.y = centerLocation.y + getActualHeight()/2;         
-      }      
-      
-      public void start(){         
-         Timer timer = new Timer(25, this);
-         timer.start();
-         animationRunning = true;
-      }
-
-      @Override
-      public void actionPerformed(ActionEvent e){
-         if (shadowSizeStepper.hasNext()){
-
-            float shadowSize = shadowSizeStepper.next();
-            float offset = offsetStepper.next();
-            float width = widthStepper.next();
-            float height = heightStepper.next();                        
-
-            Rectangle r = getBounds();
-            
-            setActualLocation((int)(centerLocation.x - width/2), (int)(centerLocation.y - height/2));
-            setActualSize((int)width, (int)height);
-
-            setShadow((int)shadowSize,(int) 2);
-            //Point p = getActualLocation();
-            //p.x -= 1;
-            //p.y -= 1;
-            //setActualLocation(p);
-            r.add(getBounds());
-            
-            getParent().getParent().repaint();//r.x,r.y,r.width,r.height);
-         }else{
-            ((Timer)e.getSource()).stop();
-            animationRunning = false;
-            animationCompleted();
-         }
-      }
-   }   
-
    
    float opacity = 1.0f;
 
@@ -477,7 +210,6 @@ implements Cloneable{
    }
    
    public void paint(Graphics g){
-      
          
          // render the component in an offscreen buffer with shadow
          BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -493,61 +225,45 @@ implements Cloneable{
          Graphics2D g2d = (Graphics2D) g;
          ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,opacity));
          g2d.drawImage(image,0,0,null,null);
-         
-         
-//         shadowRenderer.paintComponent(g);
-//         Graphics2D g2d = (Graphics2D) g;
-//         
-//         if (DEBUG_BOUNDS){
-//            // visualize display bounds         
-//            g2d.setColor(Color.black);
-//            g2d.setStroke(new BasicStroke(1.0f));
-//            g2d.drawRect(0,0,getWidth()-1,getHeight()-1);
-//         }
-//         
-//       //  g.translate((shadowSize-shadowOffset),(shadowSize-shadowOffset));
-//         
-//         // clear the foreground area covered by the shadow
-//         // so transparent foreground can see through
-////         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR,0));
-////         g2d.fillRect(0,0,getActualWidth()-1,getActualHeight()-1);
-//
-//         super.paint(g);
-//         
-//         if (DEBUG_BOUNDS){
-//         
-//            // visualize actual bounds
-//            g2d.setColor(Color.green);
-//            g2d.drawRect(0,0,getActualWidth()-1,getActualHeight()-1);
-//         }
-//
-//      }else{
-//         super.paint(g);
-//      }
-      
-      
    }
    
    public void resizeTo(Dimension targetSize){
-      ResizeAnimator anim = new ResizeAnimator(getActualSize(),targetSize);
-      anim.start();
+      //ResizeAnimator anim = new ResizeAnimator(this, getActualSize(),targetSize);
+      //anim.start();
    }
    
    public void moveTo(Point targetLocation){
-      NewMoveAnimator anim = new NewMoveAnimator(getActualLocation(),targetLocation);
+      NewAnimator anim = AnimationFactory.createCenteredMoveAnimation(this, getActualLocation(), targetLocation);
       anim.start();
    }
    
    public void moveTo(Point targetLocation, AnimationListener listener){
-      NewMoveAnimator anim = new NewMoveAnimator(getActualLocation(),targetLocation);
+      NewAnimator anim = AnimationFactory.createCenteredMoveAnimation(this, getActualLocation(), targetLocation);
       anim.setListener(listener);
       anim.start();
    }
 
+   public void popupOLD(){
+//      PopupAnimator anim = new PopupAnimator();
+//      anim.start();      
+   }
+   
+   public void popin(){
+      Dimension targetSize = new Dimension(getActualSize());
+      targetSize.width /= 1.2;
+      targetSize.height /= 1.2;
+      NewAnimator anim = AnimationFactory.createCenteredResizeToAnimation(this, targetSize);
+      anim.start();
+   }
 
-   public void popup(){
-      PopupAnimator anim = new PopupAnimator();
-      anim.start();      
+   public void popout(){
+      setShadowDefault();
+
+      Dimension targetSize = new Dimension(getActualSize());      
+      targetSize.width *= 1.2;
+      targetSize.height *= 1.2;
+      NewAnimator anim = AnimationFactory.createCenteredResizeToAnimation(this, targetSize);
+      anim.start();
    }
    
    public void setOpacity(float opacity){
@@ -575,10 +291,10 @@ implements Cloneable{
          getTopLevelAncestor().repaint();
    }
    
-   public void changeOpacityTo(float targetOpacity){
-      OpacityAnimator anim = new OpacityAnimator(opacity,targetOpacity);
-      anim.start();
-   }
+//   public void changeOpacityTo(float targetOpacity){
+//      OpacityAnimator anim = new OpacityAnimator(this, opacity,targetOpacity);
+//      anim.start();
+//   }
 
 
    SikuliGuideAnimator entrance_anim;
@@ -1132,10 +848,9 @@ implements Cloneable{
          paintSize.width += (2*shadowSize);
          paintSize.height += (2*shadowSize);
       }
-      
       super.setSize(paintSize);
-      updateAllFollowers();
-   }
+      updateAllFollowers();         
+   }  
    
    public void setActualBounds(Rectangle actualBounds) {
       this.actualBounds = (Rectangle) actualBounds.clone();
@@ -1149,8 +864,9 @@ implements Cloneable{
       }
       
       super.setBounds(paintBounds);
-      updateAllFollowers();
+      updateAllFollowers();   
    }
+   
    
 //   @Override
 //   public void setSize(int width, int height){

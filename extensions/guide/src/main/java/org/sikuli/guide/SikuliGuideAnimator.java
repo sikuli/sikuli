@@ -47,7 +47,7 @@ public abstract class SikuliGuideAnimator implements ActionListener {
 
 
 
-class CircleAnimator extends SikuliGuideAnimator{
+class CircleAnimatoOld extends SikuliGuideAnimator{
    int repeatCount;
    int count;
 
@@ -56,7 +56,7 @@ class CircleAnimator extends SikuliGuideAnimator{
    Point origin;
    int radius;
    
-   public CircleAnimator(SikuliGuideComponent comp, int radius){
+   public CircleAnimatoOld(SikuliGuideComponent comp, int radius){
       super(comp);
 
       repeatCount = duration / cycle;     

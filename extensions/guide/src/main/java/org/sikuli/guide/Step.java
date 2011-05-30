@@ -2,6 +2,7 @@ package org.sikuli.guide;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 import org.sikuli.script.FindFailed;
@@ -11,13 +12,17 @@ import org.sikuli.script.Screen;
 
 
 public class Step {
+   
+   public interface StepListener{
+      void thumbnailRefreshed(Step step);
+   }
+   
    private ArrayList<Part> contentParts = new ArrayList<Part>();
    Transition transition;
    private BufferedImage screenImage;   
    private BufferedImage thumbnailImage;
    private StepView stepView;
-   private int index;
-   
+
    public Transition getTransition() {
       return transition;
    }
@@ -93,6 +98,8 @@ public class Step {
    }
 
    public BufferedImage getThumbnailImage() {
+      if (thumbnailImage == null)
+         thumbnailImage = stepView.createForegroundThumbnail(200,150);
       return thumbnailImage;
    }
 
@@ -104,16 +111,11 @@ public class Step {
       return stepView;
    }
 
+   public StepListener listener;
    public void refreshThumbnailImage() {
-      thumbnailImage = stepView.createForegroundThumbnail(200,150);      
-   }
-
-   public void setIndex(int index) {
-      this.index = index;
-   }
-
-   public int getIndex() {
-      return index;
+      thumbnailImage = stepView.createForegroundThumbnail(200,150);
+      if (listener!=null)
+         listener.thumbnailRefreshed(this);
    }
 
          

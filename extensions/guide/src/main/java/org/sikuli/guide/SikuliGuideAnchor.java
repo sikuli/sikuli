@@ -7,6 +7,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
@@ -26,7 +27,13 @@ public class SikuliGuideAnchor extends SikuliGuideComponent{
    
    public interface AnchorListener {
       public void anchored();
+      public void found(SikuliGuideAnchor source);
    }
+   
+//   public class AnchorAdapter implements AnchorListener {
+//      public void anchored(){};
+//      public void found(){};     
+//   }
    
    ArrayList<AnchorListener> listeners = new ArrayList<AnchorListener>();
    public void anchored(){
@@ -38,6 +45,37 @@ public class SikuliGuideAnchor extends SikuliGuideComponent{
       addFadeinAnimation();
       startAnimation();
    }
+   
+   private boolean animateAnchoring = false;
+   
+   public void found(Rectangle bounds){
+      for (AnchorListener listener : listeners){
+         listener.found(this);
+      }
+      
+      
+      if (isAnimateAnchoring()){
+      
+         Point center = new Point();
+//         center.x = (int) bounds.getCenterX();
+//         center.y = (int) bounds.getCenterY();
+          center.x = (int) bounds.x + bounds.width/2;
+          center.y = (int) bounds.y + bounds.height/2;
+
+         
+         moveTo(center, new AnimationListener(){
+             public void animationCompleted(){
+                anchored();          
+             }
+         });
+      
+      }else{
+         
+         setActualLocation(bounds.x, bounds.y);
+         anchored();
+      }
+   }
+   
    
    public void addListener(AnchorListener listener){
       listeners.add(listener);
@@ -138,6 +176,15 @@ public class SikuliGuideAnchor extends SikuliGuideComponent{
 
    public Pattern getPattern() {
       return pattern;
+   }
+
+
+   public void setAnimateAnchoring(boolean animateAnchoring) {
+      this.animateAnchoring = animateAnchoring;
+   }
+
+   public boolean isAnimateAnchoring() {
+      return animateAnchoring;
    }
 
 
