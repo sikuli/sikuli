@@ -45,7 +45,7 @@ public class RegionFastTest
    }
 
    @Test
-   public void test_doFindAll() throws Exception {
+   public void test_doFindAll_1match() throws Exception {
       Iterator<Match> matches = _mockScr.doFindAll("test-res/network.png");
       int count = 0;
       while(matches.hasNext()){
@@ -57,6 +57,22 @@ public class RegionFastTest
          assertEquals(m.h, NETWORK_ICON.height);
       }
       assertEquals(count, 1);
+   }
+
+   @Test
+   public void test_doFindAll_many_match() throws Exception {
+      Iterator<Match> matches = _mockScr.doFindAll("test-res/pdf_icon.png");
+      int count = 0;
+      while(matches.hasNext()){
+         count++;
+         Match m = matches.next();
+         assertTrue(m.x == 1600 || m.x == 1490);
+         assertTrue( (m.y % 92) == 25);
+         assertEquals(m.w, 42);
+         assertEquals(m.h, 53);
+         //System.out.println(m);
+      }
+      assertEquals(count, 10);
    }
 
 
