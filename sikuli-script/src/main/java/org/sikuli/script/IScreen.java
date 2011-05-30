@@ -16,4 +16,9 @@ public interface IScreen {
    public ScreenImage capture(Rectangle rect);
    public ScreenImage capture(Region reg);
 
+
+   public void showMove(Location loc);
+   public void showClick(Location loc);
+   public void showTarget(Location loc);
+   public void showDropTarget(Location loc);
 }

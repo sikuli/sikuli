@@ -21,7 +21,7 @@ import javax.swing.JWindow;
 public class Region {
    final static float DEFAULT_HIGHLIGHT_TIME = 2f;
    private IRobot _robot;
-   private Screen _scr;
+   private IScreen _scr;
    private ScreenHighlighter _overlay = null;
 
    public int x, y, w, h;
@@ -80,8 +80,8 @@ public class Region {
    }
 
    public String toString(){
-      return String.format("Region[%d,%d %dx%d]@Screen(%d) E:%s, T:%.1f", 
-                            x, y, w, h, _scr.getID(),
+      return String.format("Region[%d,%d %dx%d]@%s E:%s, T:%.1f", 
+                            x, y, w, h, _scr.toString(),
                             _throwException?"Y":"N", _autoWaitTimeout);
    }
 
@@ -149,7 +149,7 @@ public class Region {
 
    ////////////////////////////////////////////////////////
 
-   public Screen getScreen(){ return _scr;   }
+   public IScreen getScreen(){ return _scr;   }
 
    public int getX(){ return x; }
    public int getY(){ return y; }
@@ -188,8 +188,13 @@ public class Region {
 
    protected void highlight(boolean toEnable){
       Debug.history("toggle highlight " + toString() + ": " + toEnable); 
+      if(!(_scr instanceof Screen)){
+         Debug.error("highlight only work on the physical desktop screens.");
+         return;
+      }
+      Screen scr = (Screen)getScreen();
       if(toEnable){
-         _overlay = new ScreenHighlighter(getScreen());
+         _overlay = new ScreenHighlighter(scr);
          _overlay.highlight(this);
       }
       else{
@@ -202,7 +207,12 @@ public class Region {
 
    public void highlight(float secs){
       Debug.history("highlight " + toString() + " for " + secs + " secs"); 
-      ScreenHighlighter overlay = new ScreenHighlighter(getScreen());
+      if(!(_scr instanceof Screen)){
+         Debug.error("highlight only work on the physical desktop screens.");
+         return;
+      }
+      Screen scr = (Screen)getScreen();
+      ScreenHighlighter overlay = new ScreenHighlighter(scr);
       overlay.highlight(this, secs);
    }
 
