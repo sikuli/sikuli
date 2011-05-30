@@ -878,7 +878,7 @@ public class Region {
    
    
    <PSC> Match doFind(PSC ptn) throws IOException{
-      ScreenImage simg = _scr.capture(x, y, w, h);
+      ScreenImage simg = getScreen().capture(x, y, w, h);
       _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       f.find(ptn);
@@ -889,7 +889,7 @@ public class Region {
    }
 
    <PSC> Iterator<Match> doFindAll(PSC ptn) throws IOException{
-      ScreenImage simg = _scr.capture(x, y, w, h);
+      ScreenImage simg = getScreen().capture(x, y, w, h);
       _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       f.findAll(ptn);

@@ -16,6 +16,7 @@
    </path>
    <path id="classpath.test">
       <pathelement location="../lib/junit-4.8.2.jar" />
+      <pathelement location="../lib/mockito-all-1.8.5.jar" />
       <pathelement location="${tst-dir}" />
       <path refid="classpath.base" />
    </path>

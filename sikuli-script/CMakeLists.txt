@@ -157,6 +157,22 @@ add_custom_target( test-res
    COMMENT "Copy test resource"
 )
 
+SET(JAVA_TEST_CASE ""
+   CACHE STRING
+   "The java test case to run with run-java-test"
+   )
+
+add_custom_target( run-java-test
+   COMMAND ant -f ${JAVA_TEST_FOR_HUDSON_XML} runtest -Dtest=${JAVA_TEST_CASE}
+   COMMENT "Run specific Java unit tests"
+)
+
+add_dependencies( run-java-test
+        ${JAR_FILE}
+        ${PROJECT_NAME}.test.classes
+        test-res
+)
+
 add_custom_target( java-test
    COMMAND ant -f ${JAVA_TEST_FOR_HUDSON_XML}
    COMMENT "Run Java unit tests"
