@@ -16,7 +16,7 @@ import javax.swing.text.*;
 import org.sikuli.script.CapturePrompt;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Region;
-import org.sikuli.script.Screen;
+import org.sikuli.script.IScreen;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
 import org.sikuli.script.Debug;
@@ -75,9 +75,9 @@ class RegionButton extends JButton implements ActionListener, Observer{
 
    private BufferedImage getRegionImage(int x, int y, int w, int h) {
       Region region = new Region(x, y, w, h);
-      Screen _screen = region.getScreen();
+      IScreen _screen = region.getScreen();
       ScreenImage simg = _screen.capture();
-      int scr_w = _screen.w, scr_h = _screen.h;
+      int scr_w = simg.w, scr_h = simg.h;
       int max_h = 80; // FIXME: put max_h in UserPreferences
       float scale = (float)max_h/scr_h;
       scr_w *= scale;
@@ -86,7 +86,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
       Graphics2D screen_g2d = screen.createGraphics();
       try {
          screen_g2d.drawImage(simg.getImage(), 0, 0,  scr_w, scr_h, null);
-         int sx = (int)((x-_screen.x)*scale), sy = (int)((y-_screen.y)*scale),
+         int sx = (int)((x-simg.x)*scale), sy = (int)((y-simg.y)*scale),
              sw = (int)(w*scale), sh = (int)(h*scale);
          screen_g2d.setColor(new Color(255,0,0, 150));
          screen_g2d.fillRect(sx, sy, sw, sh);
