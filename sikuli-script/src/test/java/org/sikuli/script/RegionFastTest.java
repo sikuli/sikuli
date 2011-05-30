@@ -25,7 +25,7 @@ public class RegionFastTest
    static protected Rectangle NETWORK_ICON = new Rectangle(792, 391, 52, 54);
    static protected Screen _mockScr;
 
-   @BeforeClass static public void setupMockScreen() throws Exception{
+   @Before public void setupMockScreen() throws Exception{
       BufferedImage desktop_img = ImageIO.read(new File("test-res/mac-desktop.png"));
       ScreenImage desktop_simg = new ScreenImage(DESKTOP_RECT, desktop_img);
 
@@ -43,6 +43,33 @@ public class RegionFastTest
       assertEquals(m.h, NETWORK_ICON.height);
       assertEquals(m.score, 1.0, 0.01);
    }
+
+
+   @Test
+   public void test_autoWaitTimeout() throws Exception {
+      double timeout = 0.1;
+      String ptn = "test-res/network.png";
+      _mockScr.setAutoWaitTimeout(timeout);
+      _mockScr.find(ptn);
+      verify(_mockScr).wait(ptn, timeout);
+   }
+
+   @Test
+   public void test_autoWaitTimeout_no_wait() throws Exception {
+      _mockScr.setAutoWaitTimeout(0);
+      String ptn = "test-res/network.png";
+      _mockScr.find(ptn);
+      verify(_mockScr, never()).wait(anyObject(), anyDouble());
+   }
+
+   @Test
+   public void test_getLastMatch() throws Exception {
+      String ptn = "test-res/network.png";
+      assertNull(_mockScr.getLastMatch());
+      Match m = _mockScr.find(ptn);
+      assertEquals(_mockScr.getLastMatch(), m);
+   }
+
 
    @Test
    public void test_doFindAll_1match() throws Exception {
