@@ -27,6 +27,10 @@ public class Screen extends Region implements Observer, IScreen {
       initRobots();
    }
 
+   public Region newRegion(Rectangle rect){
+      return new Region(rect, this);
+   }
+
    private static void initRobots(){
       try{
          _robots = new DesktopRobot[_gdev.length];
@@ -65,7 +69,7 @@ public class Screen extends Region implements Observer, IScreen {
    }
    
    public IRobot getRobot(){
-      return _robots[_curID];
+      return _robots[getPrimaryId()];
    }
 
    public GraphicsDevice getGraphicsDevice(){
@@ -97,7 +101,7 @@ public class Screen extends Region implements Observer, IScreen {
    protected void initBounds(){
       Rectangle bounds = getBounds();
       init((int)bounds.getX(), (int)bounds.getY(),
-            (int)bounds.getWidth(), (int)bounds.getHeight());
+           (int)bounds.getWidth(), (int)bounds.getHeight(), this);
       _overlay = new ScreenHighlighter(this);
    }
 

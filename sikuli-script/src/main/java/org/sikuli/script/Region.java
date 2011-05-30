@@ -58,7 +58,7 @@ public class Region {
    * @param h_ heigth
    */
    public Region(int x_, int y_, int w_, int h_) {
-      init(x_,y_,w_,h_);
+      init(x_,y_,w_,h_, null);
    }
 
   /**
@@ -67,7 +67,7 @@ public class Region {
    * @param r the Rectangle
    */
    public Region(Rectangle r) {
-      init(r.x, r.y, r.width, r.height);
+      init(r.x, r.y, r.width, r.height, null);
    }
 
   /**
@@ -76,7 +76,7 @@ public class Region {
    * @param r the region
    */
    public Region(Region r) {
-      init(r.x, r.y, r.w, r.h);
+      init(r.x, r.y, r.w, r.h, null);
    }
 
    public String toString(){
@@ -85,22 +85,23 @@ public class Region {
                             _throwException?"Y":"N", _autoWaitTimeout);
    }
 
-   // for unit testing only.
-   Region(Rectangle r, IRobot robot) {
-      init(r.x, r.y, r.width, r.height);
-      _robot = robot;
+   Region(Rectangle r, IScreen parentScreen) {
+      init(r.x, r.y, r.width, r.height, parentScreen);
    }
+
 
    protected Region(){}
 
-   void init(int x_, int y_, int w_, int h_) {
+   void init(int x_, int y_, int w_, int h_, IScreen parentScreen) {
       x = x_;
       y = y_;
       w = w_;
       h = h_;
-      _scr = initScreen();
-      //_robot = _scr.getRobot();
-      _robot = Screen.getRobot(Screen.getPrimaryId()); // mouseMove only works on the primary robot
+      if(parentScreen != null)
+         _scr = parentScreen;
+      else
+         _scr = initScreen();
+      _robot = _scr.getRobot();
    }
 
    protected EventManager getEventManager(){

@@ -11,6 +11,8 @@ public interface IScreen {
    public IRobot getRobot();
    public Rectangle getBounds();
 
+   public Region newRegion(Rectangle rect);
+
    public ScreenImage capture();
    public ScreenImage capture(int x, int y, int w, int h);
    public ScreenImage capture(Rectangle rect);

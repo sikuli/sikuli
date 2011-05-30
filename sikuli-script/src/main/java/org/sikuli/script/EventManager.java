@@ -120,7 +120,7 @@ public class EventManager {
          for(int i=0;i<results.size();i++){
             FindResult r = results.get(i);
             if( r.getW() * r.getH() >= n )
-               changes.add(_region.toGlobalCoord(new Match(r)));
+               changes.add(_region.toGlobalCoord(new Match(r, _region.getScreen())));
          }
          if(changes.size() > 0){
             ChangeEvent se = new ChangeEvent(changes, _region);
