@@ -26,6 +26,7 @@ public class RegionTest implements SikuliEventObserver
        assertEquals(0, frame.getCount()[1]);
        assertEquals(0, frame.getCount()[2]);
        Screen scr = new Screen();
+       scr.setAutoWaitTimeout(10);
        Settings.MoveMouseDelay = 0;
        Pattern ptn = new Pattern("test-res/network.png");
        int ret = scr.click(ptn, 0);
