@@ -196,13 +196,13 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 	.. py:method:: getLastMatch()
 			getLastMatches()
 
-		:return: the best match as a :py:class:`Match` respectively one or more
-			match objects as an :py:class`Iterator` object
+		:return: the best match as a :py:class:`Match` object or one or more
+			match objects as an :py:class:`Iterator` object respectively
 
 		All successful find operations (explicit like ``find()`` or
-		implicit like ``click()``), store the best match into lastMatch
+		implicit like ``click()``), store the best match in the `lastMatch` attribute
 		of the region that was searched. ``findAll()`` stores all found matches into
-		lastMatches of the region that was searched as an iterator. 
+		`lastMatches` atribute of the region that was searched as an iterator.
 
 		To access these attributes use ``region.getLastMatch()`` or
 		``region.getLastMatches()`` respectively.
@@ -405,7 +405,7 @@ using a string containing the file name (path to an image file).
 
 		:param PS: a :py:class:`Pattern` object or a string (path to an image
 			file or just plain text)
-		:return: one or more match objects as an iterator object or fails if :ref:`not found <PatternNotFound>`
+		:return: one or more :py:class:`Match` objects as an iterator object or fails if :ref:`not found <PatternNotFound>`
 		
 		How to iterate through is :ref:`documented here <IteratingMatches>`. 
 
@@ -1193,6 +1193,7 @@ For more sophisticated concepts, you can implement your own exception handling u
 the standard Python construct ``try: ... except: ...`` .
 
 .. versionadded:: X1.0-rc2
+
 These are the possibilities to handle "not found" situations:
 	* generally abort a script, if not handled with ``try: ... except: ...``
 		(the default setting or using :py:meth:`setThrowException(True) <Region.setThrowException>` 

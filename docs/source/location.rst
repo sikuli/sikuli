@@ -34,7 +34,7 @@ denote the click point. It contains methods, to *move* a point around on the scr
 	.. py:method:: offset(dx, dy)
 
 		Get a new location which is *dx* and *dy* pixels away horizontally and
-		vertically respectively from the current location.
+		vertically from the current location.
 
 	.. py:method:: above(dy)
 
