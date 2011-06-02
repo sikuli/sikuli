@@ -413,6 +413,25 @@ using a string containing the file name (path to an image file).
 		found anymore, that meets the requirements for a single
 		:py:meth:`Region.find()` with the specified pattern.
 
+		By default, the returned matches are sorted by the similiarty.
+		If you need them ordered by their positions, say the Y coordinates,
+		you have to use Python's `sorted <http://wiki.python.org/moin/HowTo/Sorting/>`_ function. Here is a example of sorting the matches from top to bottom.
+
+		.. sikulicode::
+
+			def by_y(match):
+			   return match.y
+
+			icons = findAll("png_icon.png")
+			# sort the icons by their y coordinates and put them into a new variable sorted_icons
+			sorted_icons = sorted(icons, key=by_y) 
+			# another shorter version is using lambda.
+			sorted_icons = sorted(icons, key=lambda m:m.y)
+			for icon in sorted_icons:
+			   pass # do whatever you want to do with the sorted icons
+
+
+                
 		**Side Effect** *lastMatches*: a reference to the returned iterator object containing the 
 		found matches is stored with the region that was searched. It can be
 		accessed using getLastMatches() afterwards. How to iterate through an
