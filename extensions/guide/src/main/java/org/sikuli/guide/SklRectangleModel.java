@@ -28,7 +28,7 @@ public class SklRectangleModel extends DefaultSklObjectModel {
    }
 }
 
-class SklRectangleView extends SklObjectView {
+class SklRectangleView extends SklView {
 
    public SklRectangleView(SklRectangleModel model){
       super(model);   
@@ -41,7 +41,7 @@ class SklRectangleView extends SklObjectView {
       Stroke pen = new BasicStroke(3.0F);    
       g2d.setStroke(pen);
       
-      g2d.drawRect(0,0,model.getWidth()-1,model.getHeight()-1);
+      g2d.drawRect(0,0,_model.getWidth()-1,_model.getHeight()-1);
    } 
    
 }

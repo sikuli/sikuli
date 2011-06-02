@@ -696,11 +696,10 @@ public class SikuliGuide extends TransparentWindow {
       playStep(step, 1.0f);
    }
    
-
-   public void playStepList(SklStepListModel stepListModel){
-      for (Enumeration<?> e = stepListModel.elements() ; e.hasMoreElements() ;) {
-          SklStepModel eachStepModel = (SklStepModel) e.nextElement();
-          String ret = playStep(eachStepModel);
+   
+   public void play(ArrayList<SklStepModel> steps){
+      for (SklStepModel step : steps){
+          String ret = playStep(step);
           if (ret == null)
              continue;
           
@@ -710,6 +709,20 @@ public class SikuliGuide extends TransparentWindow {
        }
       
    }
+
+//   public void playStepList(SklStepListModel stepListModel){
+//      for (Enumeration<?> e = stepListModel.elements() ; e.hasMoreElements() ;) {
+//          SklStepModel eachStepModel = (SklStepModel) e.nextElement();
+//          String ret = playStep(eachStepModel);
+//          if (ret == null)
+//             continue;
+//          
+//          if (ret.equals("Exit")){
+//             return;
+//          }
+//       }
+//      
+//   }
    
    public String playStep(SklStepModel step_){
       
@@ -720,9 +733,9 @@ public class SikuliGuide extends TransparentWindow {
          e1.printStackTrace();
       }
       
-      for (SklObjectModel model : step.getModels()){
+      for (SklModel model : step.getModels()){
          model.setOpacity(0f);         
-         SklObjectView view = SklViewFactory.createView(model);
+         SklView view = SklViewFactory.createView(model);
          addToFront(view);
       }
       

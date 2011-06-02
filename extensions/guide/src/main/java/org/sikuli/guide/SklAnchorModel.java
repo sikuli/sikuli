@@ -19,6 +19,12 @@ public class SklAnchorModel extends DefaultSklObjectModel {
       
    }
    
+   
+   static String CLICK_COMMAND = "click";
+   static String ASSERT_COMMAND = "assert";
+   
+   private String action = ASSERT_COMMAND;
+   
    public SklAnchorModel(Rectangle r){
       setX(r.x);
       setY(r.y);
@@ -33,41 +39,29 @@ public class SklAnchorModel extends DefaultSklObjectModel {
    }
    
    @Element (required = false)
-   private
-   SklPatternModel pattern;
+   private SklPatternModel pattern;
    
-   @Override
-   public SklObjectView createView(){
-      return new SklAnchorView(this);
-   }
-
    public void setPattern(SklPatternModel pattern) {
       this.pattern = pattern;
    }
    
-   SklTracker tracker;
-   public void startTracking(){
-      tracker = new SklTracker(pattern);
-      tracker.setAnchor(this);      
-      tracker.start();      
-   }
-
-   public void startTracking(Pattern pattern){
-      tracker = new SklTracker(pattern);
-      tracker.setAnchor(this);
-      tracker.start();
-   }
-
-   
    public SklPatternModel getPattern() {
       return pattern;
+   }
+
+   public void setCommand(String action) {
+      this.action = action;
+   }
+
+   public String getCommand() {
+      return action;
    }
 }
 
 
-class SklAnchorView extends SklObjectView {
+class SklAnchorView extends SklView {
 
-   public SklAnchorView(SklObjectModel model){
+   public SklAnchorView(SklModel model){
       super(model);
    }
       
@@ -75,9 +69,6 @@ class SklAnchorView extends SklObjectView {
    public void paintComponent(Graphics g){
       super.paintComponent(g);
       Graphics2D g2d = (Graphics2D)g;
-
-      //if (editable){
-
          if (true){
             Rectangle r = getActualBounds();
             g2d.setColor(getForeground());
@@ -94,8 +85,6 @@ class SklAnchorView extends SklObjectView {
             g2d.setStroke(new BasicStroke(3f));
             g2d.drawRect(1,1,r.width-3,r.height-3);
          }
-
-      //}
    }
    
 

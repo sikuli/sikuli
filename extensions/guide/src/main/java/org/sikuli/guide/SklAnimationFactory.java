@@ -39,15 +39,15 @@ public class SklAnimationFactory{
       return new SklMoveAnimation(sklComponent, source, destination);
    }
 
-   static public SklAnimation createMoveAnimation(SklObjectModel sklComponent, Point source, Point destination){      
+   static public SklAnimation createMoveAnimation(SklModel sklComponent, Point source, Point destination){      
       return new SklMoveAnimation(sklComponent, source, destination);
    }
 
-   static public SklAnimation createMoveToAnimation(SklObjectModel sklComponent, Point destination){      
+   static public SklAnimation createMoveToAnimation(SklModel sklComponent, Point destination){      
       return new SklMoveToAnimation(sklComponent, destination);
    }
 
-   static public SklAnimation createResizeToAnimation(SklObjectModel sklComponent, Dimension targetSize){      
+   static public SklAnimation createResizeToAnimation(SklModel sklComponent, Dimension targetSize){      
       return new SklResizeToAnimation(sklComponent, targetSize);
    }
    
@@ -61,7 +61,7 @@ public class SklAnimationFactory{
       return new SklOpacityAnimation(sklComponent, sklComponent.getOpacity(), 0f);
    }
 
-   static public SklAnimation createFadeinAnimation(SklObjectModel model){      
+   static public SklAnimation createFadeinAnimation(SklModel model){      
       return new SklOpacityAnimation(model, model.getOpacity(), 1f);
    }
    
@@ -107,7 +107,7 @@ class SklAnimation implements ActionListener {
 
    boolean looping = false;
    boolean animationRunning = false;
-   protected SklObjectModel model;
+   protected SklModel model;
    
    @Element
    DefaultSklObjectModel sklComponent;
@@ -156,8 +156,8 @@ class SklAnimation implements ActionListener {
 
          animate();
          
-         if (sklComponent != null)
-            sklComponent.updateView();
+//         if (sklComponent != null)
+//            sklComponent.updateView();
 
 
 
@@ -203,7 +203,7 @@ class SklMoveAnimation extends SklAnimation {
       this.desty = destination.y;
    }
    
-   SklMoveAnimation(SklObjectModel model, Point source, Point destination){
+   SklMoveAnimation(SklModel model, Point source, Point destination){
       //super(model);
       this.model = model;
       this.srcx = source.x;
@@ -269,7 +269,7 @@ class SklMoveToAnimation extends SklAnimation {
       this.desty = destination.y;
    }
    
-   SklMoveToAnimation(SklObjectModel model, Point destination){
+   SklMoveToAnimation(SklModel model, Point destination){
       //super(model);
       this.model = model;
       this.destx = destination.x;
@@ -398,7 +398,7 @@ class SklResizeToAnimation extends SklAnimation {
    @Attribute
    int destHeight;
    
-   SklResizeToAnimation(SklObjectModel model, Dimension targetSize){
+   SklResizeToAnimation(SklModel model, Dimension targetSize){
       //TODO: make super constructor takes model
       //super(sklComponent);
       this.model = model;
@@ -478,7 +478,7 @@ class SklOpacityAnimation extends SklAnimation {
       
    }
    
-   SklOpacityAnimation(SklObjectModel model, float sourceOpacity, float targetOpacity){
+   SklOpacityAnimation(SklModel model, float sourceOpacity, float targetOpacity){
       //super(sklComponent);
       this.model = model;
       this.sourceOpacity = sourceOpacity;

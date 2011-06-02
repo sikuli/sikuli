@@ -46,14 +46,9 @@ public class SklFlagModel extends DefaultSklTextModel {
    public final static int DIRECTION_NORTH = 4;
 
    
-   @Override
-   public SklObjectView createView(){
-      return new SklFlagView((SklFlagModel) this);
-   }
-   
 }
 
-class SklFlagView extends SklObjectView {
+class SklFlagView extends SklView {
 
    public SklFlagView(SklFlagModel model){
       super(model);   
@@ -74,7 +69,7 @@ class SklFlagView extends SklObjectView {
    protected void update(){
       super.update();
       
-      SklFlagModel flagModel = (SklFlagModel) model;
+      SklFlagModel flagModel = (SklFlagModel) _model;
       String text = flagModel.getText();
       
       setForeground(Color.black);
@@ -91,8 +86,8 @@ class SklFlagView extends SklObjectView {
       setDirection(flagModel.getDirection());
       
       Dimension d = getActualSize();
-      model.setWidth(d.width);
-      model.setHeight(d.height);
+      _model.setWidth(d.width);
+      _model.setHeight(d.height);
    }
 
 //   public void setLocationRelativeToRegion(Region region, Layout side) {
@@ -204,7 +199,7 @@ class SklFlagView extends SklObjectView {
       g2d.draw(flagShape);      
 
       g2d.setColor(getForeground());
-      g2d.drawString(((SklFlagModel)model).getText(), textBox.x + PADDING_X, 
+      g2d.drawString(((SklFlagModel)_model).getText(), textBox.x + PADDING_X, 
             textBox.y +  textBox.height - fm.getDescent() - PADDING_Y);
 
    }

@@ -358,8 +358,8 @@ public class ComponentDragMover extends MouseAdapter{
       
       if (destination instanceof SikuliGuideComponent){
          location = ((SikuliGuideComponent) destination).getActualLocation();
-      }else if (destination instanceof SklObjectView){
-         location = ((SklObjectView) destination).getActualLocation();
+      }else if (destination instanceof SklView){
+         location = ((SklView) destination).getActualLocation();
       }else {
          location = destination.getLocation();         
       }
@@ -400,8 +400,8 @@ public class ComponentDragMover extends MouseAdapter{
       
       if (destination instanceof SikuliGuideComponent)
          ((SikuliGuideComponent) destination).setActualLocation(location.x + dragX, location.y + dragY);
-      else if (destination instanceof SklObjectView)
-         ((SklObjectView) destination).setActualLocation(location.x + dragX, location.y + dragY);
+      else if (destination instanceof SklView)
+         ((SklView) destination).setActualLocation(location.x + dragX, location.y + dragY);
       else
          destination.setLocation(location.x + dragX, location.y + dragY);
 

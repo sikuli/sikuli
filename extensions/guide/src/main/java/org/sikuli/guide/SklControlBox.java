@@ -29,14 +29,14 @@ import org.sikuli.script.Debug;
 
 public class SklControlBox extends DefaultSklObjectModel {
 
-   private SklObjectModel target;
+   private SklModel target;
 
-   SklControlBox(SklObjectModel target){
+   SklControlBox(SklModel target){
       this.setTarget(target);
       
    }
 
-   public SklObjectView createView(){   
+   public SklView createView(){   
       return new SklControlBoxView(this);
    }
    
@@ -51,7 +51,7 @@ public class SklControlBox extends DefaultSklObjectModel {
    }
    TargetPropertyChangeListener targetPropertyChangeListener = new TargetPropertyChangeListener();
    
-   public void setTarget(SklObjectModel target) {
+   public void setTarget(SklModel target) {
 
       // unfollow the existing target
       if (this.target != null)
@@ -65,7 +65,7 @@ public class SklControlBox extends DefaultSklObjectModel {
       this.pcs.firePropertyChange(PROPERTY_TARGET, this.target, this.target = target);
    }
 
-   public SklObjectModel getTarget() {
+   public SklModel getTarget() {
       return target;
    }
 
@@ -73,7 +73,7 @@ public class SklControlBox extends DefaultSklObjectModel {
 
 }
 
-class SklControlBoxView extends SklObjectView {
+class SklControlBoxView extends SklView {
 
    class ResizeMovement extends MouseAdapter {
 
@@ -147,7 +147,7 @@ class SklControlBoxView extends SklObjectView {
          bounds.grow(-10,-10);
 
 
-         SklObjectModel controlledModel = ((SklControlBox) model).getTarget();
+         SklModel controlledModel = ((SklControlBox) _model).getTarget();
          controlledModel.setX(bounds.x);
          controlledModel.setY(bounds.y);
          controlledModel.setWidth(bounds.width);
@@ -204,7 +204,7 @@ class SklControlBoxView extends SklObjectView {
 
    ControlPoint tl,bl,tr,br;
    ConnectControlPoint ctl,cbl,ctr,cbr;
-   public SklControlBoxView(SklObjectModel model)  {
+   public SklControlBoxView(SklModel model)  {
       super(model);
    }
 
@@ -233,7 +233,7 @@ class SklControlBoxView extends SklObjectView {
       super.update();      
       
       
-      SklObjectModel target = ((SklControlBox) getModel()).getTarget();
+      SklModel target = ((SklControlBox) getModel()).getTarget();
       
       if (target == null)
          return;

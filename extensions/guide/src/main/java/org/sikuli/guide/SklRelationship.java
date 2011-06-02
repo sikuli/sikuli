@@ -20,14 +20,14 @@ import org.simpleframework.xml.Root;
 @Root
 public class SklRelationship implements PropertyChangeListener, Cloneable {
    
-   private SklObjectModel parent;
+   private SklModel parent;
    @Element
-   private SklObjectModel dependent;
+   private SklModel dependent;
    
    public SklRelationship(){      
    }
    
-   public SklRelationship(SklObjectModel parent, SklObjectModel dependent){
+   public SklRelationship(SklModel parent, SklModel dependent){
       this.setParent(parent);
       this.setDependent(dependent);      
    }
@@ -44,7 +44,7 @@ public class SklRelationship implements PropertyChangeListener, Cloneable {
    }
 
    @Element
-   public void setParent(SklObjectModel parent) {
+   public void setParent(SklModel parent) {
       if (this.parent != null){
          this.parent.removePropertyChangeListener(this);
       }
@@ -56,7 +56,7 @@ public class SklRelationship implements PropertyChangeListener, Cloneable {
    }
 
    @Element
-   public SklObjectModel getParent() {
+   public SklModel getParent() {
       return parent;
    }
 
@@ -65,7 +65,7 @@ public class SklRelationship implements PropertyChangeListener, Cloneable {
          updateDependent();
    }
    
-   public void setDependent(SklObjectModel dependent){
+   public void setDependent(SklModel dependent){
       if (this.dependent != null){
          this.dependent.removePropertyChangeListener(this);
       }
@@ -76,7 +76,7 @@ public class SklRelationship implements PropertyChangeListener, Cloneable {
       this.dependent = dependent;      
    }
 
-   public SklObjectModel getDependent() {
+   public SklModel getDependent() {
       return dependent;
    }      
 }
@@ -102,7 +102,7 @@ class SklSideRelationship extends SklRelationship{
    SklSideRelationship(){      
    }
    
-   SklSideRelationship(SklObjectModel model, SklObjectModel dependent, Side layoutConstant){
+   SklSideRelationship(SklModel model, SklModel dependent, Side layoutConstant){
       super(model, dependent);
       this.layoutConstant = layoutConstant;
       updateDependent();
@@ -155,7 +155,7 @@ class SklOffsetRelationship extends SklRelationship{
    public SklOffsetRelationship(){      
    }
    
-   public SklOffsetRelationship(SklObjectModel parent, SklObjectModel dependent, int offsetx, int offsety){      
+   public SklOffsetRelationship(SklModel parent, SklModel dependent, int offsetx, int offsety){      
       super(parent, dependent);
       this.offsetx = offsetx;
       this.offsety = offsety;

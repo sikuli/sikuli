@@ -61,10 +61,10 @@ public class DefaultSklTextModel
 
 }
 
-class SklTextView extends SklObjectView {
+class SklTextView extends SklView {
    JPanel panel;
    JLabel label;
-   public SklTextView(SklObjectModel model){
+   public SklTextView(SklModel model){
       super(model);   
    }
    
@@ -78,7 +78,7 @@ class SklTextView extends SklObjectView {
          add(panel);
       }
 
-      SklTextModel textModel = (SklTextModel) model;
+      SklTextModel textModel = (SklTextModel) _model;
       label.setText(textModel.getText());
       label.setSize(label.getPreferredSize());
       label.setLocation(textModel.padding,textModel.padding);      
@@ -93,8 +93,8 @@ class SklTextView extends SklObjectView {
       panel.setSize(size);
       setActualSize(size);
       
-      model.setWidth(size.width);
-      model.setHeight(size.height);
+      _model.setWidth(size.width);
+      _model.setHeight(size.height);
       super.update();      
    }
    

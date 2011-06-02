@@ -1,7 +1,6 @@
 package org.sikuli.guide;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -9,28 +8,15 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.undo.UndoManager;
 
 import org.junit.Test;
-import org.sikuli.guide.EditorWindow.LocationSelector;
-import org.sikuli.guide.EditorWindow.RelatedAnchorVisulization;
-import org.sikuli.guide.Overview.OverviewListener;
-import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.SklSideRelationship.Side;
-import org.sikuli.guide.SklStepPreview.AddComponentAction;
-import org.sikuli.script.Debug;
-import org.sikuli.script.Region;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.CycleStrategy;
@@ -41,13 +27,13 @@ public class SklTest {
 
    
    SklStepModel createStepModel(){
-      SklObjectModel c = new DefaultSklObjectModel();
+      SklModel c = new DefaultSklObjectModel();
       c.setX(0);
       c.setY(0);
       c.setWidth(100);
       c.setHeight(100);
       
-      SklAnchorModel ak = new SklAnchorModel();
+      SklModel ak = new SklAnchorModel();
       ak.setX(400);
       ak.setY(10);
       ak.setWidth(200);
@@ -90,56 +76,25 @@ public class SklTest {
    }
    
    @Test
-   public void testObjectModel() throws Exception{
-      
-      SklObjectModel c = new DefaultSklObjectModel();
-      c.setX(0);
-      c.setY(0);
-      c.setWidth(100);
-      c.setHeight(100);
-      
-      SklAnchorModel ak = new SklAnchorModel();
-      ak.setX(400);
-      ak.setY(10);
-      ak.setWidth(200);
-      ak.setHeight(100);
-      
-      SklTextModel t = new DefaultSklTextModel();
-      t.setWidth(50);
-      t.setHeight(50);
-      t.setText("Text");
-      t.setHasShadow(true);
-      
-      SklTextModel bt = new DefaultSklTextModel();
-      bt.setText("Bottom Text");
-      bt.setHasShadow(true);
-
-      SklTextModel rt = new DefaultSklTextModel();
-      rt.setText("Right Text");
-      rt.setHasShadow(true);
-
-      SklImageModel img = new SklImageModel("play.png");
-
-      SklStepModel step = new SklStepModel();
-      step.addModel(c); 
-      step.addModel(bt);
-      step.addModel(rt);
-      step.addModel(ak);
-      step.addModel(img);
-      
-      step.addRelationship(new SklOffsetRelationship(c, t, 200,0));
-      step.addRelationship(new SklSideRelationship(c, bt, Side.BOTTOM));
-      step.addRelationship(new SklSideRelationship(c, rt, Side.RIGHT));
-      step.addRelationship(new SklSideRelationship(ak, img, Side.LEFT));
-
-      
-      step.addAnimation(SklAnimationFactory.createMoveToAnimation(c, new Point(200,200)));
-      step.addAnimation(SklAnimationFactory.createResizeToAnimation(c, new Dimension(200,200)));
-      step.addAnimation(SklAnimationFactory.createMoveToAnimation(t, new Point(200,200)));
-
+   public void testCreateAndViewBasicStepModel() throws Exception{      
+      SklStepModel step = createStepModel();      
       SklStepSimpleViewer viewer = new SklStepSimpleViewer(step);
-      helperShowInFrame(viewer);
+      step.startAnimation();
+      helperShowInFrame(viewer);      
    }
+   
+   @Test
+   public void testPlayStep() throws Exception{      
+      SklStepModel step1 = createClickStep();      
+      SklStepModel step2 = createAssertionStep();      
+
+      SikuliGuide g = new SikuliGuide();      
+      
+      g.playStep(step1);      
+      g.playStep(step2);      
+
+   }
+
    
    
    SklStepModel createStep1(){
@@ -162,7 +117,7 @@ public class SklTest {
 
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
-      step.setReferenceImage(referenceImage);
+      step.setReferenceImageModel(referenceImage);
 
       return step;
    }
@@ -186,10 +141,76 @@ public class SklTest {
       step.addRelationship(new SklSideRelationship(anchor, text1, Side.RIGHT));
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
-      step.setReferenceImage(referenceImage);
+      step.setReferenceImageModel(referenceImage);
 
       return step;
    }
+   
+   SklStepModel createAssertionStep(){
+      SklAnchorModel anchor1 = new SklAnchorModel();
+      anchor1.setX(90);
+      anchor1.setY(145);
+      anchor1.setWidth(50);
+      anchor1.setHeight(50);
+
+      SklAnchorModel anchor2 = new SklAnchorModel();
+      anchor2.setX(27);
+      anchor2.setY(125);
+      anchor2.setWidth(25);
+      anchor2.setHeight(25);
+
+      
+      //anchor.setPattern(new SklPatternModel("play.png"));
+
+      SklTextModel text1 = new DefaultSklTextModel("Assert");
+      text1.setHasShadow(true);
+
+      SklTextModel text2 = new DefaultSklTextModel("Assert");
+      text2.setHasShadow(true);
+
+      SklStepModel step = new SklStepModel();
+      step.addModel(anchor1);      
+      step.addModel(anchor2);      
+      step.addModel(text1);
+      step.addModel(text2);
+      
+      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.LEFT));
+      step.addRelationship(new SklSideRelationship(anchor2, text2, Side.LEFT));
+      
+      SklImageModel referenceImage = new SklImageModel("reference.png");
+      step.setReferenceImageModel(referenceImage);
+
+      return step;
+      
+   }
+   
+   SklStepModel createClickStep(){
+      SklAnchorModel anchor1 = new SklAnchorModel();
+      anchor1.setX(90);
+      anchor1.setY(145);
+      anchor1.setWidth(50);
+      anchor1.setHeight(50);
+      anchor1.setCommand(SklAnchorModel.CLICK_COMMAND);
+
+      
+      //anchor.setPattern(new SklPatternModel("play.png"));
+
+      SklTextModel text1 = new DefaultSklTextModel("Click");
+      text1.setHasShadow(true);
+
+      SklStepModel step = new SklStepModel();
+      step.addModel(anchor1);      
+      step.addModel(text1);
+      
+      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.LEFT));
+      
+      SklImageModel referenceImage = new SklImageModel("reference.png");
+      step.setReferenceImageModel(referenceImage);
+
+      return step;
+      
+   }
+
    
    SklStepModel createStep3(){
       SklAnchorModel anchor = new SklAnchorModel();
@@ -210,16 +231,53 @@ public class SklTest {
       step.addRelationship(new SklSideRelationship(anchor, text1, Side.LEFT));
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
-      step.setReferenceImage(referenceImage);
+      step.setReferenceImageModel(referenceImage);
 
       return step;
    }
+   
+   SklStepModel createBlankStep(){
+      SklStepModel step = new SklStepModel();
+      SklImageModel referenceImage = new SklImageModel("reference.png");
+      step.setReferenceImageModel(referenceImage);
+      return step;
+   }
+   
    @Test
-   public void testEditorLoad() throws IOException{
+   public void testEditorLoad() throws IOException, NoSuchMethodException{
       SklEditor e = new SklEditor();
 
+      File bundle = new File("/Users/tomyeh/Desktop/3steps.sikuli");
+      SklDocument doc = SklDocument.load(bundle);
       
-      (e.new LoadAction()).actionPerformed(null);
+      
+      File bundle2 = new File("/Users/tomyeh/Desktop/3steps2.sikuli");
+      bundle2.isDirectory();     
+      if( !bundle2.exists() ) bundle2.mkdir();
+
+      doc.saveAs(bundle2);
+      
+      SklDocument doc2 = SklDocument.load(bundle2);
+
+      doc2.removeStep(0);
+      doc2.save();
+      
+      e.setDocument(doc2);
+      
+      //do
+//
+//      
+//      doc.selectStep(0);
+//      
+//      doc.addStep(1, createStep2());
+//      
+//      (e.new InsertAction(InsertAction.INSERT_STEP)).actionPerformed(null);
+      //(e.new InsertAction(InsertAction.INSERT_ANCHOR)).actionPerformed(null);
+      
+      
+      //(e.new LoadAction()).doLoad(bundle);
+      //(e.new LoadAction()).doLoad(bundle);
+      
       //(e.new NewAction()).actionPerformed(null);
       //(e.new CaptureAction()).actionPerformed(null);
       
@@ -239,26 +297,30 @@ public class SklTest {
       
       SklEditor e = new SklEditor();
       
-      e.addStep(createStep1());
-      e.addStep(createStep2());
-      e.addStep(createStep3());
+      SklDocument doc = e.getDocument();
+      
+      doc.addStep(createStep1());
+      doc.addStep(createStep2());
+      doc.addStep(createBlankStep());
+      doc.addStep(createStep3());
+
       
       
       //(e.new PlayAction()).actionPerformed(null); 
       
-      RecordedClickEvent rce;
-
-      rce = new RecordedClickEvent();
-      rce.setScreenImage(ImageIO.read(new File("screen1.png")));
-      rce.setClickLocation(new Point(200,140));
+//      RecordedClickEvent rce;
+//
+//      rce = new RecordedClickEvent();
+//      rce.setScreenImage(ImageIO.read(new File("screen1.png")));
+//      rce.setClickLocation(new Point(200,140));
+//      
+//      e.importStep(rce);      
       
-      e.importStep(rce);      
-      
-      e.selectStep(0);
+      doc.selectStep(1);
       
       //e.removeStep(2);
 
-      (e.new SaveAction()).actionPerformed(null); 
+      //(e.new SaveAction()).actionPerformed(null); 
 
       
       synchronized(e){
@@ -270,59 +332,59 @@ public class SklTest {
       }
    }
    
-   @Test
-   public void testStepList(){
-      
-         final SklStepListModel list = new SklStepListModel();
-         list.addElement(createStep1());
-         list.addElement(createStep2());
-         list.addElement(createStep3());
-         
-         //final SklStepSimpleViewer stepView = new SklStepSimpleViewer((SklStepModel) list.getElementAt(0));
-         final SklStepPreview stepView = new SklStepPreview((SklStepModel) list.getElementAt(0));
-         
-         SklStepListSelectionModel listSelection = new SklStepListSelectionModel();
-         listSelection.setSelectionInterval(0,0);
-         listSelection.addListSelectionListener(new ListSelectionListener(){
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                              
-               Debug.info("" + e);
-               
-               if (e.getValueIsAdjusting()  == false){
-
-                  int index = ((SklStepListSelectionModel) e.getSource()).getLeadSelectionIndex();
-                  Debug.info("index:" + index);
-
-                  //((SklStepListSelectionModel) e.getSource()).isSelectedIndex(e.getLastIndex());
-                  
-                  SklStepModel stepModel = (SklStepModel) list.getElementAt(index);
-
-                  Debug.info(" selected step:" + stepModel);
-                  
-                  stepView.setModel(stepModel);
-                  stepView.repaint();
-                  
-               }
-               
-            }
-            
-         });
-         
-         
-         
-         SklStepListView view1 = new SklStepListView(list,listSelection);
-         //SklStepListView view2 = new SklStepListView(list,listSelection);
-         //list.ad
-         
-         
-         //view.addSelectionListener(new StepListViewSelectionEventListener(){
-            
-         //});
-         helperShowInSplitFrame(view1,stepView);
-         
-   }
+//   @Test
+//   public void testStepList(){
+//      
+//         final SklStepListModel list = new SklStepListModel();
+//         list.addElement(createStep1());
+//         list.addElement(createStep2());
+//         list.addElement(createStep3());
+//         
+//         //final SklStepSimpleViewer stepView = new SklStepSimpleViewer((SklStepModel) list.getElementAt(0));
+//         final SklStepPreview stepView = new SklStepPreview((SklStepModel) list.getElementAt(0));
+//         
+//         SklStepListSelectionModel listSelection = new SklStepListSelectionModel();
+//         listSelection.setSelectionInterval(0,0);
+//         listSelection.addListSelectionListener(new ListSelectionListener(){
+//
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                              
+//               Debug.info("" + e);
+//               
+//               if (e.getValueIsAdjusting()  == false){
+//
+//                  int index = ((SklStepListSelectionModel) e.getSource()).getLeadSelectionIndex();
+//                  Debug.info("index:" + index);
+//
+//                  //((SklStepListSelectionModel) e.getSource()).isSelectedIndex(e.getLastIndex());
+//                  
+//                  SklStepModel stepModel = (SklStepModel) list.getElementAt(index);
+//
+//                  Debug.info(" selected step:" + stepModel);
+//                  
+//                  stepView.setModel(stepModel);
+//                  stepView.repaint();
+//                  
+//               }
+//               
+//            }
+//            
+//         });
+//         
+//         
+//         
+//         //SklStepListView view1 = new SklStepListView(list,listSelection);
+//         //SklStepListView view2 = new SklStepListView(list,listSelection);
+//         //list.ad
+//         
+//         
+//         //view.addSelectionListener(new StepListViewSelectionEventListener(){
+//            
+//         //});
+//         //helperShowInSplitFrame(view1,stepView);
+//         
+//   }
    
    @Test
    public void testXMLSerialization() throws Exception{
@@ -378,7 +440,7 @@ public class SklTest {
 //      step.addRelationship(new SklSideRelationship(callout1, image1, Side.RIGHT));
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
-      step.setReferenceImage(referenceImage);
+      step.setReferenceImageModel(referenceImage);
       
       Strategy strategy = new CycleStrategy("id","ref");
       Serializer serializer = new Persister(strategy);
@@ -419,90 +481,90 @@ public class SklTest {
    }
    
    
-   @Test
-   public void testXMLSerializationOld() throws Exception{
-      
-      
-      SikuliGuide g = new SikuliGuide();
-      
-      DefaultSklObjectModel comp = new DefaultSklObjectModel();
-      comp.setLocation(new Point(100,100));
-      comp.setSize(new Dimension(500,300));      
-      comp.setForeground(Color.red);
-      comp.setBackground(Color.yellow);
-      
-      SklAnchorModel anchor = new SklAnchorModel(new Rectangle(250,250,200,300));
-      anchor.setPattern(new SklPatternModel("play.png"));
-
-      DefaultSklTextModel text1 = new DefaultSklTextModel("Some text");
-      text1.setLocation(50,500);
-      text1.setHasShadow(true);
-
-      DefaultSklTextModel text2 = new DefaultSklTextModel("Dependent text");
-      text2.setHasShadow(true);
-
-      DefaultSklTextModel text3 = new DefaultSklTextModel("Another Dependent text");
-      text3.setHasShadow(true);
-
-      SklFlagModel flag1 = new SklFlagModel("A Flag");
-      flag1.setHasShadow(true);
-      flag1.setDirection(SklFlagModel.DIRECTION_WEST);
-
-      SklCalloutModel callout1 = new SklCalloutModel("A Callout");
-      callout1.setHasShadow(true);
-      callout1.setDirection(SklFlagModel.DIRECTION_NORTH);
-
-      SklImageModel image1 = new SklImageModel("tiger.png");
-      image1.setHasShadow(true);
-      
-      
-      SklStepModel step = new SklStepModel();
-      step.addComponent(anchor);      
-      step.addComponent(text1);
-      step.addComponent(text2);
-      step.addComponent(text3);
-      step.addComponent(flag1);
-      step.addComponent(callout1);
-      step.addComponent(image1);
-
-      step.addRelationship(new SklSideRelationship(anchor, text1, Side.BOTTOM));
-      step.addRelationship(new SklSideRelationship(text1, text2, Side.RIGHT));
-      step.addRelationship(new SklOffsetRelationship(text2, text3, 200,0));
-      step.addRelationship(new SklSideRelationship(text3, flag1, Side.RIGHT));
-      step.addRelationship(new SklSideRelationship(text3, callout1, Side.BOTTOM));
-      step.addRelationship(new SklSideRelationship(callout1, image1, Side.RIGHT));
-      
-      SklImageModel referenceImage = new SklImageModel("reference.png");
-      step.setReferenceImage(referenceImage);
-      
-      anchor.setOpacity(0);
-      step.updateRelationships(anchor);
-      //addAnimationsHelper(step, anchor);
-      
-
-      
-      Strategy strategy = new CycleStrategy("id","ref");
-      Serializer serializer = new Persister(strategy);
-
-      
-      File fout = new File("/Users/tomyeh/Desktop/output_raw.xml");
-      serializer.write(step, fout);
-
-      g.playStep(step);
-
-      fout = new File("/Users/tomyeh/Desktop/output_anchored.xml");
-      serializer.write(step, fout);
-      
-      
-      File fin = new File("/Users/tomyeh/Desktop/output_anchored.xml");
-
-      SklStepModel dsStep = serializer.read(SklStepModel.class, fin);
-
-         
-      //g.playStep(step);
-       g.playStep(dsStep);
-       // g.showNow(5);
-   }
+//   @Test
+//   public void testXMLSerializationOld() throws Exception{
+//      
+//      
+//      SikuliGuide g = new SikuliGuide();
+//      
+//      DefaultSklObjectModel comp = new DefaultSklObjectModel();
+//      comp.setLocation(new Point(100,100));
+//      comp.setSize(new Dimension(500,300));      
+//      comp.setForeground(Color.red);
+//      comp.setBackground(Color.yellow);
+//      
+//      SklAnchorModel anchor = new SklAnchorModel(new Rectangle(250,250,200,300));
+//      anchor.setPattern(new SklPatternModel("play.png"));
+//
+//      DefaultSklTextModel text1 = new DefaultSklTextModel("Some text");
+//      text1.setLocation(50,500);
+//      text1.setHasShadow(true);
+//
+//      DefaultSklTextModel text2 = new DefaultSklTextModel("Dependent text");
+//      text2.setHasShadow(true);
+//
+//      DefaultSklTextModel text3 = new DefaultSklTextModel("Another Dependent text");
+//      text3.setHasShadow(true);
+//
+//      SklFlagModel flag1 = new SklFlagModel("A Flag");
+//      flag1.setHasShadow(true);
+//      flag1.setDirection(SklFlagModel.DIRECTION_WEST);
+//
+//      SklCalloutModel callout1 = new SklCalloutModel("A Callout");
+//      callout1.setHasShadow(true);
+//      callout1.setDirection(SklFlagModel.DIRECTION_NORTH);
+//
+//      SklImageModel image1 = new SklImageModel("tiger.png");
+//      image1.setHasShadow(true);
+//      
+//      
+//      SklStepModel step = new SklStepModel();
+//      step.addComponent(anchor);      
+//      step.addComponent(text1);
+//      step.addComponent(text2);
+//      step.addComponent(text3);
+//      step.addComponent(flag1);
+//      step.addComponent(callout1);
+//      step.addComponent(image1);
+//
+//      step.addRelationship(new SklSideRelationship(anchor, text1, Side.BOTTOM));
+//      step.addRelationship(new SklSideRelationship(text1, text2, Side.RIGHT));
+//      step.addRelationship(new SklOffsetRelationship(text2, text3, 200,0));
+//      step.addRelationship(new SklSideRelationship(text3, flag1, Side.RIGHT));
+//      step.addRelationship(new SklSideRelationship(text3, callout1, Side.BOTTOM));
+//      step.addRelationship(new SklSideRelationship(callout1, image1, Side.RIGHT));
+//      
+//      SklImageModel referenceImage = new SklImageModel("reference.png");
+//      step.setReferenceImageModel(referenceImage);
+//      
+//      anchor.setOpacity(0);
+//      step.updateRelationships(anchor);
+//      //addAnimationsHelper(step, anchor);
+//      
+//
+//      
+//      Strategy strategy = new CycleStrategy("id","ref");
+//      Serializer serializer = new Persister(strategy);
+//
+//      
+//      File fout = new File("/Users/tomyeh/Desktop/output_raw.xml");
+//      serializer.write(step, fout);
+//
+//      g.playStep(step);
+//
+//      fout = new File("/Users/tomyeh/Desktop/output_anchored.xml");
+//      serializer.write(step, fout);
+//      
+//      
+//      File fin = new File("/Users/tomyeh/Desktop/output_anchored.xml");
+//
+//      SklStepModel dsStep = serializer.read(SklStepModel.class, fin);
+//
+//         
+//      //g.playStep(step);
+//       g.playStep(dsStep);
+//       // g.showNow(5);
+//   }
    
    @Test
    public void testPlayFromXML() throws Exception{
@@ -521,7 +583,7 @@ public class SklTest {
       //g.testStep(step);
       
       
-      g.addComponent(new SklStepPreview(step));
+      g.addComponent(new SklStepEditView(step));
       
       SikuliGuideButton btn = new SikuliGuideButton("Exit");
       btn.setActualLocation(50,50);
@@ -580,23 +642,13 @@ public class SklTest {
       
       JFrame f = new JFrame();
       f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      
-      
-      // TODO: get this to work
-//      view.getActionMap().put("Undo", UndoManagerHelper.getUndoAction(manager));
-//      view.getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
-//      view.setFocusable(true);
-      
       Container content = f.getContentPane();
-//      content.add(toolbar, BorderLayout.NORTH);
       content.add(view, BorderLayout.CENTER);
       
       f.setSize(1000,600);
       f.setLocationRelativeTo(null);
       f.setVisible(true);
 
-      //f.pack();
-      
       synchronized(f){
          try {
             f.wait();
@@ -607,7 +659,7 @@ public class SklTest {
 
    }
    
-   JFrame helperSimpleFrame(SklStepPreview view){
+   JFrame helperSimpleFrame(SklStepEditView view){
       
       
       JFrame f = new JFrame();
@@ -640,9 +692,9 @@ public class SklTest {
    public void testStepEditView(){
       
       SklStepModel step = new SklStepModel();
-      step.setReferenceImage(new SklImageModel("reference.png"));
+      step.setReferenceImageModel(new SklImageModel("reference.png"));
              
-      SklStepPreview view = new SklStepPreview(step);
+      SklStepEditView view = new SklStepEditView(step);
       
       JFrame f = helperSimpleFrame(view);
       
@@ -692,7 +744,7 @@ public class SklTest {
       SklStepModel step = serializer.read(SklStepModel.class, fin);
        
       
-      SklStepPreview view = new SklStepPreview(step);
+      SklStepEditView view = new SklStepEditView(step);
 //      g.addComponent(view);
       
 
@@ -864,54 +916,54 @@ public class SklTest {
 //
 //   }
    
-   @Test
-   public void testCallout() {
-      SikuliGuide g = new SikuliGuide();
-      
-      //RelationshipManager relationshipMgr = new RelationshipManager();
-      
-      Rectangle r = new Rectangle(250,250,200,300);
-
-      SklRectangleModel o = new SklRectangleModel(r);
-      o.setForeground(Color.red);
-      g.addToFront(o.createView());
-      
-      SklCalloutModel t = new SklCalloutModel("This is Top");
-      t.setHasShadow(true);
-      t.setDirection(SklCalloutModel.DIRECTION_SOUTH);
-      g.addToFront(t.createView());      
-      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.TOP));
-      
-      t = new SklCalloutModel("This is Bottom");
-      t.setHasShadow(true);
-      t.setDirection(SklCalloutModel.DIRECTION_NORTH);
-      g.addToFront(t.createView());
-      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.BOTTOM));
-      
-      
-      t = new SklCalloutModel("This is Left. 8pt font.");
-      t.setHasShadow(true);      
-      t.setDirection(SklCalloutModel.DIRECTION_EAST);
-      t.setFontSize(8);
-      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.LEFT));
-      g.addToFront(t.createView());
+//   @Test
+//   public void testCallout() {
+//      SikuliGuide g = new SikuliGuide();
 //      
-//      t = new SklCalloutModel("This is Right. There is lots of text in this. This should change line.");
-//      t.setHasShadow(true);      
-//      t.setDirection(SklCalloutModel.DIRECTION_WEST);
-//      t.setMaximumWidth(200);
-//      o.addDependentRelationship(t, new SklSideRelationship(Layout.RIGHT));      
+//      //RelationshipManager relationshipMgr = new RelationshipManager();
+//      
+//      Rectangle r = new Rectangle(250,250,200,300);
+//
+//      SklRectangleModel o = new SklRectangleModel(r);
+//      o.setForeground(Color.red);
+//      g.addToFront(o.createView());
+//      
+//      SklCalloutModel t = new SklCalloutModel("This is Top");
+//      t.setHasShadow(true);
+//      t.setDirection(SklCalloutModel.DIRECTION_SOUTH);
+//      g.addToFront(t.createView());      
+//      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.TOP));
+//      
+//      t = new SklCalloutModel("This is Bottom");
+//      t.setHasShadow(true);
+//      t.setDirection(SklCalloutModel.DIRECTION_NORTH);
 //      g.addToFront(t.createView());
-
-      
-//        o.updateDependents();
-      
-      animateComponent(o);
-
-      
-      g.showNow();
-      
-   }
+//      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.BOTTOM));
+//      
+//      
+//      t = new SklCalloutModel("This is Left. 8pt font.");
+//      t.setHasShadow(true);      
+//      t.setDirection(SklCalloutModel.DIRECTION_EAST);
+//      t.setFontSize(8);
+//      //RelationshipManager.getInstance().addRelationship(new SklSideRelationship(o, t, Side.LEFT));
+//      g.addToFront(t.createView());
+////      
+////      t = new SklCalloutModel("This is Right. There is lots of text in this. This should change line.");
+////      t.setHasShadow(true);      
+////      t.setDirection(SklCalloutModel.DIRECTION_WEST);
+////      t.setMaximumWidth(200);
+////      o.addDependentRelationship(t, new SklSideRelationship(Layout.RIGHT));      
+////      g.addToFront(t.createView());
+//
+//      
+////        o.updateDependents();
+//      
+//      animateComponent(o);
+//
+//      
+//      g.showNow();
+//      
+   //}
    
    
 //   @Test
