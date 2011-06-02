@@ -47,16 +47,10 @@ public class SklCalloutModel extends DefaultSklTextModel {
    public final static int DIRECTION_WEST = 2;
    public final static int DIRECTION_SOUTH = 3;
    public final static int DIRECTION_NORTH = 4;
-
-   
-   @Override
-   public SklObjectView createView(){
-      return new SklCalloutView((SklCalloutModel) this);
-   }
    
 }
 
-class SklCalloutView extends SklObjectView {
+class SklCalloutView extends SklView {
    
    static final int TRIANGLE_SIZE = 20;
    static final int PADDING_X = 5;
@@ -158,14 +152,14 @@ class SklCalloutView extends SklObjectView {
       }
       
       //textArea.setBackground(model.getBackground());
-      triangle.setForeground(model.getForeground());
-      triangle.setBackground(model.getBackground());
+      triangle.setForeground(_model.getForeground());
+      triangle.setBackground(_model.getBackground());
 
-      rbox.setForeground(model.getForeground());
-      rbox.setBackground(model.getBackground());
-      setBackground(model.getBackground());
+      rbox.setForeground(_model.getForeground());
+      rbox.setBackground(_model.getBackground());
+      setBackground(_model.getBackground());
       
-      SklCalloutModel calloutModel = (SklCalloutModel) model;
+      SklCalloutModel calloutModel = (SklCalloutModel) _model;
       String text = calloutModel.getText();
       int fontSize = calloutModel.getFontSize();
 
@@ -198,14 +192,14 @@ class SklCalloutView extends SklObjectView {
       updateDirection();
       
       Dimension d = getActualSize();
-      model.setWidth(d.width);
-      model.setHeight(d.height);
+      _model.setWidth(d.width);
+      _model.setHeight(d.height);
    }
 
    
    void updateDirection(){
       
-      int direction = ((SklCalloutModel) model).getDirection();
+      int direction = ((SklCalloutModel) _model).getDirection();
       
       Rectangle r = rbox.getBounds();
       Rectangle t = triangle.getBounds();

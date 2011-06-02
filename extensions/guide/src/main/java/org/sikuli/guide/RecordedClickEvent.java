@@ -26,7 +26,7 @@ public class RecordedClickEvent {
       return screenImage;
    }
    public void setClickLocation(Point clickLocation) {
-      this.clickLocation = clickLocation;
+      this.clickLocation = new Point(clickLocation);
    }
    public Point getClickLocation() {
       return clickLocation;

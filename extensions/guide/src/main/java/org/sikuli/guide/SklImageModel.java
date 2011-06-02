@@ -40,11 +40,6 @@ public class SklImageModel extends DefaultSklObjectModel {
    private
    String imageUrl;
    
-   @Override
-   public SklObjectView createView(){
-      return new SklImageView((SklImageModel) this);
-   }
-
    public void setImageUrl(String imageUrl) {
       this.imageUrl = imageUrl;
       getImage();
@@ -79,9 +74,9 @@ public class SklImageModel extends DefaultSklObjectModel {
     
 }
 
-class SklImageView extends SklObjectView {
+class SklImageView extends SklView {
 
-   public SklImageView(SklObjectModel model){
+   public SklImageView(SklModel model){
       super(model);
    }
    
@@ -90,7 +85,7 @@ class SklImageView extends SklObjectView {
    @Override
    protected void update(){
       super.update();
-      SklImageModel imageModel = (SklImageModel) model;
+      SklImageModel imageModel = (SklImageModel) _model;
       image = imageModel.getImage();
       setActualSize(imageModel.getSize());
    }

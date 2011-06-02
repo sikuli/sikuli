@@ -13,6 +13,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -25,8 +26,13 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,12 +50,17 @@ public class ScreenRecorderWindow extends JWindow{
    Robot robot;
    
    void stopCapturing(){
+      setVisible(false);
       dispose();
+      bw.setVisible(false);
+      bw.dispose();
       notifyWaiter();
    }
    
    JButton stopButton;
+   JButton captureButton;
    JLabel statusLabel;
+   JCheckBox capturingClickCheckBox;
    
    // how many to record
    int counter;
@@ -64,7 +75,20 @@ public class ScreenRecorderWindow extends JWindow{
             @Override
             public void actionPerformed(ActionEvent e) {
                stopCapturing();
-               dispose();
+            }
+            
+         });
+         
+         captureButton = new JButton("Capture");
+         captureButton.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               doRecordScreen();
+               counter -= 1;
+               if (counter == 0){
+                  stopCapturing();
+               }
             }
             
          });
@@ -72,16 +96,32 @@ public class ScreenRecorderWindow extends JWindow{
          statusLabel = new JLabel("   Click inside the window below to capture a step");
          statusLabel.setForeground(Color.white);
          
-         //add(button);
-         //button.setBounds(0,0,100,30);
-         //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+         
+         capturingClickCheckBox = new JCheckBox("Auto capture on click");  
+         capturingClickCheckBox.setForeground(Color.white);
+         capturingClickCheckBox.setSelected(true);
+         capturingClickCheckBox.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               AbstractButton abstractButton = (AbstractButton)e.getSource();
+               boolean selected = abstractButton.getModel().isSelected();
+               ScreenRecorderWindow.this.setVisible(selected);
+            }
+            
+         });
+         
          setLayout(new BorderLayout());
          
          JPanel panel = new JPanel();
-         //panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-         panel.setLayout(new BorderLayout());
-         panel.add(stopButton, BorderLayout.EAST);        
-         panel.add(statusLabel, BorderLayout.CENTER);
+         panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));
+         
+         panel.add(captureButton);
+         panel.add(capturingClickCheckBox);
+         panel.add(Box.createHorizontalGlue());
+         panel.add(stopButton);
+         panel.setBorder(BorderFactory.createLineBorder(Color.white));
+
          panel.setLocation(0,0);
          panel.setBackground(new Color(0f,0f,0f,1f));
          panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,30));
@@ -124,22 +164,15 @@ public class ScreenRecorderWindow extends JWindow{
          e1.printStackTrace();
       }
       
-      //setBounds(new Rectangle(100,100,640,480));
-
-      setBackground(null);//Color.black);
+      setBackground(null);
       getContentPane().setBackground(null);
       Env.getOSUtil().setWindowOpaque(this, false);
       
       bw = new BackgroundWindow();      
       bw.setVisible(true);
-      bw.addComponentListener(new ComponentListener(){
+      bw.addComponentListener(new ComponentAdapter(){
 
-         @Override
-         public void componentHidden(ComponentEvent arg0) {
-            // TODO Auto-generated method stub
-            
-         }
-
+         // The purpose is to lock the transparent window in place
          @Override
          public void componentMoved(ComponentEvent e) {            
             Debug.info("Background window moved");
@@ -149,19 +182,6 @@ public class ScreenRecorderWindow extends JWindow{
             newLocation.y += 2;
             setLocation(newLocation);
          }
-
-         @Override
-         public void componentResized(ComponentEvent arg0) {
-            // TODO Auto-generated method stub
-            
-         }
-
-         @Override
-         public void componentShown(ComponentEvent arg0) {
-            // TODO Auto-generated method stub
-            
-         }
-         
       });
    
       //getRootPane().putClientProperty("Window.alpha", new Float(0.0f));
@@ -176,6 +196,11 @@ public class ScreenRecorderWindow extends JWindow{
 
    SklEditor editor;
    
+   boolean _isAutoCapture;
+   public void setAutoCapture(boolean isAutoCapture){
+      _isAutoCapture = isAutoCapture;
+   }
+   
    public void setBounds(Rectangle bounds){
       super.setBounds(bounds);
 
@@ -184,41 +209,6 @@ public class ScreenRecorderWindow extends JWindow{
       bwbounds.y -= 30;
       bwbounds.height += 30;
       bw.setBounds(bwbounds);      
-   }
-
-   public void paint(Graphics g){
-      Graphics2D g2d = (Graphics2D) g;
-      super.paint(g);
-      
-      
-//      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 1.0f));
-//      g2d.setColor(Color.black);
-//      g2d.fillRect(0,0,getWidth(),getHeight());
-//      
-//      if (currentMouseLocation != null){
-//         
-//         Point p = currentMouseLocation;
-//         g2d.translate(p.x,p.y);
-//         Ellipse2D.Double ellipse =
-//            new Ellipse2D.Double(-10,-10,20,20);
-//         g2d.fill(ellipse);
-//
-//      }
-//      Rectangle r = getSelectedRectangle();
-//      if (r != null){
-//
-//         g2d.setColor(Color.white);
-//         g2d.fillRect(r.x,r.y,r.width,r.height);
-//
-//         g2d.setStroke(new BasicStroke(3.0f));
-//         g2d.setColor(Color.red);
-//         g2d.drawRect(r.x,r.y,r.width,r.height);
-//      }
-//      Dimension d = getSize();
-//      g2d.setStroke(new BasicStroke(3f));
-//      g2d.setColor(Color.green);
-//      g2d.drawRect(2,2,d.width-4,d.height-4);
-
    }
 
    Point p = null, q = null;
@@ -230,19 +220,46 @@ public class ScreenRecorderWindow extends JWindow{
       r.add(q);
       return r;
    }   
+   
+   
+   void fireScreenRecorded(RecordedClickEvent ce){
+      // TODO: listener callback
+      if (editor != null)
+         editor.importStep(ce);
+      clickEvents.add(ce);
+   }
+   
 
+   BufferedImage captureScreenImage(){
+      return robot.createScreenCapture(getBounds());
+   }
+   
+   void doRecordClick(Point clickLocation){
+      RecordedClickEvent ce = new RecordedClickEvent();
+      ce.setClickLocation(clickLocation);         
+
+      BufferedImage screenImage = captureScreenImage();
+      ce.setScreenImage(screenImage);
+
+      fireScreenRecorded(ce);
+   }
+   
+   void doRecordScreen(){
+      RecordedClickEvent ce = new RecordedClickEvent();
+      //ce.setClickLocation(new Point(50,50));         
+
+      BufferedImage screenImage = captureScreenImage();
+      ce.setScreenImage(screenImage);
+
+      fireScreenRecorded(ce);
+   }
+
+   
    class RectangleSelectionMouseAdapter extends MouseAdapter{
-
 
       boolean selecting = false;
       boolean running = true;
       Object action;
-
-
-
-      @Override
-      public void mouseDragged(MouseEvent e) {
-      }
 
       @Override
       public void mouseMoved(MouseEvent e) {
@@ -251,34 +268,28 @@ public class ScreenRecorderWindow extends JWindow{
 
       @Override
       public void mousePressed(MouseEvent e) {
-            Debug.info("pressed at: " + e.getX() + "," + e.getY());    
+            Debug.info("pressed at: " + e.getX() + "," + e.getY());                
+                        
+            // if auto capture on click is not selected
+            if (!capturingClickCheckBox.isSelected()){
+               // do nothing. just return
+               return;
+            }
             
-            //stopButton.setText("Capturing");
+            doRecordClick(e.getPoint());
             
-            p = new Point(e.getPoint());
-            
-            RecordedClickEvent ce = new RecordedClickEvent();
-            ce.setClickLocation(p);         
-
-            Screen s = new Screen();
-            BufferedImage image = s.capture(getBounds()).getImage();
-            ce.setScreenImage(image);
-
-            
-            
-            // TODO: listener callback
-            if (editor != null)
-               editor.importStep(ce);
-
-            
-            clickEvents.add(ce);
-            
-            //ce.export();            
             setVisible(false);
+            
+            counter -= 1;
+            if (counter == 0){
+               stopCapturing();
+               return;
+            }
             
             Thread t = new Thread(){
                
                public void run(){
+                  Debug.info("[RecorderWindow] replayed click");
                   focusBelow();            
                   robot.mousePress(InputEvent.BUTTON1_MASK);            
                   robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -288,9 +299,6 @@ public class ScreenRecorderWindow extends JWindow{
             };
             t.start();
             
-            counter -= 1;
-            if (counter == 0)
-               stopCapturing();
                
       }
 

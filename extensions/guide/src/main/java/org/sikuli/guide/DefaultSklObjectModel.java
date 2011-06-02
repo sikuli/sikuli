@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-import org.sikuli.guide.SklObjectView.ShadowRenderer;
+import org.sikuli.guide.SklView.ShadowRenderer;
 import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.simpleframework.xml.*;
@@ -25,8 +25,12 @@ import org.simpleframework.xml.convert.Converter;
 import org.simpleframework.xml.stream.InputNode;
 import org.simpleframework.xml.stream.OutputNode;
 
+interface Selectable {
+   public void setSelected(boolean selected);
+   public boolean isSelected();
+}
 
-interface SklObjectModel extends Cloneable{   
+interface SklModel extends Cloneable{   
       
    public void setX(int x);
    public int getX();
@@ -62,7 +66,7 @@ interface SklObjectModel extends Cloneable{
    
 }
 
-interface SklTextModel extends SklObjectModel {
+interface SklTextModel extends SklModel {
    
    public void setText(String text);
    public String getText();
@@ -74,7 +78,7 @@ interface SklTextModel extends SklObjectModel {
 
 class SklViewFactory {
    
-   public static SklObjectView createView(SklObjectModel model){
+   public static SklView createView(SklModel model){
       if (model instanceof SklTextModel)
          return new SklTextView(model);
       else if (model instanceof SklAnchorModel)
@@ -84,17 +88,12 @@ class SklViewFactory {
       else if (model instanceof SklControlBox)
          return new SklControlBoxView(model);
       else         
-         return new SklObjectView(model);
-   }
-   
-   public static SklObjectView createView(SklTextModel model){
-      return new SklTextView(model);
-   }
-
+         return new SklView(model);
+   }      
 }
 
 @Root
-public class DefaultSklObjectModel implements SklObjectModel {
+public class DefaultSklObjectModel implements SklModel {
    
    public DefaultSklObjectModel(){      
    }
@@ -124,16 +123,16 @@ public class DefaultSklObjectModel implements SklObjectModel {
    }
    
    
-   public SklObjectView createView(){
-      if (this instanceof SklRectangleModel){
-         return new SklRectangleView((SklRectangleModel) this);
-      }else if (this instanceof DefaultSklTextModel){
-         return new SklTextView((DefaultSklTextModel) this);
-      }else if (this instanceof SklFlagModel){
-         return new SklFlagView((SklFlagModel) this);
-      }
-      return new SklObjectView(this);
-   }
+//   public SklObjectView createView(){
+//      if (this instanceof SklRectangleModel){
+//         return new SklRectangleView((SklRectangleModel) this);
+//      }else if (this instanceof DefaultSklTextModel){
+//         return new SklTextView((DefaultSklTextModel) this);
+//      }else if (this instanceof SklFlagModel){
+//         return new SklFlagView((SklFlagModel) this);
+//      }
+//      return new SklObjectView(this);
+//   }
 
    @Attribute
    private int x = 0;
@@ -168,8 +167,8 @@ public class DefaultSklObjectModel implements SklObjectModel {
    
    boolean selected = false;
    
-   private SklObjectView view = null;
-   private SklStepModel step = null;
+   //private SklObjectView view = null;
+   //private SklStepModel step = null;
    
    public void setLocation(Point location) {
       setLocation(x,y);
@@ -222,86 +221,15 @@ public class DefaultSklObjectModel implements SklObjectModel {
    }
    
    
-   
+   @Override
    public void setHasShadow(boolean hasShadow) {
       this.hasShadow = hasShadow;
    }
+   
+   @Override
    public boolean isHasShadow() {
       return hasShadow;
    }
-   
-   public void setView(SklObjectView view) {
-      this.view = view;
-   }
-   
-   public SklObjectView getView() {
-      if (view == null)
-         createView();
-      return view;
-   }
-
-   public void updateView(){
-
-      if (view == null)
-         return;
-      
-      Rectangle r = view.getBounds();
-      view.update();
-      r.add(view.getBounds());
-      
-      // sometimes view update may cause the model to change, 
-      // for instance, text model's size is automatically set
-      // by the associated view
-      
-      if (getStep() != null){
-         getStep().updateRelationships(this);
-         getStep().updateDependentViews(this);
-      
-         view.update();
-         r.add(view.getBounds());
-      }
-      
-//      if (view.getTopLevelAncestor() != null){
-//         view.getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
-//      }
-      if (view.getParent() != null){
-         //view.getParent().repaint(r.x,r.y,r.width,r.height);
-         view.getParent().repaint();//r.x,r.y,r.width,r.height);
-      }
-
-      
-      view.repaint();
-
-   }
-   
-   
-//   @ElementList
-//   ArrayList<SklRelationship> relationships = new ArrayList<SklRelationship>();
-//   
-//   public void addDependentRelationship(SklComponent dependent, SklRelationship relationship){
-//      relationship.setModel(this);
-//      relationship.setDependent(dependent);
-//      relationships.add(relationship);      
-//      updateDependents();
-//   }
-//   
-//   
-//   public void updateDependents(){
-//      if (relationshipMgr != null)
-//         relationshipMgr.updateDependents(this);
-////      for (SklRelationship relationship : relationships){
-////         relationship.update();
-////         
-////         SklComponent dependent = relationship.dependent;
-////         dependent.updateDependents();
-////         
-////         dependent.setOpacity(getOpacity());
-////         
-////         SklComponentView view = dependent.getView();
-////         if (view != null)
-////            view.update();
-////      }
-//   }
    
    @Override
    public void setOpacity(float opacity) {
@@ -311,12 +239,6 @@ public class DefaultSklObjectModel implements SklObjectModel {
    @Override
    public float getOpacity() {
       return opacity;
-   }
-   public void setStep(SklStepModel step) {
-      this.step = step;
-   }
-   public SklStepModel getStep() {
-      return step;
    }
 
    public Rectangle getBounds() {
@@ -384,15 +306,6 @@ public class DefaultSklObjectModel implements SklObjectModel {
    public boolean isSelected(){
       return selected;
    }
-   
-//   private RelationshipManager relationshipMgr;
-//   public void setRelationshipMgr(RelationshipManager relationshipMgr) {
-//      this.relationshipMgr = relationshipMgr;
-//   }
-//   public RelationshipManager getRelationshipMgr() {
-//      return relationshipMgr;
-//   }
-   
 }
 
 class ColorConverter implements Converter<Color>{
@@ -412,24 +325,23 @@ class ColorConverter implements Converter<Color>{
    
 }
 
-class SklObjectView extends JComponent implements PropertyChangeListener {
+class SklView extends JComponent implements PropertyChangeListener {
       
 //   protected DefaultSklComponentModel model;
-   protected SklObjectModel model;
-   public SklObjectView(DefaultSklObjectModel model){
-//      this.model = model;
-//      this.model.setView(this);   
+   protected SklModel _model;
+//   public SklObjectView(DefaultSklObjectModel model){
+////      this.model = model;
+////      this.model.setView(this);   
+//      init();
+//      update();
+//   }
+   
+   public SklView(SklModel model){
+      _model = model;
+      _model.addPropertyChangeListener(this);      
       init();
       update();
    }
-   
-   public SklObjectView(SklObjectModel model){
-      this.model = model;
-      model.addPropertyChangeListener(this);      
-      init();
-      update();
-   }
-   
    
    // Initialize the view
    protected void init(){      
@@ -446,16 +358,16 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
      // Point modelLocation = model.getLocation();      
       //modelLocation.translate(origin.x,origin.y);
       
-      setActualLocation(model.getX(), model.getY());
-      setActualSize(model.getWidth(), model.getHeight());
-      if (model.isHasShadow() && shadowRenderer == null){
+      setActualLocation(_model.getX(), _model.getY());
+      setActualSize(_model.getWidth(), _model.getHeight());
+      if (_model.isHasShadow() && shadowRenderer == null){
          shadowRenderer = new ShadowRenderer(this, 10);
       }
    }
    
    public void updateModelLocation(Point newLocation){
-      model.setX(newLocation.x - origin.x);
-      model.setY(newLocation.y - origin.y);
+      _model.setX(newLocation.x - origin.x);
+      _model.setY(newLocation.y - origin.y);
    }
       
    Rectangle actualBounds = new Rectangle();
@@ -469,7 +381,7 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
       
       Dimension paintSize = (Dimension) actualSize.clone();
 
-      if (model.isHasShadow()){
+      if (_model.isHasShadow()){
          paintSize.width += (2*shadowSize);
          paintSize.height += (2*shadowSize);
       }
@@ -487,7 +399,7 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
       
       actualBounds.setLocation(p);
       
-      if (model.isHasShadow()){
+      if (_model.isHasShadow()){
          paintX -= (shadowSize-shadowOffset);
          paintY -= (shadowSize-shadowOffset);
       }
@@ -522,8 +434,8 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
    
    class ShadowRenderer {
 
-      SklObjectView source;
-      public ShadowRenderer(SklObjectView source, int shadowSize){
+      SklView source;
+      public ShadowRenderer(SklView source, int shadowSize){
          this.source = source;
          sourceActualSize = source.getActualSize();
          this.shadowSize = shadowSize;
@@ -605,11 +517,11 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
       super.paint(g2);
       
       Graphics2D g2d = (Graphics2D) g;      
-      ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,model.getOpacity()));
+      ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,_model.getOpacity()));
       g2d.drawImage(image,0,0,null,null);
 
 
-      if (model.isSelected()){
+      if (_model.isSelected()){
           Rectangle r = getBounds();
           g2d.setColor(Color.green);
           g2d.drawRect(0,0,r.width-1,r.height-1);
@@ -623,8 +535,8 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
       
    }
 
-   public SklObjectModel getModel() {
-      return model;
+   public SklModel getModel() {
+      return _model;
    }
 
    @Override
@@ -637,17 +549,17 @@ class SklObjectView extends JComponent implements PropertyChangeListener {
 //      }
 
       
-      if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_X)){         
-         setActualLocation(model.getX(), getActualLocation().y);
-      } else if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_Y)){      
-         setActualLocation(getActualLocation().x, model.getY());
-      } else if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_WIDTH)){
-         setActualSize(model.getWidth(), getActualSize().height);
-      } else if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_HEIGHT)){
-         setActualSize(getActualSize().width, model.getHeight());
-      } else if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_SELECTED)){
+      if (evt.getPropertyName().equals(SklModel.PROPERTY_X)){         
+         setActualLocation(_model.getX(), getActualLocation().y);
+      } else if (evt.getPropertyName().equals(SklModel.PROPERTY_Y)){      
+         setActualLocation(getActualLocation().x, _model.getY());
+      } else if (evt.getPropertyName().equals(SklModel.PROPERTY_WIDTH)){
+         setActualSize(_model.getWidth(), getActualSize().height);
+      } else if (evt.getPropertyName().equals(SklModel.PROPERTY_HEIGHT)){
+         setActualSize(getActualSize().width, _model.getHeight());
+      } else if (evt.getPropertyName().equals(SklModel.PROPERTY_SELECTED)){
 
-      } else if (evt.getPropertyName().equals(SklObjectModel.PROPERTY_OPACITY)){
+      } else if (evt.getPropertyName().equals(SklModel.PROPERTY_OPACITY)){
 
       } else {  
          return;
