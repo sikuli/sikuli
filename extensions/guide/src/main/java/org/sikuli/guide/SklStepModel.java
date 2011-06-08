@@ -41,7 +41,7 @@ interface StepDataEventListener extends EventListener {
 }
 
 @Root
-public class SklStepModel implements Selectable, Cloneable{
+public class SklStepModel implements Cloneable{
    
    @ElementList
    ArrayList<SklModel> sklModelList = new ArrayList<SklModel>();
@@ -139,7 +139,6 @@ public class SklStepModel implements Selectable, Cloneable{
             removeModel(rel.getDependent());
          }         
       }
-      
       
       sklModelList.remove(sklModel);
       fireDataContentsChanged();   
@@ -269,15 +268,15 @@ public class SklStepModel implements Selectable, Cloneable{
    
    private boolean _selected = false;
 
-   @Override
-   public boolean isSelected() {
-      return _selected;
-   }
-
-   @Override
-   public void setSelected(boolean selected) {
-      _selected = selected;
-   }
+//   @Override
+//   public boolean isSelected() {
+//      return _selected;
+//   }
+//
+//   @Override
+//   public void setSelected(boolean selected) {
+//      _selected = selected;
+//   }
 }
 
 class SklStepSimpleViewer extends JPanel {

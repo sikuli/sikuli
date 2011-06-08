@@ -99,11 +99,7 @@ class SklStepEditView extends JPanel implements KeyListener {
       @Override
       public void actionPerformed(ActionEvent e) {
          
-         if (_selectedModel != null)
-            _selectedModel.setSelected(false);         
-         
          _selectedModel = model;
-         _selectedModel.setSelected(true);
          
          // Set the control box         
          box.setTarget(model);
@@ -114,8 +110,6 @@ class SklStepEditView extends JPanel implements KeyListener {
    class DeselectAction extends AbstractAction {
       @Override
       public void actionPerformed(ActionEvent e) {         
-         if (_selectedModel != null)
-            _selectedModel.setSelected(false);
          _selectedModel = null;         
          boxView.setVisible(false);
       }
@@ -576,7 +570,7 @@ class SklStepEditView extends JPanel implements KeyListener {
    
    @Override
    public void keyPressed(KeyEvent k) {
-      Debug.log("[EditView] pressed: " + k.getKeyCode());
+      //Debug.log("[EditView] pressed: " + k.getKeyCode());
       
       if (k.getKeyCode() == KeyEvent.VK_BACK_SPACE){
          Debug.log("[EditView] pressed DELETE");
