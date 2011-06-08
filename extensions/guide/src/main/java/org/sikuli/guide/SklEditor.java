@@ -2,7 +2,6 @@ package org.sikuli.guide;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -11,13 +10,15 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,11 +31,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -42,6 +44,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.undo.UndoManager;
 
 import org.sikuli.script.Debug;
+import org.sikuli.script.Env;
+import org.sikuli.script.OS;
+import org.sikuli.script.Screen;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -60,7 +65,6 @@ public class SklEditor extends JFrame {
    
    public SklEditor(){
       
-      //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       
       // TODO: get this to work
 //      view.getActionMap().put("Undo", UndoManagerHelper.getUndoAction(manager));
@@ -74,40 +78,46 @@ public class SklEditor extends JFrame {
       _currentStepEditView = new SklStepEditView(null);
       
       setDocument(_document);
-
       
+//      scrollPane.setPreferredSize(new Dimension(120, 80));
+//      add(scrollPane,BorderLayout.CENTER);
+
       JPanel centeringWrapper = new JPanel();
       centeringWrapper.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-      
+      //centeringWrapper.setBorder(BorderFactory.createLoweredBevelBorder());
+      centeringWrapper.setOpaque(true);
+      centeringWrapper.setBackground(Color.white);
       centeringWrapper.setLayout(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
       c.anchor = GridBagConstraints.CENTER;
       centeringWrapper.add(_currentStepEditView, c);
       
+      JScrollPane scrollPane = new JScrollPane(centeringWrapper);
+      
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            _documentListView, centeringWrapper);
+            _documentListView, scrollPane);
       splitPane.setDividerLocation(250);
   
       UndoManager manager = new UndoManager();
       
-      JToolBar toolbar = new JToolBar();
+//      JToolBar toolbar = new JToolBar();
 //      toolbar.add(UndoManagerHelper.getUndoAction(manager));
 //      toolbar.add(UndoManagerHelper.getRedoAction(manager));
-      toolbar.add(new NewAction());
+//      toolbar.add(new NewAction());
 //      toolbar.addSeparator();
 //      toolbar.add(new LoadAction());
 //      toolbar.add(new SaveAction());
 //      toolbar.add(new SaveAsAction());
 //      toolbar.addSeparator();
 //      toolbar.add(new CaptureAction());
-      toolbar.addSeparator();
-      toolbar.add(new PlayAction());
-      toolbar.add(new PlayAllAction());
+//      toolbar.addSeparator();
+//      toolbar.add(new PlayAction());
+//      toolbar.add(new PlayAllAction());
 
   //      view.addUndoableEditListener(manager);
 
       Container content = getContentPane();
-      content.add(toolbar, BorderLayout.NORTH);
+//      content.add(toolbar, BorderLayout.NORTH);
       content.add(splitPane,BorderLayout.CENTER);      
       
       
@@ -117,7 +127,23 @@ public class SklEditor extends JFrame {
       setSize(1000,600);
       setLocationRelativeTo(null);
       setVisible(true);      
-      setTitle("untitled");
+      setTitle(getTitleString("untitled"));
+      
+      
+      
+      
+      
+      
+      setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      addWindowListener(new WindowAdapter(){
+         @Override
+         public void windowClosing(WindowEvent arg0) {
+            Debug.info("[Editor] editor window is closing");
+            _storyRunnerFrame.dispose();
+            dispose();
+         }
+      });
+      
    }
    
 
@@ -128,7 +154,9 @@ public class SklEditor extends JFrame {
       }else if (str.equals("menuInsertStep")){
          return "New Step";
       }else if (str.equals("menuInsertAnchor")){
-         return "New Anchor";
+         return "New Target";
+      }else if (str.equals("menuInsertText")){
+         return "New Text";
       }else if (str.equals("menuFile")){
          return "File";
       }else if (str.equals("menuFileNew")){
@@ -139,23 +167,45 @@ public class SklEditor extends JFrame {
          return "Save";
       }else if (str.equals("menuFileSaveAs")){
          return "Save As";
+      }else if (str.equals("menuFileQuit")){
+         return "Quit";
+      }else if (str.equals("menuRunAll")){
+         return "Run All";
+      }else if (str.equals("menuRunCurrent")){
+         return "Run Current";
+      }else if (str.equals("menuRunFromCurrent")){
+         return "Run From Current";
+      }else if (str.equals("menuRun")){
+         return "Run";
+      }else if (str.equals("menuEdit")){
+         return "Edit";
+      }else if (str.equals("menuEditCloneScreen")){
+         return "Clone Screen";
       }
+         
       return str;
+
    }
    
    class SklEditorMenuBar extends JMenuBar{
       private JMenu _insertMenu = new JMenu(_I("menuInsert"));
       private JMenu _fileMenu = new JMenu(_I("menuFile"));
+      private JMenu _editMenu = new JMenu(_I("menuEdit"));
+      private JMenu _runMenu = new JMenu(_I("menuRun"));
 
       SklEditorMenuBar(){
          try {
             initFileMenu();
             initInsertMenu();
+            initRunMenu();
+            initEditMenu();
          } catch (NoSuchMethodException e) {
             e.printStackTrace();
          }         
          add(_fileMenu);
+         add(_editMenu);
          add(_insertMenu);
+         add(_runMenu);
       }
    
       private JMenuItem createMenuItem(String name, KeyStroke shortcut, ActionListener listener){
@@ -170,15 +220,41 @@ public class SklEditor extends JFrame {
          return item;
       }
       
+      private void initRunMenu() throws NoSuchMethodException {
+         int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+         _runMenu.setMnemonic(java.awt.event.KeyEvent.VK_R);
+         _runMenu.add( createMenuItem(_I("menuRunAll"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, scMask),
+               new RunAction(RunAction.RUN_ALL)));
+         _runMenu.add( createMenuItem(_I("menuRunCurrent"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, InputEvent.SHIFT_MASK | scMask),
+               new RunAction(RunAction.RUN_CURRENT)));
+         _runMenu.add( createMenuItem(_I("menuRunFromCurrent"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, scMask),
+               new RunAction(RunAction.RUN_FROM_CURRENT)));
+      }
+      
+      private void initEditMenu() throws NoSuchMethodException {
+         int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+         _editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
+         _editMenu.add( createMenuItem(_I("menuEditCloneScreen"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, scMask),
+               new EditAction(EditAction.CLONE_SCREEN)));      
+
+      }
+      
       private void initInsertMenu() throws NoSuchMethodException{
          int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
          _insertMenu.setMnemonic(java.awt.event.KeyEvent.VK_I);
          _insertMenu.add( createMenuItem(_I("menuInsertStep"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, scMask),
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, scMask),
                new InsertAction(InsertAction.INSERT_STEP)));     
          _insertMenu.add( createMenuItem(_I("menuInsertAnchor"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, scMask),
                new InsertAction(InsertAction.INSERT_ANCHOR)));     
+//         _insertMenu.add( createMenuItem(_I("menuInsertText"), 
+//               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, scMask),
+//               new InsertAction(InsertAction.INSERT_TEXT)));
       }
       
       private void initFileMenu() throws NoSuchMethodException{
@@ -212,20 +288,161 @@ public class SklEditor extends JFrame {
 //         _fileMenu.add( createMenuItem(_I("menuFileCloseTab"), 
 //                  KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, scMask),
 //                  new FileAction(FileAction.CLOSE_TAB)));
-//         if(!Utils.isMacOSX()){
-//            _fileMenu.addSeparator();
-//            _fileMenu.add( createMenuItem(_I("menuFileQuit"), 
-//                     null, new FileAction(FileAction.QUIT)));
-//         }
-      }   
+         if(!(Env.getOS() == OS.MAC)){
+            _fileMenu.addSeparator();
+            _fileMenu.add( createMenuItem(_I("menuFileQuit"), 
+                     null, new FileAction(FileAction.QUIT)));
+         }
+      }
    
      
    
    }
    
+   void initScreenRecorder(){
+      if (_screenRecorder == null){
+         Rectangle window = new Rectangle();
+         window.x = getLocation().x + 300;
+         window.y = getLocation().y + 100;
+         window.width = 640;
+         window.height = 480;
+         
+         _screenRecorder = new ScreenRecorder();         
+         _screenRecorder.setWindow(window);
+         _screenRecorder.addListener(new ScreenRecorderListener(){
+
+            @Override
+            public void imageRecorded(Object source, BufferedImage recordedImage) {
+               getDocument().addStep(_currentStepModel, recordedImage);
+            }
+
+            @Override
+            public void windowHidden(Object source) {
+               setMinimized(false);
+               setAlwaysOnTop(false);
+            }
+            
+         });
+      }
+   }
+   
+   
+   StoryRunnerListener _storyRunnerListener = new StoryRunnerListener(){
+      
+      void switchBackToEditor(){
+         _storyRunnerFrame.setAlwaysOnTop(false);
+
+         Debug.info("[SklEditor] switched back");
+         SklEditor.this.setVisible(true);
+         SklEditor.this.repaint();
+         // call a repaint later, on XP, this is necessary for the editor
+         // to be re-painted properly. otherwise, the area occluded by
+         // the player will not be redrawn immediately
+         SwingUtilities.invokeLater(new Runnable(){
+
+            @Override
+            public void run() {
+               SklEditor.this.repaint();      
+            }
+            
+         });
+      }
+
+      @Override
+      public void storyCompleted() {               
+         Debug.info("[SklEditor] story completed");
+         switchBackToEditor();
+      }
+
+      @Override
+      public void storyStopped() {
+         Debug.info("[SklEditor] story stopped");
+         switchBackToEditor();
+      }
+
+      @Override
+      public void storyFailed(int index) {
+         switchBackToEditor();
+
+         //if (doc == getDocument())
+         //getDocument().selectStep(index);
+      }
+    
+      @Override
+      public void storyStarted() {
+         Debug.info("[SklEditor] story started");
+         SklEditor.this.setVisible(false);
+      }
+      
+   };
+   
+   class RunAction extends MenuAction{
+      static final String RUN_ALL = "runAll";
+      static final String RUN_CURRENT = "runCurrent";
+      static final String RUN_FROM_CURRENT = "runFromCurrent";
+      
+      public RunAction(){
+         super();
+      }
+
+      public RunAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+
+      private void runHelper(final SklDocument doc){
+         runHelper(doc, 0);
+      }
+      
+      private void runHelper(final SklDocument doc, int startIndex){
+         SklEditor.this.setVisible(false);
+
+         _storyRunnerFrame.setTitle("Sikuli Story Runner");
+         _storyRunnerFrame.setSize(231,600);
+         _storyRunnerFrame.setVisible(true);
+         _storyRunnerFrame.setAlwaysOnTop(true);
+         
+         // try to position to the upper right corner of the screen
+         Screen s = new Screen();
+         int x = s.w - _storyRunnerFrame.getWidth() - 5;
+         int y = 25;
+         _storyRunnerFrame.setLocation(x,y);
+
+         _storyRunner.setStory(doc);
+         // TODO: fix this hack, somehow we need to purposely resize the frame
+         // to make the size of the cells in the list updated
+         _storyRunnerFrame.setSize(230,600);
+         _storyRunner.runStory(startIndex);
+         _storyRunner.addListener(_storyRunnerListener);
+      }
+      
+      public void runCurrent(ActionEvent ae){
+         
+         SklDocument tempDoc = new SklDocument();
+         tempDoc.addStep(getSelectedStep());
+
+         runHelper(tempDoc);
+
+      }
+
+      public void runAll(ActionEvent ae){         
+
+         runHelper(getDocument());
+
+      }
+      
+      public void runFromCurrent(ActionEvent ae){
+       
+         runHelper(getDocument(), getDocument().getSelectedStepIndex());
+         
+      }
+      
+   }
+   
+   ScreenRecorder _screenRecorder;
    class InsertAction extends MenuAction {
       static final String INSERT_STEP = "insertStep";
       static final String INSERT_ANCHOR = "insertAnchor";      
+      static final String INSERT_TEXT = "insertText";      
       
       public InsertAction(){
          super();
@@ -235,11 +452,26 @@ public class SklEditor extends JFrame {
          super(item);
       }
 
+      public void insertText(ActionEvent ae){         
+         _currentStepEditView.doInsert(SklTextModel.class);
+      }
+      
       public void insertAnchor(ActionEvent ae){         
-         _currentStepEditView.doInsertAnchor();
+         _currentStepEditView.doInsert(SklAnchorModel.class);
+         
+         //_currentStepModel.addRelationship(new SklSideRelationship());
       }
       
       public void insertStep(ActionEvent ae){
+         setMinimized(true);
+         setAlwaysOnTop(true);
+         
+         initScreenRecorder();
+         _screenRecorder.setVisible(true);
+      }
+      
+      
+      public void insertStepOld(ActionEvent ae){
          
          Thread t = new Thread(){
             
@@ -283,6 +515,21 @@ public class SklEditor extends JFrame {
 
    }
    
+   class EditAction extends MenuAction {
+      
+      static final String CLONE_SCREEN = "cloneScreen";
+      public EditAction(String item) throws NoSuchMethodException{
+         super(item);
+      }
+      
+      public void cloneScreen(ActionEvent ae){
+         SklStepModel step = getSelectedStep();
+         getDocument().addStep(step, step.getReferenceImageModel().getImage());
+      }
+
+      
+   }
+   
    class FileAction extends MenuAction {
       
       static final String NEW = "doNew";
@@ -307,32 +554,60 @@ public class SklEditor extends JFrame {
          if (file == null) 
             return;         
 
-         SklEditor e = new SklEditor();
-         e.setVisible(true);
-
-         Point o = getLocation();
-         e.setLocation(o.x + 50, o.y + 50);
-         
          SklDocument doc = SklDocument.load(file);
-         e.setDocument(doc);
+         
+         
+         
+
+         if (getDocument().isEmpty()){
+            
+            setDocument(doc);
+            setTitle(getTitleString(file.getAbsolutePath()));
+            
+         }else{
+
+            SklEditor e = new SklEditor();
+            e.setVisible(true);
+            e.setTitle(getTitleString(file.getAbsolutePath()));
+            
+            Point o = getLocation();
+            e.setLocation(o.x + 50, o.y + 50);
+            
+            e.setDocument(doc);
+         }
+
+         
+      }
+      
+      String getBundlePathFromUser(){
+         File file = new FileChooser(SklEditor.this).save();
+         if (file == null) 
+            return null;         
+         
+         String bundlePath = file.getAbsolutePath();            
+         if( !bundlePath.endsWith(".sikuli"))
+            bundlePath += ".sikuli";
+
+         return bundlePath;
       }
 
       public void doSaveAs(ActionEvent ae){
-         File file = new FileChooser(SklEditor.this).save();
-         if (file == null) 
-            return;         
+         String bundlePath = getBundlePathFromUser();
+         if (bundlePath == null)
+            return;
          
-         String bundlePath = file.getAbsolutePath();            
-         if( !bundlePath.endsWith(".sikuli") )
-            bundlePath += ".sikuli";
-
          File destBundle = new File(bundlePath);
-
-         getDocument().saveAs(destBundle);         
+         getDocument().saveAs(destBundle);  
+         setTitle(getTitleString(destBundle.getAbsolutePath()));
       }
       
       public void doSave(ActionEvent ae){
-         getDocument().save();
+         
+         if (getDocument().isUntitled()){
+            doSaveAs(ae);
+         }else{         
+            getDocument().save();
+         }
       }
       
       public void doQuit(ActionEvent ae){
@@ -342,6 +617,10 @@ public class SklEditor extends JFrame {
       
    }
    
+   
+   private String getTitleString(String filename){
+      return "Sikuli Story Builder - " + filename; 
+   }
    
    
    public class NewAction extends CaptureAction {
@@ -457,6 +736,30 @@ public class SklEditor extends JFrame {
       }
     }
    
+   
+   SklStoryRunner _storyRunner = new SklStoryRunner();      
+   class StoryRunnerFrame  extends JFrame {
+      
+      StoryRunnerFrame(SklStoryRunner storyRunner){
+         //super(parent);
+//         setSize(250,600);
+//         setLocationRelativeTo(null);
+//         setVisible(true);
+//         setAlwaysOnTop(true);
+//         
+         //final JFrame storyRunnerFrame = new JFrame();
+         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+         
+         Container content = getContentPane();
+         content.add(storyRunner, BorderLayout.CENTER);
+         
+         
+         
+      }      
+   }
+   
+   StoryRunnerFrame _storyRunnerFrame = new StoryRunnerFrame(_storyRunner);
+   
    public class PlayAllAction extends AbstractAction {
       
       public PlayAllAction(){
@@ -465,24 +768,77 @@ public class SklEditor extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-         
-         
-         Thread t = new Thread(){
+//
+//         SklEditor.this.setVisible(false);
+//
+//         _storyRunnerFrame.setTitle("Sikuli Story Runner");
+//         _storyRunnerFrame.setSize(231,600);
+//         _storyRunnerFrame.setVisible(true);
+//         _storyRunnerFrame.setAlwaysOnTop(true);
+//         
+//         // try to position to the upper right corner of the screen
+//         Screen s = new Screen();
+//         int x = s.w - _storyRunnerFrame.getWidth() - 5;
+//         int y = 25;
+//         _storyRunnerFrame.setLocation(x,y);
+//
+//         _storyRunner.setDocument(getDocument());
+//         // TODO: fix this hack, somehow we need to purposely resize the frame
+//         // to make the size of the cells in the list updated
+//         _storyRunnerFrame.setSize(230,600);
+//         _storyRunner.run();
+//         _storyRunner.addListener(new StoryRunnerListener(){
+//
+//            @Override
+//            public void storyCompleted() {
+//               SklEditor.this.setVisible(true);
+//               SklEditor.this.repaint();
+//               _storyRunnerFrame.setAlwaysOnTop(false);
+//            }
+//
+//            @Override
+//            public void storyStopped() {
+//               SklEditor.this.setVisible(true);
+//               SklEditor.this.repaint();
+//               _storyRunnerFrame.setAlwaysOnTop(false);
+//            }
+//
+//            @Override
+//            public void storyFailed(int index) {
+//               SklEditor.this.setVisible(true);
+//               SklEditor.this.repaint();
+//
+//               getDocument().selectStep(index);
+//               _storyRunnerFrame.setAlwaysOnTop(false);
+//            }
+//
+//
+//            @Override
+//            public void storyStarted() {
+//               SklEditor.this.setVisible(false);
+//            }
+//            
+//         });
 
-            public void run(){
-               setVisible(false);
-               SikuliGuide g = new SikuliGuide();
-               // TOOD: fix this
-               //g.playStepList(_stepListModel);
-               setVisible(true);
-            }
-         };
-         
-         t.start();
-         
-         
       }
     }
+   
+   
+   public void cloneCurrentStep(){
+         
+      SklStepModel step = getSelectedStep();      
+      try {
+         SklStepModel clone = (SklStepModel) step.clone();
+         getDocument().addStep(step, clone);
+      } catch (CloneNotSupportedException e) {
+      }
+
+   }
+   
+   public void cloneCurrentReferenceImage(){      
+      SklStepModel step = getSelectedStep();
+      getDocument().addStep(step, step.getReferenceImageModel().getImage());
+   }
    
    
    public void importStep(RecordedClickEvent event){
@@ -512,7 +868,7 @@ public class SklEditor extends JFrame {
 //         currentStepContentChanged();
 //      }
 //
-      int index = _document.steps.indexOf(_currentStepModel);
+      int index = _document._steps.indexOf(_currentStepModel);
       _document.addStep(index+1,importedStepModel);
       _document.selectStep(index+1);
    }
@@ -583,8 +939,8 @@ public class SklEditor extends JFrame {
                _currentStepEditView.setModel(_currentStepModel);
                _currentStepEditView.validate();
                _currentStepEditView.repaint();
+               validate();
             }
-            
          }
          
       });
@@ -600,6 +956,12 @@ public class SklEditor extends JFrame {
 
    public SklDocument getDocument() {
       return _document;
+   }
+   
+   public SklStepModel getSelectedStep(){      
+      ListSelectionModel selection = _document.getSelectionModel();
+      int index = selection.getLeadSelectionIndex();
+      return _document.getStep(index);
    }
 
 }
@@ -644,13 +1006,24 @@ class MenuAction implements ActionListener {
 class SklDocument {
    
    @ElementList
-   ArrayList<SklStepModel> steps = new ArrayList<SklStepModel>();
+   ArrayList<SklStepModel> _steps = new ArrayList<SklStepModel>();
      
    private ListSelectionModel _selection = new DefaultListSelectionModel();
 
    SklDocument(){
    }
    
+   
+   public int getSelectedStepIndex(){      
+      ListSelectionModel selection = getSelectionModel();
+      return selection.getLeadSelectionIndex();
+   }
+
+   
+   public boolean isEmpty() {
+      return _steps.isEmpty();
+   }
+
    ListModelAdapter _listModelAdapter = new ListModelAdapter();
    ListModel getListModel(){
       return _listModelAdapter;
@@ -666,12 +1039,12 @@ class SklDocument {
 
       @Override
       public Object getElementAt(int index) {
-         return steps.get(index);
+         return _steps.get(index);
       }
 
       @Override
       public int getSize() {      
-         return steps.size();
+         return _steps.size();
       }
 
       @Override
@@ -701,7 +1074,7 @@ class SklDocument {
    }
    
    ArrayList<SklStepModel> getSteps(){
-      return steps;
+      return _steps;
    }
    
 
@@ -714,30 +1087,50 @@ class SklDocument {
 //      return b;
 //    }
 //
+   
+   
+   
+   
+   public void addStep(SklStepModel previousStep, BufferedImage referenceImage){
+      
+      SklStepModel newStepModel = new SklStepModel();
+      SklImageModel imageModel = new SklImageModel();
+      imageModel.setImage(referenceImage);
+      newStepModel.setReferenceImageModel(imageModel);
+
+      addStep(previousStep, newStepModel);
+   }
+   
+   public void addStep(SklStepModel previousStep, SklStepModel newStepModel){
+      int index = _steps.indexOf(previousStep);
+      addStep(index+1, newStepModel);
+      selectStep(index+1);
+   }
+   
     public void addStep(int index, SklStepModel stepModel) {
-      steps.add(index, stepModel);
+      _steps.add(index, stepModel);
       _listModelAdapter.notifyListenersContentChanged();
       _listModelAdapter.notifyListenersInternalAdded(index, index);
     }
     
     public boolean addStep(SklStepModel stepModel) {
-       boolean b = steps.add(stepModel);
+       boolean b = _steps.add(stepModel);
        if (b){
           _listModelAdapter.notifyListenersContentChanged();        
-          _listModelAdapter.notifyListenersInternalAdded(steps.size()-1, steps.size()-1);
+          _listModelAdapter.notifyListenersInternalAdded(_steps.size()-1, _steps.size()-1);
        }
        return b;
      }
     
     public SklStepModel removeStep(int i) {
-       SklStepModel o = steps.remove(i);
+       SklStepModel o = _steps.remove(i);
        if (o != null){
           // TODO: notify removal event
           _listModelAdapter.notifyListenersContentChanged();          
           
           // automatically select the step next to the one removed, or the one before if the removed
           // step is the last step
-          int j = Math.min(i, steps.size() - 1);
+          int j = Math.min(i, _steps.size() - 1);
           selectStep(j);
        }
        return o;
@@ -750,7 +1143,7 @@ class SklDocument {
 
     
     public SklStepModel getStep(int index) {
-       return steps.get(index);
+       return _steps.get(index);
      }
 
 
@@ -761,16 +1154,17 @@ class SklDocument {
    public ListSelectionModel getSelectionModel() {
       return _selection;
    }
-
-   String _bundlePath;
-
    
+   String _bundlePath = null;
+   //String bundlePath;
    
-   
-   public void clear(){
-      steps.clear();
+   boolean isUntitled(){
+      return _bundlePath == null;
    }
    
+   public void clear(){
+      _steps.clear();
+   }
    
    private void saveReferenceImagesToBundle(File bundle){
       for (SklStepModel stepModel : getSteps()){          
@@ -810,9 +1204,11 @@ class SklDocument {
 //         }
 //            SklStepModel stepModel = (SklStepModel) e.nextElement();
 //            
-            File targetImageFile = generateCroppedTargetImageFile(bundle, stepModel);
+            String stepScript = generateStep(stepModel,bundle);
             
-            s += "click(\"" + targetImageFile.getName() + "\") \n";            
+            s += stepScript;
+            s += "wait(3) \n";
+            //s += "click(\"" + targetImageFile.getName() + "\") \n";            
          }
          
          // TODO: crop images
@@ -821,7 +1217,12 @@ class SklDocument {
       }
       
       
-      private File generateCroppedTargetImageFile(File bundlePathFile, SklStepModel stepModel){
+      private String generateStep(SklStepModel stepModel, File bundlePathFile){
+         
+         String s = "";
+         
+         // compile, resolve command for each anchor based on associated text
+         stepModel.compile();
          
          // for each anchor, but we assume there's only one anchor for automation mode
          for (SklModel model : stepModel.getModels()){
@@ -830,6 +1231,7 @@ class SklDocument {
                
                
                String referenceImageFilename = stepModel.getReferenceImageModel().getImageUrl();
+               // TODO: fix this. sometimes different targets may refer to the same reference image
                String targetImageFilename = "target" + referenceImageFilename;
                
                BufferedImage croppedTargetImage;
@@ -842,22 +1244,30 @@ class SklDocument {
                
                try {
                   ImageIO.write(croppedTargetImage, "png", croppedTargetImageFile);
-                  return  croppedTargetImageFile;
 
                } catch (IOException e) {
                   e.printStackTrace();
                }
                
+               if (((SklAnchorModel) model).getCommand() == SklAnchorModel.CLICK_COMMAND){
+                  s += "click(\"" + croppedTargetImageFile.getName() + "\") \n";
+               }else if (((SklAnchorModel) model).getCommand() == SklAnchorModel.ASSERT_COMMAND){
+                  s += "find(\"" + croppedTargetImageFile.getName() + "\") \n";
+               }else if (((SklAnchorModel) model).getCommand() == SklAnchorModel.TYPE_COMMAND){
+                  s += "type(\"" + croppedTargetImageFile.getName() + "\",\"" + ((SklAnchorModel) model).getArgument() + "\") \n";                  
+               }
                               
             }
             
          }
-         return null;
+         
+         return s;
          
       }
       
    }
-
+   
+   //boolean _isNew = true;
    
    void save(){
       saveAs(new File(_bundlePath));
@@ -894,7 +1304,6 @@ class SklDocument {
       } catch (IOException e) {
       }
       
-      //setTitle(_bundlePath);
    }
    
    static SklDocument load(File bundlefile) {

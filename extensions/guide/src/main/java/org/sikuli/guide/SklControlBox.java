@@ -43,7 +43,6 @@ public class SklControlBox extends DefaultSklObjectModel {
    class TargetPropertyChangeListener implements PropertyChangeListener{
       @Override
       public void propertyChange(PropertyChangeEvent e) {         
-         Debug.info("target fired");
          SklControlBox.this.pcs.firePropertyChange(PROPERTY_TARGET, 
                null,  
                SklControlBox.this.target);
@@ -81,7 +80,7 @@ class SklControlBoxView extends SklView {
 
       @Override
       public void mouseDragged(MouseEvent e) {
-         Debug.info("dragged to: " + e.getPoint());
+         //Debug.info("dragged to: " + e.getPoint());
 
          Point p = e.getPoint();
          p.x -= 5;

@@ -2,6 +2,7 @@ package org.sikuli.guide;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,7 +16,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
+import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 import org.sikuli.guide.SklView.ShadowRenderer;
 import org.sikuli.guide.util.ComponentMover;
@@ -474,7 +477,12 @@ class SklView extends JComponent implements PropertyChangeListener {
                source.getActualHeight() + shadowSize * 2, BufferedImage.TYPE_INT_ARGB);
          Graphics2D g2 = image.createGraphics();
          g2.translate(shadowSize,shadowSize);
-         source.paintPlain(g2);
+         source.setDoubleBuffered(false);
+         //source.paintPlain(g2);
+         
+//         Container parent = new CellRendererPane();
+//         
+//         SwingUtilities.paintComponent(g2,source,parent,0,0,image.getWidth(),image.getHeight());
 
          shadowImage = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_ARGB);
          getBlurOp(shadowSize).filter(createShadowMask(image), shadowImage);
@@ -521,11 +529,11 @@ class SklView extends JComponent implements PropertyChangeListener {
       g2d.drawImage(image,0,0,null,null);
 
 
-      if (_model.isSelected()){
-          Rectangle r = getBounds();
-          g2d.setColor(Color.green);
-          g2d.drawRect(0,0,r.width-1,r.height-1);
-      }
+//      if (_model.isSelected()){
+//          Rectangle r = getBounds();
+//          g2d.setColor(Color.green);
+//          g2d.drawRect(0,0,r.width-1,r.height-1);
+//      }
       
       // Debug draw
       
@@ -570,8 +578,9 @@ class SklView extends JComponent implements PropertyChangeListener {
          //getParent().repaint(r.x,r.y,r.width,r.height);
          //getParent().repaint();
          // TODO: fix this
-         if (getTopLevelAncestor() != null)
-            getTopLevelAncestor().repaint();
+//         if (getTopLevelAncestor() != null)
+//            getTopLevelAncestor().repaint();
+         repaint();
       }
 
    }

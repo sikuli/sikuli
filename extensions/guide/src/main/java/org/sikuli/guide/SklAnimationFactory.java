@@ -155,7 +155,7 @@ class SklAnimation implements ActionListener {
 
 
          animate();
-         
+         //sklComponent.
 //         if (sklComponent != null)
 //            sklComponent.updateView();
 

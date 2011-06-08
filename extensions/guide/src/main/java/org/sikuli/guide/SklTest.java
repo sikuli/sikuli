@@ -3,8 +3,10 @@ package org.sikuli.guide;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -16,7 +18,10 @@ import javax.swing.JToolBar;
 import javax.swing.undo.UndoManager;
 
 import org.junit.Test;
+import org.sikuli.guide.SklEditor.FileAction;
+import org.sikuli.guide.SklEditor.InsertAction;
 import org.sikuli.guide.SklSideRelationship.Side;
+import org.sikuli.script.Debug;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.CycleStrategy;
@@ -146,6 +151,8 @@ public class SklTest {
       return step;
    }
    
+
+   
    SklStepModel createAssertionStep(){
       SklAnchorModel anchor1 = new SklAnchorModel();
       anchor1.setX(90);
@@ -174,8 +181,8 @@ public class SklTest {
       step.addModel(text1);
       step.addModel(text2);
       
-      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.LEFT));
-      step.addRelationship(new SklSideRelationship(anchor2, text2, Side.LEFT));
+      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.TOP));
+      step.addRelationship(new SklSideRelationship(anchor2, text2, Side.TOP));
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
       step.setReferenceImageModel(referenceImage);
@@ -190,7 +197,7 @@ public class SklTest {
       anchor1.setY(145);
       anchor1.setWidth(50);
       anchor1.setHeight(50);
-      anchor1.setCommand(SklAnchorModel.CLICK_COMMAND);
+//      anchor1.setCommand(SklAnchorModel.CLICK_COMMAND);
 
       
       //anchor.setPattern(new SklPatternModel("play.png"));
@@ -202,7 +209,7 @@ public class SklTest {
       step.addModel(anchor1);      
       step.addModel(text1);
       
-      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.LEFT));
+      step.addRelationship(new SklSideRelationship(anchor1, text1, Side.TOP));
       
       SklImageModel referenceImage = new SklImageModel("reference.png");
       step.setReferenceImageModel(referenceImage);
@@ -293,6 +300,201 @@ public class SklTest {
    }
    
    @Test
+   public void testNewRecorderWindow() {
+      
+      ScreenRecorder e = new ScreenRecorder();
+      e.setVisible(true);      
+      
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+
+   @Test
+   public void testEditorOpen() throws IOException, NoSuchMethodException{
+      
+      SklEditor e = new SklEditor();      
+      (e.new FileAction(FileAction.OPEN)).actionPerformed(null);
+      
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+   
+
+   
+   @Test
+   public void testEditorAddAnchor() throws IOException, NoSuchMethodException{
+      
+      SklEditor e = new SklEditor();
+      
+      SklDocument doc = e.getDocument();
+      
+      doc.addStep(createStep1());
+      doc.addStep(createStep2());
+      doc.addStep(createStep3());
+      doc.addStep(createBlankStep());
+      doc.selectStep(1);
+      
+      (e.new InsertAction(InsertAction.INSERT_ANCHOR)).actionPerformed(null);
+      //(e.new InsertAction(InsertAction.INSERT_STEP)).actionPerformed(null);
+      //(e.new FileAction(FileAction.SAVE)).actionPerformed(null);
+      //(e.new FileAction(FileAction.OPEN)).actionPerformed(null);
+
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+   
+   @Test
+   public void testStepForegroundView(){
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      SklStepModel step = doc.getStep(0);
+      JComponent view = new SklStepForegroundView(step);  
+      helperShowInFrame(view);  
+   }
+   
+   
+   @Test
+   public void testStepPlayView(){
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      SklStepModel step = doc.getStep(0);
+      SklStepPlayView view = new SklStepPlayView();
+      view.play(step);
+      
+      view.setVisible(true);
+      
+      
+      synchronized(view){
+         try {
+            view.wait();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   
+   @Test
+   public void testEditorStoryDebugView(){
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      SklStoryRunner view = new SklStoryRunner();
+      view.setStory(doc);
+      
+      
+          JFrame f = new JFrame();
+      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      Container content = f.getContentPane();
+      content.add(view, BorderLayout.CENTER);
+      
+      f.setSize(250,600);
+      f.setLocationRelativeTo(null);
+      f.setVisible(true);
+      f.setAlwaysOnTop(true);
+      
+      //SklStepModel step = doc.getStep(0);
+      
+      view.run(doc);
+      
+      
+      synchronized(f){
+         try {
+            f.wait();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      }
+
+   }
+   
+   @Test
+   public void testEditorListView(){
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      SklDocumentListView view = new SklDocumentListView(doc);      
+      doc.selectStep(0);
+      helperShowInFrame(view);
+   }
+   
+   @Test
+   public void testEditorCopy(){
+      SklEditor e = new SklEditor();
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      e.setDocument(doc);      
+      
+      //e.cloneCurrentReferenceImage();
+
+      
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+
+   }
+   
+   @Test
+   public void testEditorLoadAndPlayAll(){
+      SklEditor e = new SklEditor();
+      SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/android.sikuli"));
+      //SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/type.sikuli"));
+      //SklDocument doc = SklDocument.load(new File("/Users/tomyeh/Desktop/androidsearch.sikuli"));
+      e.setDocument(doc);      
+      
+
+     
+      //(e.new PlayAllAction()).actionPerformed(null);
+      
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+
+   
+   @Test
+   public void testEditorClickAndAssert() throws IOException, NoSuchMethodException{
+      
+      SklEditor e = new SklEditor();
+      
+      SklDocument doc = e.getDocument();
+      
+      doc.addStep(createClickStep());
+      doc.addStep(createAssertionStep());
+      doc.selectStep(1);
+      
+      e.validate();      
+    
+      //(e.new InsertAction(InsertAction.INSERT_ANCHOR)).actionPerformed(null);
+      //(e.new InsertAction(InsertAction.INSERT_STEP)).actionPerformed(null);
+      //(e.new FileAction(FileAction.SAVE)).actionPerformed(null);
+      //(e.new FileAction(FileAction.OPEN)).actionPerformed(null);
+
+      synchronized(e){
+         try {
+            e.wait();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+   
+   @Test
    public void testEditor() throws IOException{
       
       SklEditor e = new SklEditor();
@@ -303,8 +505,6 @@ public class SklTest {
       doc.addStep(createStep2());
       doc.addStep(createBlankStep());
       doc.addStep(createStep3());
-
-      
       
       //(e.new PlayAction()).actionPerformed(null); 
       
@@ -645,7 +845,7 @@ public class SklTest {
       Container content = f.getContentPane();
       content.add(view, BorderLayout.CENTER);
       
-      f.setSize(1000,600);
+      f.setSize(250,600);
       f.setLocationRelativeTo(null);
       f.setVisible(true);
 

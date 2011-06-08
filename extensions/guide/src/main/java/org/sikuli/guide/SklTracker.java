@@ -219,12 +219,25 @@ public class SklTracker extends Thread {
 
    Pattern _pattern;
    Region _match;
-   Screen _screen;
+   Region _screen;
    Pattern _centerPattern;
 
+   Rectangle _regionModel;
+   
    public SklTracker(SklPatternModel patternModel){
       this(new Pattern(patternModel.getImageUrl()));
    }
+
+   public void setRegionModel(Rectangle regionModel){
+      _regionModel = regionModel;
+   }
+   
+   Region _region = new Region(0,0,0,0);
+   public Region getRegion(){      
+      _region.setRect(_regionModel);
+      return _region;
+   }
+   
    
    public SklTracker(Pattern pattern){
       
@@ -278,7 +291,7 @@ public class SklTracker extends Thread {
       
       _match = null;
       while (running && (_match == null)){         
-         _match = _screen.exists(_pattern,0.5);         
+         _match = getRegion().exists(_pattern,0.5);         
       }
 
       // this means the tracker has been stopped before the pattern is found
@@ -304,7 +317,7 @@ public class SklTracker extends Thread {
          // however, it would mean it takes at least 1.0 sec to realize
          // the pattern has disappeared and the referencing annotations should
          // be hidden
-         Match newMatch = _screen.exists(_pattern,1.0);
+         Match newMatch = getRegion().exists(_pattern,1.0);
          if (newMatch == null){
             Debug.log("[Tracker] Pattern is not found on the screen");
             _listener.patternNotFound(this);

@@ -11,6 +11,9 @@ import java.awt.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.JFileChooser;
 
+import org.sikuli.script.Env;
+import org.sikuli.script.OS;
+
 public class FileChooser {
    Frame _parent;
 
@@ -19,8 +22,7 @@ public class FileChooser {
    }
 
    protected File open(String msg, int mode, GeneralFileFilter[] filters,int selectionMode){
-      // TODO: check for MacOS
-    //  if( Utils.isMacOSX() ){
+      if(Env.getOS() == OS.MAC){
          FileDialog fd = new FileDialog(_parent, msg, mode);
          for(GeneralFileFilter filter: filters)
             fd.setFilenameFilter(filter);
@@ -28,8 +30,8 @@ public class FileChooser {
          if(fd.getFile() == null)
             return null;
          return new File(fd.getDirectory(), fd.getFile());
-      //}	
-      //return openWithSwingDialog(msg, mode, filters, selectionMode);
+      }	
+      return openWithSwingDialog(msg, mode, filters, selectionMode);
    }
 
    protected File openWithSwingDialog(String msg, int mode, GeneralFileFilter[] filters,int selectionMode){

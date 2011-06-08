@@ -22,6 +22,7 @@ public class SklAnchorModel extends DefaultSklObjectModel {
    
    static String CLICK_COMMAND = "click";
    static String ASSERT_COMMAND = "assert";
+   static String TYPE_COMMAND = "type";
    
    private String action = ASSERT_COMMAND;
    
@@ -53,8 +54,18 @@ public class SklAnchorModel extends DefaultSklObjectModel {
       this.action = action;
    }
 
+   
    public String getCommand() {
       return action;
+   }
+   
+   Object _arg;
+   public void setArgument(Object arg){
+      _arg = arg;
+   }
+
+   public Object getArgument() {
+      return _arg;
    }
 }
 

@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 
+import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.OS;
@@ -99,7 +100,8 @@ public class ScreenRecorderWindow extends JWindow{
          
          capturingClickCheckBox = new JCheckBox("Auto capture on click");  
          capturingClickCheckBox.setForeground(Color.white);
-         capturingClickCheckBox.setSelected(true);
+         //capturingClickCheckBox.setSelected(true);
+         capturingClickCheckBox.setSelected(false);
          capturingClickCheckBox.addActionListener(new ActionListener(){
 
             @Override
@@ -124,6 +126,7 @@ public class ScreenRecorderWindow extends JWindow{
 
          panel.setLocation(0,0);
          panel.setBackground(new Color(0f,0f,0f,1f));
+         panel.setOpaque(true);
          panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,30));
          add(panel,BorderLayout.NORTH);
          
@@ -131,6 +134,11 @@ public class ScreenRecorderWindow extends JWindow{
          getContentPane().setBackground(null);
          Env.getOSUtil().setWindowOpaque(this, false);
          setAlwaysOnTop(true);
+         
+         
+         
+         ComponentMover cm = new ComponentMover();
+         cm.registerComponent(this);
       }
       
       public void paint(Graphics g){

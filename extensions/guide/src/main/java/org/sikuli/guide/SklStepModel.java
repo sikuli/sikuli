@@ -54,6 +54,13 @@ public class SklStepModel implements Selectable, Cloneable{
 
    @Element(required = false)
    private SklImageModel referenceImage;
+   
+   @Commit
+   void build(){
+      for (SklModel model : sklModelList){
+         model.addPropertyChangeListener(modelPropertyChangeListener);
+      }
+   }
 
    @Override
    public Object clone() throws CloneNotSupportedException{
@@ -126,11 +133,21 @@ public class SklStepModel implements Selectable, Cloneable{
 
    public void removeModel(SklModel sklModel){
       sklModel.removePropertyChangeListener(modelPropertyChangeListener);
+      
+      for (SklRelationship rel : sklRelationshipList){         
+         if (rel.getParent() == sklModel){            
+            removeModel(rel.getDependent());
+         }         
+      }
+      
+      
       sklModelList.remove(sklModel);
+      fireDataContentsChanged();   
    }
 
    public void addRelationship(SklRelationship relationship) {
-      sklRelationshipList.add(relationship);      
+      sklRelationshipList.add(relationship);
+      fireDataContentsChanged();    
    }
 
    public void removeRelationship(SklRelationship relationship) {
@@ -142,39 +159,100 @@ public class SklStepModel implements Selectable, Cloneable{
       sklAnimationManager.add(anim);
    }
 
+   
+  void compile() {
+      for (SklRelationship relationship : sklRelationshipList){
+         
+         SklModel parent = relationship.getParent();
+         SklModel dependent = relationship.getDependent();
+
+         if (parent instanceof SklAnchorModel && dependent instanceof SklTextModel){
+          
+               
+            SklAnchorModel anchor = (SklAnchorModel) parent;
+            SklTextModel text = (SklTextModel) dependent;
+            
+            if (text.getText().compareToIgnoreCase("when i click") == 0){
+               
+               anchor.setCommand(SklAnchorModel.CLICK_COMMAND);
+               
+            } else if (text.getText().compareToIgnoreCase("i should see") == 0){
+            
+               anchor.setCommand(SklAnchorModel.ASSERT_COMMAND);
+               
+            } else if (text.getText().startsWith("When I type")){
+               
+               String stringToType = text.getText().substring(12);
+               
+               anchor.setArgument(stringToType);
+               anchor.setCommand(SklAnchorModel.TYPE_COMMAND);               
+            }
+            
+         }
+         
+         
+      }
+   }
+   
    public void startTracking(SikuliGuide g){
       
-      
-      SklVisibilityCheckerGroup group = new SklVisibilityCheckerGroup();
-      g.addTransition(group);
-      
-      for (SklModel model : getModels()){
-         if (model instanceof SklAnchorModel){
-            
-            SklAnchorModel anchor = (SklAnchorModel) model;
-
-            // set up the pattern image
-            BufferedImage image = referenceImage.getImage();
-            BufferedImage patternImage = image.getSubimage(anchor.getX(), anchor.getY(), anchor.getWidth(), anchor.getHeight());            
-            Pattern pattern = new Pattern(patternImage);
-
-            SklTracker tracker = new SklTracker(pattern);
-            tracker.start();
-
-            
-            if (anchor.getCommand() == SklAnchorModel.ASSERT_COMMAND){
-               SklVisibilityChecker c = new SklVisibilityChecker(group, anchor);
-               anchor.setOpacity(0.5f);
-               tracker._listener = c;
-            }else if (anchor.getCommand() == SklAnchorModel.CLICK_COMMAND){
-               SklClicker c = new SklClicker(anchor);
-               tracker._listener = c;
-               g.addTransition(c);
-
-            }
-
-         }
-      }
+//      
+//      for (SklRelationship relationship : sklRelationshipList){
+//         
+//         SklModel parent = relationship.getParent();
+//         SklModel dependent = relationship.getDependent();
+//
+//         if (parent instanceof SklAnchorModel && dependent instanceof SklTextModel){
+//          
+//               
+//            SklAnchorModel anchor = (SklAnchorModel) parent;
+//            SklTextModel text = (SklTextModel) dependent;
+//            
+//            if (text.getText().compareToIgnoreCase("click") == 0){
+//               
+//               anchor.setCommand(SklAnchorModel.CLICK_COMMAND);
+//               
+//            } else if (text.getText().compareToIgnoreCase("assert") == 0){
+//            
+//               anchor.setCommand(SklAnchorModel.ASSERT_COMMAND);
+//            }
+//            
+//         }
+//         
+//         
+//      }
+//      
+//      
+//      SklVisibilityCheckerGroup group = new SklVisibilityCheckerGroup();
+//      g.addTransition(group);
+//      
+//      for (SklModel model : getModels()){
+//         if (model instanceof SklAnchorModel){
+//            
+//            SklAnchorModel anchor = (SklAnchorModel) model;
+//
+//            // set up the pattern image
+//            BufferedImage image = referenceImage.getImage();
+//            BufferedImage patternImage = image.getSubimage(anchor.getX(), anchor.getY(), anchor.getWidth(), anchor.getHeight());            
+//            Pattern pattern = new Pattern(patternImage);
+//
+//            SklTracker tracker = new SklTracker(pattern);
+//            tracker.start();
+//
+//            
+//            if (anchor.getCommand() == SklAnchorModel.ASSERT_COMMAND){
+//               SklVisibilityChecker c = new SklVisibilityChecker(group, anchor);
+//               anchor.setOpacity(0.0f);
+//               tracker._listener = c;
+//            }else if (anchor.getCommand() == SklAnchorModel.CLICK_COMMAND){
+//               SklClicker c = new SklClicker(anchor);
+//               tracker._listener = c;
+//               g.addTransition(c);
+//
+//            }
+//
+//         }
+//      }
    }
 
    public void startAnimation(){

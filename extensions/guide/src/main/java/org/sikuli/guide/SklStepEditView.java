@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -20,6 +21,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoableEditSupport;
 
+import org.sikuli.guide.SklSideRelationship.Side;
 import org.sikuli.script.Debug;
 
 class SklStepEditView extends JPanel implements KeyListener {
@@ -81,7 +83,7 @@ class SklStepEditView extends JPanel implements KeyListener {
    
    // Variables that manage selection
    // TODO: replace with ListSelectionModel
-   SklModel selectedModel;
+   SklModel _selectedModel;
    SklControlBox box = new SklControlBox(null);
    SklControlBoxView boxView = null;
    SklRelationship relationship = new SklRelationship(null,box); ;
@@ -97,14 +99,12 @@ class SklStepEditView extends JPanel implements KeyListener {
       @Override
       public void actionPerformed(ActionEvent e) {
          
-         if (selectedModel != null)
-            selectedModel.setSelected(false);         
+         if (_selectedModel != null)
+            _selectedModel.setSelected(false);         
          
-         selectedModel = model;
-         selectedModel.setSelected(true);
+         _selectedModel = model;
+         _selectedModel.setSelected(true);
          
-         //fireSelectionValueChanged(selectedModel);
-
          // Set the control box         
          box.setTarget(model);
          boxView.setVisible(true);
@@ -114,9 +114,9 @@ class SklStepEditView extends JPanel implements KeyListener {
    class DeselectAction extends AbstractAction {
       @Override
       public void actionPerformed(ActionEvent e) {         
-         if (selectedModel != null)
-            selectedModel.setSelected(false);
-         selectedModel = null;         
+         if (_selectedModel != null)
+            _selectedModel.setSelected(false);
+         _selectedModel = null;         
          boxView.setVisible(false);
       }
    }
@@ -138,7 +138,7 @@ class SklStepEditView extends JPanel implements KeyListener {
          int offsety = dependent.getY() - parent.getY();
 
          SklRelationship relationship = new SklOffsetRelationship(parent,dependent,offsetx,offsety);
-         stepModel.addRelationship(relationship);
+         _stepModel.addRelationship(relationship);
 
          undoableEditSupport.postEdit(new UndoableLink(relationship));      
       }
@@ -157,12 +157,12 @@ class SklStepEditView extends JPanel implements KeyListener {
 
          public void redo() throws CannotRedoException {
             super.redo();
-            stepModel.addRelationship(linkRelationship);
+            _stepModel.addRelationship(linkRelationship);
          }
 
          public void undo() throws CannotUndoException {
             super.undo();
-            stepModel.removeRelationship(linkRelationship);
+            _stepModel.removeRelationship(linkRelationship);
          }
       }
    }
@@ -178,15 +178,21 @@ class SklStepEditView extends JPanel implements KeyListener {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-         view = SklViewFactory.createView(model);
+         addModelView(model);
+                  
+         _stepModel.addModel(model);
          
-         cm.registerComponent(view);
+         if (model instanceof SklAnchorModel){
 
-         view.addMouseListener(new SklComponentSelectAdapter());
-
-         stepModel.addModel(model);
-         add(view,0);
-
+            SklTextModel text = new DefaultSklTextModel("When I click");
+            text.setHasShadow(true);
+            
+            addModelView(text);
+            
+            _stepModel.addModel(text);
+            _stepModel.addRelationship(new SklSideRelationship(model, text, Side.TOP));
+         }
+         
          undoableEditSupport.postEdit(new UndoableAdd());      
       }
 
@@ -202,7 +208,7 @@ class SklStepEditView extends JPanel implements KeyListener {
          public void redo() throws CannotRedoException {
             super.redo();
             cm.registerComponent(view);
-            stepModel.addModel(model);
+            _stepModel.addModel(model);
             // TODO: added back to the same z order
             add(view,0);
             repaint();        
@@ -211,11 +217,28 @@ class SklStepEditView extends JPanel implements KeyListener {
          public void undo() throws CannotUndoException {
             super.undo();
             cm.deregisterComponent(view);
-            stepModel.removeModel(model);
+            _stepModel.removeModel(model);
             remove(view);
             repaint();
          }
       }
+   }
+   
+   
+   void addModelView(SklModel model){
+      SklView view = SklViewFactory.createView(model);
+      addInteractivity(view);      
+      add(view,0);      
+   }
+   
+   void addInteractivity(SklView view){
+      
+      // this allows view to be moved by users
+      cm.registerComponent(view);
+      
+      // this allows component to be selected by click
+      view.addMouseListener(new SklComponentSelectAdapter());
+
    }
 
 //   public void testAddText(){
@@ -332,7 +355,7 @@ class SklStepEditView extends JPanel implements KeyListener {
 
 
 
-   SklStepModel stepModel;
+   SklStepModel _stepModel;
    SklStepEditView(SklStepModel step){
 
       setLayout(null);
@@ -348,11 +371,8 @@ class SklStepEditView extends JPanel implements KeyListener {
          public void componentMoved(Component source, Point origin,
                Point destination) {
 
-            Debug.info("Dragged from " + origin + " to " + destination);
-
             SklView view = (SklView) source;
             undoableEditSupport.postEdit(new UndoableMove(view.getModel(), origin, destination));
-//
 
             Point newLocation = view.getActualLocation();
             view.getModel().setX(newLocation.x);
@@ -372,19 +392,18 @@ class SklStepEditView extends JPanel implements KeyListener {
    
    
 
-   void setModel(SklStepModel step) {
-      setStep(step);
-   }
 
    ComponentDragMover cm;
-   public void setStep(SklStepModel step){
-      this.stepModel = step;      
+   void setModel(SklStepModel step) {
+      
+      _stepModel = step;      
+      
       removeAll();
       
-      if (step == null)
+      if (_stepModel == null)
          return;
 //
-      for (SklModel model : step.getModels()){
+      for (SklModel model : _stepModel.getModels()){
                   
          SklView view = SklViewFactory.createView(model);         
          view.addMouseListener(new SklComponentSelectAdapter());
@@ -397,36 +416,16 @@ class SklStepEditView extends JPanel implements KeyListener {
          SklView view = SklViewFactory.createView(step.getReferenceImageModel());
          add(view);
          setPreferredSize(view.getSize());
-         //setSize(view.getSize());
-         
-//         view.addKeyListener(this);
-//         view.setFocusable(true);
-
       }
 
       boxView = (SklControlBoxView) SklViewFactory.createView(box);
       boxView.setVisible(false);
       add(boxView,0);
-
       
-      
-      //
       this.addMouseListener(new SklStepEditorMouseAdapter());
-//
-//      Rectangle r = new Rectangle(0,0,0,0);      
-//      for (DefaultSklObjectModel sklComp : step.sklComponentList){
-//         r.add(sklComp.getBounds());
-//      }
-//      //r.grow(10,10);
-//      //setBounds(0,0,1000,500);
-//      setBounds(100,100,1000,500);
-//      setSize(step.getReferenceImage().getSize());
-//
-//      //      step.startTracking();
-//      //      step.startAnimation();
-
    }
    
+   SklTextPropertyEditor te;
    
    class SklComponentSelectAdapter extends MouseAdapter{
 
@@ -435,9 +434,35 @@ class SklStepEditView extends JPanel implements KeyListener {
          SklStepEditView.this.requestFocus();
          
          SklView view = (SklView) e.getSource();
-         Debug.info("[SklStepEditView] component clicked: " + view);
+         //Debug.info("[SklStepEditView] component clicked: " + view);
 
          (new SelectAction(view.getModel())).actionPerformed(null);
+         
+         if (e.getClickCount() == 2){
+            //Debug.info("[SklStepEditView] component double-clicked: " + view);
+
+            (new SelectAction(view.getModel())).actionPerformed(null);
+            
+            if (te == null){
+               te = new SklTextPropertyEditor();
+            }
+            
+
+            if (view.getModel() instanceof SklTextModel){
+               remove(te);
+               add(te);
+
+               te.setTextModel((SklTextModel) view.getModel());               
+               te.setLocation(view.getLocation().x, view.getLocation().y - te.getHeight());
+               te.setVisible(true);
+               te.requestFocus();
+            }
+            
+
+            
+            
+
+         }
       }
    }   
 
@@ -454,51 +479,101 @@ class SklStepEditView extends JPanel implements KeyListener {
          SklStepEditView.this.requestFocus();
 
          Point p = e.getPoint();
-         if (e.getClickCount() == 2){
-
-            DefaultSklTextModel textModel = new DefaultSklTextModel("Text");
-            textModel.setHasShadow(true);           
-
-            (new AddComponentAtLocationAction(textModel, p)).actionPerformed(null);
-            (new SelectAction(textModel)).actionPerformed(null);
-
-         } else {
+//         if (e.getClickCount() == 2){
+//
+//            DefaultSklTextModel textModel = new DefaultSklTextModel("Text");
+//            textModel.setHasShadow(true);           
+//
+//            (new AddComponentAtLocationAction(textModel, p)).actionPerformed(null);
+//            (new SelectAction(textModel)).actionPerformed(null);
+//
+//         } else {
 
             (new DeselectAction()).actionPerformed(null);
-         }
+        // }
 
       }
    }
-
-   public void doInsertAnchor() {
-      final Cursor oldCursor = getCursor();
-      Cursor cursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
-      setCursor(cursor);
+   
+   
+   interface UserAction{
+      public void start();
+      public void stop();
+   }
+   
+   class UserAddElementToLocationAction implements UserAction {
       
+      Class _class;
+      UserAddElementToLocationAction(Class cs){
+         _class = cs;
+      }
       
-      addMouseListener(new MouseAdapter(){
-
+      Cursor oldCursor;
+      
+      @Override
+      public void start(){
+         oldCursor = getCursor();
+         Cursor cursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+         setCursor(cursor);         
+         addMouseListener(_locationSelector);
+      }
+      
+      @Override
+      public void stop(){
+         removeMouseListener(_locationSelector);
+         setCursor(oldCursor);
+      }
+      
+      MouseListener _locationSelector = new  MouseAdapter(){
          @Override
          public void mousePressed(MouseEvent e) {
 
             if (e.getClickCount() == 1){
-
-               Point p = e.getPoint();
-
-               SklAnchorModel anchor = new SklAnchorModel();
-               anchor.setSize(50,50);
-               (new AddComponentAtLocationAction(anchor, p)).actionPerformed(null);
-               (new SelectAction(anchor)).actionPerformed(null);
-               
-               
-               SklStepEditView.this.removeMouseListener(this);
-               setCursor(oldCursor);
+               locationSelected(e.getPoint());
             } 
          }
-      });
+      };
+      
+      void locationSelected(Point p){
+         SklModel newModel = null;
+         if (_class == SklAnchorModel.class){
+            SklAnchorModel anchorModel = new SklAnchorModel();
+            anchorModel.setSize(50,50);
+            newModel = anchorModel;
+         }else{
+            SklTextModel textModel = new DefaultSklTextModel();
+            textModel.setText("When I click");
+            textModel.setHasShadow(true);
+            newModel = textModel;
+         }
+         
+         (new AddComponentAtLocationAction(newModel, p)).actionPerformed(null);
+         (new SelectAction(newModel)).actionPerformed(null);
+         stop();
+      }
       
    }
 
+   UserAction _currentUserAction;
+   
+   public void doInsert(Class class_) {
+      requestFocus();
+      if (_currentUserAction != null){
+         _currentUserAction.stop();
+      }
+
+       _currentUserAction = new UserAddElementToLocationAction(class_);
+      _currentUserAction.start();
+
+   }
+   
+   void doDeleteSelectedModel(){      
+      _stepModel.removeModel(_selectedModel);
+      setModel(_stepModel);
+      repaint();
+   }
+   
+   
    @Override
    public void keyPressed(KeyEvent k) {
       Debug.log("[EditView] pressed: " + k.getKeyCode());
@@ -506,12 +581,18 @@ class SklStepEditView extends JPanel implements KeyListener {
       if (k.getKeyCode() == KeyEvent.VK_BACK_SPACE){
          Debug.log("[EditView] pressed DELETE");
          
+         doDeleteSelectedModel();
          
          
       } else if (k.getKeyCode() == KeyEvent.VK_ESCAPE){
          Debug.log("[EditView] pressed ESCAPE");
          
          (new DeselectAction()).actionPerformed(null);
+         
+         
+         if (_currentUserAction != null){
+            _currentUserAction.stop();
+         }
       }
 
       

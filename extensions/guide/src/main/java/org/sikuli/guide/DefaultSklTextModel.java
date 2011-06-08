@@ -3,6 +3,7 @@ package org.sikuli.guide;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.beans.PropertyChangeEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +67,12 @@ class SklTextView extends SklView {
    JLabel label;
    public SklTextView(SklModel model){
       super(model);   
+   }
+   
+   @Override
+   public void propertyChange(PropertyChangeEvent evt) {
+      super.propertyChange(evt);
+      update();
    }
    
    @Override

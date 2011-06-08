@@ -405,6 +405,10 @@ public class ComponentDragMover extends MouseAdapter{
       else
          destination.setLocation(location.x + dragX, location.y + dragY);
 
+      
+      Point newLocation = new Point(location.x + dragX, location.y + dragY);
+      if (draggedMoveListener != null)
+         draggedMoveListener.componentMoved(source, origin, newLocation);
    }
 
 
