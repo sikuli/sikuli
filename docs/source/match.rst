@@ -54,27 +54,24 @@ apply.
 Iterating over Matches after findAll()
 --------------------------------------
 
-A find operation :py:meth:`Region.findAll` returns an iterator object that contains
-all matches found. It can be stepped through to get each match object in turn.
-Remember, that a reference to the iterator of matches is stored in the respective
+A find operation :py:meth:`Region.findAll` returns an iterator object that can be
+used to fetch all found matches as match objects one by one. A reference to the
+iterator is stored in the respective
 region and can be accessed using :py:meth:`Region.getLastMatches`.
 
 Important to know:
 
 *	per definition, an iterator can be stepped through only once - it is empty
 	afterwards
-*	it has to be destroyed manually using ``iteratorMatches.destroy()``, when used with
-	``for:`` or ``while:``
-*	when used in a ``with:`` construct, it is destroyed automatically
 
-With class :py:class:`Finder` you can read more about the basics of an iterator.
-There you find an example, how to save the contained matches for later use.
+You can read more about the basics of operations with iterators from the description of
+:py:class:`Finder` class. To save contained matches for later use, you can convert them
+to list.
 
-The methods to use:
-
-*	``hasNext()``: returns True, if there is at least one match left, otherwise False
-*	``next()``: returns the next match, if there is at least one match left, otherwise None
-*	``destroy()``: destroys the iterator object (releases memory)
+.. sikulicode::
+        
+        findAll("star.png") # find all matches
+        mm = list(getLastMatches())
 
 Example: using ``while:`` with default screen
 
@@ -88,7 +85,6 @@ Example: using ``while:`` with default screen
 	print mm.hasNext() # is False, because mm is empty now
 	print mm.next() # is None, because mm is empty now
 	print SCREEN.getLastMatches().hasNext() # is False also ;-)
-	mm.destroy() # to save memory
 			
 Example: using ``with:`` with default screen
 
