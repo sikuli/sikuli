@@ -95,6 +95,7 @@ Complete Guide to Sikuli Script
 
    new-in-sikulix
    sikuli-script-index
+   best-practice
 
 Extensions
 ----------
