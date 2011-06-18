@@ -95,6 +95,7 @@ Complete Guide to Sikuli Script
 
    new-in-sikulix
    sikuli-script-index
+   best-practice
 
 Extensions
 ----------
@@ -129,4 +130,4 @@ Great 3rd-Party Articles
 
 * `How-To: Sikuli and Robot Framework Integration <http://blog.mykhailo.com/2011/02/how-to-sikuli-and-robot-framework.html>`_.
 * `Automating Flash, AJAX, Popups and more using Ruby, Watir and Sikuli <http://www.software-testing.com.au/blog/2010/08/16/automating-flash-ajax-popups-and-more-using-ruby-watir-and-sikuli/>`_.
-
+* `Sikuli -- 创新的图形化编程技术 <http://www.ibm.com/developerworks/cn/opensource/os-cn-sikuli/index.html>`_. (in Simplified Chinese 简体中文)
