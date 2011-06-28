@@ -693,6 +693,18 @@ public class Region {
    *
    * @param t1 The specified source position
    * @param t2 The specified destination position
+   * @return 1 if success, 0 otherwise
+   * @throws FindFailed if the Find operation failed
+   */
+   public <PSRML> int dragDrop(PSRML t1, PSRML t2) throws FindFailed {
+      return dragDrop(t1, t2, 0);
+   }
+
+  /**
+   * Drag and drop from a position to the other
+   *
+   * @param t1 The specified source position
+   * @param t2 The specified destination position
    * @param modifiers Can be 0 (no modifier), K_SHIFT, K_CTRL, K_ALT or K_META
    * @return 1 if success, 0 otherwise
    * @throws FindFailed if the Find operation failed
@@ -727,6 +739,10 @@ public class Region {
          return 1;
       }
       return 0;
+   }
+
+   public <PSRML> int dropAt(PSRML target) throws  FindFailed{
+      return dropAt(target, Settings.DelayBeforeDrop);
    }
 
    public <PSRML> int dropAt(PSRML target, double delay) throws  FindFailed{

@@ -211,19 +211,23 @@ class Region(JRegion):
    # @param src This can be a file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; or a <a href="org/sikuli/script/Match.html">Match</a> object.
    # @param dest This can be a file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; or a <a href="org/sikuli/script/Match.html">Match</a> object. It also can be a tuple or a list of 2 integers <i>x</i> and <i>y</i> that indicates the absolute location of the destination on the screen.
    # @return Returns 1 if both src and dest can be found, otherwise returns 0.
-   def dragDrop(self, src, dest, modifiers=0):
-      if isinstance(dest, list) or isinstance(dest, tuple):
-         return JRegion.dragDrop(self, src, Location(dest[0], dest[1]), modifiers)
-      else:
-         return JRegion.dragDrop(self, src, dest, modifiers)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def dragDrop(self, src, dest, modifiers=0):
+#      if isinstance(dest, list) or isinstance(dest, tuple):
+#         return JRegion.dragDrop(self, src, Location(dest[0], dest[1]), modifiers)
+#      else:
+#         return JRegion.dragDrop(self, src, dest, modifiers)
 
-   def drag(self, target):
-      return JRegion.drag(self, target)
 
-   def dropAt(self, target, delay=None):
-      if delay == None:
-         delay = Settings.DelayBeforeDrop
-      return JRegion.dropAt(self, target, delay)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def drag(self, target):
+#      return JRegion.drag(self, target)
+
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def dropAt(self, target, delay=None):
+#      if delay == None:
+#         delay = Settings.DelayBeforeDrop
+#      return JRegion.dropAt(self, target, delay)
 
    def mouseMove(self, target):
       return JRegion.hover(self, target)

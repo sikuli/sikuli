@@ -66,3 +66,15 @@ class TestRegion(unittest.TestCase):
       #self.r.wait(2)
       self.r.paste("a string 中文")
       self.r.paste(self.img, u"a string 中文")
+
+   def testDragDrop(self):
+      self.r.dragDrop(self.img, self.img)
+      self.r.dragDrop(self.img, Location(0,0), KEY_CTRL)
+
+   def testDrag(self):
+      self.r.drag(self.img)
+
+   def testDropAt(self):
+      self.r.dropAt(self.img)
+      self.r.dropAt(self.img, 1)
+
