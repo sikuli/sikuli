@@ -27,8 +27,10 @@ from org.sikuli.script import OS
 from org.sikuli.script import App
 from org.sikuli.script import ScreenHighlighter
 from org.sikuli.script import ImageLocator
+from org.sikuli.script import Key
+from org.sikuli.script import KeyModifier
+from org.sikuli.script.KeyModifier import KEY_CTRL, KEY_SHIFT, KEY_META, KEY_CMD, KEY_WIN, KEY_ALT
 from java.awt import Rectangle
-from Key import *
 from Button import *
 from Region import *
 from Screen import *

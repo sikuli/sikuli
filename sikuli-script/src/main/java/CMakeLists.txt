@@ -52,6 +52,8 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/Animator.java
    org/sikuli/script/TransparentWindow.java
    org/sikuli/script/ExtensionManager.java
+   org/sikuli/script/Key.java
+   org/sikuli/script/KeyModifier.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
