@@ -57,9 +57,10 @@ class Region(JRegion):
    # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="org/sikuli/script/Pattern.html">Pattern</a> object.
    # @return a <a href="org/sikuli/script/Match.html">Match</a> object that contains the best matching region, or None if nothing is found.
    #
-   def find(self, target):
-      ret = JRegion.find(self, target)
-      return ret
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def find(self, target):
+#      ret = JRegion.find(self, target)
+#      return ret
 
    ##
    # Looks for all instance of a particular GUI element to interact with. 
@@ -74,9 +75,10 @@ class Region(JRegion):
    # @param img The file name of an image, which can be an absolute path or a relative path to file in the source bundle (.sikuli). It also can be a <a href="org/sikuli/script/Pattern.html">Pattern</a> object.
    # @return a <a href="org/sikuli/script/Matches.html">Matches</a> object that contains a list of <a href="org/sikuli/script/Match.html">Match</a> objects, or None if nothing is found.
    #
-   def findAll(self, target):
-      ret = JRegion.findAll(self, target)
-      return ret
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def findAll(self, target):
+#      ret = JRegion.findAll(self, target)
+#      return ret
 
    ##
    # Keeps searching the given image on the screen until the image appears or 
@@ -85,30 +87,33 @@ class Region(JRegion):
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
    # @return a <a href="org/sikuli/script/Matches.html">Matches</a> object that contains a list of <a href="org/sikuli/script/Match.html">Match</a> objects, or None if timeout occurs.
    # FIXME: default timeout should be autoWaitTimeout
-   def wait(self, target, timeout=None):
-      ttype = __builtin__.type(target)
-      if ttype is types.IntType or ttype is types.FloatType:
-         time.sleep(target)
-         return
-      if timeout == None:
-         ret = JRegion.wait(self, target)
-      else:
-         ret = JRegion.wait(self, target, timeout)
-      return ret
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def wait(self, target, timeout=None):
+#      ttype = __builtin__.type(target)
+#      if ttype is types.IntType or ttype is types.FloatType:
+#         time.sleep(target)
+#         return
+#      if timeout == None:
+#         ret = JRegion.wait(self, target)
+#      else:
+#         ret = JRegion.wait(self, target, timeout)
+#      return ret
 
-   def waitVanish(self, target, timeout=None):
-      if timeout == None:
-         ret = JRegion.waitVanish(self, target)
-      else:
-         ret = JRegion.waitVanish(self, target, timeout)
-      return ret
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def waitVanish(self, target, timeout=None):
+#      if timeout == None:
+#         ret = JRegion.waitVanish(self, target)
+#      else:
+#         ret = JRegion.waitVanish(self, target, timeout)
+#      return ret
 
-   def exists(self, target, timeout=None):
-      if timeout == None:
-         ret = JRegion.exists(self, target)
-      else:
-         ret = JRegion.exists(self, target, timeout)
-      return ret
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def exists(self, target, timeout=None):
+#      if timeout == None:
+#         ret = JRegion.exists(self, target)
+#      else:
+#         ret = JRegion.exists(self, target, timeout)
+#      return ret
    
    ##
    # Performs a mouse clicking on the best matched position of the 
@@ -117,8 +122,9 @@ class Region(JRegion):
    # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
-   def click(self, target, modifiers=0):
-      return JRegion.click(self, target, modifiers)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def click(self, target, modifiers=0):
+#      return JRegion.click(self, target, modifiers)
 
    ##
    # Performs a double clicking on the best matched position of the given 

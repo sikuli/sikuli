@@ -435,6 +435,17 @@ public class Region {
             return null;
       }     
    }
+
+   public void wait(double timeout) {
+      try{
+         Thread.sleep((long)(timeout*1000L));
+      }
+      catch(InterruptedException e){
+         e.printStackTrace();
+      }
+   }
+   
+
    
    public <PSC> Match wait(PSC target) throws FindFailed{
       return wait(target, _autoWaitTimeout);
@@ -543,6 +554,17 @@ public class Region {
       return false;
    }
 
+
+  /**
+   * Click on the item provided by "target" 
+   *
+   * @param target  Where to click
+   * @return 1 if success, 0 otherwise
+   * @throws FindFailed if the Find operation failed
+   */
+   public <PSRML> int click(PSRML target) throws FindFailed{
+      return click(target, 0);
+   }
 
   /**
    * Click on the item provided by "target" 
