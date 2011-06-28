@@ -63,3 +63,7 @@ class TestBasic(unittest.TestCase):
       assert p2.toString() == 'Pattern("image.png").similar(0.7).targetOffset(10,0)'
       assert p3.toString() == 'Pattern("image.png").similar(0.99).targetOffset(10,0)'
       assert p4.toString() == 'Pattern("image.png").similar(0.99).targetOffset(10,0)'
+
+   def testConstants(self):
+      assert(FOREVER>0)
+      assert(WHEEL_UP != WHEEL_DOWN)

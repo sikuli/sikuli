@@ -55,6 +55,7 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/Key.java
    org/sikuli/script/KeyModifier.java
    org/sikuli/script/Button.java
+   org/sikuli/script/Constants.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
