@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 from sikuli import *
 from org.sikuli.script import JButtons
@@ -22,6 +23,7 @@ class TestRegion(unittest.TestCase):
       self.r.findAll(self.img)
 
    def testWait(self):
+      self.r.wait(1)
       self.r.wait(0.1)
       self.r.wait(self.img)
       self.r.wait(self.img, 0.1)
@@ -58,3 +60,9 @@ class TestRegion(unittest.TestCase):
       self.r.type("a string")
       self.r.type(self.img, "a string")
       self.r.type(self.img, "a string", KEY_SHIFT)
+
+   def testPaste(self):
+      #App.open("TextEdit.app")
+      #self.r.wait(2)
+      self.r.paste("a string 中文")
+      self.r.paste(self.img, u"a string 中文")

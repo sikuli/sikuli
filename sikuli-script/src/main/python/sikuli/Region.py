@@ -87,17 +87,19 @@ class Region(JRegion):
    # @param timeout The amount of waiting time, in milliseconds. This value orverrides the auto waiting timeout set by {@link #setAutoWaitTimeout}.
    # @return a <a href="org/sikuli/script/Matches.html">Matches</a> object that contains a list of <a href="org/sikuli/script/Match.html">Match</a> objects, or None if timeout occurs.
    # FIXME: default timeout should be autoWaitTimeout
-# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
-#   def wait(self, target, timeout=None):
-#      ttype = __builtin__.type(target)
-#      if ttype is types.IntType or ttype is types.FloatType:
-#         time.sleep(target)
-#         return
-#      if timeout == None:
-#         ret = JRegion.wait(self, target)
-#      else:
-#         ret = JRegion.wait(self, target, timeout)
-#      return ret
+
+   # Python wait() needs to be here because Java Object has a final method: wait(long timeout).
+   # If we want to let Sikuli users use wait(int/long timeout), we need this Python method.
+   def wait(self, target, timeout=None):
+      ttype = __builtin__.type(target)
+      if ttype is types.IntType or ttype is types.FloatType:
+         time.sleep(target)
+         return
+      if timeout == None:
+         ret = JRegion.wait(self, target)
+      else:
+         ret = JRegion.wait(self, target, timeout)
+      return ret
 
 # DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
 #   def waitVanish(self, target, timeout=None):
@@ -187,12 +189,21 @@ class Region(JRegion):
    # typing on different keyboard layouts.
    # @param *args The parameters can be (string) or (image pattern, string). The string specifies the string to be typed in. The image pattern specifies the object that needs the focus before pasting. 
    # @return Returns 0 if nothing is pasted, otherwise returns 1.
+
+   # Python paste() needs to be here because of encoding conversion
    def paste(self, *args):
       if len(args) == 1:
-         return JRegion.paste(self, None, java.lang.String(args[0], "utf-8"))
+         target = None
+         s = args[0]
       elif len(args) == 2:
-         return JRegion.paste(self, args[0], java.lang.String(args[1], "utf-8"))
-      return 0
+         target = args[0]
+         s = args[1]
+      t_str = __builtin__.type(s) 
+      if t_str is types.UnicodeType:
+         pass # do nothing
+      elif t_str is types.StringType:
+         s = java.lang.String(s, "utf-8")
+      return JRegion.paste(self, target, s)
 
    ##
    # Drags from the position of <i>src</i>, 

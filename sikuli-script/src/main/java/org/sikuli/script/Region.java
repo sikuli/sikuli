@@ -436,6 +436,8 @@ public class Region {
       }     
    }
 
+
+   //WARNING: wait(long timeout) is taken by Java Object
    public void wait(double timeout) {
       try{
          Thread.sleep((long)(timeout*1000L));
@@ -769,6 +771,10 @@ public class Region {
          return 1;
       }
       return 0;
+   }
+
+   public int paste(String text) throws FindFailed{
+      return paste(null, text);
    }
 
    public <PSRML> int paste(PSRML target, String text) 
