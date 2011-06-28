@@ -295,8 +295,9 @@ class Region(JRegion):
    # just return <i>None</i> if nothing is found. <br/>
    # The default value of thie flag is <i>True</i>.
    #
-   def setThrowException(self, flag):
-      return JRegion.setThrowException(self, flag)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def setThrowException(self, flag):
+#      return JRegion.setThrowException(self, flag)
 
    ##
    # Sets the maximum waiting time in seconds for {@link #find find()}. <br/>
@@ -305,6 +306,7 @@ class Region(JRegion):
    # time has elapsed. <br/>
    # The default timeout is <i>3.0 sec</i>.
    #
-   def setAutoWaitTimeout(self, sec):
-      return JRegion.setAutoWaitTimeout(self, sec)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def setAutoWaitTimeout(self, sec):
+#      return JRegion.setAutoWaitTimeout(self, sec)
 
