@@ -43,3 +43,18 @@ class TestRegion(unittest.TestCase):
       self.r.click(self.img)
       self.r.click(self.img, KEY_CTRL)
 
+   def testDoubleClick(self):
+      self.r.doubleClick(self.img)
+      self.r.doubleClick(self.img, KEY_CTRL)
+
+   def testRightClick(self):
+      self.r.rightClick(self.img)
+      self.r.rightClick(self.img, KEY_CTRL)
+
+   def testHover(self):
+      self.r.hover(self.img)
+
+   def testType(self):
+      self.r.type("a string")
+      self.r.type(self.img, "a string")
+      self.r.type(self.img, "a string", KEY_SHIFT)

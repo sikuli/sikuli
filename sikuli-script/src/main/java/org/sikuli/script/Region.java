@@ -588,6 +588,17 @@ public class Region {
    * Double click on the item provided by "target" 
    *
    * @param target  Where to double click
+   * @return 1 if success, 0 otherwise
+   * @throws FindFailed if the Find operation failed
+   */
+   public <PSRML> int doubleClick(PSRML target) throws  FindFailed{
+      return doubleClick(target, 0);
+   }
+
+  /**
+   * Double click on the item provided by "target" 
+   *
+   * @param target  Where to double click
    * @param modifiers Can be 0 (no modifier), K_SHIFT, K_CTRL, K_ALT or K_META
    * @return 1 if success, 0 otherwise
    * @throws FindFailed if the Find operation failed
@@ -599,6 +610,18 @@ public class Region {
 
       SikuliActionManager.getInstance().doubleClickTarget(this, target, _lastScreenImage, _lastMatch);      
       return ret;
+   }
+
+
+  /**
+   * Right click on the item provided by "target" 
+   *
+   * @param target  Where to right click
+   * @return 1 if success, 0 otherwise
+   * @throws FindFailed if the Find operation failed
+   */
+   public <PSRML> int rightClick(PSRML target) throws  FindFailed{
+      return rightClick(target, 0);
    }
 
 
@@ -715,6 +738,18 @@ public class Region {
          return 1;
       }
       return 0;
+   }
+
+   public <PSRML> int type(String text) throws FindFailed{
+      return type(null, text, 0);
+   }
+
+   public <PSRML> int type(String text, int modifiers) throws FindFailed{
+      return type(null, text, modifiers);
+   }
+
+   public <PSRML> int type(PSRML target, String text) throws FindFailed{
+      return type(target, text, 0);
    }
 
    public <PSRML> int type(PSRML target, String text, int modifiers) 

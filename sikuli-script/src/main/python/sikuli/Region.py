@@ -133,8 +133,9 @@ class Region(JRegion):
    # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
-   def doubleClick(self, target, modifiers=0):
-      return JRegion.doubleClick(self, target, modifiers)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def doubleClick(self, target, modifiers=0):
+#      return JRegion.doubleClick(self, target, modifiers)
 
    ##
    # Performs a right clicking on the best matched position of the given 
@@ -143,8 +144,9 @@ class Region(JRegion):
    # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a> object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @param modifiers The key modifiers. This can be one modifier or union of multiple modifiers combined by the OR(|) operator.
    # @return The number of performed clicking. <br/> Returns -1 if find() fails.
-   def rightClick(self, target, modifiers=0):
-      return JRegion.rightClick(self, target, modifiers)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def rightClick(self, target, modifiers=0):
+#      return JRegion.rightClick(self, target, modifiers)
 
    ##
    # Move the mouse cursor to the best matched position of the 
@@ -152,8 +154,9 @@ class Region(JRegion):
    # find() to locate the pattern if a file name or a <a href="org/sikuli/script/Pattern.html">Pattern</a> object is given.
    # @param img The file name of an image; a <a href="org/sikuli/script/Pattern.html">Pattern</a>  object; a <a href="org/sikuli/script/Match.html">Match</a> object; or a <a href="org/sikuli/script/Matches.html">Matches</a> object.
    # @return 0 <br/> Returns -1 if find() fails.
-   def hover(self, target):
-      return JRegion.hover(self, target)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def hover(self, target):
+#      return JRegion.hover(self, target)
 
    ##
    # Simulate keyboard typing on the best matched position of the given 
@@ -163,16 +166,17 @@ class Region(JRegion):
    # See {@link #Key the Key class} for typing special keys, and {@link #paste paste()} if you need to "type" international characters or you are using diffrent keymaps other than QWERTY.
    # @param *args The parameters can be (string), (string, modifiers), (image pattern, string), or (image pattern, string, modifiers). The string specifies the string to be typed in, which can be concatenated with the special keys defined in {@link #Key the Key class}.  The image pattern specifies the object that needs the focus before typing. The modifiers specifies the key modifiers to be pressed while typing.
    # @return Returns 0 if nothing is typed, otherwise returns 1.
-   def type(self, *args):
-      if len(args) == 1:
-         return JRegion.type(self, None, args[0], 0)
-      if len(args) == 2:
-         if __builtin__.type(args[1]) is types.IntType:
-            return JRegion.type(self, None, args[0], args[1])
-         else:
-            return JRegion.type(self, args[0], args[1], 0)
-      return JRegion.type(self, args[0], args[1], args[2])
-
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def type(self, *args):
+#      if len(args) == 1:
+#         return JRegion.type(self, None, args[0], 0)
+#      if len(args) == 2:
+#         if __builtin__.type(args[1]) is types.IntType:
+#            return JRegion.type(self, None, args[0], args[1])
+#         else:
+#            return JRegion.type(self, args[0], args[1], 0)
+#      return JRegion.type(self, args[0], args[1], args[2])
+#
    ##
    # Paste the given string to the best matched position of the given 
    # image pattern. It performs a mouse clicking on the matched position to gain 
