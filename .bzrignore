@@ -17,6 +17,7 @@ sikuli-script/target/classes
 lib/Lib
 lib/cachedir
 sikuli-script/src/main/python/**/*.class
+sikuli-script/src/test/python/**/*.class
 docs/build
 ./patches
 sikuli-ide/target/jar
