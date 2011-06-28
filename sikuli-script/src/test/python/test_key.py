@@ -1,7 +1,7 @@
 import unittest
 from sikuli import *
 
-class TestKey(unittest.TestCase):
+class TestKeyAndButton(unittest.TestCase):
 
    def testCommonKeys(self):
       assert(Key.ENTER == "\n")
@@ -15,3 +15,8 @@ class TestKey(unittest.TestCase):
       assert(KeyModifier.CTRL == KEY_CTRL)
       assert(KeyModifier.SHIFT == KEY_SHIFT)
       assert(KeyModifier.META == KEY_META)
+
+   def testButtons(self):
+      assert(Button.LEFT != None)
+      assert(Button.MIDDLE != None)
+      assert(Button.RIGHT != None)

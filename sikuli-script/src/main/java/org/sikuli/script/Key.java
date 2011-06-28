@@ -5,8 +5,6 @@
  */
 package org.sikuli.script;
 
-import java.awt.event.InputEvent;
-
 public class Key {
    public static String ENTER       = "\n";
    public static String BACKSPACE   = "\b";

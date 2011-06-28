@@ -30,8 +30,8 @@ from org.sikuli.script import ImageLocator
 from org.sikuli.script import Key
 from org.sikuli.script import KeyModifier
 from org.sikuli.script.KeyModifier import KEY_CTRL, KEY_SHIFT, KEY_META, KEY_CMD, KEY_WIN, KEY_ALT
+from org.sikuli.script import Button
 from java.awt import Rectangle
-from Button import *
 from Region import *
 from Screen import *
 from VDict import *
