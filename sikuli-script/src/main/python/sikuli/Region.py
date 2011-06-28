@@ -229,20 +229,25 @@ class Region(JRegion):
 #         delay = Settings.DelayBeforeDrop
 #      return JRegion.dropAt(self, target, delay)
 
-   def mouseMove(self, target):
-      return JRegion.hover(self, target)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def mouseMove(self, target):
+#      return JRegion.hover(self, target)
 
-   def mouseDown(self, buttons):
-      return JRegion.mouseDown(self, buttons)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def mouseDown(self, buttons):
+#      return JRegion.mouseDown(self, buttons)
 
-   def mouseUp(self, buttons=0):
-      return JRegion.mouseUp(self, buttons)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def mouseUp(self, buttons=0):
+#      return JRegion.mouseUp(self, buttons)
 
-   def keyDown(self, keys):
-      return JRegion.keyDown(self, keys)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def keyDown(self, keys):
+#      return JRegion.keyDown(self, keys)
 
-   def keyUp(self, keys=None):
-      return JRegion.keyUp(self, keys)
+# DELETE ME AFTER MERGING THE JAVA AND PYTHON LAYERS
+#   def keyUp(self, keys=None):
+#      return JRegion.keyUp(self, keys)
 
    def onAppear(self, target, handler):
       class AnonyObserver(SikuliEventAdapter):

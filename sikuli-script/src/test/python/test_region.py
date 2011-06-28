@@ -78,3 +78,18 @@ class TestRegion(unittest.TestCase):
       self.r.dropAt(self.img)
       self.r.dropAt(self.img, 1)
 
+   def testMouseMove(self):
+      self.r.mouseMove(self.img)
+
+   def testMouseDownAndUp(self):
+      self.r.mouseDown(Button.LEFT)
+      self.r.mouseUp()
+      self.r.mouseDown(Button.LEFT)
+      self.r.mouseUp(Button.LEFT)
+
+   def testKeyDownAndUp(self):
+      self.r.keyDown('a')
+      self.r.keyUp()
+      self.r.keyDown('b')
+      self.r.keyUp('b')
+

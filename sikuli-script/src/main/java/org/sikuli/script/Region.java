@@ -676,6 +676,10 @@ public class Region {
       return 0;
    }
 
+   public <PSRML> int mouseMove(PSRML target) throws FindFailed{
+      return hover(target);
+   }
+
    public <PSRML> int hover(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
@@ -817,6 +821,10 @@ public class Region {
       _robot.waitForIdle();
    }
 
+   public void mouseUp() {
+      mouseUp(0);
+   }
+
    public void mouseUp(int buttons) {
       if(buttons==0)
          _robot.mouseRelease(_hold_buttons);
@@ -838,6 +846,10 @@ public class Region {
          _robot.waitForIdle();
          return;
       }
+   }
+
+   public void keyUp(){
+      keyUp(null);
    }
 
    public void keyUp(String keys){
