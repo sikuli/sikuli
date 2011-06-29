@@ -23,6 +23,7 @@ import com.android.monkeyrunner.MonkeyImage;
 public class AndroidRobot implements IRobot {
    protected MonkeyDevice _dev;
    protected Location _mouse;
+   protected int _autoDelay = 0;
 
    public AndroidRobot(MonkeyDevice dev){
       _dev = dev;
@@ -31,9 +32,15 @@ public class AndroidRobot implements IRobot {
 
    public void keyPress(int keycode){
       Debug.log(5, "AndroidRobot.keypress");
+      //TODO: convert Java keycode to Android keycode
+      // http://developer.android.com/reference/android/view/KeyEvent.html
+      delay(_autoDelay);
    }
    public void keyRelease(int keycode){
+      //TODO
+      delay(_autoDelay);
    }  
+
    public void mouseMove(int x, int y){
       _mouse.x = x;
       _mouse.y = y;
@@ -41,23 +48,29 @@ public class AndroidRobot implements IRobot {
    public void mousePress(int buttons){
       Debug.log(5, "AndroidRobot.mousePress");
       _dev.touch(_mouse.x, _mouse.y, MonkeyDevice.TouchPressType.DOWN);
+      delay(_autoDelay);
    }
    public void mouseRelease(int buttons){
       Debug.log(5, "AndroidRobot.mouseRelease");
       _dev.touch(_mouse.x, _mouse.y, MonkeyDevice.TouchPressType.UP);
+      delay(_autoDelay);
    }
 
    public void smoothMove(Location dest){
+      // no implementation on android
    }
    public void smoothMove(Location src, Location dest, long ms){
+      // no implementation on android
    }
 
    public void dragDrop(Location start, Location end, int steps, long ms, int buttons){
       _dev.drag(start.x, start.y, end.x, end.y, steps, ms);
+      delay(_autoDelay);
    }
              
 
    public void mouseWheel(int wheelAmt){
+      // no implementation on android
    }
 
    //FIXME: use in-memory conversion instead
@@ -79,6 +92,7 @@ public class AndroidRobot implements IRobot {
    }
 
    public void waitForIdle(){
+      // no implementation on android
    }
 
    public void delay(int ms){
@@ -88,7 +102,9 @@ public class AndroidRobot implements IRobot {
       catch(InterruptedException e){
       }
    }
+
    public void setAutoDelay(int ms){
+      _autoDelay = ms;
    }
 }
 
