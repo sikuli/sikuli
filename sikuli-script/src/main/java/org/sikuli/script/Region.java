@@ -85,7 +85,7 @@ public class Region {
                             _throwException?"Y":"N", _autoWaitTimeout);
    }
 
-   Region(Rectangle r, IScreen parentScreen) {
+   public Region(Rectangle r, IScreen parentScreen) {
       init(r.x, r.y, r.width, r.height, parentScreen);
    }
 

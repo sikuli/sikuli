@@ -1,0 +1,2 @@
+MonkeyRunnerStartupRunner: org.sikuli.script.android.MonkeyPlugin
+
