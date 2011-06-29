@@ -19,6 +19,40 @@ public class DesktopRobot extends Robot implements IRobot{
       super(screen);
    
    }
+
+   public void smoothMove(Location dest){
+      smoothMove(Env.getMouseLocation(), dest, (long)(Settings.MoveMouseDelay*1000L));
+   }
+
+   public void smoothMove(Location src, Location dest, long ms){
+      if(ms == 0){
+         mouseMove(dest.x, dest.y);
+         return;
+      }
+
+      Animator aniX = new TimeBasedAnimator(
+                        new OutQuarticEase((float)src.x, (float)dest.x, ms));
+      Animator aniY = new TimeBasedAnimator(
+                        new OutQuarticEase((float)src.y, (float)dest.y, ms));
+      while(aniX.running()){
+         float x = aniX.step();
+         float y = aniY.step();
+         mouseMove((int)x, (int)y);
+         delay(50);
+      }
+   }
+
+   public void dragDrop(Location start, Location end, int steps, long ms, int buttons){
+      mouseMove(start.x, start.y);
+      mousePress(buttons);
+      delay((int)(Settings.DelayAfterDrag*1000));
+      waitForIdle();
+      smoothMove(start, end, ms);
+      delay((int)(Settings.DelayBeforeDrop*1000));
+      mouseRelease(buttons);
+      waitForIdle();
+   }
+
    
    public void delay(int ms){
       if(ms<0)

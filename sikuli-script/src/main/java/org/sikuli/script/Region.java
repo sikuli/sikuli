@@ -92,7 +92,7 @@ public class Region {
 
    protected Region(){}
 
-   void init(int x_, int y_, int w_, int h_, IScreen parentScreen) {
+   protected void init(int x_, int y_, int w_, int h_, IScreen parentScreen) {
       x = x_;
       y = y_;
       w = w_;
@@ -123,25 +123,6 @@ public class Region {
       return new Screen();
    }
 
-   void smoothMove(Location dest){
-      long delay = (long)(Settings.MoveMouseDelay * 1000);
-      if(delay == 0){
-         _robot.mouseMove(dest.x, dest.y);
-         return;
-      }
-
-      Location src = Env.getMouseLocation();
-      Animator aniX = new TimeBasedAnimator(
-                        new OutQuarticEase((float)src.x, (float)dest.x, delay));
-      Animator aniY = new TimeBasedAnimator(
-                        new OutQuarticEase((float)src.y, (float)dest.y, delay));
-      while(aniX.running()){
-         float x = aniX.step();
-         float y = aniY.step();
-         _robot.mouseMove((int)x, (int)y);
-         _robot.delay(50);
-      }
-   }
 
    protected void updateSelf(){
       if(_overlay != null)
@@ -684,7 +665,7 @@ public class Region {
       Location loc = getLocationFromPSRML(target);
       if( loc != null){
          _scr.showMove(loc);
-         smoothMove(loc);
+         _robot.smoothMove(loc);
          _robot.waitForIdle();
          return 1;
       }
@@ -723,10 +704,8 @@ public class Region {
         "DRAG "  + loc1 + " to " + loc2);
       if(loc1 != null && loc2 != null){
          pressModifiers(modifiers);
-         if(drag(loc1)!=0){
-            _robot.delay((int)(Settings.DelayAfterDrag*1000));
-            ret = dropAt(loc2, Settings.DelayBeforeDrop);
-         }
+         _robot.dragDrop(loc1, loc2, 10, 
+                        (long)(Settings.MoveMouseDelay*1000), InputEvent.BUTTON1_MASK);
          releaseModifiers(modifiers);
          return 1;
       }
@@ -736,7 +715,7 @@ public class Region {
    public <PSRML> int drag(PSRML target) throws  FindFailed{
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
-         smoothMove(loc);
+         _robot.smoothMove(loc);
          _scr.showTarget(loc);
          _robot.mousePress(InputEvent.BUTTON1_MASK);
          _robot.waitForIdle();
@@ -753,7 +732,7 @@ public class Region {
       Location loc = getLocationFromPSRML(target);
       if(loc != null){
          _scr.showDropTarget(loc);
-         smoothMove(loc);
+         _robot.smoothMove(loc);
          _robot.delay((int)(delay*1000));
          _robot.mouseRelease(InputEvent.BUTTON1_MASK);
          _robot.waitForIdle();
@@ -1105,7 +1084,7 @@ public class Region {
          return 0;
       Debug.history( getClickMsg(loc, buttons, modifiers, dblClick) );
       pressModifiers(modifiers);
-      smoothMove(loc);
+      _robot.smoothMove(loc);
       _scr.showClick(loc);
       _robot.mousePress(buttons);
       _robot.mouseRelease(buttons);

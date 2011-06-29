@@ -43,6 +43,20 @@ public class RegionTest implements SikuliEventObserver
        frame.dispose();
     }
 
+    @Test
+    public void testDragDrop() throws Exception {
+       JFrame frame = DragListDemo.createAndShowGUI();
+       Screen scr = new Screen();
+       Settings.MoveMouseDelay = 1;
+       scr.wait("test-res/item1-list2.png", 3);
+       scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",0);
+       assertNotNull(scr.wait("test-res/draglist-result.png",3));
+       frame.dispose();
+    }
+
+
+
+
     public void testRegionClickOffset() throws Exception
     {
        System.out.println("testRegionClickOffset");
@@ -284,16 +298,6 @@ public class RegionTest implements SikuliEventObserver
        Thread.sleep(500);
        assertEquals(1, frame.getCount()[1]);
        assertEquals(0, frame.getCount()[2]);
-       frame.dispose();
-    }
-
-    public void testDragDrop() throws Exception {
-       System.out.println("testDragDrop");
-       JFrame frame = DragListDemo.createAndShowGUI();
-       Screen scr = new Screen();
-       scr.wait("test-res/item1-list2.png", 3);
-       scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",0);
-       assertNotNull(scr.wait("test-res/draglist-result.png",3));
        frame.dispose();
     }
 
