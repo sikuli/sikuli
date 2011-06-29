@@ -53,6 +53,8 @@ public class AndroidScreen extends Region implements IScreen {
 
    public AndroidScreen() {
       initRobots();
+      Rectangle b = getBounds();
+      init(b.x, b.y, b.width, b.height, this);
    }
 
    public ScreenImage capture() {
