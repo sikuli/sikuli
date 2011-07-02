@@ -20,3 +20,9 @@ class TestKeyAndButton(unittest.TestCase):
       assert(Button.LEFT != None)
       assert(Button.MIDDLE != None)
       assert(Button.RIGHT != None)
+
+#   def testType(self):
+#      switchApp("MacVim")
+#      sleep(1)
+#      type(Key.ESC + "ohello" + Key.ESC + Key.ESC)
+      
