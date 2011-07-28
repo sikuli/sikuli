@@ -11,6 +11,9 @@ import static org.junit.Assert.* ;
 import java.awt.event.InputEvent;
 import java.util.Date;
 import java.util.Iterator;
+import java.io.File;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -48,7 +51,17 @@ public class RegionTest implements SikuliEventObserver
        JFrame frame = DragListDemo.createAndShowGUI();
        Screen scr = new Screen();
        Settings.MoveMouseDelay = 1;
-       scr.wait("test-res/item1-list2.png", 10);
+       try{
+          scr.wait("test-res/item1-list2.png", 10);
+       }
+       catch(Exception e){
+         e.printStackTrace();
+         ScreenImage img = scr.capture();
+         BufferedImage bimg = img.getImage();
+         File outf = new File("testDragDrop.png");
+         ImageIO.write(bimg, "png", outf);
+         Debug.error("fail to wait test-res/item1-list2.png. Save screenshot to " + outf.getAbsolutePath());
+       }
        scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",0);
        assertNotNull(scr.wait("test-res/draglist-result.png",10));
        frame.dispose();
