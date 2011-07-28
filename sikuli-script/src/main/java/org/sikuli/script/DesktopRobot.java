@@ -70,6 +70,31 @@ public class DesktopRobot extends Robot implements IRobot{
       return new ScreenImage(rect, img);
    }
 
+
+   public void pressModifiers(int modifiers){
+      if((modifiers & KeyModifier.SHIFT) != 0) keyPress(KeyEvent.VK_SHIFT);
+      if((modifiers & KeyModifier.CTRL) != 0) keyPress(KeyEvent.VK_CONTROL);
+      if((modifiers & KeyModifier.ALT) != 0) keyPress(KeyEvent.VK_ALT);
+      if((modifiers & KeyModifier.META) != 0){
+         if( Env.getOS() == OS.WINDOWS )
+            keyPress(KeyEvent.VK_WINDOWS);
+         else
+            keyPress(KeyEvent.VK_META);
+      }
+   }
+
+   public void releaseModifiers(int modifiers){
+      if((modifiers & KeyModifier.SHIFT) != 0) keyRelease(KeyEvent.VK_SHIFT);
+      if((modifiers & KeyModifier.CTRL) != 0) keyRelease(KeyEvent.VK_CONTROL);
+      if((modifiers & KeyModifier.ALT) != 0) keyRelease(KeyEvent.VK_ALT);
+      if((modifiers & KeyModifier.META) != 0){ 
+         if( Env.getOS() == OS.WINDOWS )
+            keyRelease(KeyEvent.VK_WINDOWS);
+         else
+            keyRelease(KeyEvent.VK_META);
+      }
+   }
+
    protected void doType(KeyMode mode, int... keyCodes) {
       if(mode==KeyMode.PRESS_ONLY){
          for(int i=0;i<keyCodes.length;i++){

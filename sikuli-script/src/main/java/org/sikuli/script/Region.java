@@ -703,10 +703,10 @@ public class Region {
         (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
         "DRAG "  + loc1 + " to " + loc2);
       if(loc1 != null && loc2 != null){
-         pressModifiers(modifiers);
+         _robot.pressModifiers(modifiers);
          _robot.dragDrop(loc1, loc2, 10, 
                         (long)(Settings.MoveMouseDelay*1000), InputEvent.BUTTON1_MASK);
-         releaseModifiers(modifiers);
+         _robot.releaseModifiers(modifiers);
          return 1;
       }
       return 0;
@@ -761,9 +761,9 @@ public class Region {
            (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
                "TYPE \"" + text + "\"");
          for(int i=0; i < text.length(); i++){
-            pressModifiers(modifiers);
+            _robot.pressModifiers(modifiers);
             _robot.typeChar(text.charAt(i), IRobot.KeyMode.PRESS_RELEASE); 
-            releaseModifiers(modifiers);
+            _robot.releaseModifiers(modifiers);
             _robot.delay(20);
          }
          _robot.waitForIdle();
@@ -810,6 +810,22 @@ public class Region {
       else
          _robot.mouseRelease(buttons);
       _robot.waitForIdle();
+   }
+
+   /**
+    * press down the key (given by the key code) on the underlying device.
+    * The code depend on the type of the device.
+    */
+   public void keyDown(int keycode){
+      _robot.keyPress(keycode);
+   }
+
+   /**
+    * release the key (given by the key code) on the underlying device.
+    * The code depend on the type of the device.
+    */
+   public void keyUp(int keycode){
+      _robot.keyRelease(keycode);
    }
 
    private String _hold_keys = "";
@@ -919,10 +935,6 @@ public class Region {
    // HELPER FUNCTIONS
    ////////////////////////////////////////////////////////////////
 
-   static final int K_SHIFT = InputEvent.SHIFT_MASK;
-   static final int K_CTRL = InputEvent.CTRL_MASK;
-   static final int K_META = InputEvent.META_MASK;
-   static final int K_ALT = InputEvent.ALT_MASK;
 
    /**
     * Match findNow( Pattern/String/PatternClass ) 
@@ -1083,7 +1095,7 @@ public class Region {
       if(loc == null)
          return 0;
       Debug.history( getClickMsg(loc, buttons, modifiers, dblClick) );
-      pressModifiers(modifiers);
+      _robot.pressModifiers(modifiers);
       _robot.smoothMove(loc);
       _scr.showClick(loc);
       _robot.mousePress(buttons);
@@ -1092,33 +1104,9 @@ public class Region {
          _robot.mousePress(buttons);
          _robot.mouseRelease(buttons);
       }
-      releaseModifiers(modifiers);
+      _robot.releaseModifiers(modifiers);
       _robot.waitForIdle();
       return 1;
-   }
-
-   private void pressModifiers(int modifiers){
-      if((modifiers & K_SHIFT) != 0) _robot.keyPress(KeyEvent.VK_SHIFT);
-      if((modifiers & K_CTRL) != 0) _robot.keyPress(KeyEvent.VK_CONTROL);
-      if((modifiers & K_ALT) != 0) _robot.keyPress(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0){
-         if( Env.getOS() == OS.WINDOWS )
-            _robot.keyPress(KeyEvent.VK_WINDOWS);
-         else
-            _robot.keyPress(KeyEvent.VK_META);
-      }
-   }
-
-   private void releaseModifiers(int modifiers){
-      if((modifiers & K_SHIFT) != 0) _robot.keyRelease(KeyEvent.VK_SHIFT);
-      if((modifiers & K_CTRL) != 0) _robot.keyRelease(KeyEvent.VK_CONTROL);
-      if((modifiers & K_ALT) != 0) _robot.keyRelease(KeyEvent.VK_ALT);
-      if((modifiers & K_META) != 0){ 
-         if( Env.getOS() == OS.WINDOWS )
-            _robot.keyRelease(KeyEvent.VK_WINDOWS);
-         else
-            _robot.keyRelease(KeyEvent.VK_META);
-      }
    }
 
    Location toRobotCoord(Location l){

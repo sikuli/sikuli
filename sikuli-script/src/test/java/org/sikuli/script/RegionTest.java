@@ -48,9 +48,20 @@ public class RegionTest implements SikuliEventObserver
        JFrame frame = DragListDemo.createAndShowGUI();
        Screen scr = new Screen();
        Settings.MoveMouseDelay = 1;
-       scr.wait("test-res/item1-list2.png", 3);
+       scr.wait("test-res/item1-list2.png", 10);
        scr.dragDrop("test-res/item2-list1.png", "test-res/item1-list2.png",0);
-       assertNotNull(scr.wait("test-res/draglist-result.png",3));
+       assertNotNull(scr.wait("test-res/draglist-result.png",10));
+       frame.dispose();
+    }
+
+
+    @Test
+    public void testKeys() throws Exception {
+       JFrame frame = KeyEventDemo.createAndShowGUI();
+       Screen scr = new Screen();
+       scr.type("abcde" + Key.ENTER);
+       scr.type("captial letter", KeyModifier.SHIFT);
+       //TODO: verify output
        frame.dispose();
     }
 

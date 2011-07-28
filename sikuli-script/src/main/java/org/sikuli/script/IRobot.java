@@ -13,6 +13,8 @@ public interface IRobot {
    };
    void keyPress(int keycode);  
    void keyRelease(int keycode);  
+   void pressModifiers(int modifiers);
+   void releaseModifiers(int modifiers);
    void typeChar(char character, KeyMode mode);
    void mouseMove(int x, int y);
    void mousePress(int buttons);
