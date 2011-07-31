@@ -84,7 +84,8 @@ public class Debug {
    }
 
    public static void profile(String message, Object... args) {
-      log(-1, "[profile] ", message, args);
+      if(Settings.ProfileLogs)
+         log(-1, "[profile] ", message, args);
    }
 
    public void startTiming(String message){

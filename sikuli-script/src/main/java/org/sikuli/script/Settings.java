@@ -21,4 +21,5 @@ public class Settings {
    public static boolean ActionLogs = true;
    public static boolean InfoLogs = true;
    public static boolean DebugLogs = true;
+   public static boolean ProfileLogs = true;
 }
