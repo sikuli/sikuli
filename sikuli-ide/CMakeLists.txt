@@ -278,8 +278,8 @@ ENDIF(WIN32)
 IF(APPLE)
    add_custom_target( ${APP_FILE}.framework 
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
-      COMMAND cp ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
-      COMMAND cp ${deplibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp -f ${jnilibs} ${FRAMEWORKS_IN_APP_DIR}
+      COMMAND cp -f ${deplibs} ${FRAMEWORKS_IN_APP_DIR}
       COMMAND ${CMAKE_COMMAND} -E chdir ${FRAMEWORKS_IN_APP_DIR} ./change-lib-path.sh
       COMMENT "Packaging Frameworks"
    )
