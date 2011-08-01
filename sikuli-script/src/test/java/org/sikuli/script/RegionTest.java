@@ -46,6 +46,7 @@ public class RegionTest implements SikuliEventObserver
        frame.dispose();
     }
 
+    @Ignore("the items in this test needs to be replaced with images instead of text") 
     @Test
     public void testDragDrop() throws Exception {
        JFrame frame = DragListDemo.createAndShowGUI();
