@@ -112,7 +112,7 @@ IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
 ENDIF()
 
 add_custom_target(doc
-   javadoc -windowtitle "Javadoc of Sikuli Script" -sourcepath ${JAVA_SRC_DIR}
+   javadoc -public -docencoding utf-8 -windowtitle "Javadoc of Sikuli Script" -sourcepath ${JAVA_SRC_DIR}
     -d ${DOC_DIR} -classpath ${CLASSPATH}  ${PACKAGE}
 )
 
