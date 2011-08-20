@@ -393,7 +393,7 @@ add_dependencies( all-test
 add_dependencies( ${JAR_FILE}.prepare
         ${JAR_FILE}.resources
         ${JAR_FILE}.classes-in-jar 
-        ${JAR_FILE}.libs-in-jar
+        #        ${JAR_FILE}.libs-in-jar
 )
 
 add_dependencies( ${JAR_FILE} ${JAR_FILE}.prepare )
