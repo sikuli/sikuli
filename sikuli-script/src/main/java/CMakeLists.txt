@@ -1,11 +1,20 @@
 # Copyright 2010-2011, Sikuli.org
 # Released under the MIT License.
 IF(APPLE)
-   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/MacUtil.java)
+   SET(OS_EXTRA_SOURCE_FILES 
+      org/sikuli/script/MacUtil.java
+      org/sikuli/script/internal/hotkey/MacHotkeyManager.java
+   )
 ELSEIF(LINUX)
-   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/LinuxUtil.java)
+   SET(OS_EXTRA_SOURCE_FILES 
+      org/sikuli/script/LinuxUtil.java
+      org/sikuli/script/internal/hotkey/LinuxHotkeyManager.java
+      )
 ELSEIF(WIN32)
-   SET(OS_EXTRA_SOURCE_FILES org/sikuli/script/Win32Util.java)
+   SET(OS_EXTRA_SOURCE_FILES 
+      org/sikuli/script/Win32Util.java
+      org/sikuli/script/internal/hotkey/WindowsHotkeyManager.java
+      )
 ENDIF()
 
 
@@ -57,7 +66,6 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/Button.java
    org/sikuli/script/Constants.java
    org/sikuli/script/internal/hotkey/HotkeyManager.java
-   org/sikuli/script/internal/hotkey/MacHotkeyManager.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
