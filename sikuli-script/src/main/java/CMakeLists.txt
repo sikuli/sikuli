@@ -56,6 +56,8 @@ SET(JAVA_SOURCE_FILES
    org/sikuli/script/KeyModifier.java
    org/sikuli/script/Button.java
    org/sikuli/script/Constants.java
+   org/sikuli/script/internal/hotkey/HotkeyManager.java
+   org/sikuli/script/internal/hotkey/MacHotkeyManager.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
