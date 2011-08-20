@@ -43,8 +43,6 @@ SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-3.8.1.jar")
 SET(SWING_LAYOUT_JAR "${COMMON_LIB_DIR}/swing-layout-1.0.1.jar")
 SET(COMMONS_CLI_JAR "${COMMON_LIB_DIR}/commons-cli-1.2.jar")
 SET(JSON_SIMPLE_JAR "${COMMON_LIB_DIR}/json_simple-1.1.jar")
-#SET(JXGRABKEY_JAR "${COMMON_LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar")
-#SET(JINTELLITYPE_JAR "${COMMON_LIB_DIR}/jintellitype-1.3.6/jintellitype-1.3.6.jar")
 SET(SWINGX_JAR "${COMMON_LIB_DIR}/swingx-core-1.6.2.jar")
 SET(MAC_WIDGETS_JAR "${COMMON_LIB_DIR}/mac_widgets.jar")
 SET(FORMS_JAR "${COMMON_LIB_DIR}/forms-1.2.1.jar")
@@ -222,12 +220,6 @@ IF(LINUX)
    else()
       SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-32.so")
    endif()
-   add_custom_target( ${JAR_FILE}.framework 
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_LIB_DIR}
-      COMMAND cp ${LIB_GRABKEY} ${JAR_LIB_DIR}/libJXGrabKey.so
-      COMMENT "Packaging Frameworks in Jar"
-   )
-   add_dependencies( ${JAR_FILE} ${JAR_FILE}.framework ) 
 
    add_custom_target( ${APP_FILE}.framework 
       COMMAND ${CMAKE_COMMAND} -E make_directory ${FRAMEWORKS_IN_APP_DIR}
