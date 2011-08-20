@@ -35,7 +35,7 @@ public class MacHotkeyManager extends HotkeyManager {
       }
    }
 
-   public boolean installHotkey(int keyCode, int modifiers, HotkeyListener listener){
+   public boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       int ckey = convertToCarbonKey(keyCode);
       int cmod = convertToCarbonModifiers(modifiers);
       Debug.log("register hotkey Java:" + keyCode + "(" + modifiers + 
@@ -44,7 +44,18 @@ public class MacHotkeyManager extends HotkeyManager {
    }
 
 
+   public boolean removeHotkey(int keyCode, int modifiers){
+      int ckey = convertToCarbonKey(keyCode);
+      int cmod = convertToCarbonModifiers(modifiers);
+      Debug.log("unregister hotkey Java:" + keyCode + "(" + modifiers + 
+                   ") Carbon: " + ckey + "(" + cmod + ")");
+      return uninstallGlobalHotkey(ckey, cmod);
+   }
+
+
    private native boolean installGlobalHotkey(int keyCode, int modifiers, HotkeyListener listener);
+   private native boolean uninstallGlobalHotkey(int keyCode, int modifiers);
+   private native boolean cleanUp();
 
    private int convertToCarbonModifiers(int mod){
       int cmod = 0;

@@ -23,6 +23,22 @@ extern "C" {
 JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey
   (JNIEnv *, jobject, jint, jint, jobject);
 
+/*
+ * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
+ * Method:    uninstallGlobalHotkey
+ * Signature: (II)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_uninstallGlobalHotkey
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
+ * Method:    cleanUp
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_cleanUp
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

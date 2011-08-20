@@ -58,7 +58,6 @@ void callJavaMethod(JavaVM *jvm, jobject listener, CallbackData* data){
 }
 
 static vector<CallbackData*> regHotkeys;
-static bool firstTime = true;
 
 OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent, 
                           void* args )
@@ -66,7 +65,7 @@ OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent,
    EventHotKeyID hkId;
    GetEventParameter(inEvent, kEventParamDirectObject, typeEventHotKeyID, NULL,
                      sizeof(hkId), NULL, &hkId);
-   CallbackData *data = regHotkeys[hkId.id-1];
+   CallbackData *data = regHotkeys[hkId.id];
    int hotkey = data->hotkey;
    cout << "[JNI] shortcut pressed. " << hotkey << endl;
    callJavaMethod(data->vm, data->listener, data);
@@ -74,31 +73,33 @@ OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent,
 }
 
 
-bool installShortcutHandler( CallbackData *data ){
-   EventTypeSpec shortcutEvents[] = {
-      { kEventClassKeyboard, kEventHotKeyPressed },
-   };
-   bool registered = false; 
-
+bool unregisterHotkey(CallbackData *data){
    vector<CallbackData*>::iterator it;
    for(it = regHotkeys.begin(); it != regHotkeys.end(); ++it){
       CallbackData *itdata = *it;
       if( itdata->hotkey == data->hotkey && itdata->mods == data->mods){
-         registered = true;
          UnregisterEventHotKey(itdata->ref);
          data->id = itdata->id;
          data->ref = itdata->ref;
-         break;
+         return true;
       }
    }
+   return false;
+}
+
+
+bool installShortcutHandler( CallbackData *data ){
+   EventTypeSpec shortcutEvents[] = {
+      { kEventClassKeyboard, kEventHotKeyPressed },
+   };
+   bool registered = unregisterHotkey(data); 
    
    if(!registered){
-      data->id.id = regHotkeys.size()+1;
+      data->id.id = regHotkeys.size();
       data->id.signature='htk1';
-      cout << "data: " << data->id.id << endl;
    }
-   if(firstTime){
-      firstTime = false;
+
+   if(data->id.id == 0){
       OSErr err = InstallApplicationEventHandler( &shortcutHandler,
         GetEventTypeCount(shortcutEvents), shortcutEvents, NULL, NULL);
       if (err != noErr)
@@ -116,6 +117,11 @@ bool installShortcutHandler( CallbackData *data ){
    return true;
 }
 
+/*
+ * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
+ * Method:    installGlobalHotkey
+ * Signature: (IILorg/sikuli/script/internal/hotkey/HotkeyListener;)Z
+ */
 JNIEXPORT jboolean JNICALL 
 Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey 
 (JNIEnv *env, jobject jobj, jint hotkey, jint modifiers, jobject listener){
@@ -126,4 +132,27 @@ Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey
    env->DeleteLocalRef(listener);
    CallbackData *data = new CallbackData(vm, hotkey, modifiers, gListener);
    return installShortcutHandler(data);
+}
+
+
+/*
+ * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
+ * Method:    uninstallGlobalHotkey
+ * Signature: (II)Z
+ */
+JNIEXPORT jboolean JNICALL 
+Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_uninstallGlobalHotkey
+(JNIEnv *env, jobject jobj, jint hotkey, jint modifiers){
+   CallbackData *data = new CallbackData(NULL, hotkey, modifiers, NULL);
+   return unregisterHotkey(data);
+}
+
+/*
+ * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
+ * Method:    cleanUp
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_cleanUp
+(JNIEnv *env, jobject jobj){
+  
 }

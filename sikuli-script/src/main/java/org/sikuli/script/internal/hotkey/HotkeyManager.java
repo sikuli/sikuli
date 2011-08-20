@@ -7,6 +7,7 @@ package org.sikuli.script.internal.hotkey;
 
 public class HotkeyManager {
    protected static HotkeyManager _instance = null;
+
    public static HotkeyManager getInstance(){
       if(_instance==null){
             _instance = new MacHotkeyManager();
@@ -26,7 +27,21 @@ public class HotkeyManager {
       return _instance;
    }
    
-   public boolean installHotkey(int keyCode, int modifiers, HotkeyListener listener){
-      return _instance.installHotkey(keyCode, modifiers, listener);
+   /**
+    *  install a hotkey listener.
+    *
+    *  @return true if success. false otherwise.
+    */
+   public boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
+      return _instance.addHotkey(keyCode, modifiers, listener);
+   }
+
+   /**
+    *  uninstall a hotkey listener.
+    *
+    *  @return true if success. false otherwise.
+    */
+   public boolean removeHotkey(int keyCode, int modifiers){
+      return _instance.removeHotkey(keyCode, modifiers);
    }
 }
