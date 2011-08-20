@@ -95,6 +95,7 @@ IF(NOT EXISTS ${JAR_DIR}/org/python)
    )
 ENDIF()
 
+
 SET(LIB_IN_JAR_DIR "${JAR_DIR}/Lib")
 add_custom_target( ${JAR_FILE}.python-src-in-jar
    COMMAND ${CMAKE_COMMAND} -E make_directory ${LIB_IN_JAR_DIR}
@@ -155,6 +156,20 @@ add_dependencies(${JAR_FILE}
         ${JAR_FILE}.jython-in-jar
         ${JAR_FILE}.jython-libs-in-jar
 )
+
+IF(WIN32)
+   IF(NOT EXISTS ${JAR_DIR}/com/melloware/jintellitype)
+      add_custom_target( ${JAR_FILE}.jintellitype-in-jar
+         COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JINTELLITYPE_JAR}
+         COMMENT "Merging Jintellitype's JAR"
+      )
+   ENDIF()
+
+   add_dependencies(${JAR_FILE} 
+      ${JAR_FILE}.jintellitype-in-jar
+   )
+ENDIF(WIN32)
+
 
 ADD_SUBDIRECTORY(${NATIVE_SRC_DIR})
 ADD_SUBDIRECTORY(${JAVA_SRC_DIR})

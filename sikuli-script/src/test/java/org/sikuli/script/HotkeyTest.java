@@ -74,5 +74,8 @@ public class HotkeyTest
        //hkm.cleanUp();
     }
 
+    public static void main(String args[]){
+      (new HotkeyTest()).test_hotkey_install();
+    }
 }
 
