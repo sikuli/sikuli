@@ -5,26 +5,40 @@
  */
 package org.sikuli.script.internal.hotkey;
 
+import java.lang.reflect.Constructor;
+
 import org.sikuli.script.HotkeyListener;
+import org.sikuli.script.Env;
+import org.sikuli.script.Debug;
 
 public class HotkeyManager {
    protected static HotkeyManager _instance = null;
 
+   private static String getOSHotkeyManagerClass(){
+      String pkg = "org.sikuli.script.internal.hotkey.";
+      switch(Env.getOS()){
+         case MAC:       return pkg+"MacHotkeyManager";
+         case WINDOWS:   return pkg+"WindowsHotkeyManager";
+         case LINUX:     return pkg+"LinuxHotkeyManager";
+         default:
+                         Debug.error("Error: Hotkey registration is not supported on your OS.");
+      }
+      return null;
+   }
+
    public static HotkeyManager getInstance(){
       if(_instance==null){
-            _instance = new MacHotkeyManager();
-            //FIXME
-         /*
-         if(Env.isWindows())
-            _instance = new WindowsHotkeyManager();
-         else if(Env.isMac())
-            _instance = new MacHotkeyManager();
-         else if(Env.isLinux())
-            _instance = new LinuxHotkeyManager();
-         else{
-            Debug.error("Hotkey manager doesn't support your OS.");
+         String cls = getOSHotkeyManagerClass();
+         if(cls != null){
+            try{
+               Class c = Class.forName(cls);
+               Constructor constr = c.getConstructor();
+               _instance = (HotkeyManager)constr.newInstance();
+            }
+            catch(Exception e){
+               Debug.error("Can't create " + cls + ": " + e.getMessage());
+            }
          }
-         */
       }
       return _instance;
    }
