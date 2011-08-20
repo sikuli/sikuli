@@ -13,6 +13,8 @@ import java.awt.MouseInfo;
 import java.lang.reflect.Constructor;
 
 
+import org.sikuli.script.internal.hotkey.HotkeyManager;
+
 
 public class Env {
    final static String SikuliVersion = "X-1.0rc3";
@@ -138,4 +140,15 @@ public class Env {
       return SikuliVersion;
    }
 
+   public static boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
+      return HotkeyManager.getInstance().addHotkey(keyCode, modifiers, listener);
+   }
+
+   public static boolean removeHotkey(int keyCode, int modifiers){
+      return HotkeyManager.getInstance().removeHotkey(keyCode, modifiers);
+   }
+
+   public static void cleanUp(){
+      HotkeyManager.getInstance().cleanUp();
+   }
 }

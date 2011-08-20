@@ -5,6 +5,8 @@
  */
 package org.sikuli.script.internal.hotkey;
 
+import org.sikuli.script.HotkeyListener;
+
 public class HotkeyManager {
    protected static HotkeyManager _instance = null;
 

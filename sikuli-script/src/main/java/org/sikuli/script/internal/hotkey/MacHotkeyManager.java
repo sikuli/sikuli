@@ -15,6 +15,7 @@ import com.wapmx.nativeutils.jniloader.NativeLoader;
 
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
+import org.sikuli.script.HotkeyListener;
 
 // http://lists.apple.com/archives/mac-games-dev/2001/Sep/msg00113.html
 // full key table: http://www.mactech.com/articles/mactech/Vol.04/04.12/Macinkeys/

@@ -3,7 +3,7 @@
  * Released under the MIT License.
  *
  */
-package org.sikuli.script.internal.hotkey;
+package org.sikuli.script;
 
 
 public interface HotkeyListener {

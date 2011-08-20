@@ -18,7 +18,7 @@ extern "C" {
 /*
  * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
  * Method:    installGlobalHotkey
- * Signature: (IIIILorg/sikuli/script/internal/hotkey/HotkeyListener;)Z
+ * Signature: (IIIILorg/sikuli/script/HotkeyListener;)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey
   (JNIEnv *, jobject, jint, jint, jint, jint, jobject);

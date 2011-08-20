@@ -14,8 +14,8 @@
 using namespace std;
 
 #define HOTKEY_LISTENER_METHOD "hotkeyPressed"
-#define HOTKEY_LISTENER_SIGNATURE "(Lorg/sikuli/script/internal/hotkey/HotkeyEvent;)V"
-#define HOTKEY_EVENT_CLASS "org/sikuli/script/internal/hotkey/HotkeyEvent"
+#define HOTKEY_LISTENER_SIGNATURE "(Lorg/sikuli/script/HotkeyEvent;)V"
+#define HOTKEY_EVENT_CLASS "org/sikuli/script/HotkeyEvent"
 
 struct CallbackData {
    JavaVM *vm;
