@@ -7,6 +7,5 @@ package org.sikuli.script.internal.hotkey;
 
 
 public interface HotkeyListener {
-   //public void hotkeyPressed(HotkeyEvent e);
-   public void hotkeyPressed();
+   public void hotkeyPressed(HotkeyEvent e);
 }

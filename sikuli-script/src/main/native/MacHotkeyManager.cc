@@ -13,6 +13,10 @@
 
 using namespace std;
 
+#define HOTKEY_LISTENER_METHOD "hotkeyPressed"
+#define HOTKEY_LISTENER_SIGNATURE "(Lorg/sikuli/script/internal/hotkey/HotkeyEvent;)V"
+#define HOTKEY_EVENT_CLASS "org/sikuli/script/internal/hotkey/HotkeyEvent"
+
 struct CallbackData {
    JavaVM *vm;
    int hotkey, mods;
@@ -28,18 +32,29 @@ struct CallbackData {
    }
 };
 
+jobject CallbackDataToHotkeyEvent(JNIEnv* env, CallbackData* data){
+   jclass clsHkEvent = env->FindClass(HOTKEY_EVENT_CLASS);
+   jobject ret = env->AllocObject(clsHkEvent);
+   jmethodID initMethod = env->GetMethodID(clsHkEvent, "init", "(II)V");
+   env->CallVoidMethod(ret, initMethod, data->hotkey, data->mods);
+   env->DeleteLocalRef(clsHkEvent);
+   return ret;
+}
 
-void callJavaMethod(JavaVM *jvm, jobject listener){
+
+
+void callJavaMethod(JavaVM *jvm, jobject listener, CallbackData* data){
    JNIEnv *env;
    jvm->GetEnv((void**)&env, JNI_VERSION_1_4);
    jvm->AttachCurrentThread((void **)&env, NULL);
    jclass cls = env->GetObjectClass(listener);
-   jmethodID mid = env->GetMethodID(cls, "hotkeyPressed", "()V");
+   jmethodID mid = env->GetMethodID(cls, HOTKEY_LISTENER_METHOD, HOTKEY_LISTENER_SIGNATURE); 
    if( mid == NULL ){
       cerr << "Callback method not found." << endl;
       return;
    }
-   env->CallVoidMethod(listener, mid);
+   jobject hkEvent = CallbackDataToHotkeyEvent(env, data);
+   env->CallVoidMethod(listener, mid, hkEvent);
 }
 
 static vector<CallbackData*> regHotkeys;
@@ -54,7 +69,7 @@ OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent,
    CallbackData *data = regHotkeys[hkId.id-1];
    int hotkey = data->hotkey;
    cout << "[JNI] shortcut pressed. " << hotkey << endl;
-   callJavaMethod(data->vm, data->listener);
+   callJavaMethod(data->vm, data->listener, data);
    return noErr;
 }
 
