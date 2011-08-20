@@ -44,4 +44,8 @@ public class HotkeyManager {
    public boolean removeHotkey(int keyCode, int modifiers){
       return _instance.removeHotkey(keyCode, modifiers);
    }
+
+   public void cleanUp(){
+      _instance.cleanUp();
+   }
 }

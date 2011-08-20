@@ -9,7 +9,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 
 #include<iostream>
-#include<vector>
+#include<map>
 
 using namespace std;
 
@@ -20,6 +20,7 @@ using namespace std;
 struct CallbackData {
    JavaVM *vm;
    int hotkey, mods;
+   int jHotkey, jModifiers;
    jobject listener;
    EventHotKeyRef ref;
    EventHotKeyID id;
@@ -36,7 +37,7 @@ jobject CallbackDataToHotkeyEvent(JNIEnv* env, CallbackData* data){
    jclass clsHkEvent = env->FindClass(HOTKEY_EVENT_CLASS);
    jobject ret = env->AllocObject(clsHkEvent);
    jmethodID initMethod = env->GetMethodID(clsHkEvent, "init", "(II)V");
-   env->CallVoidMethod(ret, initMethod, data->hotkey, data->mods);
+   env->CallVoidMethod(ret, initMethod, data->jHotkey, data->jModifiers);
    env->DeleteLocalRef(clsHkEvent);
    return ret;
 }
@@ -57,7 +58,8 @@ void callJavaMethod(JavaVM *jvm, jobject listener, CallbackData* data){
    env->CallVoidMethod(listener, mid, hkEvent);
 }
 
-static vector<CallbackData*> regHotkeys;
+static map<int, CallbackData*> regHotkeys;
+static int gHotkeyId = 0;
 
 OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent, 
                           void* args )
@@ -74,13 +76,14 @@ OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent,
 
 
 bool unregisterHotkey(CallbackData *data){
-   vector<CallbackData*>::iterator it;
+   map<int, CallbackData*>::iterator it;
    for(it = regHotkeys.begin(); it != regHotkeys.end(); ++it){
-      CallbackData *itdata = *it;
+      CallbackData *itdata = it->second;
       if( itdata->hotkey == data->hotkey && itdata->mods == data->mods){
          UnregisterEventHotKey(itdata->ref);
          data->id = itdata->id;
          data->ref = itdata->ref;
+         regHotkeys.erase(it);
          return true;
       }
    }
@@ -92,45 +95,45 @@ bool installShortcutHandler( CallbackData *data ){
    EventTypeSpec shortcutEvents[] = {
       { kEventClassKeyboard, kEventHotKeyPressed },
    };
-   bool registered = unregisterHotkey(data); 
    
-   if(!registered){
-      data->id.id = regHotkeys.size();
-      data->id.signature='htk1';
-   }
-
-   if(data->id.id == 0){
+   if(gHotkeyId == 0){
       OSErr err = InstallApplicationEventHandler( &shortcutHandler,
         GetEventTypeCount(shortcutEvents), shortcutEvents, NULL, NULL);
       if (err != noErr)
          cerr << "InstallApplicationEventHandler failed" << endl;
    }
 
+   bool registered = unregisterHotkey(data); 
+   if(!registered){
+      data->id.id = gHotkeyId++;
+      data->id.signature='htk1';
+   }
+
    OSStatus err = RegisterEventHotKey(data->hotkey, data->mods,
                       data->id, GetApplicationEventTarget(), 0, 
                       &(data->ref));
-   if(err)
-      return false;
-
-   if(!registered)
-      regHotkeys.push_back(data);
-   return true;
+   if(!err){
+      regHotkeys[data->id.id] = data;
+      return true;
+   }
+   return false;
 }
 
 /*
  * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
  * Method:    installGlobalHotkey
- * Signature: (IILorg/sikuli/script/internal/hotkey/HotkeyListener;)Z
+ * Signature: (IIIILorg/sikuli/script/internal/hotkey/HotkeyListener;)Z
  */
-JNIEXPORT jboolean JNICALL 
-Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey 
-(JNIEnv *env, jobject jobj, jint hotkey, jint modifiers, jobject listener){
+JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey
+(JNIEnv *env, jobject jobj, jint jHotkey, jint jModifiers, jint hotkey, jint modifiers, jobject listener){
    cout << "[JNI] install global hotkey: " << hotkey << " mod: " << modifiers << endl;
    JavaVM* vm = NULL;
    env->GetJavaVM(&vm);
    jobject gListener = env->NewGlobalRef(listener);
    env->DeleteLocalRef(listener);
    CallbackData *data = new CallbackData(vm, hotkey, modifiers, gListener);
+   data->jHotkey = jHotkey;
+   data->jModifiers = jModifiers;
    return installShortcutHandler(data);
 }
 
@@ -150,9 +153,15 @@ Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_uninstallGlobalHotkey
 /*
  * Class:     org_sikuli_script_internal_hotkey_MacHotkeyManager
  * Method:    cleanUp
- * Signature: ()Z
+ * Signature: ()V
  */
-JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_cleanUp
+JNIEXPORT void JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_cleanUp
 (JNIEnv *env, jobject jobj){
-  
+   map<int, CallbackData*>::iterator it;
+   for(it = regHotkeys.begin(); it != regHotkeys.end(); ++it){
+      CallbackData *itdata = it->second;
+      UnregisterEventHotKey(itdata->ref);
+   }
+   regHotkeys.clear();
+   gHotkeyId = 0;
 }
