@@ -11,7 +11,10 @@
 #include<iostream>
 #include<map>
 
+#include "sikuli-debug.h"
+
 using namespace std;
+using namespace sikuli;
 
 #define HOTKEY_LISTENER_METHOD "hotkeyPressed"
 #define HOTKEY_LISTENER_SIGNATURE "(Lorg/sikuli/script/HotkeyEvent;)V"
@@ -69,7 +72,7 @@ OSStatus shortcutHandler( EventHandlerCallRef inCaller, EventRef inEvent,
                      sizeof(hkId), NULL, &hkId);
    CallbackData *data = regHotkeys[hkId.id];
    int hotkey = data->hotkey;
-   cout << "[JNI] shortcut pressed. " << hotkey << endl;
+   dout("MacHotkeyManager") << "shortcut pressed. " << hotkey << endl;
    callJavaMethod(data->vm, data->listener, data);
    return noErr;
 }
@@ -126,7 +129,7 @@ bool installShortcutHandler( CallbackData *data ){
  */
 JNIEXPORT jboolean JNICALL Java_org_sikuli_script_internal_hotkey_MacHotkeyManager_installGlobalHotkey
 (JNIEnv *env, jobject jobj, jint jHotkey, jint jModifiers, jint hotkey, jint modifiers, jobject listener){
-   cout << "[JNI] install global hotkey: " << hotkey << " mod: " << modifiers << endl;
+   dout("MacHotkeyManager") << "install global hotkey: " << hotkey << " mod: " << modifiers << endl;
    JavaVM* vm = NULL;
    env->GetJavaVM(&vm);
    jobject gListener = env->NewGlobalRef(listener);

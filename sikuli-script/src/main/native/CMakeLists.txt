@@ -112,6 +112,7 @@ IF(APPLE)
 
    ADD_LIBRARY(MacHotkeyManager SHARED
       MacHotkeyManager.cc
+      sikuli-debug.cpp
       org_sikuli_script_internal_hotkey_MacHotkeyManager.h
    )
    TARGET_LINK_LIBRARIES(MacHotkeyManager ${EXTRA_LIBS})

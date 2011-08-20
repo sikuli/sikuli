@@ -7,6 +7,8 @@ package org.sikuli.script.internal.hotkey;
 
 import java.lang.reflect.Constructor;
 
+import java.awt.event.KeyEvent;
+
 import org.sikuli.script.HotkeyListener;
 import org.sikuli.script.Env;
 import org.sikuli.script.Debug;
@@ -24,6 +26,23 @@ public class HotkeyManager {
                          Debug.error("Error: Hotkey registration is not supported on your OS.");
       }
       return null;
+   }
+
+   protected String getKeyCodeText(int key){
+      return KeyEvent.getKeyText(key).toUpperCase();
+   }
+
+   protected String getKeyModifierText(int modifiers){
+      String txtMod = KeyEvent.getKeyModifiersText(modifiers).toUpperCase();
+      if(Env.isMac()){
+         txtMod = txtMod.replace("META","CMD");
+         txtMod = txtMod.replace("WINDOWS","CMD");
+      }
+      else{
+         txtMod = txtMod.replace("META","WIN");
+         txtMod = txtMod.replace("WINDOWS","WIN");
+      }
+      return txtMod;
    }
 
    public static HotkeyManager getInstance(){

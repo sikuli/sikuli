@@ -23,16 +23,16 @@ void sikuli::setDebug(DebugCategories cat, int level){
 }
 
 std::ostream& sikuli::dout(const char* name){
-#ifdef ENABLE_OCR_DEBUG
-   return cout;
+#ifdef SHOW_DEBUG_MESSAGE
+   return cerr << "[" << name << "] ";
 #else
    return null_out;
 #endif
 }
 
 std::ostream& sikuli::dhead(const char* name){
-#ifdef ENABLE_OCR_DEBUG
-   return cout << "[" << name << "] ";
+#ifdef SHOW_DEBUG_MESSAGE
+   return cerr << "[" << name << "]\n----------------------------\n";
 #else
    return null_out;
 #endif
