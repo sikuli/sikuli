@@ -39,6 +39,9 @@ import org.sikuli.script.ScriptRunner;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
+import org.sikuli.script.Env;
+import org.sikuli.script.HotkeyListener;
+import org.sikuli.script.HotkeyEvent;
 
 import org.apache.commons.cli.CommandLine;
 
@@ -744,9 +747,16 @@ public class SikuliIDE extends JFrame {
    public boolean isInited(){ return _inited; }
 
 
+   public void removeCaptureHotkey(int key, int mod){
+      Env.removeHotkey(key, mod);
+   }
+
    public void installCaptureHotkey(int key, int mod){
-      _native.installHotkey(key, mod, this, 
-                          "onQuickCapture", "(Ljava/lang/String;)V");
+      Env.addHotkey(key, mod, new HotkeyListener(){
+         public void hotkeyPressed(HotkeyEvent e){
+            onQuickCapture();
+         }
+      });
    }
 
    private void initHotkeys(){
@@ -756,8 +766,11 @@ public class SikuliIDE extends JFrame {
       installCaptureHotkey(key, mod);
       key = pref.getStopHotkey();
       mod = pref.getStopHotkeyModifiers();
-      _native.installHotkey(key, mod, this, 
-                          "onStopRunning", "()V");
+      Env.addHotkey(key, mod, new HotkeyListener(){
+         public void hotkeyPressed(HotkeyEvent e){
+            onStopRunning();
+         }
+      });
    }
 
    static private void initNativeLayer(){
