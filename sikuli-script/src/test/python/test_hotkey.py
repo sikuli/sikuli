@@ -13,22 +13,33 @@ def pressed(event):
 
 class TestHotkey(unittest.TestCase):
    def testAddHotkey(self):
-      self.assertTrue(Env.addHotkey(KeyEvent.VK_F1, 0, pressed))
+      self.assertTrue(Env.addHotkey(KeyEvent.VK_F6, 0, pressed))
 
    def testAddHotkeyReal(self):
-      f = JFrame("hello")
+      #f = JFrame("hello")
       global not_pressed
-      not_pressed = True
-      Env.addHotkey(KeyEvent.VK_F1, 0, pressed)
+      Env.addHotkey(KeyEvent.VK_F6, 0, pressed)
       self.assertTrue(not_pressed)
       count = 0
       while not_pressed and count < WAIT_TIME:
          count += 1
          wait(1)
-         keyDown(Key.F1)
+         keyDown(Key.F6)
+         keyUp(Key.F6)
       self.assertFalse(not_pressed) 
+      #f.dispose()
 
    def testRemoveHotkey(self):
       self.assertFalse(Env.removeHotkey(KeyEvent.VK_F7, 0))
       self.assertTrue(Env.addHotkey(KeyEvent.VK_F7, 0, pressed))
       self.assertTrue(Env.removeHotkey(KeyEvent.VK_F7, 0))
+
+
+   def setUp(self):
+      global not_pressed
+      not_pressed = True
+
+   def tearDown(self):
+      print "clean up"
+      Env.cleanUp()
+

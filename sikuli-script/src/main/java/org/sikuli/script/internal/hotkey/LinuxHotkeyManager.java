@@ -101,7 +101,14 @@ public class LinuxHotkeyManager extends HotkeyManager {
 
 
    public void cleanUp(){
-      JXGrabKey.getInstance().cleanUp(); 
+      JXGrabKey grabKey = JXGrabKey.getInstance();
+      for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
+         int id = entry.getKey();
+         grabKey.unregisterHotKey(id); 
+      }
+      _gHotkeyId = 1;
+      _idCallbackMap.clear();
+      grabKey.getInstance().cleanUp(); 
    }
 
 }
