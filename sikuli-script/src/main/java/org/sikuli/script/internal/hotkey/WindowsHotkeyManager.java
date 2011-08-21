@@ -41,7 +41,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
    private Map<Integer, HotkeyData> _idCallbackMap = new HashMap<Integer,HotkeyData >();
    private int _gHotkeyId = 1;
 
-   protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
+   public boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       JIntellitype itype = JIntellitype.getInstance();
 
       if(_gHotkeyId == 1){
@@ -57,7 +57,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
       return true;
    }
    
-   protected boolean _removeHotkey(int keyCode, int modifiers){
+   public boolean _removeHotkey(int keyCode, int modifiers){
       for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
          HotkeyData data = entry.getValue();
          if(data.key == keyCode && data.modifiers == modifiers){

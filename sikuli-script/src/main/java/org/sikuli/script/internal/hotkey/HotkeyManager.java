@@ -93,7 +93,7 @@ public abstract class HotkeyManager {
    }
 
 
-   abstract protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener);
-   abstract protected boolean _removeHotkey(int keyCode, int modifiers);
+   abstract public boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener);
+   abstract public boolean _removeHotkey(int keyCode, int modifiers);
    abstract public void cleanUp();
 }

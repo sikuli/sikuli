@@ -39,7 +39,7 @@ import org.sikuli.script.ScriptRunner;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
-import org.sikuli.script.Env;
+import org.sikuli.script.internal.hotkey.HotkeyManager;
 import org.sikuli.script.HotkeyListener;
 import org.sikuli.script.HotkeyEvent;
 
@@ -748,11 +748,11 @@ public class SikuliIDE extends JFrame {
 
 
    public void removeCaptureHotkey(int key, int mod){
-      Env.removeHotkey(key, mod);
+      HotkeyManager.getInstance()._removeHotkey(key, mod);
    }
 
    public void installCaptureHotkey(int key, int mod){
-      Env.addHotkey(key, mod, new HotkeyListener(){
+      HotkeyManager.getInstance()._addHotkey(key, mod, new HotkeyListener(){
          public void hotkeyPressed(HotkeyEvent e){
             onQuickCapture();
          }
@@ -766,7 +766,7 @@ public class SikuliIDE extends JFrame {
       installCaptureHotkey(key, mod);
       key = pref.getStopHotkey();
       mod = pref.getStopHotkeyModifiers();
-      Env.addHotkey(key, mod, new HotkeyListener(){
+      HotkeyManager.getInstance()._addHotkey(key, mod, new HotkeyListener(){
          public void hotkeyPressed(HotkeyEvent e){
             onStopRunning();
          }

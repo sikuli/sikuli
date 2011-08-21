@@ -36,14 +36,14 @@ public class MacHotkeyManager extends HotkeyManager {
       }
    }
 
-   protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
+   public boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       int ckey = convertToCarbonKey(keyCode);
       int cmod = convertToCarbonModifiers(modifiers);
       return installGlobalHotkey(keyCode, modifiers, ckey, cmod, listener);
    }
 
 
-   protected boolean _removeHotkey(int keyCode, int modifiers){
+   public boolean _removeHotkey(int keyCode, int modifiers){
       int ckey = convertToCarbonKey(keyCode);
       int cmod = convertToCarbonModifiers(modifiers);
       return uninstallGlobalHotkey(ckey, cmod);
