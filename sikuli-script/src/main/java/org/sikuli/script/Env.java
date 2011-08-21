@@ -140,12 +140,12 @@ public class Env {
       return SikuliVersion;
    }
 
-   public static boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
-      return HotkeyManager.getInstance().addHotkey(keyCode, modifiers, listener);
+   public static boolean addHotkey(char key, int modifiers, HotkeyListener listener){
+      return HotkeyManager.getInstance().addHotkey(key, modifiers, listener);
    }
 
-   public static boolean removeHotkey(int keyCode, int modifiers){
-      return HotkeyManager.getInstance().removeHotkey(keyCode, modifiers);
+   public static boolean removeHotkey(char key, int modifiers){
+      return HotkeyManager.getInstance().removeHotkey(key, modifiers);
    }
 
    public static void cleanUp(){

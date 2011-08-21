@@ -34,12 +34,12 @@ public class HotkeyTest
        }
    }
 
-    @Ignore("ignore this in automated test")
+    //@Ignore("ignore this in automated test")
     @Test
     public void test_hotkey_install()
     {
        JFrame f = new JFrame("hello"); // need this to hook in the event loop
-       boolean ret = Env.addHotkey(KeyEvent.VK_F6, 0,
+       boolean ret = Env.addHotkey(Key.F6, 0,
          new HotkeyListener(){
             public void hotkeyPressed(HotkeyEvent e){
                HotkeyTest.this.pressed = true;
@@ -47,7 +47,7 @@ public class HotkeyTest
             }
        });
        Debug.log("install hotkey F6: " + ret);
-       ret = Env.addHotkey(KeyEvent.VK_2, InputEvent.ALT_MASK,
+       ret = Env.addHotkey('2', KeyModifier.ALT,
          new HotkeyListener(){
             public void hotkeyPressed(HotkeyEvent e){
                HotkeyTest.this.pressed = true;
@@ -57,11 +57,11 @@ public class HotkeyTest
        Debug.log("install hotkey ALT-2: " + ret);
        Debug.log("press the hot key now.");
        sleep(5);
-       ret = Env.removeHotkey(KeyEvent.VK_F6, 0);
+       ret = Env.removeHotkey(Key.F6, 0);
        Debug.log("remove hotkey F6: " + ret);
        Debug.log("press the hot key again.");
        sleep(2);
-       ret = Env.addHotkey(KeyEvent.VK_F7, 0,
+       ret = Env.addHotkey(Key.F7, 0,
          new HotkeyListener(){
             public void hotkeyPressed(HotkeyEvent e){
                HotkeyTest.this.pressed = true;

@@ -6,10 +6,10 @@ from org.sikuli.script import HotkeyListener
 class Env(JEnv):
 
    @classmethod
-   def addHotkey(cls, keyCode, modifiers, handler):
+   def addHotkey(cls, key, modifiers, handler):
       class AnonyListener(HotkeyListener):
          def hotkeyPressed(self, event):
             handler(event)
-      return JEnv.addHotkey(keyCode, modifiers, AnonyListener())
+      return JEnv.addHotkey(key, modifiers, AnonyListener())
 
 

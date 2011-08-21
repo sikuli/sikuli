@@ -53,11 +53,8 @@ public class LinuxHotkeyManager extends HotkeyManager {
    private Map<Integer, HotkeyData> _idCallbackMap = new HashMap<Integer,HotkeyData >();
    private int _gHotkeyId = 1;
 
-   public boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
+   protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       JXGrabKey grabKey = JXGrabKey.getInstance();
-      String txtMod = getKeyModifierText(modifiers);
-      String txtCode = getKeyCodeText(keyCode);
-      Debug.info("add hotkey: " + txtMod + " " + txtCode);
 
       if(_gHotkeyId == 1){
          grabKey.addHotkeyListener(new MyHotkeyHandler());
@@ -78,7 +75,7 @@ public class LinuxHotkeyManager extends HotkeyManager {
       return true;
    }
 
-   private boolean _removeHotkey(int keyCode, int modifiers){
+   protected boolean _removeHotkey(int keyCode, int modifiers){
       for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
          HotkeyData data = entry.getValue();
          if(data.key == keyCode && data.modifiers == modifiers){
@@ -90,13 +87,6 @@ public class LinuxHotkeyManager extends HotkeyManager {
          }
       }
       return false;
-   }
-
-   public boolean removeHotkey(int keyCode, int modifiers){
-      String txtMod = getKeyModifierText(modifiers);
-      String txtCode = getKeyCodeText(keyCode);
-      Debug.info("remove hotkey: " + txtMod + " " + txtCode);
-      return _removeHotkey(keyCode, modifiers);
    }
 
 

@@ -12,8 +12,9 @@ import java.awt.event.KeyEvent;
 import org.sikuli.script.HotkeyListener;
 import org.sikuli.script.Env;
 import org.sikuli.script.Debug;
+import org.sikuli.script.Key;
 
-public class HotkeyManager {
+public abstract class HotkeyManager {
    protected static HotkeyManager _instance = null;
 
    private static String getOSHotkeyManagerClass(){
@@ -67,20 +68,32 @@ public class HotkeyManager {
     *
     *  @return true if success. false otherwise.
     */
-   public boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
-      return _instance.addHotkey(keyCode, modifiers, listener);
+   public boolean addHotkey(char key, int modifiers, HotkeyListener listener){
+      int[] keyCodes = Key.toJavaKeyCode(key);
+      int keyCode = keyCodes[keyCodes.length-1];
+      String txtMod = getKeyModifierText(modifiers);
+      String txtCode = getKeyCodeText(keyCode);
+      Debug.info("add hotkey: " + txtMod + " " + txtCode);
+      return _instance._addHotkey(keyCode, modifiers, listener);
    }
+
 
    /**
     *  uninstall a hotkey listener.
     *
     *  @return true if success. false otherwise.
     */
-   public boolean removeHotkey(int keyCode, int modifiers){
-      return _instance.removeHotkey(keyCode, modifiers);
+   public boolean removeHotkey(char key, int modifiers){
+      int[] keyCodes = Key.toJavaKeyCode(key);
+      int keyCode = keyCodes[keyCodes.length-1];
+      String txtMod = getKeyModifierText(modifiers);
+      String txtCode = getKeyCodeText(keyCode);
+      Debug.info("remove hotkey: " + txtMod + " " + txtCode);
+      return _instance._removeHotkey(keyCode, modifiers);
    }
 
-   public void cleanUp(){
-      _instance.cleanUp();
-   }
+
+   abstract protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener);
+   abstract protected boolean _removeHotkey(int keyCode, int modifiers);
+   abstract public void cleanUp();
 }

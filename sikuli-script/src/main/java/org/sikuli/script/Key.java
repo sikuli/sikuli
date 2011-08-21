@@ -8,6 +8,7 @@ package org.sikuli.script;
 import java.awt.event.KeyEvent;
 
 public class Key {
+   public static final char SPACE       = ' ';
    public static final char ENTER       = '\n';
    public static final char BACKSPACE   = '\b';
    public static final char TAB         = '\t';

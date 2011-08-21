@@ -36,20 +36,14 @@ public class MacHotkeyManager extends HotkeyManager {
       }
    }
 
-   public boolean addHotkey(int keyCode, int modifiers, HotkeyListener listener){
-      String txtMod = getKeyModifierText(modifiers);
-      String txtCode = getKeyCodeText(keyCode);
-      Debug.info("add hotkey: " + txtMod + " " + txtCode);
+   protected boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       int ckey = convertToCarbonKey(keyCode);
       int cmod = convertToCarbonModifiers(modifiers);
       return installGlobalHotkey(keyCode, modifiers, ckey, cmod, listener);
    }
 
 
-   public boolean removeHotkey(int keyCode, int modifiers){
-      String txtMod = getKeyModifierText(modifiers);
-      String txtCode = getKeyCodeText(keyCode);
-      Debug.info("remove hotkey: " + txtMod + " " + txtCode);
+   protected boolean _removeHotkey(int keyCode, int modifiers){
       int ckey = convertToCarbonKey(keyCode);
       int cmod = convertToCarbonModifiers(modifiers);
       return uninstallGlobalHotkey(ckey, cmod);
