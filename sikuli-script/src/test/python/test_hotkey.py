@@ -39,7 +39,8 @@ class TestHotkey(unittest.TestCase):
       global not_pressed
       not_pressed = True
 
-   def tearDown(self):
+   @classmethod
+   def tearDownClass(self):
       print "clean up"
       Env.cleanUp()
 

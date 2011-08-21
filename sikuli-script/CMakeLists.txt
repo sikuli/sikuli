@@ -172,10 +172,16 @@ IF(WIN32)
          COMMENT "Merging Jintellitype's JAR"
       )
    ENDIF()
-
    add_dependencies(${JAR_FILE} 
       ${JAR_FILE}.jintellitype-in-jar
    )
+
+   SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype.dll")
+   add_custom_target( ${JAR_FILE}.hotkey-lib 
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY} ${BINARY_LIB_DIR}/
+      COMMENT "Packaging JIntellitype in Jar"
+   )
+
 ENDIF(WIN32)
 
 IF(LINUX)

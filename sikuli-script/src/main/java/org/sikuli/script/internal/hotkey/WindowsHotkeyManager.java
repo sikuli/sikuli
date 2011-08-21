@@ -73,7 +73,14 @@ public class WindowsHotkeyManager extends HotkeyManager {
 
 
    public void cleanUp(){
-      JIntellitype.getInstance().cleanUp();
+      JIntellitype itype = JIntellitype.getInstance();
+      for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
+         int id = entry.getKey();
+         itype.unregisterHotKey(id); 
+      }
+      _gHotkeyId = 1;
+      _idCallbackMap.clear();
+      itype.cleanUp();
    }
 
 }
