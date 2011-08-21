@@ -69,7 +69,7 @@ public class LinuxHotkeyManager extends HotkeyManager {
          //JXGrabKey.setDebugOutput(true);
          grabKey.registerAwtHotkey(id, modifiers, keyCode);
       }catch(HotkeyConflictException e){
-         Debug.error("Hot key conflicts: " + txtMod + "+" + txtCode);
+         Debug.error("Hot key conflicts");
          return false;
       }
       return true;
