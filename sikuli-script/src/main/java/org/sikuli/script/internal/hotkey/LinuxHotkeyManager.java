@@ -63,7 +63,7 @@ public class LinuxHotkeyManager extends HotkeyManager {
          grabKey.addHotkeyListener(new MyHotkeyHandler());
       }
 
-      removeHotkey(keyCode, modifiers);
+      _removeHotkey(keyCode, modifiers);
       int id = _gHotkeyId++;
       HotkeyData data = new HotkeyData(keyCode, modifiers, listener);
       _idCallbackMap.put(id, data);
