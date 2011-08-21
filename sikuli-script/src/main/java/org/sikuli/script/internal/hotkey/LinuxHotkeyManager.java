@@ -46,7 +46,7 @@ public class LinuxHotkeyManager extends HotkeyManager {
          Debug.log(4, "Hotkey pressed");
          HotkeyData data = _idCallbackMap.get(id);
          HotkeyEvent e = new HotkeyEvent(data.key, data.modifiers);
-         data.listener.hotkeyPressed(e);
+         data.listener.invokeHotkeyPressed(e);
       }
    };
 

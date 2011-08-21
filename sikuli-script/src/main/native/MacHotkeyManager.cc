@@ -16,7 +16,7 @@
 using namespace std;
 using namespace sikuli;
 
-#define HOTKEY_LISTENER_METHOD "hotkeyPressed"
+#define HOTKEY_LISTENER_METHOD "invokeHotkeyPressed"
 #define HOTKEY_LISTENER_SIGNATURE "(Lorg/sikuli/script/HotkeyEvent;)V"
 #define HOTKEY_EVENT_CLASS "org/sikuli/script/HotkeyEvent"
 
