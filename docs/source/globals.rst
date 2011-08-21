@@ -652,6 +652,46 @@ Interacting with the User
 	to paste the text to a login box.
 
 
+Listening to Global Hotkeys
+---------------------------
+
+Sikuli can listen to global hotkeys that you register with ``Env.addHotkey`` 
+and call the corresponding handler (sikuli functions) when the user presses
+the hotkeys.
+
+.. versionadded:: X1.0-rc3
+.. py:method:: Env.addHotkey(key, modifiers, handler)
+
+ 	Register the specified *key* + *modifiers* as a global hotkey. 
+ 	When the hotkey is pressed, the specified function *handler* will be called.
+
+	:param key: a character or a constant value defined in :py:class:`Key`.
+
+	:param modifiers: Key modifiers, which can be one or multiple constants defined in :py:class:`KeyModifier`.
+
+	:return: True if success.
+
+        .. sikulicode::
+
+           def openAppleMenu(event):
+              click("apple.png")
+
+           # When the user pressed Ctrl+Alt+F1, click the top-left apple icon.
+           Env.addHotkey(Key.F1, KeyModifier.ALT+KeyModifier.CTRL, openAppleMenu)
+
+
+.. versionadded:: X1.0-rc3
+.. py:method:: Env.removeHotkey(key, modifiers)
+
+ 	Unregister the registered global hotkey *key* + *modifiers*. 
+
+	:param key: a character or a constant value defined in :py:class:`Key`.
+
+	:param modifiers: Key modifiers, which can be one or multiple constants defined in :py:class:`KeyModifier`.
+
+	:return: True if success.
+
+
 
 General Settings and Access to Environment Information
 ------------------------------------------------------
