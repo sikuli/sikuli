@@ -22,7 +22,6 @@ from org.sikuli.script import UnionScreen
 from org.sikuli.script import Finder
 from org.sikuli.script import Location
 from org.sikuli.script import Settings
-from org.sikuli.script import Env
 from org.sikuli.script import OS
 from org.sikuli.script import App
 from org.sikuli.script import ScreenHighlighter
@@ -36,6 +35,7 @@ from Region import *
 from Screen import *
 from VDict import *
 from Helper import *
+from Env import *
 import SikuliImporter
 
 _si = SikuliScript()
