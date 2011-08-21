@@ -36,13 +36,20 @@ SET(JAVA_TEST_FOR_HUDSON_XML "../hudson-test.xml")
 SET(CMAKE_SWIG_OUTDIR ${CMAKE_BINARY_DIR}/${NATIVE_PACKAGE_DIR})
 
 SET(COMMON_LIB_DIR "${BASE_DIR}/../lib")
+
+# dependent libs
+SET(JXGRABKEY_JAR "${COMMON_LIB_DIR}/jxgrabkey/lib/JXGrabKey.jar")
+SET(JINTELLITYPE_JAR "${COMMON_LIB_DIR}/jintellitype-1.3.6/jintellitype-1.3.6.jar")
+
 #SET(INCLUDE_LIB_DIR "${BASE_DIR}/lib")
 SET(INCLUDE_LIB_DIR "${COMMON_LIB_DIR}/mx-native-loader-1.2/target/classes")
+
 SET(BINARY_DIR "${BASE_DIR}/target")
 SET(BINARY_CLASS_DIR "${BINARY_DIR}/classes")
 SET(TEST_CLASS_DIR "${CMAKE_BINARY_DIR}/test")
 SET(BINARY_LIB_DIR "${BINARY_DIR}/lib")
 SET(JAR_DIR "${BINARY_DIR}/jar")
+SET(JAR_LIB_DIR  ${JAR_DIR}/META-INF/lib)
 
 SET(JUNIT_JAR "${COMMON_LIB_DIR}/junit-4.8.2.jar")
 SET(MOCKITO_JAR "${COMMON_LIB_DIR}/mockito-all-1.8.5.jar")
@@ -52,6 +59,13 @@ SET(JYTHON_LIB_FILE "${COMMON_LIB_DIR}/jython-lib-2.5.1.tgz")
 SET(CLASSPATH 
    ${INCLUDE_LIB_DIR}${SEP}${JYTHON_JAR}${SEP}.
 )
+
+IF(LINUX)
+   SET(CLASSPATH ${CLASSPATH}${SEP}${JXGRABKEY_JAR})
+ELSEIF(WIN32)
+   SET(CLASSPATH ${CLASSPATH}${SEP}${JINTELLITYPE_JAR})
+ENDIF()
+
 
 SET(TEST_CLASSPATH
    ${CLASSPATH}${SEP}${JUNIT_JAR}${SEP}${BINARY_CLASS_DIR}${SEP}${MOCKITO_JAR}
@@ -82,6 +96,7 @@ IF(NOT EXISTS ${JAR_DIR}/org/python)
       COMMENT "Merging Jython's JAR"
    )
 ENDIF()
+
 
 SET(LIB_IN_JAR_DIR "${JAR_DIR}/Lib")
 add_custom_target( ${JAR_FILE}.python-src-in-jar
@@ -132,6 +147,12 @@ add_custom_target( update-version
       COMMENT "Update version number to ${VERSION}"
 )
 
+add_custom_target(${JAR_FILE}.libs-in-jar
+   COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_DIR}/META-INF
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_LIB_DIR}
+)
+
+
 # Dependencies
 
 add_dependencies(${JAR_FILE} 
@@ -143,6 +164,54 @@ add_dependencies(${JAR_FILE}
         ${JAR_FILE}.jython-in-jar
         ${JAR_FILE}.jython-libs-in-jar
 )
+
+IF(WIN32)
+   IF(NOT EXISTS ${JAR_DIR}/com/melloware/jintellitype)
+      add_custom_target( ${JAR_FILE}.jintellitype-in-jar
+         COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JINTELLITYPE_JAR}
+         COMMENT "Merging Jintellitype's JAR"
+      )
+   ENDIF()
+   add_dependencies(${JAR_FILE} 
+      ${JAR_FILE}.jintellitype-in-jar
+   )
+
+   SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype.dll")
+   add_custom_target( ${JAR_FILE}.hotkey-lib 
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY} ${BINARY_LIB_DIR}/
+      COMMENT "Packaging JIntellitype in Jar"
+   )
+
+ENDIF(WIN32)
+
+IF(LINUX)
+   IF(NOT EXISTS ${JAR_DIR}/jxgrabkey)
+      add_custom_target( ${JAR_FILE}.jxgrabkey-in-jar
+         COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JXGRABKEY_JAR}
+         COMMENT "Merging JXGrabKey's JAR"
+      )
+   ENDIF()
+
+   add_dependencies(${JAR_FILE} 
+      ${JAR_FILE}.jxgrabkey-in-jar
+   )
+ENDIF(LINUX)
+
+IF(LINUX)
+   EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE SYSTEM_ARCH)
+   if(SYSTEM_ARCH MATCHES "x86_64")
+      SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-64.so")
+   else()
+      SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jxgrabkey/lib/libJXGrabKey-32.so")
+   endif()
+   add_custom_target( ${JAR_FILE}.hotkey-lib 
+      COMMAND cp ${LIB_GRABKEY} ${BINARY_LIB_DIR}/libJXGrabKey.so
+      COMMENT "Packaging JXGrabKey in Jar"
+   )
+ENDIF(LINUX)
+add_dependencies( ${JAR_FILE} ${JAR_FILE}.hotkey-lib ) 
+add_dependencies( ${JAR_FILE}.libs-in-jar ${JAR_FILE}.hotkey-lib ) 
+
 
 ADD_SUBDIRECTORY(${NATIVE_SRC_DIR})
 ADD_SUBDIRECTORY(${JAVA_SRC_DIR})

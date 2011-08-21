@@ -93,7 +93,7 @@ public class PreferencesWin extends JFrame {
             _radOCR.isSelected()?UserPreferences.AUTO_NAMING_OCR:
             UserPreferences.AUTO_NAMING_OFF);
       if(_old_cap_hkey != _cap_hkey || _old_cap_mod != _cap_mod){
-         //FIXME: remove the old hotkey
+         ide.removeCaptureHotkey(_old_cap_hkey, _old_cap_mod);
          ide.installCaptureHotkey(_cap_hkey, _cap_mod);
       }
       pref.setCheckUpdate(_chkAutoUpdate.isSelected());

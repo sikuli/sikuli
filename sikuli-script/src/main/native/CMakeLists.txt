@@ -18,6 +18,7 @@ SET(JNI_HEADERS
    org_sikuli_script_VDictProxy.h
    org_sikuli_script_Win32Util.h
    org_sikuli_script_MacUtil.h
+   org_sikuli_script_internal_hotkey_MacHotkeyManager.h
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
@@ -90,6 +91,7 @@ IF(WIN32)
    TARGET_LINK_LIBRARIES(Win32Util ${JAVA_AWT_LIBRARY})
 ENDIF()
 
+
 IF(APPLE)
    LIST(APPEND BUILD_TARGETS MacUtil)
    FIND_LIBRARY(JAVA_LIBRARY JavaVM)
@@ -103,6 +105,17 @@ IF(APPLE)
       org_sikuli_script_MacUtil.h
    )
    TARGET_LINK_LIBRARIES(MacUtil ${EXTRA_LIBS})
+
+   SET(BUILD_TARGETS
+      MacHotkeyManager
+   )
+
+   ADD_LIBRARY(MacHotkeyManager SHARED
+      MacHotkeyManager.cc
+      sikuli-debug.cpp
+      org_sikuli_script_internal_hotkey_MacHotkeyManager.h
+   )
+   TARGET_LINK_LIBRARIES(MacHotkeyManager ${EXTRA_LIBS})
 ENDIF()
 
 SET(NATIVE_LIBS
@@ -114,6 +127,7 @@ ADD_LIBRARY(VDictProxy SHARED
    VDictProxy.cc
    org_sikuli_script_VDictProxy.h
 )
+TARGET_LINK_LIBRARIES(VDictProxy ${OpenCV_LIBS})
 
 
 ## SWIG: generate a JNI wrapper 
@@ -154,10 +168,5 @@ foreach(BUILD_TARGET ${BUILD_TARGETS})
       set_target_properties(${BUILD_TARGET} PROPERTIES SUFFIX ".jnilib")
    endif(APPLE)
 endforeach(BUILD_TARGET ${BUILD_TARGETS})
-
-add_custom_target(${JAR_FILE}.libs-in-jar
-   COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_DIR}/META-INF
-   COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_DIR}/META-INF/lib
-)
 
 add_dependencies(${JAR_FILE}.libs-in-jar ${NATIVE_LIBS})
