@@ -189,7 +189,7 @@ IF(LINUX)
    add_dependencies(${JAR_FILE} 
       ${JAR_FILE}.jxgrabkey-in-jar
    )
-ENDIF(WIN32)
+ENDIF(LINUX)
 
 IF(LINUX)
    EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE SYSTEM_ARCH)
