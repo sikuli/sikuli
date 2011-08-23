@@ -151,8 +151,9 @@ public class AndroidRobot implements IRobot {
    }
 
    public void typeChar(char character, KeyMode mode){
-      //TODO
-   
+      //TODO: check if it's a special key
+      if(mode == KeyMode.PRESS_RELEASE)
+         _dev.type(""+character);
    }
 
    public void pressModifiers(int modifiers){
@@ -243,6 +244,10 @@ public class AndroidRobot implements IRobot {
 
    public void setAutoDelay(int ms){
       _autoDelay = ms;
+   }
+
+   public Object getDevice(){
+      return _dev;
    }
 }
 

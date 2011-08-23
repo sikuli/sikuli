@@ -27,6 +27,11 @@ public interface IRobot {
    void waitForIdle();
    void delay(int ms);
    void setAutoDelay(int ms);
+
+   /**
+    *  Return the underlying device object (if any).
+    */
+   Object getDevice();
    
 }
 

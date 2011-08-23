@@ -118,4 +118,8 @@ public class DesktopRobot extends Robot implements IRobot{
       doType(mode, Key.toJavaKeyCode(character));
    }
 
+   public Object getDevice(){
+      return null;
+   }
+
 }

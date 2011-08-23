@@ -10,8 +10,10 @@ class TestAndroidBasic(unittest.TestCase):
    def setUpClass(cls):
       cls.s = AndroidScreen()
       assert cls.s != None
+      cls.dev = cls.s.getRobot().getDevice()
       Settings.BundlePath = os.getcwd() + "/test-res"
       Settings.MoveMouseDelay = 0
+      Settings.AutoWaitTimeout = 10
 
    def testBounds(self):
       bounds = self.s.getBounds()
@@ -30,5 +32,13 @@ class TestAndroidBasic(unittest.TestCase):
 #      assert m != None
 
    def testDrag(self):
+      if not self.s.exists("lock.png"):
+         self.dev.press('KEYCODE_POWER', 'DOWN_AND_UP')
       self.s.dragDrop("lock.png", "speaker.png")
+
+   def testType(self):
+      self.dev.press('KEYCODE_HOME', 'DOWN_AND_UP')
+      self.s.click("google.png")
+      self.s.type("sikuli")
+      assert self.s.exists("search-sikuli.png")
 
