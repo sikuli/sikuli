@@ -12,16 +12,17 @@
 
 #include "opencv.hpp"
 #include "find-result.h"
+#include "vision.h"
 
 using namespace cv;
 using namespace std;
 
 class PyramidTemplateMatcher{
 private:
-   bool _use_gpu = false;
+   bool _use_gpu;
 public:
 
-   PyramidTemplateMatcher(){
+   PyramidTemplateMatcher() : _use_gpu(false){
       if(sikuli::Vision::getParameter("GPU")){
          _use_gpu = true;
       } 
