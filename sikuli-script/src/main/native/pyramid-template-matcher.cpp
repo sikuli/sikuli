@@ -6,6 +6,7 @@
 
 #include "pyramid-template-matcher.h"
 #include "TimingBlock.h"
+#include "vision.h"
 
 // select how images are template matched
 #define USE_SQRDIFF_NORMED 0

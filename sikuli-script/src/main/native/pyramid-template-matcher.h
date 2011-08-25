@@ -17,10 +17,15 @@ using namespace cv;
 using namespace std;
 
 class PyramidTemplateMatcher{
-
+private:
+   bool _use_gpu = false;
 public:
 
-   PyramidTemplateMatcher(){};
+   PyramidTemplateMatcher(){
+      if(sikuli::Vision::getParameter("GPU")){
+         _use_gpu = true;
+      } 
+   };
    PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
    ~PyramidTemplateMatcher();
 

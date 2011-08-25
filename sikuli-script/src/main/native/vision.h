@@ -79,6 +79,8 @@ private:
 };
 
 class Vision{
+   static std::map<std::string, float> _params;
+
 public:
       
    static std::vector<FindResult> find(FindInput q);
@@ -100,6 +102,9 @@ public:
 
    //helper functions
    static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
+
+   static void setParameter(std::string param, float val);
+   static float getParameter(std::string param);
 
 private:   
       

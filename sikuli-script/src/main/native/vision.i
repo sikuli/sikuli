@@ -207,6 +207,8 @@ namespace sikuli {
       
       //helper functions
       static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
+
+      static void setParameter(std::string param, float val);
       
    private:   
       
@@ -217,6 +219,7 @@ namespace sikuli {
       OCR, FINDER
    };
    void setDebug(DebugCategories cat, int level);
+
 }
 
 

@@ -17,6 +17,8 @@
 #endif 
 using namespace sikuli;
 
+std::map<std::string, float> Vision::_params;
+
 bool fileExists(const char* strFilename){
    struct stat stFileInfo;
    return !stat(strFilename,&stFileInfo);
@@ -473,4 +475,13 @@ cv::Mat Vision::createMat(int _rows, int _cols, unsigned char* _data){
    //cout << "createMat: " << mat.rows << " " << mat.cols << endl;
    //imwrite("createMat.png", mat);
    return mat;
+}
+
+void Vision::setParameter(string param, float val){
+   _params[param] = val;
+}
+
+
+float Vision::getParameter(string param){
+   return _params[param];
 }
