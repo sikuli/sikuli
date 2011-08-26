@@ -20,17 +20,11 @@
 using namespace cv;
 using namespace std;
 
-#define MIN_PIXELS_TO_USE_GPU 90000
 
 class PyramidTemplateMatcher{
 private:
    bool _use_gpu;
-   void init(){
-      _use_gpu = false;
-      _hasMatchedResult = false;
-      if(sikuli::Vision::getParameter("GPU"))
-         _use_gpu = true;
-   }
+   void init();
 public:
 
    PyramidTemplateMatcher(){
@@ -57,6 +51,7 @@ protected:
    PyramidTemplateMatcher* lowerPyramid;
 
    Mat result;
+
 #ifdef ENABLE_GPU
    gpu::GpuMat gResult;
 #endif

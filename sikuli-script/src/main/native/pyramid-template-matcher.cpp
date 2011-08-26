@@ -22,6 +22,40 @@
 #define dout if(0) std::cerr
 #endif
 
+#define MIN_PIXELS_TO_USE_GPU 950000
+#define WORTH_GPU(mat) ( ((mat).rows * (mat).cols) > MIN_PIXELS_TO_USE_GPU)
+
+
+void PyramidTemplateMatcher::init() {
+   _use_gpu = false;
+   _hasMatchedResult = false;
+}
+
+
+PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
+: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
+{ 
+   if (source.rows < target.rows || source.cols < target.cols)
+      return;
+
+   init();
+   if(sikuli::Vision::getParameter("GPU") && WORTH_GPU(source)){
+      if(gpu::getCudaEnabledDeviceCount()>0) 
+         _use_gpu = true;
+      cout << source.rows << "x" << source.cols << endl;
+   }
+   if (levels > 0)
+      lowerPyramid = createSmallMatcher(levels-1);
+}
+
+
+
+PyramidTemplateMatcher::~PyramidTemplateMatcher(){
+   if (lowerPyramid != NULL)
+      delete lowerPyramid;   
+};
+
+
 PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       TimingBlock t("PyramidTemplateMatcher::createSmallMatcher");
       Mat smallSource, smallTarget;
@@ -38,27 +72,18 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       return new PyramidTemplateMatcher(smallSource, smallTarget, level, factor);
 }
 
-PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
-: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
-{ 
-   if (source.rows < target.rows || source.cols < target.cols)
-      return;
-
-   init();
-   if (levels > 0)
-      lowerPyramid = createSmallMatcher(levels-1);
-}
-
-
-
-PyramidTemplateMatcher::~PyramidTemplateMatcher(){
-   if (lowerPyramid != NULL)
-      delete lowerPyramid;   
-};
-
 double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location){
       TimingBlock t("PyramidTemplateMatcher::findBest");
       double out_score;
+      if(_use_gpu){
+         gpu::GpuMat gSource, gTarget;
+         gSource.upload(source);
+         gTarget.upload(target);
+         gpu::matchTemplate(gSource,gTarget,gResult,CV_TM_CCOEFF_NORMED);
+         gpu::minMaxLoc(gResult, NULL, &out_score, NULL, &out_location);
+         return out_score;
+      }
+
 #if USE_SQRDIFF_NORMED
       matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
       result = Mat::ones(out_result.size(), CV_32F) - result;
@@ -72,10 +97,15 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
 void PyramidTemplateMatcher::eraseResult(int x, int y, int xmargin, int ymargin){
    int x0 = max(x-xmargin,0);
    int y0 = max(y-ymargin,0);
-   int x1 = min(x+xmargin,result.cols);  // no need to blank right and bottom
-   int y1 = min(y+ymargin,result.rows);
+   int rows = _use_gpu? gResult.rows : result.rows;
+   int cols = _use_gpu? gResult.cols : result.cols;
+   int x1 = min(x+xmargin,cols);  // no need to blank right and bottom
+   int y1 = min(y+ymargin,rows);
 
-   result(Range(y0, y1), Range(x0, x1)) = 0.f;
+   if(_use_gpu)
+      gResult(Range(y0, y1), Range(x0, x1)) = 0.f;
+   else
+      result(Range(y0, y1), Range(x0, x1)) = 0.f;
 }
 
 FindResult PyramidTemplateMatcher::next(){
@@ -93,8 +123,12 @@ FindResult PyramidTemplateMatcher::next(){
       detectionScore = findBest(source, target, result, detectionLoc);
       _hasMatchedResult = true;
    }
-   else
-      minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+   else{
+      if(_use_gpu)
+         gpu::minMaxLoc(gResult, NULL, &detectionScore, NULL, &detectionLoc);
+      else
+         minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+   }
 
    int xmargin = target.cols/3;
    int ymargin = target.rows/3;
@@ -108,7 +142,7 @@ FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
 
    int x = match.x*factor;
    int y = match.y*factor;
-   //
+   
    // compute the parameter to define the neighborhood rectangle
    int x0 = max(x-(int)factor,0);
    int y0 = max(y-(int)factor,0);

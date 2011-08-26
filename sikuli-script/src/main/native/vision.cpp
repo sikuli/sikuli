@@ -479,6 +479,8 @@ cv::Mat Vision::createMat(int _rows, int _cols, unsigned char* _data){
 }
 
 void Vision::setParameter(string param, float val){
+   if(_params.empty())
+      Vision::initParameters();
    _params[param] = val;
 }
 

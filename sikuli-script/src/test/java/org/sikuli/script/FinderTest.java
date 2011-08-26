@@ -42,6 +42,12 @@ public class FinderTest
       }
    }
 
+   @Before
+   public void setUp(){
+      Vision.setParameter("GPU", 1);
+      Vision.setParameter("MinTargetSize", 6);
+   }
+
    @Test
    public void testParameter() throws Exception {
       float old_param = Vision.getParameter("MinTargetSize");
@@ -59,13 +65,11 @@ public class FinderTest
 
    @Test
    public void testMacDesktopDark() throws Exception {
-      Vision.setParameter("MinTargetSize", 7);
       testTargetScreenSet("macdesktopdark");
    }
 
    @Test
    public void testMacDesktop() throws Exception {
-      Vision.setParameter("MinTargetSize", 6);
       testTargetScreenSet("macdesktop");
    }
 
