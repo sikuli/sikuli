@@ -60,31 +60,11 @@ PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int lev
    
       delete t;
       
-      /*
-      Mat halfTarget;
-      if (smallTarget.cols > smallTarget.rows){
-         halfTarget = Mat(smallTarget, Range(1,smallTarget.rows/2), Range(1,smallTarget.cols/2));
-      }else{
-         halfTarget = Mat(smallTarget, Range(1,smallTarget.rows/2),  Range(1,smallTarget.cols/2));
-      }
-      */
-      
       lowerPyramid = new PyramidTemplateMatcher(smallSource, smallTarget, levels - 1, factor);
       
    }else{
-      
-
       lowerPyramid = NULL;
       
-      Size resultSize;
-      resultSize.width = sourceSize.width - targetSize.width + 1;
-      resultSize.height = sourceSize.height - targetSize.height + 1;      
-      
-      result.create(resultSize,CV_32FC1);
-      dout << "[" << sourceSize.width << " x " << sourceSize.height << "] ";
-      dout << "[" << targetSize.width << " x " << targetSize.height << "]" << endl;
-
-
       TimingBlock* t = new TimingBlock("matching");
 
 #if USE_SQRDIFF_NORMED
@@ -157,11 +137,6 @@ FindResult PyramidTemplateMatcher::next(){
       
       
       Mat roiOfSource(copyOfSource, roi);
-      Size resultSize;
-      resultSize.width = roiOfSource.size().width - target.size().width + 1;
-      resultSize.height = roiOfSource.size().height - target.size().height + 1;      
-      
-      result.create(resultSize, CV_32FC1);
    
       TimingBlock* t = new TimingBlock("matching");
 #if USE_SQRDIFF_NORMED
