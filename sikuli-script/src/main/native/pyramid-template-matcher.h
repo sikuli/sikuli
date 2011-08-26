@@ -40,9 +40,12 @@ public:
 protected:
 
    PyramidTemplateMatcher* createSmallMatcher(int level);
+   double findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location);
 
    Mat source, target;
    float factor;
+   double _detectedScore;
+   Point  _detectedLoc;
 
    PyramidTemplateMatcher* lowerPyramid;
 

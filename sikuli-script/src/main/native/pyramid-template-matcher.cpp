@@ -70,6 +70,19 @@ PyramidTemplateMatcher::~PyramidTemplateMatcher(){
       delete lowerPyramid;   
 };
 
+double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location){
+      TimingBlock t("PyramidTemplateMatcher::findBest");
+      double out_score;
+#if USE_SQRDIFF_NORMED
+      matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
+      result = Mat::ones(out_result.size(), CV_32F) - result;
+#else
+      matchTemplate(source,target,out_result,CV_TM_CCOEFF_NORMED);
+#endif
+      minMaxLoc(result, NULL, &out_score, NULL, &out_location);
+      return out_score;
+}
+
 FindResult PyramidTemplateMatcher::next(){
    TimingBlock tb("PyramidTemplateMatcher::next()");
    
@@ -77,65 +90,45 @@ FindResult PyramidTemplateMatcher::next(){
       return FindResult(0,0,0,0,-1);
    }
    
+   int x, y;
+   int xmargin, ymargin;
    if (lowerPyramid == NULL){
+      double detectionScore;
+      Point detectionLoc;
+      minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+
+      xmargin = target.cols/3;
+      ymargin = target.rows/3;
       
-      // find the best match location
-      double minValue, maxValue;
-      Point minLoc, maxLoc;
-      minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);
-      
-      double detectionScore = maxValue;
-      Point detectionLoc = maxLoc;
-      
-      int xmargin = target.cols/3;
-      int ymargin = target.rows/3;
-      
-      int& x = detectionLoc.x;
-      int& y = detectionLoc.y;
-      
+      x = detectionLoc.x;
+      y = detectionLoc.y;
+
       int x0 = max(x-xmargin,0);
       int y0 = max(y-ymargin,0);
       int x1 = min(x+xmargin,result.cols);  // no need to blank right and bottom
       int y1 = min(y+ymargin,result.rows);
       
-      rectangle(result, Point(x0, y0), Point(x1-1, y1-1), 
-              Scalar(0), CV_FILLED);
+      result(Range(y0, y1), Range(x0, x1)) = 0.f;
       
       return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);;
-      
-      
-   }else{
-      
+   }
+   else{
       FindResult match = lowerPyramid->next();
       
-      int x = match.x*factor;
-      int y = match.y*factor;
-      
+      x = match.x*factor;
+      y = match.y*factor;
+      //
       // compute the parameter to define the neighborhood rectangle
       int x0 = max(x-(int)factor,0);
       int y0 = max(y-(int)factor,0);
       int x1 = min(x+target.cols+(int)factor,source.cols);
       int y1 = min(y+target.rows+(int)factor,source.rows);
       Rect roi(x0,y0,x1-x0,y1-y0);
-      
-      
       Mat roiOfSource(source, roi);
+
+      Point detectionLoc;
+      double detectionScore = findBest(roiOfSource, target, result, detectionLoc);
    
-      TimingBlock* t = new TimingBlock("matching");
-#if USE_SQRDIFF_NORMED
-      matchTemplate(roiOfSource,target,result,CV_TM_SQDIFF_NORMED);   
-      result = Mat::ones(result.size(), CV_32F) - result;
-#else
-      matchTemplate(roiOfSource,target,result,CV_TM_CCOEFF_NORMED);
-#endif
-      delete t;
-      
-      double minValue, maxValue;
-      Point minLoc, maxLoc;
-      minMaxLoc(result, &minValue, &maxValue, &minLoc, &maxLoc);
-      
-      double detectionScore = maxValue;
-      Point detectionLoc = maxLoc;
 
       detectionLoc.x += roi.x;
       detectionLoc.y += roi.y;
