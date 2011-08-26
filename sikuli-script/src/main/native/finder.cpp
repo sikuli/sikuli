@@ -672,7 +672,7 @@ Finder::find(IplImage* target, double min_similarity){
    
    
    if (abs(min_similarity - 100)< 0.00001){
-      cout << "training.." << endl;
+      dout << "training.." << endl;
       Mat im(target);
       TextFinder::train(im);
       

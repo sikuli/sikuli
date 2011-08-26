@@ -44,7 +44,7 @@ namespace sikuli{
    typedef basic_onullstream<char> onullstream; 
    typedef basic_onullstream<wchar_t> wonullstream; 
 
-   std::ostream& dout(const char* name);
+   std::ostream& dout(const char* name="");
    std::ostream& dhead(const char* name);
 
 }

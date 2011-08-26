@@ -4,9 +4,10 @@
  *
  */
 #include "cvgui.h"
-
+#include "sikuli-debug.h"
 #include <iostream>
 using namespace std;
+using namespace sikuli;
 
 
 Scalar Color::RED(0,0,255);
@@ -286,81 +287,6 @@ Painter::drawOCRText(Mat& ocr_result_image, OCRText ocrtext){
 }
 
 
-void extractFeatures(Mat src){
-   
-   
-   // dimensions
-   cout << src.rows << endl;
-   cout << src.cols << endl;
-   
-   
-   Mat srcgray;
-   cvtColor(src,srcgray, CV_RGB2GRAY);
-   
-   adaptiveThreshold(srcgray, srcgray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-   
-   SHOW(srcgray);
-   
-   cout << countNonZero(srcgray) << endl;
-   
-   Moments mnts = moments(srcgray);
-   
-   cout << mnts.m00 << "," << mnts.m11 << endl;
-   
-   Mat hsv;
-   cvtColor(src, hsv, CV_BGR2HSV);
-   
-   // let's quantize the hue to 30 levels
-   // and the saturation to 32 levels
-   int hbins = 30, sbins = 32;
-   int histSize[] = {hbins, sbins};
-   // hue varies from 0 to 179, see cvtColor
-   float hranges[] = { 0, 180 };
-   // saturation varies from 0 (black-gray-white) to
-   // 255 (pure spectrum color)
-   float sranges[] = { 0, 256 };
-   const float* ranges[] = { hranges, sranges };
-   MatND hist;
-   // we compute the histogram from the 0-th and 1-st channels
-   int channels[] = {0, 1};
-   
-   calcHist( &hsv, 1, channels, Mat(), // do not use mask
-            hist, 2, histSize, ranges,
-            true, // the histogram is uniform
-            false );
-   
-   double maxVal=0;
-   minMaxLoc(hist, 0, &maxVal, 0, 0);
-   
-   int scale = 10;
-   Mat histImg = Mat::zeros(sbins*scale, hbins*10, CV_8UC3);
-   
-   for( int h = 0; h < hbins; h++ )
-      for( int s = 0; s < sbins; s++ )
-      {
-         float binVal = hist.at<float>(h, s);
-         int intensity = cvRound(binVal*255/maxVal);
-         rectangle( histImg, Point(h*scale, s*scale),
-                   Point( (h+1)*scale - 1, (s+1)*scale - 1),
-                   Scalar::all(intensity),
-                   CV_FILLED );
-      }
-   
-   namedWindow( "Source", 1 );
-   imshow( "Source", src );
-   
-   namedWindow( "H-S Histogram", 1 );
-   imshow( "H-S Histogram", histImg );
-   
-   //flann::IndexParams );
-   
-   cv::flann::Index idx(src, cv::flann::KDTreeIndexParams(4));
-   
-   //cvflann::Index idx;
-   
-   waitKey(0);
-   
-}
 
 
 void
@@ -677,18 +603,18 @@ cvgui::run_ocr_on_lineblobs(vector<LineBlob>& ocr_input_lineblobs,
             OCRChar& previous_ocrchar = *(iter-1);
             
             int spacing = ocrchar.x - (previous_ocrchar.x + previous_ocrchar.width);
-            //cout << '[' << ocrchar.height << ':' << spacing << ']';
-            //cout << '[' << spacing << ']';
+            //dout() << '[' << ocrchar.height << ':' << spacing << ']';
+            //dout() << '[' << spacing << ']';
             
             
             if (lineblob.height > 6 && spacing >= 4){// || spacing >= 2){
                ocrline.addWord(ocrword);
                ocrword.clear();               
-               cout << ' ';
+               //dout() << ' ';
             }
          } 
          
-         cout << ocrchar.ch;
+         //dout() << ocrchar.ch;
          
          ocrword.add(ocrchar);
          ocrword.y = lineblob.y;
@@ -703,7 +629,7 @@ cvgui::run_ocr_on_lineblobs(vector<LineBlob>& ocr_input_lineblobs,
       
       ocrline.addWord(ocrword);
       
-      cout << endl;
+      //dout() << endl;
       
       
       ocrlines.push_back(ocrline);
@@ -930,7 +856,7 @@ cvgui::findBoxesByVoting(const Mat& screen,
    for (vector<Blob>::iterator it = result_blobs.begin();
         it != result_blobs.end(); ++it){
       Blob& b = *it;
-      cout << b.x << " " << b.y << " " << b.width << " " << b.height << " " << b.score << endl;
+      dout() << b.x << " " << b.y << " " << b.width << " " << b.height << " " << b.score << endl;
    }
    
    
@@ -1156,7 +1082,7 @@ cvgui::findPokerBoxes(const Mat& screen, vector<Blob>& output_blobs){
    for (vector<Blob>::iterator it = result_blobs.begin();
         it != result_blobs.end(); ++it){
    
-      cout << b.x << " " << b.y << " " << b.width << " " << b.height << endl;
+      dout() << b.x << " " << b.y << " " << b.width << " " << b.height << endl;
    }
 
       
@@ -2043,7 +1969,7 @@ cvgui::hasMoreThanNUniqueColors(const Mat& src, int n){
       
    }
    
-   cout << endl << endl;
+   dout() << endl << endl;
    for (vector< pair<Vec3b,int> >::iterator c = colors.begin();
         c != colors.end();
         ++c){
