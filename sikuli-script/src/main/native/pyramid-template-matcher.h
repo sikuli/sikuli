@@ -13,7 +13,9 @@
 #include "opencv.hpp"
 #include "find-result.h"
 #include "vision.h"
+#ifdef ENABLE_GPU
 #include <opencv2/gpu/gpu.hpp>
+#endif
 
 using namespace cv;
 using namespace std;
@@ -49,7 +51,9 @@ protected:
 
    PyramidTemplateMatcher* lowerPyramid;
    Mat result;
+#ifdef ENABLE_GPU
    gpu::GpuMat gResult;
+#endif
 };
 
 #endif
