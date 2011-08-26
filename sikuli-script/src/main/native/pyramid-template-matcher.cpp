@@ -23,29 +23,8 @@
 #define dout if(0) std::cerr
 #endif
 
-PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
-: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
-{ 
-
-   TimingBlock tb("PyramidTemplateMatcher()");
-   if (source.rows < target.rows || source.cols < target.cols){
-      //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
-      return;
-   }
-   
-   Size sourceSize = source.size();
-   Size targetSize = target.size();
-   
-   
-   if (levels > 0){
-      
-      copyOfSource = source.clone();
-      copyOfTarget = target.clone();
-      
-      
-      Mat smallSource;
-      Mat smallTarget;
-
+PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
+      Mat smallSource, smallTarget;
       TimingBlock* t = new TimingBlock("downsampling");
       
 #if USE_PYRDOWN
@@ -57,26 +36,30 @@ PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int lev
       resize(source, smallSource, Size(1.0*source.cols/factor,source.rows*1.0/factor),INTER_NEAREST);
       resize(target, smallTarget, Size(1.0*target.cols/factor,target.rows*1.0/factor),INTER_NEAREST);      
 #endif
-   
       delete t;
-      
-      lowerPyramid = new PyramidTemplateMatcher(smallSource, smallTarget, levels - 1, factor);
-      
-   }else{
-      lowerPyramid = NULL;
-      
-      TimingBlock* t = new TimingBlock("matching");
+      return new PyramidTemplateMatcher(smallSource, smallTarget, level, factor);
+}
 
+PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
+: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
+{ 
+
+   TimingBlock tb("PyramidTemplateMatcher()");
+   if (source.rows < target.rows || source.cols < target.cols){
+      //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
+      return;
+   }
+   
+   if (levels > 0){
+      lowerPyramid = createSmallMatcher(levels-1);
+   }else{
+      TimingBlock t("matchTemplate");
 #if USE_SQRDIFF_NORMED
       matchTemplate(source,target,result,CV_TM_SQDIFF_NORMED);
       result = Mat::ones(result.size(), CV_32F) - result;
 #else
       matchTemplate(source,target,result,CV_TM_CCOEFF_NORMED);
 #endif
-      delete t;
-
-   
-      
    }
 };
 
@@ -136,7 +119,7 @@ FindResult PyramidTemplateMatcher::next(){
       Rect roi(x0,y0,x1-x0,y1-y0);
       
       
-      Mat roiOfSource(copyOfSource, roi);
+      Mat roiOfSource(source, roi);
    
       TimingBlock* t = new TimingBlock("matching");
 #if USE_SQRDIFF_NORMED

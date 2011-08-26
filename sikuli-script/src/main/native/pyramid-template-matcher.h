@@ -39,17 +39,13 @@ public:
 
 protected:
 
-   Mat source;
-   Mat target;
+   PyramidTemplateMatcher* createSmallMatcher(int level);
 
-   // create copies of the images to modify
-   Mat copyOfSource;
-   Mat copyOfTarget;	
-
-   int alg;
+   Mat source, target;
    float factor;
 
    PyramidTemplateMatcher* lowerPyramid;
+
    Mat result;
 #ifdef ENABLE_GPU
    gpu::GpuMat gResult;
