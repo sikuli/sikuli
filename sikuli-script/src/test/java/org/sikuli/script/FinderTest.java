@@ -41,6 +41,11 @@ public class FinderTest
    }
 
    @Test
+   public void testFinderFolders() throws Exception {
+      testTargetScreenSet("finderfolders");
+   }
+
+   @Test
    public void testMacDesktopDark() throws Exception {
       testTargetScreenSet("macdesktopdark");
    }
@@ -60,10 +65,6 @@ public class FinderTest
       testTargetScreenSet("fuzzydesktop");
    }
 
-   @Test
-   public void testFinderFolders() throws Exception {
-      testTargetScreenSet("finderfolders");
-   }
 
    @Test
    public void testFuzzyFarmville() throws Exception {

@@ -14,14 +14,14 @@
 using namespace cv;
 using namespace std;
 
-#define PYRAMID_MIM_TARGET_DIMENSION 6
+#define PYRAMID_MIM_TARGET_DIMENSION 12
 #define PYRAMID_MIM_TARGET_DIMENSION_ALL 50
 #define REMATCH_THRESHOLD 0.9
 #define CENTER_REMATCH_THRESHOLD 0.99
 #define BORDER_MARGIN 0.2
 
 
-#ifdef DEBUG
+#ifdef DEBUG_FINDER
 #define dout std::cerr
 #else
 #define dout if(0) std::cerr
@@ -198,6 +198,7 @@ TemplateFinder::add_matches_to_buffer(int num_matches_to_add){
 
 void
 TemplateFinder::find(Mat target, double min_similarity){
+   //dout << "target: " << target.cols << "x" << target.rows << endl;
    
    this->min_similarity = min_similarity;   
    BaseFinder::find();  
@@ -240,6 +241,7 @@ TemplateFinder::find(Mat target, double min_similarity){
    
    TimingBlock tb("NEW METHOD");
    
+   /*
    dout << "matching (center) ... " << endl;            
    Mat sourceMat_center = Mat(sourceMat, 
                                  Range(sourceMat.rows*BORDER_MARGIN,
@@ -253,6 +255,7 @@ TemplateFinder::find(Mat target, double min_similarity){
       roi.y += sourceMat.rows*BORDER_MARGIN;   
       return;
    }
+   */
    
    dout << "matching (whole) ... " << endl;
    create_matcher(sourceMat, targetMat, 1, ratio);
