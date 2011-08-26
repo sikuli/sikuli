@@ -12,6 +12,20 @@
 %include "typemaps.i"
 %include "various.i"
 
+%pragma(java) jniclassimports=%{
+   import com.wapmx.nativeutils.jniloader.NativeLoader;
+%}
+
+%pragma(java) jniclasscode=%{
+   static {
+      try {
+         NativeLoader.loadLibrary("VisionProxy");
+      } catch (Exception e) {
+         System.err.println("Failed to load VisionProxy.\n" + e);
+      }
+   }
+%}
+
 
 %template(FindResults) std::vector<FindResult>;
 

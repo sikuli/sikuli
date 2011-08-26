@@ -67,6 +67,7 @@ private:
 };
 
 class TemplateFinder : public BaseFinder{
+   float PyramidMinTargetDimension;
    
 public:
    
@@ -90,6 +91,7 @@ public:
    
 private:
    
+   void init();
    void create_matcher(Mat& source, Mat& target, int level, float ratio);
    PyramidTemplateMatcher* matcher;
    

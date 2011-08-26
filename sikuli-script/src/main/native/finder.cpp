@@ -10,11 +10,12 @@
 #include "finder.h"
 #include "pyramid-template-matcher.h"
 #include "TimingBlock.h"
+#include "vision.h"
 
 using namespace cv;
 using namespace std;
 
-#define PYRAMID_MIM_TARGET_DIMENSION 12
+#define DEFAULT_PYRAMID_MIM_TARGET_DIMENSION 12
 #define PYRAMID_MIM_TARGET_DIMENSION_ALL 50
 #define REMATCH_THRESHOLD 0.9
 #define CENTER_REMATCH_THRESHOLD 0.99
@@ -64,18 +65,24 @@ bool sort_by_score(FindResult m1, FindResult m2){
    return m1.score > m2.score;
 }
 
+void TemplateFinder::init(){
+   matcher = NULL;
+   float min_target_size = sikuli::Vision::getParameter("MinTargetSize");
+   PyramidMinTargetDimension = min_target_size>0 ? 
+      min_target_size : DEFAULT_PYRAMID_MIM_TARGET_DIMENSION;
+}
 
 TemplateFinder::TemplateFinder(Mat _source) : BaseFinder(_source){
-   matcher = NULL;
+   init();
 }
 
 TemplateFinder::TemplateFinder(IplImage* _source) : BaseFinder(_source){
-   matcher = NULL;
+   init();
 }
 
 TemplateFinder::TemplateFinder(const char* source_image_filename)
 : BaseFinder(source_image_filename){
-   matcher = NULL;
+   init();
 }
 
 TemplateFinder::~TemplateFinder(){
@@ -210,9 +217,10 @@ TemplateFinder::find(Mat target, double min_similarity){
    
    
    float ratio;
-   ratio = min(target.rows * 1.0 / PYRAMID_MIM_TARGET_DIMENSION, 
-               target.cols * 1.0 / PYRAMID_MIM_TARGET_DIMENSION);
-   
+   ratio = min(target.rows / PyramidMinTargetDimension, 
+               target.cols / PyramidMinTargetDimension);
+   if(ratio < 1.f)
+      ratio = 1.f;
    
    Mat sourceMat;
    Mat targetMat;

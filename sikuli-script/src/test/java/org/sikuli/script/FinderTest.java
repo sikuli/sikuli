@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+import org.sikuli.script.natives.Vision;
+
 public class FinderTest 
 {
 
@@ -42,16 +44,19 @@ public class FinderTest
 
    @Test
    public void testFinderFolders() throws Exception {
+      Vision.setParameter("MinTargetSize", 12);
       testTargetScreenSet("finderfolders");
    }
 
    @Test
    public void testMacDesktopDark() throws Exception {
+      Vision.setParameter("MinTargetSize", 7);
       testTargetScreenSet("macdesktopdark");
    }
 
    @Test
    public void testMacDesktop() throws Exception {
+      Vision.setParameter("MinTargetSize", 6);
       testTargetScreenSet("macdesktop");
    }
 
@@ -78,6 +83,7 @@ public class FinderTest
 
    @Test
    public void testSikuliOrg() throws Exception {
+      Vision.setParameter("MinTargetSize", 12);
       testTargetScreenSet("sikuliorgbanner");
    }
 
