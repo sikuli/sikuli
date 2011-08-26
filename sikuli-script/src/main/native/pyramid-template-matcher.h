@@ -25,13 +25,17 @@ using namespace std;
 class PyramidTemplateMatcher{
 private:
    bool _use_gpu;
+   void init(){
+      _use_gpu = false;
+      _hasMatchedResult = false;
+      if(sikuli::Vision::getParameter("GPU"))
+         _use_gpu = true;
+   }
 public:
 
-   PyramidTemplateMatcher() : _use_gpu(false){
-      if(sikuli::Vision::getParameter("GPU")){
-         _use_gpu = true;
-      } 
-   };
+   PyramidTemplateMatcher(){
+      init();
+   }
    PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
    ~PyramidTemplateMatcher();
 
@@ -41,9 +45,12 @@ protected:
 
    PyramidTemplateMatcher* createSmallMatcher(int level);
    double findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location);
+   void eraseResult(int x, int y, int xmargin, int ymargin);
+   FindResult nextFromLowerPyramid();
 
    Mat source, target;
    float factor;
+   bool _hasMatchedResult;
    double _detectedScore;
    Point  _detectedLoc;
 

@@ -43,8 +43,7 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
 PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
 : factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
 { 
-
-   TimingBlock tb("PyramidTemplateMatcher()");
+   init();
    if (source.rows < target.rows || source.cols < target.cols){
       //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
       return;
@@ -52,14 +51,6 @@ PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int lev
    
    if (levels > 0){
       lowerPyramid = createSmallMatcher(levels-1);
-   }else{
-      TimingBlock t("matchTemplate");
-#if USE_SQRDIFF_NORMED
-      matchTemplate(source,target,result,CV_TM_SQDIFF_NORMED);
-      result = Mat::ones(result.size(), CV_32F) - result;
-#else
-      matchTemplate(source,target,result,CV_TM_CCOEFF_NORMED);
-#endif
    }
 };
 
@@ -83,6 +74,15 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
       return out_score;
 }
 
+void PyramidTemplateMatcher::eraseResult(int x, int y, int xmargin, int ymargin){
+   int x0 = max(x-xmargin,0);
+   int y0 = max(y-ymargin,0);
+   int x1 = min(x+xmargin,result.cols);  // no need to blank right and bottom
+   int y1 = min(y+ymargin,result.rows);
+
+   result(Range(y0, y1), Range(x0, x1)) = 0.f;
+}
+
 FindResult PyramidTemplateMatcher::next(){
    TimingBlock tb("PyramidTemplateMatcher::next()");
    
@@ -90,53 +90,47 @@ FindResult PyramidTemplateMatcher::next(){
       return FindResult(0,0,0,0,-1);
    }
    
-   int x, y;
-   int xmargin, ymargin;
    if (lowerPyramid == NULL){
       double detectionScore;
       Point detectionLoc;
-      minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+      if(!_hasMatchedResult){
+         detectionScore = findBest(source, target, result, detectionLoc);
+         _hasMatchedResult = true;
+      }
+      else
+         minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
 
-      xmargin = target.cols/3;
-      ymargin = target.rows/3;
-      
-      x = detectionLoc.x;
-      y = detectionLoc.y;
-
-      int x0 = max(x-xmargin,0);
-      int y0 = max(y-ymargin,0);
-      int x1 = min(x+xmargin,result.cols);  // no need to blank right and bottom
-      int y1 = min(y+ymargin,result.rows);
-      
-      result(Range(y0, y1), Range(x0, x1)) = 0.f;
+      int xmargin = target.cols/3;
+      int ymargin = target.rows/3;
+      eraseResult(detectionLoc.x, detectionLoc.y, xmargin, ymargin);
       
       return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);;
    }
    else{
-      FindResult match = lowerPyramid->next();
-      
-      x = match.x*factor;
-      y = match.y*factor;
-      //
-      // compute the parameter to define the neighborhood rectangle
-      int x0 = max(x-(int)factor,0);
-      int y0 = max(y-(int)factor,0);
-      int x1 = min(x+target.cols+(int)factor,source.cols);
-      int y1 = min(y+target.rows+(int)factor,source.rows);
-      Rect roi(x0,y0,x1-x0,y1-y0);
-      Mat roiOfSource(source, roi);
-
-      Point detectionLoc;
-      double detectionScore = findBest(roiOfSource, target, result, detectionLoc);
-   
-
-      detectionLoc.x += roi.x;
-      detectionLoc.y += roi.y;
-      
-      
-      return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
-      
+      return nextFromLowerPyramid();
    }
    
-   
-};
+}
+
+FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
+   FindResult match = lowerPyramid->next();
+
+   int x = match.x*factor;
+   int y = match.y*factor;
+   //
+   // compute the parameter to define the neighborhood rectangle
+   int x0 = max(x-(int)factor,0);
+   int y0 = max(y-(int)factor,0);
+   int x1 = min(x+target.cols+(int)factor,source.cols);
+   int y1 = min(y+target.rows+(int)factor,source.rows);
+   Rect roi(x0,y0,x1-x0,y1-y0);
+   Mat roiOfSource(source, roi);
+
+   Point detectionLoc;
+   double detectionScore = findBest(roiOfSource, target, result, detectionLoc);
+
+   detectionLoc.x += roi.x;
+   detectionLoc.y += roi.y;
+
+   return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
+}
