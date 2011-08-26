@@ -13,7 +13,6 @@
 #define USE_CCORR_NORMED 1
 
 // select how images are downsampled
-#define RESIZE_STEP 3
 #define USE_RESIZE 1
 #define USE_PYRDOWN 0
 
@@ -24,8 +23,8 @@
 #endif
 
 PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
+      TimingBlock t("PyramidTemplateMatcher::createSmallMatcher");
       Mat smallSource, smallTarget;
-      TimingBlock* t = new TimingBlock("downsampling");
       
 #if USE_PYRDOWN
          // Faster
@@ -33,26 +32,22 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       pyrDown(target, smallTarget);
 #endif
 #if USE_RESIZE
-      resize(source, smallSource, Size(1.0*source.cols/factor,source.rows*1.0/factor),INTER_NEAREST);
-      resize(target, smallTarget, Size(1.0*target.cols/factor,target.rows*1.0/factor),INTER_NEAREST);      
+      resize(source, smallSource, Size(source.cols/factor,source.rows/factor),INTER_NEAREST);
+      resize(target, smallTarget, Size(target.cols/factor,target.rows/factor),INTER_NEAREST);      
 #endif
-      delete t;
       return new PyramidTemplateMatcher(smallSource, smallTarget, level, factor);
 }
 
 PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
 : factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
 { 
-   init();
-   if (source.rows < target.rows || source.cols < target.cols){
-      //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
+   if (source.rows < target.rows || source.cols < target.cols)
       return;
-   }
-   
-   if (levels > 0){
+
+   init();
+   if (levels > 0)
       lowerPyramid = createSmallMatcher(levels-1);
-   }
-};
+}
 
 
 
@@ -85,31 +80,27 @@ void PyramidTemplateMatcher::eraseResult(int x, int y, int xmargin, int ymargin)
 
 FindResult PyramidTemplateMatcher::next(){
    TimingBlock tb("PyramidTemplateMatcher::next()");
-   
    if (source.rows < target.rows || source.cols < target.cols){
+      //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
       return FindResult(0,0,0,0,-1);
    }
-   
-   if (lowerPyramid == NULL){
-      double detectionScore;
-      Point detectionLoc;
-      if(!_hasMatchedResult){
-         detectionScore = findBest(source, target, result, detectionLoc);
-         _hasMatchedResult = true;
-      }
-      else
-         minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
-
-      int xmargin = target.cols/3;
-      int ymargin = target.rows/3;
-      eraseResult(detectionLoc.x, detectionLoc.y, xmargin, ymargin);
-      
-      return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);;
-   }
-   else{
+   if (lowerPyramid != NULL)
       return nextFromLowerPyramid();
+
+   double detectionScore;
+   Point detectionLoc;
+   if(!_hasMatchedResult){
+      detectionScore = findBest(source, target, result, detectionLoc);
+      _hasMatchedResult = true;
    }
+   else
+      minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+
+   int xmargin = target.cols/3;
+   int ymargin = target.rows/3;
+   eraseResult(detectionLoc.x, detectionLoc.y, xmargin, ymargin);
    
+   return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
 }
 
 FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
