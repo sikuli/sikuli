@@ -13,9 +13,12 @@
 #include "opencv.hpp"
 #include "find-result.h"
 #include "vision.h"
+#include <opencv2/gpu/gpu.hpp>
 
 using namespace cv;
 using namespace std;
+
+#define MIN_PIXELS_TO_USE_GPU 90000
 
 class PyramidTemplateMatcher{
 private:
@@ -46,6 +49,7 @@ protected:
 
    PyramidTemplateMatcher* lowerPyramid;
    Mat result;
+   gpu::GpuMat gResult;
 };
 
 #endif
