@@ -893,3 +893,54 @@ below:
 	
 	:return: a :py:class:`Location` object of the position of the mouse cursor on the screen.
 	
+
+
+Advanced Settings for Tuning Vision Algorithm
+---------------------------------------------
+
+
+.. versionadded:: X1.0-rc3
+.. py:method:: Vision.setParameter(param, value)
+
+	Set the parameter *param* of the vision algorithm to *value*.
+	
+	:parameter param: a string that indicates the parameter to set.
+	:parameter value: a float value.
+
+
+.. py:method:: Vision.getParameter(param)
+
+	Get the parameter *param* of the vision algorithm.
+	
+	:parameter param: a string that indicates the parameter to get.
+	:return: the float value of the specified parameter.
+
+
+
+The available parameters for tuning the vision algorithm of Sikuli is listed as
+follows.
+
+.. _min-target-size:
+
+.. versionadded:: X1.0-rc3
+MinTargetSize
+^^^^^^^^^^^^^
+
+``MinTargetSize`` is the minimum image size to which Sikuli can resize. 
+
+Sikuli resizes the screen images to a smaller scale for faster matching. This scaling process speeds up the matching process, but also increases the possibility 
+of false matching.
+The default value of ``MinTargetSize`` in X-1.0rc3 is 12, which makes the matching algorithm be balanced between speed and robustness. 
+If you feel that Sikuli is running too slow, 
+try a smaller value than 12. On the other hand, if you see Sikuli returns a match that is not what you expect, i.e. a false match, 
+try to increase ``MinTargetSize`` to make Sikuli be more robust to small details.
+
+You can tune this parameter using the following Jython code. 
+
+.. sikulicode::
+
+   from org.sikuli.script.natives import Vision
+
+   Vision.setParameter("MinTargetSize", 6) # the default is 12. Setting the size to a smaller value would make the matching algorithm be faster.
+
+
