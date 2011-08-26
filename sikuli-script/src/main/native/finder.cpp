@@ -15,12 +15,6 @@
 using namespace cv;
 using namespace std;
 
-#define DEFAULT_PYRAMID_MIM_TARGET_DIMENSION 12
-#define PYRAMID_MIM_TARGET_DIMENSION_ALL 50
-#define REMATCH_THRESHOLD 0.9
-#define CENTER_REMATCH_THRESHOLD 0.99
-#define BORDER_MARGIN 0.2
-
 
 #ifdef DEBUG_FINDER
 #define dout std::cerr

@@ -10,6 +10,7 @@
 #include "imgdb.h"
 #include <sys/stat.h> 
 
+
 #ifdef ENABLE_VISUAL_LOG
    const bool enable_visual_log = true;
 #else
@@ -481,7 +482,13 @@ void Vision::setParameter(string param, float val){
    _params[param] = val;
 }
 
+void Vision::initParameters(){
+   _params["MinTargetSize"] = DEFAULT_PYRAMID_MIM_TARGET_DIMENSION;
+
+}
 
 float Vision::getParameter(string param){
+   if(_params.empty())
+      Vision::initParameters();
    return _params[param];
 }

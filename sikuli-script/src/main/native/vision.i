@@ -223,6 +223,7 @@ namespace sikuli {
       static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);
 
       static void setParameter(std::string param, float val);
+      static float getParameter(std::string param);
       
    private:   
       

@@ -80,6 +80,7 @@ private:
 
 class Vision{
    static std::map<std::string, float> _params;
+   static void initParameters();
 
 public:
       

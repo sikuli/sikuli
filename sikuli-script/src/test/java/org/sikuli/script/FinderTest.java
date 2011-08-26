@@ -43,6 +43,15 @@ public class FinderTest
    }
 
    @Test
+   public void testParameter() throws Exception {
+      float old_param = Vision.getParameter("MinTargetSize");
+      assertTrue(old_param>0);
+      Vision.setParameter("MinTargetSize", old_param+2);
+      assertEquals(Vision.getParameter("MinTargetSize"), old_param+2, 1e-5);
+      Vision.setParameter("MinTargetSize", old_param);
+   }
+
+   @Test
    public void testFinderFolders() throws Exception {
       Vision.setParameter("MinTargetSize", 12);
       testTargetScreenSet("finderfolders");
