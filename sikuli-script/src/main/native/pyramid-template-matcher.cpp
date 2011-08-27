@@ -22,7 +22,7 @@
 #define dout if(0) std::cerr
 #endif
 
-#define MIN_PIXELS_TO_USE_GPU 950000
+#define MIN_PIXELS_TO_USE_GPU 90000
 #define WORTH_GPU(mat) ( ((mat).rows * (mat).cols) > MIN_PIXELS_TO_USE_GPU)
 
 
