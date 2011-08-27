@@ -106,11 +106,6 @@ public class FinderTest
    }
 
    @Test
-   public void testXpDesktop() throws Exception {
-      testTargetScreenSet("xpdesktop");
-   }
-
-   @Test
    public void testXpFolders() throws Exception {
       testTargetScreenSet("xpfolders");
    }
@@ -119,5 +114,11 @@ public class FinderTest
    public void testXpPricingApp() throws Exception {
       testTargetScreenSet("xppricingapp");
    }
+
+   @Test
+   public void testXpDesktop() throws Exception {
+      testTargetScreenSet("xpdesktop");
+   }
+
 }
 

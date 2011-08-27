@@ -39,11 +39,13 @@ PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int lev
       return;
 
    init();
+#ifdef ENABLE_GPU
    if(sikuli::Vision::getParameter("GPU") && WORTH_GPU(source)){
       if(gpu::getCudaEnabledDeviceCount()>0) 
          _use_gpu = true;
-      cout << source.rows << "x" << source.cols << endl;
+      //cout << source.rows << "x" << source.cols << endl; 
    }
+#endif
    if (levels > 0)
       lowerPyramid = createSmallMatcher(levels-1);
 }
@@ -75,6 +77,7 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
 double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location){
       TimingBlock t("PyramidTemplateMatcher::findBest");
       double out_score;
+#ifdef ENABLE_GPU
       if(_use_gpu){
          gpu::GpuMat gSource, gTarget;
          gSource.upload(source);
@@ -83,6 +86,7 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
          gpu::minMaxLoc(gResult, NULL, &out_score, NULL, &out_location);
          return out_score;
       }
+#endif
 
 #if USE_SQRDIFF_NORMED
       matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
@@ -97,15 +101,24 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
 void PyramidTemplateMatcher::eraseResult(int x, int y, int xmargin, int ymargin){
    int x0 = max(x-xmargin,0);
    int y0 = max(y-ymargin,0);
+#ifdef ENABLE_GPU
    int rows = _use_gpu? gResult.rows : result.rows;
    int cols = _use_gpu? gResult.cols : result.cols;
+#else
+   int rows = result.rows;
+   int cols = result.cols;
+#endif
    int x1 = min(x+xmargin,cols);  // no need to blank right and bottom
    int y1 = min(y+ymargin,rows);
 
+#ifdef ENABLE_GPU
    if(_use_gpu)
       gResult(Range(y0, y1), Range(x0, x1)) = 0.f;
    else
+#endif
+   {
       result(Range(y0, y1), Range(x0, x1)) = 0.f;
+   }
 }
 
 FindResult PyramidTemplateMatcher::next(){
@@ -124,10 +137,15 @@ FindResult PyramidTemplateMatcher::next(){
       _hasMatchedResult = true;
    }
    else{
+#ifdef ENABLE_GPU
       if(_use_gpu)
          gpu::minMaxLoc(gResult, NULL, &detectionScore, NULL, &detectionLoc);
       else
+#endif
+      {
          minMaxLoc(result, NULL, &detectionScore, NULL, &detectionLoc);
+      }
+
    }
 
    int xmargin = target.cols/3;
