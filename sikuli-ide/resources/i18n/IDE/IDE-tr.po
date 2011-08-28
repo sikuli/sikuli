@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2010-12-05 23:28+0000\n"
-"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
+"PO-Revision-Date: 2011-04-12 11:14+0000\n"
+"Last-Translator: Oguz Pastirmaci <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
 msgid "File"
-msgstr ""
+msgstr "Dosya"
 
 #: menuEdit
 msgid "Edit"
@@ -37,7 +37,7 @@ msgstr "Görünüm"
 
 #: menuTool
 msgid "Tools"
-msgstr ""
+msgstr "Araçlar"
 
 #: menuFileNew
 msgid "New"
@@ -61,7 +61,7 @@ msgstr "Çalıştırılabilir dosyayı dışa aktar"
 
 #: menuFilePreferences
 msgid "Preferences..."
-msgstr "Tercihler"
+msgstr "Tercihler..."
 
 #: menuFileCloseTab
 msgid "Close Tab"
@@ -73,11 +73,11 @@ msgstr "Çık"
 
 #: menuEditUndo
 msgid "Undo"
-msgstr ""
+msgstr "Geri Al"
 
 #: menuEditRedo
 msgid "Redo"
-msgstr ""
+msgstr "Yinele"
 
 #: menuEditCut
 msgid "Cut"
@@ -106,19 +106,19 @@ msgstr "Girintiyi kaldır"
 #: menuFind
 msgctxt "menuFind"
 msgid "Find"
-msgstr ""
+msgstr "Bul"
 
 #: menuFindFind
 msgid "Find..."
-msgstr ""
+msgstr "Bul..."
 
 #: menuFindFindNext
 msgid "Find Next"
-msgstr ""
+msgstr "Sonrakini Bul"
 
 #: menuFindFindPrev
 msgid "Find Previous"
-msgstr ""
+msgstr "Öncekini Bul"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -128,7 +128,7 @@ msgstr "Çalıştır"
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Ağır çekim çalıştır"
 
 #: menuRunStop
 msgid "Stop"
@@ -141,11 +141,11 @@ msgstr "Birim Testi"
 
 #: menuViewCommandList
 msgid "Command List"
-msgstr ""
+msgstr "Komut Listesi"
 
 #: menuToolExtensions
 msgid "Extensions..."
-msgstr ""
+msgstr "Eklentiler..."
 
 #: menuHelp
 msgid "Help"
@@ -173,7 +173,7 @@ msgstr "Hata Bildir"
 
 #: menuHelpTranslation
 msgid "Join our translation project!"
-msgstr ""
+msgstr "Çeviri projemize katılın!"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
@@ -189,7 +189,7 @@ msgstr "Güncelleme mevcut değil."
 
 #: cmdListSettings
 msgid "Settings"
-msgstr ""
+msgstr "Ayarlar"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -198,19 +198,19 @@ msgstr "Otomatik Yakala"
 #: cmdListFind
 msgctxt "cmdListFind"
 msgid "Find"
-msgstr ""
+msgstr "Bul"
 
 #: cmdListMouse
 msgid "Mouse Actions"
-msgstr ""
+msgstr "Fare Hareketleri"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr ""
+msgstr "Klavye Hareketleri"
 
 #: cmdListObserver
 msgid "Event Observation"
-msgstr ""
+msgstr "Olay Gözlemi"
 
 #: paneMessage
 msgid "Message"
@@ -236,12 +236,12 @@ msgstr "Çalıştır ({0})"
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Çalıştır"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Ağır çekim çalıştır"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
@@ -249,7 +249,7 @@ msgstr "Durdurmak için: {0}"
 
 #: btnRegionLabel
 msgid "Create Region"
-msgstr ""
+msgstr "Bölge Yarat"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
@@ -257,7 +257,7 @@ msgstr "Ekran eşleşmesini sınırlamak için bölge oluştur"
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Ekran görüntüsü al"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -269,7 +269,7 @@ msgstr "Diskten resim ekle"
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "Resim ekle "
 
 #: msgRunningSklError
 msgid ""
@@ -325,19 +325,19 @@ msgstr "saniye"
 
 #: prefAutoNaming
 msgid "Automatic Naming:"
-msgstr ""
+msgstr "Otomatik Adlandırma:"
 
 #: prefTimestamp
 msgid "time stamp"
-msgstr ""
+msgstr "zaman damgası"
 
 #: prefRecognizedText
 msgid "text in the image"
-msgstr ""
+msgstr "görüntüdeki yazı"
 
 #: prefManualInput
 msgid "off (manual input)"
-msgstr ""
+msgstr "kapalı (elle giriş)"
 
 #: prefTabGeneralSettings
 msgid "General Settings"
@@ -366,7 +366,7 @@ msgstr "Şablon Ayarları"
 #: tabNaming
 msgctxt "tabNaming"
 msgid "File"
-msgstr ""
+msgstr "Dosya"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
@@ -378,11 +378,11 @@ msgstr "Hedef Konum"
 
 #: lblPath
 msgid "Path:"
-msgstr ""
+msgstr "Konum:"
 
 #: lblFilename
 msgid "Filename:"
-msgstr ""
+msgstr "Dosya Adı:"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -418,19 +418,19 @@ msgstr "Hayır"
 
 #: dlgFileExists
 msgid "File Exists"
-msgstr ""
+msgstr "Dosya Zaten Var"
 
 #: msgFileExists
 msgid "Are you sure to overwrite this file \"{0}\"?"
-msgstr ""
+msgstr "Bu dosyanın üzerine yazmak istediğinize emin misiniz \"{0}\"?"
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
-msgstr ""
+msgstr "Yakalanan Ekran Görüntüsünü Adlandır"
 
 #: msgEnterScreenshotFilename
 msgid "Enter the screen shot's file name:"
-msgstr ""
+msgstr "Yakalanan ekran görüntüsünün dosya adını girin:"
 
 #: cmdFind
 msgid ""
@@ -549,28 +549,20 @@ msgstr ""
 
 #: extBtnInstall
 msgid "Install"
-msgstr ""
+msgstr "Kur"
 
 #: extBtnInfo
 msgid "More Info"
-msgstr ""
+msgstr "Daha Fazla Bilgi"
 
 #: extMsgInstalled
 msgid "Installed"
-msgstr ""
+msgstr "Kuruldu"
 
 #: extBtnInstallVer
 msgid "Install {0}"
-msgstr ""
+msgstr "{0} Kur"
 
 #: extBtnUpdateVer
 msgid "Update to {0}"
-msgstr ""
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "Komut Listesi"
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Komut Listesi"
+msgstr "Buna güncelle: {0}"

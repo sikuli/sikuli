@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-02-02 00:39+0000\n"
-"Last-Translator: Edu <Unknown>\n"
+"PO-Revision-Date: 2011-04-18 14:03+0000\n"
+"Last-Translator: Berty <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -128,7 +128,7 @@ msgstr "Uitvoeren"
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "vertraagd uitvoeren"
 
 #: menuRunStop
 msgid "Stop"
@@ -236,12 +236,12 @@ msgstr "Uitvoeren ({0})"
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Uitvoeren"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "vertraagd uitvoeren"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
@@ -249,7 +249,7 @@ msgstr "Druk op ({0}) om te stoppen"
 
 #: btnRegionLabel
 msgid "Create Region"
-msgstr ""
+msgstr "gebied aanmaken"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
@@ -257,7 +257,7 @@ msgstr "Maak een regio aan om het zoekgebied te beperken"
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Schermafbeelding maken"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -269,7 +269,7 @@ msgstr "Voeg een afbeelding toe"
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "afbeelding invoegen "
 
 #: msgRunningSklError
 msgid ""
@@ -553,34 +553,26 @@ msgid ""
 "seconds.<br>The observer will be run in the background if <i>background</i> "
 "is set to True."
 msgstr ""
+"Start de waarnemer om het scherm of gebied te bekijken geduurdende "
+"<i>time<i> seconden.<br>De waarnemer zal in de achtergrond lopen als "
+"<i>achtergrond<i> op waar staat."
 
 #: extBtnInstall
 msgid "Install"
-msgstr ""
+msgstr "Installeer"
 
 #: extBtnInfo
 msgid "More Info"
-msgstr ""
+msgstr "Meer informatie"
 
 #: extMsgInstalled
 msgid "Installed"
-msgstr ""
+msgstr "Geinstalleerd"
 
 #: extBtnInstallVer
 msgid "Install {0}"
-msgstr ""
+msgstr "installeer {0}"
 
 #: extBtnUpdateVer
 msgid "Update to {0}"
-msgstr ""
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Opdrachtenlijst"
-
-#~ msgid "Run in slow motion"
-#~ msgstr "Uitvoeren in slow-motion"
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "opdrachtlijst"
+msgstr "Update naar {0}"

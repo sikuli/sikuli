@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2010-12-07 11:42+0000\n"
-"Last-Translator: teyssieuman@gmail.com <Unknown>\n"
+"PO-Revision-Date: 2011-06-17 19:59+0000\n"
+"Last-Translator: JeromeJ <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -37,7 +37,7 @@ msgstr "Affichage"
 
 #: menuTool
 msgid "Tools"
-msgstr ""
+msgstr "Outils"
 
 #: menuFileNew
 msgid "New"
@@ -73,11 +73,11 @@ msgstr "Quitter"
 
 #: menuEditUndo
 msgid "Undo"
-msgstr ""
+msgstr "Annuler"
 
 #: menuEditRedo
 msgid "Redo"
-msgstr ""
+msgstr "Répéter"
 
 #: menuEditCut
 msgid "Cut"
@@ -106,19 +106,19 @@ msgstr "Désindenter"
 #: menuFind
 msgctxt "menuFind"
 msgid "Find"
-msgstr ""
+msgstr "Rechercher"
 
 #: menuFindFind
 msgid "Find..."
-msgstr ""
+msgstr "Rechercher..."
 
 #: menuFindFindNext
 msgid "Find Next"
-msgstr ""
+msgstr "Poursuivre la recherche"
 
 #: menuFindFindPrev
 msgid "Find Previous"
-msgstr ""
+msgstr "Trouver le précédent"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -128,7 +128,7 @@ msgstr "Exécuter"
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Exécuter au ralenti"
 
 #: menuRunStop
 msgid "Stop"
@@ -141,11 +141,11 @@ msgstr "Test unitaire"
 
 #: menuViewCommandList
 msgid "Command List"
-msgstr ""
+msgstr "Liste des Commandes"
 
 #: menuToolExtensions
 msgid "Extensions..."
-msgstr ""
+msgstr "Extensions..."
 
 #: menuHelp
 msgid "Help"
@@ -189,7 +189,7 @@ msgstr "Aucune mise à jour n'est disponible"
 
 #: cmdListSettings
 msgid "Settings"
-msgstr ""
+msgstr "Préférences"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -198,19 +198,19 @@ msgstr "Capture automatique"
 #: cmdListFind
 msgctxt "cmdListFind"
 msgid "Find"
-msgstr ""
+msgstr "Rechercher"
 
 #: cmdListMouse
 msgid "Mouse Actions"
-msgstr ""
+msgstr "Evenements de la sourie"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr ""
+msgstr "Evenements du clavier"
 
 #: cmdListObserver
 msgid "Event Observation"
-msgstr ""
+msgstr "Veille des événements"
 
 #: paneMessage
 msgid "Message"
@@ -236,12 +236,12 @@ msgstr "Exécuter ({0})"
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Lancer"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Exécuter au ralenti"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
@@ -249,7 +249,7 @@ msgstr "Appuyez sur {0} pour arrêter"
 
 #: btnRegionLabel
 msgid "Create Region"
-msgstr ""
+msgstr "Délimiter une aire"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
@@ -257,7 +257,7 @@ msgstr "Créer une région pour restreindre la recherche"
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Prendre une capture d'écran"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
@@ -269,7 +269,7 @@ msgstr "Insérer une image à partir d'un fichier"
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "Inserer une image "
 
 #: msgRunningSklError
 msgid ""
@@ -492,7 +492,7 @@ msgstr ""
 
 #: cmdHover
 msgid "Moves the mouse cursor on the best matched GUI component."
-msgstr "Déplasser le curseur de la souris sur la meilleure correspondance."
+msgstr "Déplacer le curseur de la souris sur la meilleure correspondance."
 
 #: cmdDragDrop
 msgid "Drags the first component, and drops at the second component."
@@ -557,31 +557,20 @@ msgstr ""
 
 #: extBtnInstall
 msgid "Install"
-msgstr ""
+msgstr "Installer"
 
 #: extBtnInfo
 msgid "More Info"
-msgstr ""
+msgstr "Plus d'informations"
 
 #: extMsgInstalled
 msgid "Installed"
-msgstr ""
+msgstr "Installé"
 
 #: extBtnInstallVer
 msgid "Install {0}"
-msgstr ""
+msgstr "Installé {0}"
 
 #: extBtnUpdateVer
 msgid "Update to {0}"
-msgstr ""
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "Liste de fonctions"
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Liste de fonction"
-
-#~ msgid "Run in slow motion"
-#~ msgstr "Exécuter au ralenti"
+msgstr "Mis à jour {0}"

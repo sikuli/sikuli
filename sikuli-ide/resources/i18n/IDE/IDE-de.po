@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-02-09 07:26+0000\n"
-"Last-Translator: RaiMan <rmhdevelop@me.com>\n"
+"PO-Revision-Date: 2011-06-22 06:51+0000\n"
+"Last-Translator: AK <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -51,10 +51,6 @@ msgstr "Prüfe auf neue Version..."
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
 msgstr "Der umfassende Leitfaden zu Sikuli Script"
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "Kommandoliste"
 
 #: menuTool
 msgid "Tools"
@@ -157,7 +153,7 @@ msgstr "Abbrechen"
 
 #: menuViewCommandList
 msgid "Command List"
-msgstr "Kommandoliste"
+msgstr "Befehlsliste"
 
 #: menuToolExtensions
 msgid "Extensions..."
@@ -210,7 +206,7 @@ msgstr "Maus-Aktionen"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr "Tastatur-Actionen"
+msgstr "Tastatur-Aktionen"
 
 #: cmdListObserver
 msgid "Event Observation"
@@ -584,13 +580,3 @@ msgstr "Installiere"
 #: extBtnUpdateVer
 msgid "Update to {0}"
 msgstr "Neue Version"
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Kommandoliste"
-
-#~ msgid "Run in slow motion"
-#~ msgstr "Ausführen in Zeitlupe"
-
-#~ msgid "Find"
-#~ msgstr "Suchen"

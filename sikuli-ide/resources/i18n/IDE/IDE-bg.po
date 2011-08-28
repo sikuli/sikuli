@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2010-12-05 23:29+0000\n"
-"Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
+"PO-Revision-Date: 2011-07-10 21:30+0000\n"
+"Last-Translator: Marco Idakiev <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: menuEdit
 msgid "Edit"
@@ -37,7 +37,7 @@ msgstr "Изглед"
 
 #: menuTool
 msgid "Tools"
-msgstr ""
+msgstr "Инструменти"
 
 #: menuFileNew
 msgid "New"
@@ -73,11 +73,11 @@ msgstr "Изход"
 
 #: menuEditUndo
 msgid "Undo"
-msgstr ""
+msgstr "Отмени"
 
 #: menuEditRedo
 msgid "Redo"
-msgstr ""
+msgstr "Възстановяване"
 
 #: menuEditCut
 msgid "Cut"
@@ -106,19 +106,19 @@ msgstr "Махане на отстъп"
 #: menuFind
 msgctxt "menuFind"
 msgid "Find"
-msgstr ""
+msgstr "Намери"
 
 #: menuFindFind
 msgid "Find..."
-msgstr ""
+msgstr "Намери..."
 
 #: menuFindFindNext
 msgid "Find Next"
-msgstr ""
+msgstr "Намери следващ"
 
 #: menuFindFindPrev
 msgid "Find Previous"
-msgstr ""
+msgstr "Намери предишен"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -128,7 +128,7 @@ msgstr "Изпълнение"
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Пусни на забавен кадър"
 
 #: menuRunStop
 msgid "Stop"
@@ -137,7 +137,7 @@ msgstr "Спиране"
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Тест на артикул"
 
 #: menuViewCommandList
 msgid "Command List"
@@ -165,7 +165,7 @@ msgstr ""
 
 #: menuHelpAsk
 msgid "Ask Questions & Find Answers"
-msgstr "Задайте въпроси и отрийте отговори"
+msgstr "Задайте въпроси и открийте отговори"
 
 #: menuHelpBugReport
 msgid "Report a Bug"
@@ -173,7 +173,7 @@ msgstr "Докладване за грешка"
 
 #: menuHelpTranslation
 msgid "Join our translation project!"
-msgstr ""
+msgstr "Влезте в нашия проект за превеждане!"
 
 #: menuHelpHomepage
 msgid "Sikuli's Homepage"
@@ -181,7 +181,7 @@ msgstr "Домашната страница на Sikuli"
 
 #: dlgUpdateAvailable
 msgid "Sikuli {0} is available!"
-msgstr "Налична е Sikuli версия {0}!"
+msgstr "Sikuli {0} е налична!"
 
 #: msgNoUpdate
 msgid "No update is available."
@@ -189,7 +189,7 @@ msgstr "Няма налично обновление."
 
 #: cmdListSettings
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -198,15 +198,15 @@ msgstr "Автоматично прихващане"
 #: cmdListFind
 msgctxt "cmdListFind"
 msgid "Find"
-msgstr ""
+msgstr "Намери"
 
 #: cmdListMouse
 msgid "Mouse Actions"
-msgstr ""
+msgstr "Действия с мишката"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr ""
+msgstr "Действия с клавиатурата"
 
 #: cmdListObserver
 msgid "Event Observation"
@@ -231,17 +231,17 @@ msgstr ""
 
 #: btnRun
 msgid "Run ({0})"
-msgstr "Изпълнение ({0})"
+msgstr "Пусни ({0})"
 
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Пусни"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Пусни на забавен кадър"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
@@ -257,11 +257,11 @@ msgstr ""
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Направете екранна снимка"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr "Снимка на екрана ({0})"
+msgstr "Направете екранна снимка ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -269,7 +269,7 @@ msgstr "Вмъкване на изображение от дисковете"
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "Вмъкни изображение "
 
 #: msgRunningSklError
 msgid ""
@@ -341,7 +341,7 @@ msgstr ""
 
 #: prefTabGeneralSettings
 msgid "General Settings"
-msgstr "Общи настройки"
+msgstr "Основни настройки"
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
@@ -366,7 +366,7 @@ msgstr "Настройка на шаблон"
 #: tabNaming
 msgctxt "tabNaming"
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
@@ -378,11 +378,11 @@ msgstr "Изместване на целта"
 
 #: lblPath
 msgid "Path:"
-msgstr ""
+msgstr "Път:"
 
 #: lblFilename
 msgid "Filename:"
-msgstr ""
+msgstr "Име на файла:"
 
 #: lblSimilarity
 msgid "Similarity:"
@@ -418,11 +418,11 @@ msgstr "Не"
 
 #: dlgFileExists
 msgid "File Exists"
-msgstr ""
+msgstr "Файлът съществува"
 
 #: msgFileExists
 msgid "Are you sure to overwrite this file \"{0}\"?"
-msgstr ""
+msgstr "Сигурни ли сте, че искате да презапишете този файл \"{0}\"?"
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
@@ -542,11 +542,11 @@ msgstr ""
 
 #: extBtnInstall
 msgid "Install"
-msgstr ""
+msgstr "Инсталиране"
 
 #: extBtnInfo
 msgid "More Info"
-msgstr ""
+msgstr "Повече информация"
 
 #: extMsgInstalled
 msgid "Installed"
@@ -554,16 +554,8 @@ msgstr ""
 
 #: extBtnInstallVer
 msgid "Install {0}"
-msgstr ""
+msgstr "Инсталирай {0}"
 
 #: extBtnUpdateVer
 msgid "Update to {0}"
-msgstr ""
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "Списък с команди"
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Списък с команди"
+msgstr "Поднови на {0}"

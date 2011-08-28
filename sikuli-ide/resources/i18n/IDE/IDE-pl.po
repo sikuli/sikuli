@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2010-12-29 08:51+0000\n"
-"Last-Translator: Paweł Chłopek <Unknown>\n"
+"PO-Revision-Date: 2011-08-27 22:28+0000\n"
+"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-09 21:56+0000\n"
-"X-Generator: Launchpad (build 12335)\n"
+"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
+"X-Generator: Launchpad (build 13794)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -353,7 +353,7 @@ msgstr "{0} został zmodyfikowany. Zapisać zmiany?"
 
 #: statusLineColumn
 msgid "Line: {0,number,integer}, Column: {1,number,integer}"
-msgstr "Linia: {0.number,integer}, Kolumna: {1,number,integer}"
+msgstr "Linia: {0,number,integer}, Kolumna: {1,number,integer}"
 
 #: winPatternSettings
 msgid "Pattern Settings"
@@ -544,14 +544,3 @@ msgstr ""
 #: extBtnUpdateVer
 msgid "Update to {0}"
 msgstr ""
-
-#~ msgctxt "menuViewCommandList"
-#~ msgid "Command List"
-#~ msgstr "Lista poleceń"
-
-#~ msgctxt "cmdListCommandList"
-#~ msgid "Command List"
-#~ msgstr "Lista poleceń"
-
-#~ msgid "Run in slow motion"
-#~ msgstr "Uruchom w zwolnionym tempie"
