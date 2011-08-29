@@ -183,6 +183,9 @@ IF(WIN32)
       COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY64} ${JAR_DIR}/com/melloware/jintellitype/
       COMMENT "Packaging JIntellitype in Jar"
    )
+   add_dependencies( ${JAR_FILE}.hotkey-lib
+      ${JAR_FILE}.jintellitype-in-jar 
+   )
 
 ENDIF(WIN32)
 
