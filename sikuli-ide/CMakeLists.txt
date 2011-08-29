@@ -1,11 +1,13 @@
 # Copyright 2010-2011, Sikuli.org
 # Released under the MIT License.
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/common.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/detect_osx_ver.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules/find_dep_libs.cmake)
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT (sikuli-ide Java)
+
+SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_modules")
+INCLUDE(${CMAKE_MODULE_PATH}/common.cmake)
+INCLUDE(${CMAKE_MODULE_PATH}/detect_osx_ver.cmake)
+INCLUDE(${CMAKE_MODULE_PATH}/find_dep_libs.cmake)
+
 
 ENABLE_TESTING()
 

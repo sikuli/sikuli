@@ -5,14 +5,12 @@ sikuli-ide/.classpath
 sikuli-ide/.project
 lib/sikuli-ide.jar
 lib/sikuli-script.jar
-sikuli-script/target/sikuli-script.jar
 sikuli-ide/target/sikuli-ide.jar
 sikuli-ide/bin
 sikuli-ide/build
 sikuli-ide/target/classes
 sikuli-script/bin
 sikuli-script/build
-sikuli-script/target/classes
 .bzrignore
 lib/Lib
 lib/cachedir
@@ -21,8 +19,6 @@ sikuli-script/src/test/python/**/*.class
 docs/build
 ./patches
 sikuli-ide/target/jar
-sikuli-script/target/jar
-sikuli-script/target/lib
 sikuli-ide/target/linux/Sikuli-IDE/*.jar
 sikuli-ide/target/linux/Sikuli-IDE/libs
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Frameworks/*.dylib
