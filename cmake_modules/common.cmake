@@ -1,8 +1,6 @@
 SET(CMAKE_BUILD_TYPE Release) # Release | Debug
 SET(CMAKE_VERBOSE_MAKEFILE 0)
-SET(CMAKE_OSX_ARCHITECTURES i386 x86_64
-    CACHE STRING "The architectures to build on Mac"
-   )
+SET(CMAKE_OSX_ARCHITECTURES i386 x86_64)
 
 FIND_PATH(OpenCV_DIR OpenCVConfig.cmake
    "/opt/opencv/share/opencv"
