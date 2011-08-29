@@ -171,21 +171,21 @@ IF(WIN32)
          COMMAND ${CMAKE_COMMAND} -E chdir ${JAR_DIR} ${JAVA_ARCHIVE} xf ${JINTELLITYPE_JAR}
          COMMENT "Merging Jintellitype's JAR"
       )
-   ENDIF()
-   add_dependencies(${JAR_FILE} 
-      ${JAR_FILE}.jintellitype-in-jar
-   )
+      add_dependencies(${JAR_FILE} 
+         ${JAR_FILE}.jintellitype-in-jar
+      )
 
-   SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype.dll")
-   SET(LIB_GRABKEY64 "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype64.dll")
-   add_custom_target( ${JAR_FILE}.hotkey-lib 
-      COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY} ${JAR_DIR}/com/melloware/jintellitype/
-      COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY64} ${JAR_DIR}/com/melloware/jintellitype/
-      COMMENT "Packaging JIntellitype in Jar"
-   )
-   add_dependencies( ${JAR_FILE}.hotkey-lib
-      ${JAR_FILE}.jintellitype-in-jar 
-   )
+      SET(LIB_GRABKEY "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype.dll")
+      SET(LIB_GRABKEY64 "${COMMON_LIB_DIR}/jintellitype-1.3.6/JIntellitype64.dll")
+      add_custom_target( ${JAR_FILE}.hotkey-lib 
+         COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY} ${JAR_DIR}/com/melloware/jintellitype/
+         COMMAND ${CMAKE_COMMAND} -E copy ${LIB_GRABKEY64} ${JAR_DIR}/com/melloware/jintellitype/
+         COMMENT "Packaging JIntellitype in Jar"
+      )
+      add_dependencies( ${JAR_FILE}.hotkey-lib
+         ${JAR_FILE}.jintellitype-in-jar 
+      )
+   ENDIF(NOT EXISTS ${JAR_DIR}/com/melloware/jintellitype)
 
 ENDIF(WIN32)
 
