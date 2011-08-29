@@ -3,15 +3,16 @@ IF(APPLE)
 
    MACRO(find_dep_libs IN_LIBS OUT_LIBS)
       FOREACH(DYLIB ${IN_LIBS})
-         #MESSAGE("abs_dylib: ${ABS_DYLIB}")
+         #message("find depedencies for ${DYLIB}")
          EXECUTE_PROCESS(
             COMMAND ${OTOOL} -L ${DYLIB} 
-            COMMAND grep "lib.*.dylib[^:]"
+            COMMAND perl -nle "print \$1 if /(lib[^\\/]+\\.dylib)[^:]/"
             COMMAND awk "{print \$1}"
             COMMAND tr "\n" ";"
             OUTPUT_VARIABLE libs
             OUTPUT_STRIP_TRAILING_WHITESPACE
          )
+         #message("libs: ${libs}")
          FOREACH(lib ${libs})
             STRING(REGEX MATCH "^lib(.*)\\.dylib" isDylib ${lib})
             IF(isDylib)
