@@ -59,14 +59,14 @@ public class Win32Util implements OSUtil {
       Rectangle rect = getRegion(hwnd, winNum);
       Debug.log("getWindow: " + rect);
       if(rect != null)
-         return new Region(rect);
+         return Region.create(rect);
       return null;
    }
 
    public Region getFocusedWindow(){
       Rectangle rect = getFocusedRegion();
       if(rect != null)
-         return new Region(rect);
+         return Region.create(rect);
       return null;
    }
 

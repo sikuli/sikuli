@@ -54,11 +54,14 @@ public class Region {
   /**
    * Create a region with the provided coordinate / size
    *
+   * @deprecated Not for public use in Java. Use Region.create() instead.
+   *
    * @param x_ X position
    * @param y_ Y position  
    * @param w_ width
    * @param h_ heigth
    */
+   @Deprecated
    public Region(int x_, int y_, int w_, int h_) {
       init(x_,y_,w_,h_, null);
    }
@@ -66,8 +69,11 @@ public class Region {
   /**
    * Create a region from a Rectangle
    *
+   * @deprecated Not for public use in Java. Use Region.create() instead.
+   *
    * @param r the Rectangle
    */
+   @Deprecated
    public Region(Rectangle r) {
       init(r.x, r.y, r.width, r.height, null);
    }
@@ -75,24 +81,64 @@ public class Region {
   /**
    * Create a region from an other region
    *
+   * @deprecated Not for public use in Java. Use Region.create() instead.
+   *
    * @param r the region
    */
+   @Deprecated
    public Region(Region r) {
       init(r.x, r.y, r.w, r.h, null);
    }
 
+   Region(Rectangle r, IScreen parentScreen) {
+      init(r.x, r.y, r.width, r.height, parentScreen);
+   }
+
+  /**
+   * Create a region from a Rectangle
+   *
+   * @param r the Rectangle
+   */
+   public static Region create(Rectangle rect){
+      return create(new Region(rect));
+   }
+   
+  /**
+   * Create a region with the provided coordinate / size
+   *
+   * @param x_ X position
+   * @param y_ Y position  
+   * @param w_ width
+   * @param h_ heigth
+   */
+   public static Region create(int x_, int y_, int w_, int h_) {
+      return create(new Region(x_, y_, w_, h_));
+   }
+
+   static Region create(Rectangle r, IScreen parentScreen){
+      return create(new Region(r, parentScreen));
+   }
+
+  /**
+   * Create a region from an other region
+   *
+   * @param r the region
+   */
+   public static Region create(Region r){
+      //TODO: determine if the caller is Jython
+      return toJythonRegion(r);
+   }
+
+   protected Region(){}
+
+   /////////////////////////////////////////////////////////////////
+   
    public String toString(){
       return String.format("Region[%d,%d %dx%d]@%s E:%s, T:%.1f", 
                             x, y, w, h, _scr.toString(),
                             _throwException?"Y":"N", _autoWaitTimeout);
    }
 
-   public Region(Rectangle r, IScreen parentScreen) {
-      init(r.x, r.y, r.width, r.height, parentScreen);
-   }
-
-
-   protected Region(){}
 
    protected void init(int x_, int y_, int w_, int h_, IScreen parentScreen) {
       x = x_;
@@ -228,7 +274,7 @@ public class Region {
    ///// SPATIAL OPERATORS
 
    public Region offset(Location loc){
-      return new Region(x+loc.x, y+loc.y, w, h);
+      return Region.create(x+loc.x, y+loc.y, w, h);
    }
 
    public Region moveTo(Location loc){
@@ -256,7 +302,7 @@ public class Region {
       Rectangle bounds = getScreen().getBounds();
       Rectangle rect = new Rectangle(x-range,y-range,w+range*2,h+range*2);
       rect = rect.intersection(bounds);
-      return new Region(rect);
+      return Region.create(rect);
    }
 
    public Region right(){  return right(9999999); }
@@ -264,13 +310,13 @@ public class Region {
       Rectangle bounds = getScreen().getBounds();
       Rectangle rect = new Rectangle(x+w,y,range,h);
       rect = rect.intersection(bounds);
-      return new Region(rect);
+      return Region.create(rect);
    }
 
    public Region left(){   return left(9999999);   }
    public Region left(int range){
       Rectangle bounds = getScreen().getBounds();
-      Region r = new Region(this);
+      Region r = Region.create(this);
       r.x = x-range < bounds.x? bounds.x: x-range;
       r.y = y;
       r.w = x - r.x;
@@ -281,7 +327,7 @@ public class Region {
    public Region above(){    return above(9999999);    }
    public Region above(int range){
       Rectangle bounds = getScreen().getBounds();
-      Region r = new Region(this);
+      Region r = Region.create(this);
       r.x = x;
       r.y = y-range < bounds.y? bounds.y : y-range;
       r.w = w;
@@ -294,7 +340,7 @@ public class Region {
       Rectangle bounds = getScreen().getBounds();
       Rectangle rect = new Rectangle(x,y+h,w,range);
       rect = rect.intersection(bounds);
-      return new Region(rect);
+      return Region.create(rect);
    }
 
    public Region inside(){ 

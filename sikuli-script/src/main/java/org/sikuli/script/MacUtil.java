@@ -105,7 +105,7 @@ public class MacUtil implements OSUtil {
    public Region getWindow(int pid, int winNum){
       Rectangle rect = getRegion(pid, winNum);
       if(rect != null)
-         return new Region(rect);
+         return Region.create(rect);
       return null;
    
    }
@@ -114,7 +114,7 @@ public class MacUtil implements OSUtil {
       checkAxEnabled("getFocusedWindow");
       Rectangle rect = getFocusedRegion();
       if(rect != null)
-         return new Region(rect);
+         return Region.create(rect);
       return null;
    }
 

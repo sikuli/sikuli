@@ -114,7 +114,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testRegionFind");
        Screen scr = new Screen();
-       scr.setROI(new Region(0,0,300,300));
+       scr.setROI(Region.create(0,0,300,300));
        scr.setAutoWaitTimeout(2);
        scr.setThrowException(true);
        long begin = (new Date()).getTime();
@@ -144,7 +144,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testSmallRegion");
        Screen scr = new Screen();
-       scr.setROI(new Region(0,0,100,200));
+       scr.setROI(Region.create(0,0,100,200));
        scr.setAutoWaitTimeout(2);
        scr.setThrowException(true);
        long begin = (new Date()).getTime();
@@ -244,7 +244,7 @@ public class RegionTest implements SikuliEventObserver
 
     public void testObserve() throws Exception {
        System.out.println("testObserve");
-       Region r = new Region(0, 0, 300, 300);
+       Region r = Region.create(0, 0, 300, 300);
        r.onAppear("test-res/cup-btn.png", this);
        r.onVanish("test-res/cup-btn.png", this);
        r.onChange(this);
@@ -273,7 +273,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testType");
        InputsFrame f = new InputsFrame();
-       Region r = new Region(0,0,200,200);
+       Region r = Region.create(0,0,200,200);
        String s = "123!!";
        r.type("test-res/input-y.png", s, 0);
        Thread.sleep(500);
@@ -287,7 +287,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testPaste");
        InputsFrame f = new InputsFrame();
-       Region r = new Region(0,0,200,200);
+       Region r = Region.create(0,0,200,200);
        String s = "123!!";
        r.paste("test-res/input-y.png", s);
        Thread.sleep(500);
@@ -301,10 +301,10 @@ public class RegionTest implements SikuliEventObserver
        Screen scr = new Screen();
        Match ret = scr.find("test-res/cup-btn.png");
        assertNotNull(ret);
-       Region region = new Region(10,0,200,200);
+       Region region = Region.create(10,0,200,200);
        ret = region.find("test-res/cup-btn.png");
        assertNotNull(ret);
-       region = new Region(600,0,200,200);
+       region = Region.create(600,0,200,200);
        region.setThrowException(false);
        ret = region.find("test-res/cup-btn.png");
        assertNull(ret);
@@ -343,7 +343,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testRegionFind");
        Screen scr = new Screen();
-       scr.setROI(new Region(0,0,300,300));
+       scr.setROI(Region.create(0,0,300,300));
        scr.setAutoWaitTimeout(2);
        scr.setThrowException(true);
        long begin = (new Date()).getTime();
@@ -373,7 +373,7 @@ public class RegionTest implements SikuliEventObserver
     {
        System.out.println("testSmallRegion");
        Screen scr = new Screen();
-       scr.setROI(new Region(0,0,100,200));
+       scr.setROI(Region.create(0,0,100,200));
        scr.setAutoWaitTimeout(2);
        scr.setThrowException(true);
        long begin = (new Date()).getTime();

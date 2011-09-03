@@ -47,6 +47,14 @@ public class RegionFastTest
       _mockScr = createMockScreen(DESKTOP_RECT);
    }
 
+   /*
+   @Test
+   public void test_callJythonMethod() throws Exception {
+      Region jyr = Region.toJythonRegion(_mockScr);
+      jyr.__enter__();
+   }
+   */
+
    @Test
    public void test_doFind() throws Exception {
       Match m = _mockScr.doFind("test-res/network.png");

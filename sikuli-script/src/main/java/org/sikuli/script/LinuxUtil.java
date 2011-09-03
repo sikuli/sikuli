@@ -97,7 +97,7 @@ public class LinuxUtil implements OSUtil {
          int y = Integer.parseInt(winLine[4]);
          int w = Integer.parseInt(winLine[5]);
          int h = Integer.parseInt(winLine[6]);
-         Region r = new Region(x, y, w, h);
+         Region r = Region.create(x, y, w, h);
          return r;
       }
       return null;

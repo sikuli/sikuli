@@ -28,7 +28,7 @@ public class Screen extends Region implements Observer, IScreen {
    }
 
    public Region newRegion(Rectangle rect){
-      return new Region(rect, this);
+      return Region.create(rect, this);
    }
 
    private static void initRobots(){
@@ -183,7 +183,7 @@ public class Screen extends Region implements Observer, IScreen {
       if(sim == null)
          return null;
       Rectangle r = sim.getROI();
-      return new Region((int)r.getX(), (int)r.getY(), 
+      return Region.create((int)r.getX(), (int)r.getY(), 
                         (int)r.getWidth(), (int)r.getHeight());
    }
 
