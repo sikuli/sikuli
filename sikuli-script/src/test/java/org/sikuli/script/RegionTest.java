@@ -8,6 +8,7 @@ package org.sikuli.script;
 import org.junit.* ;
 import static org.junit.Assert.* ;
 
+import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.util.Date;
 import java.util.Iterator;
@@ -43,6 +44,18 @@ public class RegionTest implements SikuliEventObserver
        assertEquals(0, frame.getCount()[0]);
        assertEquals(1, frame.getCount()[1]);
        assertEquals(1, frame.getCount()[2]);
+       frame.dispose();
+    }
+
+
+    @Test
+    public void testFindInROI() throws Exception {
+       JButtons frame = new JButtons();
+       Screen scr = new Screen();
+       Match m = scr.wait("test-res/network.png", 10);
+       scr.setRect(new Rectangle(m.x-9, m.y-10, m.w+10, m.h+11));
+       Match m2 = scr.doFind("test-res/network.png");
+       assertEquals(m, m2);
        frame.dispose();
     }
 

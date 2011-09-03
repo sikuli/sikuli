@@ -38,6 +38,15 @@ public class Match extends Region implements Comparable {
              getScore() > ((Match)o).getScore() ? 1 : 0;
    }
 
+   public boolean equals(Object oThat) {
+      if(this == oThat) return true;
+      if( !(oThat instanceof Match) ) return false;
+      Match that = (Match)oThat;
+      return x == that.x && y == that.y && w == that.w && h == that.h && 
+             Math.abs(score-that.score) < 1e-5 && getTarget().equals(that.getTarget());
+   }
+   
+
    public double getScore(){  return score; }
 
    public Location getTarget(){

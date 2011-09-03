@@ -942,7 +942,9 @@ public class Region {
     * without waiting.
     */
    public <PSC> Match findNow(PSC ptn) throws FindFailed{
+      Debug.log("capture: " + x + "," + y);
       ScreenImage simg = _scr.capture(x, y, w, h);
+      Debug.log("ScreenImage: " + simg.getROI());
       _lastScreenImage = simg;
       Finder f = new Finder(simg, this);
       Match ret = null;

@@ -128,9 +128,13 @@ public class Screen extends Region implements Observer, IScreen {
 
    public ScreenImage capture(Rectangle rect) {
       Debug.log(5, "capture: " + rect);
-      rect.x -= x;
-      rect.y -= y;
-      return _robots[_curID].captureScreen(rect);
+      Rectangle bounds = getBounds();
+      rect.x -= bounds.x;
+      rect.y -= bounds.y;
+      ScreenImage simg = _robots[_curID].captureScreen(rect);
+      simg.x += bounds.x;
+      simg.y += bounds.y;
+      return simg;
    }
 
    public ScreenImage capture(Region reg) {

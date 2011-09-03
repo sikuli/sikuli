@@ -25,13 +25,26 @@ public class RegionFastTest
    static protected Rectangle NETWORK_ICON = new Rectangle(792, 391, 52, 54);
    static protected Screen _mockScr;
 
-   @Before public void setupMockScreen() throws Exception{
-      BufferedImage desktop_img = ImageIO.read(new File("test-res/mac-desktop.png"));
-      ScreenImage desktop_simg = new ScreenImage(DESKTOP_RECT, desktop_img);
+   protected BufferedImage _desktop_img = null;
 
-      _mockScr = spy(new Screen());
-      doReturn(_mockScr).when(_mockScr).getScreen();
-      doReturn(desktop_simg).when(_mockScr).capture(anyInt(), anyInt(), anyInt(), anyInt());
+   public RegionFastTest() throws Exception{
+      _desktop_img = ImageIO.read(new File("test-res/mac-desktop.png"));
+   }
+
+
+   protected Screen createMockScreen(Rectangle rect){
+      BufferedImage img = _desktop_img.getSubimage(rect.x, rect.y, 
+                                                   rect.width, rect.height);
+      ScreenImage desktop_simg = new ScreenImage(rect, img);
+
+      Screen mockScr = spy(new Screen());
+      doReturn(mockScr).when(mockScr).getScreen();
+      doReturn(desktop_simg).when(mockScr).capture(anyInt(), anyInt(), anyInt(), anyInt());
+      return mockScr;
+   }
+
+   @Before public void setupMockScreen() throws Exception{
+      _mockScr = createMockScreen(DESKTOP_RECT);
    }
 
    @Test
@@ -41,9 +54,24 @@ public class RegionFastTest
       assertEquals(m.y, NETWORK_ICON.y);
       assertEquals(m.w, NETWORK_ICON.width);
       assertEquals(m.h, NETWORK_ICON.height);
-      assertEquals(m.score, 1.0, 0.01);
+      assertEquals(m.score, 1.0, 1e-5);
    }
 
+
+   @Test
+   public void test_doFindInScreenROI() throws Exception {
+      int x = NETWORK_ICON.x-50, y = NETWORK_ICON.y-50, 
+          w = 100+NETWORK_ICON.width, h = 100+NETWORK_ICON.height;
+      Rectangle roi = new Rectangle(x,y,w,h);
+      Screen scr = createMockScreen(roi);
+      scr.setROI(roi);
+      Match m = scr.doFind("test-res/network.png");
+      assertEquals(m.x, NETWORK_ICON.x);
+      assertEquals(m.y, NETWORK_ICON.y);
+      assertEquals(m.w, NETWORK_ICON.width);
+      assertEquals(m.h, NETWORK_ICON.height);
+      assertEquals(m.score, 1.0, 1e-5);
+   }
 
    @Test
    public void test_autoWaitTimeout() throws Exception {

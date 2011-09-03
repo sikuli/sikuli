@@ -179,8 +179,9 @@ public class Finder implements Iterator<Match>{
          catch(AWTException e){
             e.printStackTrace();
          }
-         if(_region != null)
+         if(_region != null){
             ret = _region.toGlobalCoord(ret);
+         }
          if(_pattern != null){
             Location offset = _pattern.getTargetOffset();
             ret.setTargetOffset(offset);
