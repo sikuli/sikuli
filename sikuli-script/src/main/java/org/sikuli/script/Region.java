@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
 
+import org.python.util.PythonInterpreter;
+import org.python.core.*;
 
 public class Region {
    final static float DEFAULT_HIGHLIGHT_TIME = 2f;
@@ -930,6 +932,22 @@ public class Region {
       _lastScreenImage = simg;
       return TextRecognizer.getInstance().recognize(simg);
    }
+
+
+   ////////////////////////////////////////////////////////////////
+   // SPECIAL FUNCTIONS FOR JYTHON
+   ////////////////////////////////////////////////////////////////
+   
+
+   public static Region toJythonRegion(Region r){
+      PythonInterpreter interpreter = new PythonInterpreter();
+      interpreter.exec("from sikuli import Region");
+      PyObject regionClass = interpreter.get("Region");
+      PyObject pyRegion = regionClass.__call__(Py.java2py(r));
+      return (Region)pyRegion.__tojava__(Region.class);
+   }
+
+
 
    ////////////////////////////////////////////////////////////////
    // HELPER FUNCTIONS
