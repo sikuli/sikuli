@@ -1,6 +1,7 @@
 from __future__ import with_statement
 import unittest
 from org.sikuli.script import Region as JRegion
+from sikuli import *
 
 class TestJavaRegion(unittest.TestCase):
 
