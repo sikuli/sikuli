@@ -36,7 +36,6 @@ public class Finder implements Iterator<Match>{
       catch(IOException e){
          e.printStackTrace();
       }
-      Debug.ENABLE_PROFILING = true;
       //Vision.setParameter("GPU", 1);
    }
 

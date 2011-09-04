@@ -209,7 +209,7 @@ public class PatternWindow extends JFrame implements Observer {
                _screenshot.isExact(), _screenshot.getSimilarity(),
                _screenshot.getNumMatches());
          _imgBtn.setTargetOffset( _tarOffsetPane.getTargetOffset() );
-         Debug.info("update :" + _imgBtn.toString());
+         Debug.log("update: " + _imgBtn.toString());
          _parent.dispose();
       }
    }

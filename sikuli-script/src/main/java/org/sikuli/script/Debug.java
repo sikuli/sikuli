@@ -19,7 +19,6 @@ import java.util.Date;
  */
 
 public class Debug {
-   static boolean ENABLE_PROFILING = false;
    private static final int DEBUG_LEVEL;
    static {
       String debug = System.getProperty("sikuli.Debug");
@@ -89,14 +88,14 @@ public class Debug {
    }
 
    public void startTiming(String message){
-      if(ENABLE_PROFILING){
+      if(Settings.ProfileLogs){
          Debug.profile(message + " START");
          _beginTime = (new Date()).getTime();
       }
    }
 
    public long endTiming(String message){
-      if(ENABLE_PROFILING){
+      if(Settings.ProfileLogs){
          long t = (new Date()).getTime();
          long dt = t - _beginTime;
          Debug.profile(message + " END: " +  dt + "ms");

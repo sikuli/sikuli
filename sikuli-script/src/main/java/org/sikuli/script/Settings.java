@@ -20,6 +20,6 @@ public class Settings {
    public static int ObserveMinChangedPixels = 50; // in pixels
    public static boolean ActionLogs = true;
    public static boolean InfoLogs = true;
-   public static boolean DebugLogs = true;
-   public static boolean ProfileLogs = true;
+   public static boolean DebugLogs = false;
+   public static boolean ProfileLogs = false;
 }
