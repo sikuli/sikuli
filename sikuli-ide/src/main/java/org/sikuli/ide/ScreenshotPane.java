@@ -43,7 +43,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    protected BufferedImage _screen = null;
    protected Rectangle _uBound;
 
-   private JLabel btnSimilar;
+   private JLabel btnSimilar, _lblMatchCount;
    private JSlider sldSimilar;
    private JSpinner txtNumMatches;
 
@@ -102,21 +102,32 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
 
       sldSimilar = createSlider();
       JLabel lblPreNumMatches = new JLabel(_I("lblNumberOfMatches"));
+      _lblMatchCount = new JLabel("0");
+      Dimension size = _lblMatchCount.getPreferredSize();
+      size.width *= 2;
+      _lblMatchCount.setPreferredSize(size);
       SpinnerNumberModel model = new SpinnerNumberModel(10, 0, ScreenshotPane.MAX_NUM_MATCHING, 1); 
       txtNumMatches = new JSpinner(model);
       lblPreNumMatches.setLabelFor(txtNumMatches);
 
       GridBagConstraints c = new GridBagConstraints();
 
+
       c.fill = 1;
       c.gridy = 0;
       pane.add( btnSimilar, c );
+      c.gridwidth = 3;
       pane.add( sldSimilar, c );
 
       c.fill = 0;
       c.gridy = 1;
+      c.gridwidth = 1;
       pane.add( lblPreNumMatches, c );
-      c.insets = new Insets(0, 0, 10, 100);
+      c.insets = new Insets(0, 10, 0, 0);
+      pane.add( _lblMatchCount, c );
+      c.insets = new Insets(0, 0, 0, 0);
+      pane.add( new JLabel("/"), c );
+      c.insets = new Insets(0, 0, 0, 100);
       pane.add( txtNumMatches, c );
 
       txtNumMatches.addChangeListener(this);
@@ -222,6 +233,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
                }
             }
          }
+         _lblMatchCount.setText(Integer.toString(count));
       }
       return;
    }
