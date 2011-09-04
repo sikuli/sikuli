@@ -106,7 +106,8 @@ public class Finder implements Iterator<Match>{
          fin.setTarget(TARGET_TYPE.IMAGE, filename);
       }
       catch(IOException e){
-         Debug.log("File not found: " + target + ", assume it's text." );
+         if(Util.isImageFile(target))
+            Debug.error(target + " looks like a file, but can't be found on the disk. Assume it's text." );
          // this will init text recognizer on demand
          TextRecognizer tr = TextRecognizer.getInstance();
          //assume it's text 

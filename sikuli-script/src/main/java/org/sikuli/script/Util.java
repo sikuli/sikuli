@@ -29,4 +29,14 @@ public class Util {
 
       return fullpath.getAbsolutePath();
    }
+
+   public static boolean isImageFile(String fname){
+      int dot = fname.lastIndexOf('.');
+      if(dot<0)
+         return false;
+      String suffix = fname.substring(dot+1).toLowerCase();
+      if(suffix.equals("png") || suffix.equals("jpg"))
+         return true;
+      return false;
+   }
 }

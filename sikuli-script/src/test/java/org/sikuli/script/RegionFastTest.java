@@ -56,6 +56,33 @@ public class RegionFastTest
    */
 
    @Test
+   public void test_doFindNotExistingFile() throws Exception {
+      _mockScr.setAutoWaitTimeout(0.1);
+      try{
+         Match m = _mockScr.find("test-res/xx-yy-zz.png");
+         fail("find should throw a FindlFailed exception.");
+      }
+      catch(Exception e){
+         //System.err.println(e.getMessage());
+         //e.printStackTrace();
+      }
+   }
+
+
+   @Test
+   public void test_doFindFailed() throws Exception {
+      _mockScr.setAutoWaitTimeout(0.1);
+      try{
+         Match m = _mockScr.find("test-res/google.png");
+         fail("find should throw a FindlFailed exception.");
+      }
+      catch(FindFailed ff){
+         // works
+      }
+   }
+
+
+   @Test
    public void test_doFind() throws Exception {
       Match m = _mockScr.doFind("test-res/network.png");
       assertEquals(m.x, NETWORK_ICON.x);
