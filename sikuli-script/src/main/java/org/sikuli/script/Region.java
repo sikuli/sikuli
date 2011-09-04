@@ -419,7 +419,7 @@ public class Region {
       }else if (response == FindFailedResponse.RETRY){
          return true;
       }else if (response == FindFailedResponse.ABORT){
-         throw new FindFailed("can not find " + target);
+         throw new FindFailed("can not find " + target + " on the screen.");
       }
       
       return false;
