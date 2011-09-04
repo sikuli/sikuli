@@ -60,7 +60,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       setContentType("text/python");
       initKeyMap();
       addKeyListener(this);
-      //setTransferHandler(new JTextPaneTransferHandler());
+      setTransferHandler(new MyTransferHandler());
       _highlighter = new CurrentLineHighlighter(this);
       addCaretListener(_highlighter);
       addCaretListener(this);
@@ -361,20 +361,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return fname;
    }
 
-   @Override public void paste() {
-      int start = getCaretPosition();
-      super.paste();
-      int end = getCaretPosition();
-      Debug.log(9,"paste: %d %d", start, end);
-      try{
-         end = parseLine(start, end, patPatternStr);
-         parseLine(start, end, patPngStr);
-      }
-      catch(BadLocationException e){
-         e.printStackTrace();
-      }
-   }
-
 
    int _caret_last_x = -1;
    boolean _can_update_caret_last_x = true;
@@ -511,6 +497,18 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }  
    }   
 
+   int parseRange(int start, int end){
+      try{
+         end = parseLine(start, end, patPatternStr);
+         end = parseLine(start, end, patSubregionStr);
+         end = parseLine(start, end, patPngStr);
+      }
+      catch(BadLocationException e){
+         e.printStackTrace();
+      }
+      return end;
+   }
+
    void parse(Element node){
       int count = node.getElementCount();
       for(int i=0;i<count;i++){
@@ -518,14 +516,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          Debug.log(8, elm.toString() );
          if( elm.isLeaf() ){
             int start = elm.getStartOffset(), end = elm.getEndOffset();
-            try{
-               end = parseLine(start, end, patPatternStr);
-               end = parseLine(start, end, patSubregionStr);
-               parseLine(start, end, patPngStr);
-            }
-            catch(BadLocationException e){
-               e.printStackTrace();
-            }
+            parseRange(start, end);
          }
          else
             parse(elm);
@@ -582,6 +573,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public File getFileInBundle(String filename){
+      if(_imgLocator == null)
+         return null;
       try{
          String fullpath = _imgLocator.locate(filename);
          return new File(fullpath);
@@ -728,7 +721,21 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    void insertString(String str){
-      insertString(getCaretPosition(), str);
+      int sel_start = getSelectionStart();
+      int sel_end = getSelectionEnd();
+      if(sel_end != sel_start){
+         try{
+            getDocument().remove(sel_start, sel_end-sel_start);
+         }
+         catch(BadLocationException e){
+            e.printStackTrace();
+         }
+      }
+      int pos = getCaretPosition();
+      insertString(pos, str);
+      int new_pos = getCaretPosition();
+      int end = parseRange(pos, new_pos);
+      setCaretPosition(end);
    }
 
    void insertString(int pos, String str){
@@ -864,6 +871,63 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
 
 
+}
+
+class MyTransferHandler extends TransferHandler{
+
+   public MyTransferHandler(){
+   }
+
+   public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
+      super.exportToClipboard(comp, clip, action);
+   }
+
+   public int getSourceActions(JComponent c) {
+      return COPY_OR_MOVE;
+   }
+
+   protected Transferable createTransferable(JComponent c){
+      JTextPane aTextPane = (JTextPane)c;
+
+      SikuliEditorKit kit = ((SikuliEditorKit)aTextPane.getEditorKit());
+      Document doc = aTextPane.getDocument();
+      int sel_start = aTextPane.getSelectionStart();
+      int sel_end = aTextPane.getSelectionEnd();
+
+      StringWriter writer = new StringWriter();
+      try{
+         kit.write(writer, doc, sel_start, sel_end - sel_start );
+         return new StringSelection(writer.toString());
+      }
+      catch(Exception e){
+         e.printStackTrace();
+      }
+      return null;
+   }
+
+   public boolean canImport(JComponent comp, DataFlavor[] transferFlavors){
+      for(int i=0; i<transferFlavors.length; i++){
+         //System.out.println(transferFlavors[i]);
+         if(transferFlavors[i].equals(DataFlavor.stringFlavor))
+            return true;
+      }
+      return false;
+   }
+
+   public boolean importData(JComponent comp, Transferable t){
+      DataFlavor htmlFlavor = DataFlavor.stringFlavor;
+      if(canImport(comp, t.getTransferDataFlavors())){
+         try{
+            String transferString = (String)t.getTransferData(htmlFlavor);
+            SikuliPane targetTextPane = (SikuliPane)comp;
+            targetTextPane.insertString(transferString);
+         }catch (Exception e){
+            Debug.error("Can't transfer: " + t.toString());
+         }
+         return true;
+      }
+      return false;
+   }
 }
 
 
