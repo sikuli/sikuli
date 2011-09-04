@@ -10,7 +10,7 @@ class TestApp(unittest.TestCase):
       elif Env.isMac():
          self.app = "TextEdit.app"
       elif Env.isLinux():
-         self.app = "xeyes"
+         self.app = "/usr/bin/gcalctool"
       self.app = App(self.app).open()
 
    def tearDown(self):
