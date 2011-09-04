@@ -21,10 +21,11 @@ import org.sikuli.script.UnionScreen;
 import org.sikuli.script.Finder;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Debug;
+import org.sikuli.script.natives.Vision;
 
 class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener, Subject{
    final static int DEFAULT_H = 300;
-   static int MAX_NUM_MATCHING = 100;
+   static int MAX_NUM_MATCHING=100;
 
    Region _match_region;
    int _width, _height;
@@ -57,6 +58,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       addComponentListener(this);
       _simg = simg;
       _screen = simg.getImage();
+      MAX_NUM_MATCHING = (int)Vision.getParameter("FindAllMaxReturn");
    }
 
    static String _I(String key, Object... args){ 
