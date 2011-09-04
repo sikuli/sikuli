@@ -74,7 +74,7 @@ FindInput::init(){
    target_type = TARGET_TYPE_IMAGE;
    target_text = "";
    similarity = 0.8;
-   limit = 10;
+   limit = (int)Vision::getParameter("FindAllMaxReturn");
    bFindingAll = false;
 }
 
