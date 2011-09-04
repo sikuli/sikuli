@@ -25,19 +25,27 @@ public class FinderTest
 {
 
    private void testTargetScreenSet(String test_dir) throws Exception{
+      testTargetScreenSet(test_dir, false);
+   }
+
+   private void testTargetScreenSet(String test_dir, boolean find_all) throws Exception{
       FinderTestImage testImgs = FinderTestImage.createFromDirectory(test_dir);
       ArrayList<FinderTestTarget> testTargets =  testImgs.getTestTargets();
       String screenImg = testImgs.getScreenImageFilename();
       Finder f = new Finder(screenImg);
       for(FinderTestTarget target : testTargets){
          String targetFname = target.getFilename();
-         f.find(targetFname);
+         if(find_all)
+            f.findAll(new Pattern(targetFname).similar(0.001f));
+         else
+            f.find(targetFname);
          while(f.hasNext()){
             Match m = f.next();
             boolean matched = target.isMatched(m);
-            if(!matched)
+            if(!matched && !find_all)
                System.err.println("NOT MATCHED: " + m + " " + target);
-            assertTrue(matched);
+            if(!find_all)
+               assertTrue(matched);
          }
       }
    }
@@ -56,6 +64,7 @@ public class FinderTest
       assertEquals(Vision.getParameter("MinTargetSize"), old_param+2, 1e-5);
       Vision.setParameter("MinTargetSize", old_param);
    }
+
 
    @Test
    public void testFinderFolders() throws Exception {
@@ -105,10 +114,6 @@ public class FinderTest
       testTargetScreenSet("wherespace");
    }
 
-   @Test
-   public void testXpFolders() throws Exception {
-      testTargetScreenSet("xpfolders");
-   }
 
    @Test
    public void testXpPricingApp() throws Exception {
@@ -120,5 +125,14 @@ public class FinderTest
       testTargetScreenSet("xpdesktop");
    }
 
+   @Test
+   public void testXpFolders() throws Exception {
+      testTargetScreenSet("xpfolders");
+   }
+
+   @Test
+   public void testMacDesktopAll() throws Exception {
+      testTargetScreenSet("macdesktop", true);
+   }
 }
 
