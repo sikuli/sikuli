@@ -22,6 +22,12 @@ import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection; 
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.UnsupportedFlavorException;
 
 
 import org.python.util.PythonInterpreter;
@@ -51,7 +57,8 @@ public class ConsolePane extends JPanel implements Runnable
    {
       super();
       textArea=new JTextPane();
-      textArea.setContentType("text/html");
+      textArea.setEditorKit(new HTMLEditorKit());
+      textArea.setTransferHandler(new JTextPaneHTMLTransferHandler());
       String css = UserPreferences.getInstance().getConsoleCSS();
       ((HTMLEditorKit)textArea.getEditorKit()).getStyleSheet().addRule(css);
       textArea.setEditable(false);
@@ -201,3 +208,53 @@ public class ConsolePane extends JPanel implements Runnable
    }
       
 }
+
+class JTextPaneHTMLTransferHandler extends TransferHandler{
+    
+    public JTextPaneHTMLTransferHandler(){
+    }
+    
+    public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
+        super.exportToClipboard(comp, clip, action);
+    }
+    
+    public int getSourceActions(JComponent c) {
+        return COPY_OR_MOVE;
+    }
+    
+    protected Transferable createTransferable(JComponent c){
+        JTextPane aTextPane = (JTextPane)c;
+        
+        HTMLEditorKit kit = ((HTMLEditorKit)aTextPane.getEditorKit());
+        StyledDocument sdoc = aTextPane.getStyledDocument();
+        int sel_start = aTextPane.getSelectionStart();
+        int sel_end = aTextPane.getSelectionEnd();
+
+        int i=sel_start;
+        StringBuffer output = new StringBuffer();
+        while(i<sel_end){
+           Element e = sdoc.getCharacterElement(i);
+           Object nameAttr = e.getAttributes().getAttribute(StyleConstants.NameAttribute);
+           int start = e.getStartOffset(), end = e.getEndOffset();
+           if(nameAttr == HTML.Tag.BR){
+              output.append("\n");
+           }
+           else if(nameAttr == HTML.Tag.CONTENT){
+              if( start < sel_start ) start = sel_start;
+              if( end > sel_end) end = sel_end; 
+              try{
+                 String str = sdoc.getText(start, end - start);
+                 output.append(str);
+              }
+              catch(BadLocationException ble){
+                 ble.printStackTrace();
+              }
+           }
+           i = end;
+        }
+        
+        return new StringSelection(output.toString());
+    }
+    
+}
+
