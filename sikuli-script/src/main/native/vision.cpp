@@ -175,8 +175,9 @@ find_text(FindInput& input){
    TextFinder f(source);
    if (input.isFindingAll()){
       
+      int maxReturn = Vision::getParameter("FindAllMaxReturn");
       f.find_all(input.getTargetText().c_str(), input.getSimilarity());
-      while (f.hasNext()){
+      while (f.hasNext() && results.size() < maxReturn){
          results.push_back(f.next());
       }
    }
@@ -218,8 +219,9 @@ find_image(FindInput& input){
    TemplateFinder f(source);
    
    if (input.isFindingAll()){
+      int maxReturn = Vision::getParameter("FindAllMaxReturn");
       f.find_all(image, input.getSimilarity());
-      while (f.hasNext()){
+      while (f.hasNext() && results.size() < maxReturn){
          results.push_back(f.next());
       }
    }
@@ -486,6 +488,7 @@ void Vision::setParameter(string param, float val){
 
 void Vision::initParameters(){
    _params["MinTargetSize"] = DEFAULT_PYRAMID_MIM_TARGET_DIMENSION;
+   _params["FindAllMaxReturn"] = DEFAULT_FIND_ALL_MAX_RETURN;
 
 }
 
