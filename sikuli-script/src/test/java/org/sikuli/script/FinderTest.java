@@ -127,11 +127,6 @@ public class FinderTest
    }
 
    @Test
-   public void testInbox() throws Exception {
-      testTargetScreenSet("sikuliinbox");
-   }
-
-   @Test
    public void testSikuliOrg() throws Exception {
       Vision.setParameter("MinTargetSize", 12);
       testTargetScreenSet("sikuliorgbanner");
@@ -172,5 +167,11 @@ public class FinderTest
    public void testBubbles() throws Exception {
       testTargetScreenSetWithFindAll("bubbles", 1.f);
    }
+
+   @Test
+   public void testInbox() throws Exception {
+      testTargetScreenSetWithFindAll("sikuliinbox", 0.7f);
+   }
+
 }
 
