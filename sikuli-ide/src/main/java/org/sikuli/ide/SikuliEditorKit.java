@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -66,8 +67,7 @@ public class SikuliEditorKit extends StyledEditorKit {
 
    }
 
-   @Override
-   public void write(Writer out, Document doc, int pos, int len) 
+   public void write(Writer out, Document doc, int pos, int len, Map<String,String> copiedImgs) 
                            throws IOException, BadLocationException{
       Debug.log(9,"SikuliEditorKit.write %d %d", pos, len);
       DefaultStyledDocument sdoc = (DefaultStyledDocument)doc;
@@ -81,6 +81,13 @@ public class SikuliEditorKit extends StyledEditorKit {
             AttributeSet attr=e.getAttributes();
             Component com=StyleConstants.getComponent(attr);
             out.write( com.toString() );
+            if(copiedImgs != null && com instanceof ImageButton){
+               ImageButton btn = (ImageButton)com; 
+               String absPath = btn.getFilename();
+               String fname = (new File(absPath)).getName();
+               copiedImgs.put(fname, absPath);
+               Debug.log(3, "save image for copy&paste: " + fname + " -> " + absPath);
+            }
          }
          else{
             if( start < pos ) start = pos;
@@ -91,6 +98,12 @@ public class SikuliEditorKit extends StyledEditorKit {
          i = end;
       }
       out.close();
+   }
+
+   @Override
+   public void write(Writer out, Document doc, int pos, int len) 
+                           throws IOException, BadLocationException{
+      write(out, doc, pos, len, null);
    }
 
    public static class NextVisualPositionAction extends TextAction {

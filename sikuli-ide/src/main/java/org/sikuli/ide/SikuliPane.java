@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import javax.swing.*;
@@ -560,17 +562,14 @@ public class SikuliPane extends JTextPane implements KeyListener,
       String bundlePath = getSrcBundle();
       if(f.exists()){
          try{
-            Utils.xcopy(filename, bundlePath);
-            filename = f.getName();
+            File newFile = Utils.smartCopy(filename, bundlePath);
+            return newFile;
          }
          catch(IOException e){
             e.printStackTrace();
             return f;
          }
       }
-      filename = bundlePath + "/" + filename;
-      f = new File(filename);
-      if(f.exists()) return f;
       return null;
    }
 
@@ -877,6 +876,12 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
 class MyTransferHandler extends TransferHandler{
 
+   static Map<String, String> _copiedImgs;
+
+   static {
+      _copiedImgs = new HashMap<String,String>();
+   }
+
    public MyTransferHandler(){
    }
 
@@ -898,7 +903,8 @@ class MyTransferHandler extends TransferHandler{
 
       StringWriter writer = new StringWriter();
       try{
-         kit.write(writer, doc, sel_start, sel_end - sel_start );
+         _copiedImgs.clear();
+         kit.write(writer, doc, sel_start, sel_end - sel_start, _copiedImgs);
          return new StringSelection(writer.toString());
       }
       catch(Exception e){
@@ -922,6 +928,19 @@ class MyTransferHandler extends TransferHandler{
          try{
             String transferString = (String)t.getTransferData(htmlFlavor);
             SikuliPane targetTextPane = (SikuliPane)comp;
+            for(Map.Entry<String,String> entry : _copiedImgs.entrySet()){
+               String imgName = entry.getKey();
+               String imgPath = entry.getValue();
+               File destFile = targetTextPane.copyFileToBundle(imgPath);
+               String newName = destFile.getName();
+               if(!newName.equals(imgName)){
+                  String ptnImgName = "\"" + imgName + "\"";
+                  newName = "\"" + newName + "\"";
+                  transferString = transferString.replaceAll(ptnImgName, newName);
+                  Debug.info(ptnImgName + " exists. Rename it to " + newName);
+               }
+            }
+            //TODO: check if name changed, and replace it in the transferString
             targetTextPane.insertString(transferString);
          }catch (Exception e){
             Debug.error("Can't transfer: " + t.toString());

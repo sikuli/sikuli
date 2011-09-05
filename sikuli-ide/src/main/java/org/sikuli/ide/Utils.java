@@ -232,6 +232,26 @@ public class Utils {
       return tempDir;
    }
 
+   /**
+    *  Copy a file *src* to the path *dest* and check if the file name conflicts. 
+    *  If a file with the same name exists in that path, rename *src* to an alternative name.
+    */
+   public static File smartCopy(String src, String dest) throws IOException{
+      File fSrc = new File(src);
+      String newName = fSrc.getName();
+      File fDest = new File(dest, newName);
+      if(fSrc.equals(fDest))
+         return fDest;
+      while(fDest.exists()){
+         newName = getAltFilename(newName);
+         fDest = new File(dest, newName);
+      }
+      xcopy(src, fDest.getAbsolutePath());
+      if(fDest.exists())
+         return fDest;
+      return null;
+   }
+
    public static void xcopy(String src, String dest) throws IOException{
       File fSrc = new File(src);
       File fDest = new File(dest);
