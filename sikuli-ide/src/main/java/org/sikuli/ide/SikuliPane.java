@@ -940,7 +940,6 @@ class MyTransferHandler extends TransferHandler{
                   Debug.info(ptnImgName + " exists. Rename it to " + newName);
                }
             }
-            //TODO: check if name changed, and replace it in the transferString
             targetTextPane.insertString(transferString);
          }catch (Exception e){
             Debug.error("Can't transfer: " + t.toString());
