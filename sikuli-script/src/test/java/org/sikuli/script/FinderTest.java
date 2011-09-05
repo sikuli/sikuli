@@ -12,40 +12,61 @@ import org.mockito.stubbing.Answer;
 import org.mockito.invocation.InvocationOnMock;
 
 
+import java.awt.Point;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.sikuli.script.natives.Vision;
 
 public class FinderTest 
 {
 
-   private void testTargetScreenSet(String test_dir) throws Exception{
-      testTargetScreenSet(test_dir, false);
-   }
-
-   private void testTargetScreenSet(String test_dir, boolean find_all) throws Exception{
+   private void testTargetScreenSetWithFindAll(String test_dir, float similarity) throws Exception{
       FinderTestImage testImgs = FinderTestImage.createFromDirectory(test_dir);
       ArrayList<FinderTestTarget> testTargets =  testImgs.getTestTargets();
       String screenImg = testImgs.getScreenImageFilename();
       Finder f = new Finder(screenImg);
       for(FinderTestTarget target : testTargets){
          String targetFname = target.getFilename();
-         if(find_all)
-            f.findAll(new Pattern(targetFname).similar(0.001f));
-         else
-            f.find(targetFname);
+         f.findAll(new Pattern(targetFname).similar(similarity));
+         List<Point> truth = target.getGroundTruthLocations();
+         while(f.hasNext() && !truth.isEmpty()){
+            Match m = f.next();
+            boolean found = false;
+            for(Point t : truth){
+               if( m.x <= t.x && t.x <= m.x+m.w && 
+                   m.y <= t.y && t.y <= m.y+m.h){
+                  truth.remove(t);
+                  found = true;
+                  break;
+               }
+            }
+            if(!found)
+               System.err.println("NOT MATCHED: " + m + " " + target);
+            assertTrue(found);
+         }
+      }
+   }
+
+   private void testTargetScreenSet(String test_dir) throws Exception{
+      FinderTestImage testImgs = FinderTestImage.createFromDirectory(test_dir);
+      ArrayList<FinderTestTarget> testTargets =  testImgs.getTestTargets();
+      String screenImg = testImgs.getScreenImageFilename();
+      Finder f = new Finder(screenImg);
+      for(FinderTestTarget target : testTargets){
+         String targetFname = target.getFilename();
+         f.find(targetFname);
          while(f.hasNext()){
             Match m = f.next();
             boolean matched = target.isMatched(m);
-            if(!matched && !find_all)
+            if(!matched)
                System.err.println("NOT MATCHED: " + m + " " + target);
-            if(!find_all)
-               assertTrue(matched);
+            assertTrue(matched);
          }
       }
    }
@@ -132,7 +153,12 @@ public class FinderTest
 
    @Test
    public void testMacDesktopAll() throws Exception {
-      testTargetScreenSet("macdesktop", true);
+      testTargetScreenSetWithFindAll("macdesktop", 0.0001f);
+   }
+
+   @Test
+   public void testBubbles() throws Exception {
+      testTargetScreenSetWithFindAll("bubbles", 1.f);
    }
 }
 

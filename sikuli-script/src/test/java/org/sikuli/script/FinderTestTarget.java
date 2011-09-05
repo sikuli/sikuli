@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -61,8 +62,8 @@ class FinderTestTarget {
    //FindResult groundTruth = null;
    
    
-   ArrayList<Point> groundTruthLocations = new ArrayList<Point>();
-   ArrayList<Point> getGroundTruthLocations(){            
+   List<Point> groundTruthLocations = new ArrayList<Point>();
+   List<Point> getGroundTruthLocations(){            
       return groundTruthLocations;
    }
 
@@ -172,8 +173,8 @@ class FinderTestTarget {
    }
    
    
-   private ArrayList<Point> getEncodedGroundTruthLocationsFromFilename(){
-      ArrayList<Point> ps = new ArrayList<Point>();
+   private List<Point> getEncodedGroundTruthLocationsFromFilename(){
+      List<Point> ps = new ArrayList<Point>();
       
       
       String name = file.getName();
