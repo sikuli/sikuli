@@ -532,7 +532,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException{
       //System.out.println(startOff + " " + endOff);
-      if(endOff >= startOff)
+      if(endOff <= startOff)
          return endOff;
       Document doc = getDocument();
       while(true){
@@ -617,7 +617,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
                   return false;
                }
             }
-            if( str.startsWith("firstN") ){
+            if( str.startsWith("firstN") ){ // FIXME: replace with limit/max
                String strArg = str.substring(str.lastIndexOf("(")+1);
                numMatches = Integer.valueOf(strArg);
             }
