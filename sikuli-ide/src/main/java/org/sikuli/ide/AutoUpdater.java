@@ -31,10 +31,26 @@ public class AutoUpdater {
       ServerList = servers;
    }
 
+   private int getRev(String ver){
+      if(ver.matches("r\\d+"))
+         return Integer.parseInt(ver.substring(1));
+      int r_pos = ver.lastIndexOf("(r");
+      if(r_pos>0){
+         int end_pos = ver.lastIndexOf(")");
+         return Integer.parseInt(ver.substring(r_pos+2, end_pos));
+      }
+      return -1;
+   }
+
    // is v1 newer than v2?
-   // TODO: consider rxxx, RCx, X
    private boolean isNewer(String v1, String v2){
-      return v1.compareTo(v2) > 0;
+      int rev1 = getRev(v1);
+      int rev2 = getRev(v2);
+      if(rev1>0 && rev2>0){
+         return rev1 > rev2;
+      }
+      else
+         return v1.compareTo(v2) > 0;
    }
 
    public boolean checkUpdate(){
