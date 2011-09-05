@@ -54,13 +54,20 @@ public class FinderTest
    }
 
    private void testTargetScreenSet(String test_dir) throws Exception{
+      testTargetScreenSet(test_dir, -1);
+   }
+
+   private void testTargetScreenSet(String test_dir, float similarity) throws Exception{
       FinderTestImage testImgs = FinderTestImage.createFromDirectory(test_dir);
       ArrayList<FinderTestTarget> testTargets =  testImgs.getTestTargets();
       String screenImg = testImgs.getScreenImageFilename();
       Finder f = new Finder(screenImg);
       for(FinderTestTarget target : testTargets){
          String targetFname = target.getFilename();
-         f.find(targetFname);
+         if(similarity<0)
+            f.find(targetFname);
+         else
+            f.find(new Pattern(targetFname).similar(similarity));
          while(f.hasNext()){
             Match m = f.next();
             boolean matched = target.isMatched(m);
@@ -149,6 +156,11 @@ public class FinderTest
    @Test
    public void testXpFolders() throws Exception {
       testTargetScreenSet("xpfolders");
+   }
+
+   @Test
+   public void testExactColor() throws Exception {
+      testTargetScreenSet("exactcolor", 1.f);
    }
 
    @Test
