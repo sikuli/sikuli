@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.sikuli.ide.indentation.*;
+import org.sikuli.ide.*;
 
 /**
  * Unit test for Sikuli IDE
@@ -20,9 +21,9 @@ public class SikuliIDETestSuite
        TestSuite suite = new TestSuite();
 
        // add more tests here
-       //suite.addTest(RegionTest.class);
        suite.addTestSuite(PythonIndentationTest.class);
        suite.addTestSuite(PythonStateTest.class);
+       suite.addTestSuite(AutoUpdaterTest.class);
 
        return suite;
     }

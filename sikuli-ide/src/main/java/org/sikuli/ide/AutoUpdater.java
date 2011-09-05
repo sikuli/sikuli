@@ -27,7 +27,12 @@ public class AutoUpdater {
    public AutoUpdater(){
    }
 
+   public AutoUpdater(String[] servers){
+      ServerList = servers;
+   }
+
    // is v1 newer than v2?
+   // TODO: consider rxxx, RCx, X
    private boolean isNewer(String v1, String v2){
       return v1.compareTo(v2) > 0;
    }
