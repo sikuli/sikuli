@@ -532,6 +532,8 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException{
       //System.out.println(startOff + " " + endOff);
+      if(endOff >= startOff)
+         return endOff;
       Document doc = getDocument();
       while(true){
          String line = doc.getText(startOff, endOff-startOff);
