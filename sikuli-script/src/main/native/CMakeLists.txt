@@ -172,6 +172,7 @@ foreach(BUILD_TARGET ${BUILD_TARGETS})
    if(APPLE)
       set_target_properties(${BUILD_TARGET} PROPERTIES SUFFIX ".jnilib")
    endif(APPLE)
+   add_dependencies(${BUILD_TARGET} ${PROJECT_NAME}.classes)
 endforeach(BUILD_TARGET ${BUILD_TARGETS})
 
 add_dependencies(${JAR_FILE}.libs-in-jar ${NATIVE_LIBS})

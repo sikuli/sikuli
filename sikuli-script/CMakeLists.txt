@@ -218,8 +218,8 @@ add_dependencies( ${JAR_FILE} ${JAR_FILE}.hotkey-lib )
 add_dependencies( ${JAR_FILE}.libs-in-jar ${JAR_FILE}.hotkey-lib ) 
 
 
-ADD_SUBDIRECTORY(${NATIVE_SRC_DIR})
 ADD_SUBDIRECTORY(${JAVA_SRC_DIR})
+ADD_SUBDIRECTORY(${NATIVE_SRC_DIR})
 ADD_SUBDIRECTORY(${JAVA_TEST_DIR})
 
 # Java level tests
