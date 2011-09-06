@@ -173,6 +173,7 @@ foreach(BUILD_TARGET ${BUILD_TARGETS})
       set_target_properties(${BUILD_TARGET} PROPERTIES SUFFIX ".jnilib")
    endif(APPLE)
    add_dependencies(${BUILD_TARGET} ${PROJECT_NAME}.classes)
+   add_dependencies(${JAR_FILE}.libs-in-jar ${BUILD_TARGET})
 endforeach(BUILD_TARGET ${BUILD_TARGETS})
 
-add_dependencies(${JAR_FILE}.libs-in-jar ${NATIVE_LIBS})
+add_dependencies(${JAR_FILE}.libs-in-jar VisionProxy)
