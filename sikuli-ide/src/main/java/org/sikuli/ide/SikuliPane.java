@@ -501,7 +501,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    int parseRange(int start, int end){
       try{
-         end = parseLine(start, end, ptnCaptureBtn);
+         end = parseLine(start, end, patCaptureBtn);
          end = parseLine(start, end, patPatternStr);
          end = parseLine(start, end, patSubregionStr);
          end = parseLine(start, end, patPngStr);
@@ -527,7 +527,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
-   static Pattern ptnCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
+   static Pattern patCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
    static Pattern patPatternStr = Pattern.compile(
             "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
    static Pattern patSubregionStr = Pattern.compile(
@@ -590,19 +590,19 @@ public class SikuliPane extends JTextPane implements KeyListener,
                                           throws BadLocationException{
       Document doc = getDocument();
       String imgStr = doc.getText(startOff, endOff - startOff);
-      String filename = imgStr.substring(1,endOff-startOff-1);;
-      boolean useParameters = false;
-      boolean exact = false;
-      int numMatches = -1;
-      float similarity = -1f;
-      Location offset = null;
-
       Component comp = null;
+
       if( ptn == patPatternStr || ptn == patPngStr ){
          comp = ImageButton.createFromString(this, imgStr);
       }
-      else if( imgStr.startsWith("Region") ){
+      else if( ptn == patSubregionStr ){
          comp = RegionButton.createFromString(this, imgStr);
+      }
+      else if( ptn == patCaptureBtn ){
+         Element root = doc.getDefaultRootElement();
+         int lineIdx = root.getElementIndex(endOff);
+         Element line = root.getElement(lineIdx);
+         comp = new CaptureButton(this, line);
       }
 
       if(comp != null){
@@ -611,21 +611,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
          return true;
       }
 
-      /*
-      File f = getFileInBundle(filename);
-      Debug.log(7,"replaceWithImage: " + filename);
-      if( f != null && f.exists() ){
-         this.select(startOff, endOff);
-         ImageButton icon = new ImageButton(this, f.getAbsolutePath());
-         if(useParameters){
-            icon.setParameters(exact, similarity, numMatches);
-            if(offset != null)
-               icon.setTargetOffset(offset);
-         }
-         this.insertComponent(icon);
-         return true;
-      }
-      */
       return false;
    }
    
