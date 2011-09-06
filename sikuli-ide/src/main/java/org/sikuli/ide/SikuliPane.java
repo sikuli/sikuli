@@ -527,7 +527,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
-   static Pattern patHistoryBtnStr = Pattern.compile("(\"\\[SIKULI-(CAPTURE|DIFF)\\]\")");
    static Pattern ptnCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
    static Pattern patPatternStr = Pattern.compile(
             "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
@@ -604,39 +603,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
       else if( imgStr.startsWith("Region") ){
          comp = RegionButton.createFromString(this, imgStr);
-      }
-      else if( patHistoryBtnStr.matcher(imgStr).matches() ){
-         Element root = doc.getDefaultRootElement();
-         int lineIdx = root.getElementIndex(startOff);
-         Element line = root.getElement(lineIdx);
-         try{
-            CaptureButton btnCapture = (CaptureButton)_historyBtnClass.newInstance();
-            if( imgStr.indexOf("DIFF") >= 0 )
-               btnCapture.setDiffMode(true);
-            btnCapture.setSrcElement(line);
-            btnCapture.setParentPane(this);
-            //System.out.println("new btn: " + btnCapture.getSrcElement());
-            this.select(startOff, endOff);
-            if( btnCapture.hasNext() ){
-               int pos = startOff;
-               doc.insertString(pos++, "[", null);
-               this.insertComponent(btnCapture);
-               pos++;
-               while(btnCapture.hasNext()){
-                  CaptureButton btn = btnCapture.getNextDiffButton();
-                  doc.insertString(pos++, ",", null);
-                  this.insertComponent(btn);
-                  pos++;
-               }
-               doc.insertString(pos, "]", null);
-            }
-            else
-               this.insertComponent(btnCapture);
-         }
-         catch(Exception e){
-            e.printStackTrace();
-         }
-         return true;
       }
 
       if(comp != null){
@@ -716,7 +682,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          int start = doc.getLength();
          doc.insertString( doc.getLength(), str, null );
          int end = doc.getLength();
-         end = parseLine(start, end, patHistoryBtnStr);
+         //end = parseLine(start, end, patHistoryBtnStr);
       }
       catch(Exception e){
          e.printStackTrace();
