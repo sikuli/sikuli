@@ -227,6 +227,7 @@ ADD_SUBDIRECTORY(${JAVA_TEST_DIR})
 SET(MAIN_TEST_SUITE ${PACKAGE}.SikuliScriptTestSuite)
 
 add_custom_target( test-res
+   COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/${TEST_RESOURCE_DIR}
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BASE_DIR}/${TEST_RESOURCE_DIR} ${CMAKE_BINARY_DIR}/${TEST_RESOURCE_DIR}
    COMMENT "Copy test resource"
 )
