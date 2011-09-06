@@ -234,8 +234,14 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
 
    public static ImageButton createFromString(SikuliPane parentPane, String str){
-      if( !str.startsWith("Pattern") )
+      if( !str.startsWith("Pattern") ){
+         if(str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
+            String filename = str.substring(1, str.length()-1);
+            File f = parentPane.getFileInBundle(filename);
+            return new ImageButton(parentPane, f.getAbsolutePath());
+         }
          return null;
+      }
       ImageButton btn = new ImageButton(parentPane);
       String[] tokens = str.split("\\)\\s*\\.?");
       for(String tok : tokens){

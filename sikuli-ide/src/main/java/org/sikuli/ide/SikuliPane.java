@@ -598,7 +598,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       Location offset = null;
 
       Component comp = null;
-      if( ptn == patPatternStr ){
+      if( ptn == patPatternStr || ptn == patPngStr ){
          comp = ImageButton.createFromString(this, imgStr);
       }
       else if( imgStr.startsWith("Region") ){
