@@ -986,6 +986,8 @@ public class Region {
    
 
    public static Region toJythonRegion(Region r){
+      if(r == null)
+         return null;
       PythonInterpreter interpreter = new PythonInterpreter();
       interpreter.exec("from sikuli import Region");
       PyObject regionClass = interpreter.get("Region");
