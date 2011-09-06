@@ -42,6 +42,20 @@ class RegionButton extends JButton implements ActionListener, Observer{
       return String.format("Region(%d,%d,%d,%d)", _x, _y, _w, _h);
    }
 
+   public static RegionButton createFromString(SikuliPane parentPane, String str){
+      String[] tokens = str.split("[(),]");
+      try{
+         int x = Integer.valueOf(tokens[1]), y = Integer.valueOf(tokens[2]), 
+             w = Integer.valueOf(tokens[3]), h = Integer.valueOf(tokens[4]);
+         return new RegionButton(parentPane, x, y, w, h);
+      }
+      catch(Exception e){
+         Debug.error("Can't parse Region: " + e.getMessage());
+         e.printStackTrace();
+      }
+      return null;
+   }
+
    public void update(Subject s){
       if(s instanceof CapturePrompt){
          CapturePrompt cp = (CapturePrompt)s;

@@ -23,11 +23,9 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
    protected SikuliPane _codePane;
    protected boolean _isCapturing;
 
-   /*
    public String toString(){
-      return " \"CAPTURE-BUTTON\" ";
+      return "\"__SIKULI-CAPTURE-BUTTON__\"";
    }
-   */
 
    public CaptureButton(){
       super();

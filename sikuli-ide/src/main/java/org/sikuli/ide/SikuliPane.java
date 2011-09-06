@@ -501,6 +501,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    int parseRange(int start, int end){
       try{
+         end = parseLine(start, end, ptnCaptureBtn);
          end = parseLine(start, end, patPatternStr);
          end = parseLine(start, end, patSubregionStr);
          end = parseLine(start, end, patPngStr);
@@ -527,6 +528,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
    static Pattern patHistoryBtnStr = Pattern.compile("(\"\\[SIKULI-(CAPTURE|DIFF)\\]\")");
+   static Pattern ptnCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
    static Pattern patPatternStr = Pattern.compile(
             "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
    static Pattern patSubregionStr = Pattern.compile(
@@ -543,7 +545,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          //System.out.println("["+line+"]");
          if( m.find() ){
             int len = m.end() - m.start();
-            if(replaceWithImage(startOff+m.start(), startOff+m.end())){
+            if(replaceWithImage(startOff+m.start(), startOff+m.end(), ptn)){
                startOff += m.start()+1;
                endOff -= len-1;
             }
@@ -585,7 +587,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
       }
    }
    
-   boolean replaceWithImage(int startOff, int endOff) 
+   boolean replaceWithImage(int startOff, int endOff, Pattern ptn) 
                                           throws BadLocationException{
       Document doc = getDocument();
       String imgStr = doc.getText(startOff, endOff - startOff);
@@ -596,61 +598,12 @@ public class SikuliPane extends JTextPane implements KeyListener,
       float similarity = -1f;
       Location offset = null;
 
-      //Debug.log("imgStr: " + imgStr);
-      //Debug.log("filename " + filename);
-      if( imgStr.startsWith("Pattern") ){
-         useParameters = true;
-         String[] tokens = imgStr.split("\\)\\s*\\.?");
-         for(String str : tokens){
-            //System.out.println("token: " + str);
-            if( str.startsWith("exact") )  exact = true;
-            if( str.startsWith("Pattern") )
-               filename = str.substring(
-                     str.indexOf("\"")+1,str.lastIndexOf("\""));
-            if( str.startsWith("similar") ){
-               String strArg = str.substring(str.lastIndexOf("(")+1);
-               try{
-                  similarity = Float.valueOf(strArg);
-               }
-               catch(NumberFormatException e){
-                  return false;
-               }
-            }
-            if( str.startsWith("firstN") ){ // FIXME: replace with limit/max
-               String strArg = str.substring(str.lastIndexOf("(")+1);
-               numMatches = Integer.valueOf(strArg);
-            }
-            if( str.startsWith("targetOffset") ){
-               String strArg = str.substring(str.lastIndexOf("(")+1);
-               String[] args = strArg.split(",");
-               try{
-                  offset = new Location(0,0);
-                  offset.x = Integer.valueOf(args[0]);
-                  offset.y = Integer.valueOf(args[1]);
-               }
-               catch(NumberFormatException e){
-                  return false;
-               }
-            }
-         }
+      Component comp = null;
+      if( ptn == patPatternStr ){
+         comp = ImageButton.createFromString(this, imgStr);
       }
       else if( imgStr.startsWith("Region") ){
-         String[] tokens = imgStr.split("[(),]");
-         try{
-            int x = Integer.valueOf(tokens[1]), y = Integer.valueOf(tokens[2]), 
-                w = Integer.valueOf(tokens[3]), h = Integer.valueOf(tokens[4]);
-            this.select(startOff, endOff);
-            RegionButton icon = new RegionButton(this, x, y, w, h);
-            this.insertComponent(icon);
-            return true;
-         }
-         catch(NumberFormatException e){
-            return false;
-         }
-         catch(Exception e){
-            e.printStackTrace();
-            return false;
-         }
+         comp = RegionButton.createFromString(this, imgStr);
       }
       else if( patHistoryBtnStr.matcher(imgStr).matches() ){
          Element root = doc.getDefaultRootElement();
@@ -686,6 +639,13 @@ public class SikuliPane extends JTextPane implements KeyListener,
          return true;
       }
 
+      if(comp != null){
+         this.select(startOff, endOff);
+         this.insertComponent(comp);
+         return true;
+      }
+
+      /*
       File f = getFileInBundle(filename);
       Debug.log(7,"replaceWithImage: " + filename);
       if( f != null && f.exists() ){
@@ -699,6 +659,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
          this.insertComponent(icon);
          return true;
       }
+      */
       return false;
    }
    

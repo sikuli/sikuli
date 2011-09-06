@@ -64,7 +64,7 @@ SET(RUN_USER_ARGS -Dsikuli.console=true -Dfile.encoding=UTF-8
    CACHE STRING 
    "The arguments for running Sikuli IDE with 'make run-user'"
 )
-SET(RUN_ARGS -Dsikuli.console=true -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
+SET(RUN_ARGS -Dsikuli.console=false -Dsikuli.Debug=3 -Dfile.encoding=UTF-8 
              -Dsikuli.testing=yes
              -Xms64m -Xmx512m 
              #-Duser.language=zh -Duser.region=TW 
@@ -75,7 +75,7 @@ IF(APPLE)
    LIST(APPEND RUN_ARGS -Xdock:name='Sikuli IDE') 
 ENDIF()
 
-SET(ARGS "")
+SET(ARGS "../sample-scripts/resize-app.sikuli")
 
 SET(CLASSPATH 
    ${SIKULI_SCRIPT_JAR}${SEP}${JUNIT_JAR}${SEP}${SWING_LAYOUT_JAR}${SEP}${COMMONS_CLI_JAR}${SEP}${JSON_SIMPLE_JAR}${SEP}${SWINGX_JAR}${SEP}${MAC_WIDGETS_JAR}${SEP}${FORMS_JAR}

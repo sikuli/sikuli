@@ -115,19 +115,27 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       final int max_h = UserPreferences.getInstance().getDefaultThumbHeight();
       return createThumbnail(imgFname, max_h);
    }
-   
-   public ImageButton(SikuliPane pane, String imgFilename){
+
+   protected void init(SikuliPane pane){
       _pane = pane;
-      setFilename(imgFilename);
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
       _numMatches = DEFAULT_NUM_MATCHES;
-
+      
       setBorderPainted(true);
       setCursor(new Cursor (Cursor.HAND_CURSOR));
       addActionListener(this);
       //addMouseListener(this);
       setToolTipText( this.toString() );
+   }
+
+   protected ImageButton(SikuliPane pane){
+      init(pane);
+   }
+   
+   public ImageButton(SikuliPane pane, String imgFilename){
+      init(pane);
+      setFilename(imgFilename);
    }
 
    private boolean useThumbnail(){
@@ -210,7 +218,73 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       return _offset;
    }
 
+   public void setExact(boolean exact){
+      _exact = exact;
+   }
+
+   public void setSimilarity(float val){
+      if(val<0)
+         _similarity = 0;
+      else if(val>1)
+         _similarity = 1;
+      else
+         _similarity = val;
+   }
+
+
+
+   public static ImageButton createFromString(SikuliPane parentPane, String str){
+      if( !str.startsWith("Pattern") )
+         return null;
+      ImageButton btn = new ImageButton(parentPane);
+      String[] tokens = str.split("\\)\\s*\\.?");
+      for(String tok : tokens){
+         //System.out.println("token: " + tok);
+         if( tok.startsWith("exact") )  
+            btn.setExact(true);
+         else if( tok.startsWith("Pattern") ){
+            String filename = tok.substring(
+                  tok.indexOf("\"")+1,tok.lastIndexOf("\""));
+            File f = parentPane.getFileInBundle(filename);
+            if( f != null && f.exists() ){
+               btn.setFilename(f.getAbsolutePath());
+            }
+            else
+               return null;
+         }
+         else if( tok.startsWith("similar") ){
+            String strArg = tok.substring(tok.lastIndexOf("(")+1);
+            try{
+               btn.setSimilarity(Float.valueOf(strArg));
+            }
+            catch(NumberFormatException e){
+               return null;
+            }
+         }
+         else if( tok.startsWith("firstN") ){ // FIXME: replace with limit/max
+            String strArg = tok.substring(tok.lastIndexOf("(")+1);
+            btn._numMatches = Integer.valueOf(strArg);
+         }
+         else if( tok.startsWith("targetOffset") ){
+            String strArg = tok.substring(tok.lastIndexOf("(")+1);
+            String[] args = strArg.split(",");
+            try{
+               Location offset = new Location(0,0);
+               offset.x = Integer.valueOf(args[0]);
+               offset.y = Integer.valueOf(args[1]);
+               btn.setTargetOffset(offset);
+            }
+            catch(NumberFormatException e){
+               return null;
+            }
+         }
+      }
+      return btn;
+   }
+
    public String toString(){
+      if(_imgFilename == null)
+         return "null";
       String img = new File(_imgFilename).getName();
       String pat = "Pattern(\"" + img + "\")"; 
       String ret = "";
