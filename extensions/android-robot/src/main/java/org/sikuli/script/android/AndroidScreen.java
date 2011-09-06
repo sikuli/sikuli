@@ -37,7 +37,7 @@ public class AndroidScreen extends Region implements IScreen {
    }
 
    public Region newRegion(Rectangle rect){
-      return new Region(rect, this);
+      return Region.create(rect, this);
    }
    public IRobot getRobot(){
       return _robot;

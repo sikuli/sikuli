@@ -115,7 +115,7 @@ public class Region {
       return create(new Region(x_, y_, w_, h_));
    }
 
-   static Region create(Rectangle r, IScreen parentScreen){
+   public static Region create(Rectangle r, IScreen parentScreen){
       return create(new Region(r, parentScreen));
    }
 
