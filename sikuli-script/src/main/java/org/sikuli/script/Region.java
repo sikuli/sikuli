@@ -87,7 +87,7 @@ public class Region {
    */
    @Deprecated
    public Region(Region r) {
-      init(r.x, r.y, r.w, r.h, null);
+      init(r.x, r.y, r.w, r.h, r.getScreen());
    }
 
    Region(Rectangle r, IScreen parentScreen) {
