@@ -92,7 +92,14 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
       matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
       result = Mat::ones(out_result.size(), CV_32F) - result;
 #else
-      matchTemplate(source,target,out_result,CV_TM_CCOEFF_NORMED);
+      Scalar mean, stddev;
+      meanStdDev( target, mean, stddev );
+      if(stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON){ // pure color target
+         matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
+         result = Mat::ones(out_result.size(), CV_32F) - result;
+      }
+      else
+         matchTemplate(source,target,out_result,CV_TM_CCOEFF_NORMED);
 #endif
       minMaxLoc(result, NULL, &out_score, NULL, &out_location);
       return out_score;

@@ -75,6 +75,8 @@ class FinderTestTarget {
       for(Point t : groundTruthLocations){
          if( m.x <= t.x && t.x <= m.x+m.w && m.y <= t.y && t.y <= m.y+m.h)
             return true;
+         if( t.x == -1 && t.y == -1)
+            return true;
       }
       return false;
    }

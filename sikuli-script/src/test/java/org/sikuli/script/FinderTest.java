@@ -63,18 +63,24 @@ public class FinderTest
       String screenImg = testImgs.getScreenImageFilename();
       Finder f = new Finder(screenImg);
       for(FinderTestTarget target : testTargets){
+         System.out.println("test target: " + target);
          String targetFname = target.getFilename();
          if(similarity<0)
             f.find(targetFname);
          else
             f.find(new Pattern(targetFname).similar(similarity));
+         boolean found = false;
          while(f.hasNext()){
+            found = true;
             Match m = f.next();
             boolean matched = target.isMatched(m);
             if(!matched)
                System.err.println("NOT MATCHED: " + m + " " + target);
             assertTrue(matched);
          }
+         if(!found)
+            System.err.println("no match: " + target);
+         assertTrue(found);
       }
    }
 
@@ -155,7 +161,7 @@ public class FinderTest
 
    @Test
    public void testExactColor() throws Exception {
-      testTargetScreenSet("exactcolor", 1.f);
+      testTargetScreenSet("exactcolor", 0.9f);
    }
 
    @Test
