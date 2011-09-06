@@ -15,7 +15,8 @@ class TestBasic(unittest.TestCase):
 
    def testGlobalFunction(self):
       assert SCREEN != None
-      assert getBounds() != None
+      assert getBounds() == SCREEN.getBounds()
+      assert getROI() == SCREEN.getROI()
 
    def testBasicClass(self):
       assert Region(0,0,100,100) != None
