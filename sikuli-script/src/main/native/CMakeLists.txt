@@ -110,11 +110,8 @@ IF(APPLE)
       org_sikuli_script_MacUtil.h
    )
    TARGET_LINK_LIBRARIES(MacUtil ${EXTRA_LIBS})
-   SET_TARGET_PROPERTIES(MacUtil PROPERTIES SUFFIX ".jnilib")
 
-   SET(BUILD_TARGETS
-      MacHotkeyManager
-   )
+   LIST(APPEND BUILD_TARGETS MacHotkeyManager)
 
    ADD_LIBRARY(MacHotkeyManager SHARED
       MacHotkeyManager.cc
@@ -122,22 +119,19 @@ IF(APPLE)
       org_sikuli_script_internal_hotkey_MacHotkeyManager.h
    )
    TARGET_LINK_LIBRARIES(MacHotkeyManager ${EXTRA_LIBS})
-   SET_TARGET_PROPERTIES(MacHotkeyManager PROPERTIES SUFFIX ".jnilib")
 ENDIF()
 
 SET(NATIVE_LIBS
    VisionProxy
    ${BUILD_TARGETS}
 )
+message("NATIVE_LIBS: ${NATIVE_LIBS}")
 
 ADD_LIBRARY(VDictProxy SHARED
    VDictProxy.cc
    org_sikuli_script_VDictProxy.h
 )
 TARGET_LINK_LIBRARIES(VDictProxy ${OpenCV_LIBS})
-IF(APPLE)
-   SET_TARGET_PROPERTIES(VDictProxy PROPERTIES SUFFIX ".jnilib")
-ENDIF(APPLE)
 
 
 ## SWIG: generate a JNI wrapper 
@@ -175,7 +169,9 @@ endforeach(JNI_HEADER ${JNI_HEADERS})
 foreach(BUILD_TARGET ${BUILD_TARGETS})
    TARGET_LINK_LIBRARIES(${BUILD_TARGET} ${OpenCV_LIBS})
    add_dependencies(${BUILD_TARGET} ${PROJECT_NAME}.classes)
-   add_dependencies(${JAR_FILE}.libs-in-jar ${BUILD_TARGET})
+   IF(APPLE)
+      SET_TARGET_PROPERTIES(${BUILD_TARGET} PROPERTIES SUFFIX ".jnilib")
+   ENDIF(APPLE)
 endforeach(BUILD_TARGET ${BUILD_TARGETS})
 
-add_dependencies(${JAR_FILE}.libs-in-jar VisionProxy)
+add_dependencies(${JAR_FILE}.libs-in-jar ${NATIVE_LIBS})

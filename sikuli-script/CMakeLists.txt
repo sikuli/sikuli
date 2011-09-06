@@ -150,6 +150,7 @@ add_custom_target( update-version
 add_custom_target(${JAR_FILE}.libs-in-jar
    COMMAND ${CMAKE_COMMAND} -E make_directory ${JAR_DIR}/META-INF
    COMMAND ${CMAKE_COMMAND} -E copy_directory ${BINARY_LIB_DIR} ${JAR_LIB_DIR}
+   COMMENT "Build native libs"
 )
 
 
