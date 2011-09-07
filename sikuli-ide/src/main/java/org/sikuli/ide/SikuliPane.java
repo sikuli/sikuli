@@ -801,6 +801,25 @@ class MyTransferHandler extends TransferHandler{
       super.exportToClipboard(comp, clip, action);
    }
 
+   protected void exportDone(JComponent source,
+                          Transferable data,
+                          int action){
+      if(action == TransferHandler.MOVE){
+         JTextPane aTextPane = (JTextPane)source;
+         int sel_start = aTextPane.getSelectionStart();
+         int sel_end = aTextPane.getSelectionEnd();
+         Document doc = aTextPane.getDocument();
+         try{
+            doc.remove(sel_start, sel_end - sel_start);
+         }
+         catch(BadLocationException e){
+            e.printStackTrace();
+         
+         }
+      }
+   
+   }
+
    public int getSourceActions(JComponent c) {
       return COPY_OR_MOVE;
    }
