@@ -7,6 +7,7 @@ package org.sikuli.ide;
 
 import java.util.prefs.*;
 import java.util.Date;
+import java.util.Locale;
 import java.awt.Event;
 
 import org.sikuli.script.Debug;
@@ -75,6 +76,22 @@ public class UserPreferences {
 
    public String getFontName(){
       return pref.get("FONT_NAME", "Monospaced"); 
+   }
+
+
+   public void setLocale(Locale l){
+      pref.put("LOCALE", l.toString());
+   }
+
+   public Locale getLocale(){
+      String locale = pref.get("LOCALE", Locale.getDefault().toString());
+      String[] code = locale.split("_");
+      if(code.length == 1)
+         return new Locale(code[0]);
+      else if(code.length == 2)
+         return new Locale(code[0], code[1]);
+      else
+         return new Locale(code[0], code[1], code[2]);
    }
 
 

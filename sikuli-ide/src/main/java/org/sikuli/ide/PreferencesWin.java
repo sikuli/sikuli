@@ -8,6 +8,13 @@ package org.sikuli.ide;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.prefs.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.MissingResourceException;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -71,7 +78,38 @@ public class PreferencesWin extends JFrame {
       _chkExpandTab.setSelected(pref.getExpandTab());
       _spnTabWidth.setValue(pref.getTabWidth());
       initFontPrefs();
+      initLangPrefs();
    }
+
+   private void initLangPrefs(){
+      String[] SUPPORT_LOCALES = {
+         "es", "pt_BR", "ar", "fr", "ru", "bg", "he", "sv", "ca", "ja", "tr", 
+         "da", "ko", "uk", "de", "nl", "zh_CN", "en_US", "pl", "zh_TW"
+      };
+      Locale[] sortedLocales = new Locale[SUPPORT_LOCALES.length];
+      UserPreferences pref = UserPreferences.getInstance();
+      int count = 0;
+      for (String locale_code: SUPPORT_LOCALES){
+         Locale l;
+         if( locale_code.indexOf("_")>=0 ){
+            String[] lang_country = locale_code.split("_");
+            l = new Locale(lang_country[0], lang_country[1]);
+         }
+         else
+            l = new Locale(locale_code);
+         sortedLocales[count++] = l;
+      }
+      Arrays.sort(sortedLocales, new Comparator<Locale>(){
+         public int compare(Locale l1, Locale l2) {
+            return l1.getDisplayLanguage().compareTo(l2.getDisplayLanguage());
+         }
+      });
+      for(Locale l : sortedLocales)
+         _cmbLang.addItem(l);
+      _cmbLang.setRenderer(new LocaleListCellRenderer());
+      _cmbLang.setSelectedItem(pref.getLocale());
+   }
+
    
    private void initFontPrefs(){
       UserPreferences pref = UserPreferences.getInstance();
@@ -103,6 +141,10 @@ public class PreferencesWin extends JFrame {
 
       pref.setFontName( (String)_cmbFontName.getSelectedItem() );
       pref.setFontSize( (Integer)_spnFontSize.getValue() );
+
+      Locale locale = (Locale)_cmbLang.getSelectedItem();
+      pref.setLocale(locale);
+      I18N.setLocale(locale);
    }
 
    private void setTxtHotkey(int code, int mod){
@@ -495,3 +537,13 @@ public class PreferencesWin extends JFrame {
    private JButton _btnCancel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
+
+class LocaleListCellRenderer extends DefaultListCellRenderer {
+  public Component getListCellRendererComponent(JList list, 
+        Object value, int index, boolean isSelected, boolean hasFocus) {
+      Locale locale = (Locale) (value);
+      return super.getListCellRendererComponent(list, 
+            locale.getDisplayName(), index, isSelected, hasFocus);
+    }
+}
+
