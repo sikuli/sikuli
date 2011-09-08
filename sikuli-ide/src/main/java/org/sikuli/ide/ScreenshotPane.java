@@ -24,7 +24,7 @@ import org.sikuli.script.Debug;
 import org.sikuli.script.natives.Vision;
 
 class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener, Subject{
-   final static int DEFAULT_H = 300;
+   final static int DEFAULT_H = 500;
    static int MAX_NUM_MATCHING=100;
 
    Region _match_region;
@@ -59,6 +59,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _simg = simg;
       _screen = simg.getImage();
       MAX_NUM_MATCHING = (int)Vision.getParameter("FindAllMaxReturn");
+      autoResize();
    }
 
    static String _I(String key, Object... args){ 
@@ -69,11 +70,18 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    public void componentMoved(ComponentEvent e) { }
    public void componentShown(ComponentEvent e) { }
 
-   public void componentResized(ComponentEvent e) {
+   protected void autoResize(){
       _width = getWidth();
+      if(_width == 0)
+         _width = (int)getPreferredSize().getWidth();
       _height = (int)((double)_width/_ratio);
       _scale = (double)_height/_match_region.h;
       setPreferredSize(new Dimension(_width, _height));
+      repaint();
+   }
+
+   public void componentResized(ComponentEvent e) {
+      autoResize();
    }
 
    private JSlider createSlider(){

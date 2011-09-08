@@ -52,7 +52,7 @@ public class PatternWindow extends JFrame implements Observer {
       c.setLayout(new BorderLayout());
 
       tabPane = new JTabbedPane();
-      //tabPane.setPreferredSize(new Dimension(500,300));
+      tabPane.setPreferredSize(new Dimension(790,700));
       paneTarget = createTargetPanel();
       panePreview = createPrewviewPanel();
       _namingPane = new NamingPane(_imgBtn);
