@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_24" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_26" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
   <void method="setProperty"> 
    <string>i18n.bundlePackage</string> 
@@ -329,7 +329,7 @@
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:21:p, comp titleIndentation:::p::p, par l {seq {space :p:81:p, comp titleAppearance:::p::p}, seq l {space :::p, comp chkExpandTab:::p::p, space :::p, par l {comp lblTabWidth:1::p:16:p, comp spnTabWidth:1::p::p}, space :p:40:p, par b {comp lblFont:2:b:p::p, comp cmbFontName:2:b:p::p}, space :::p, par t {comp lblFontSize:::p:27:p, comp spnFontSize:::p::p}}}, space ::55:x}}</string> 
+            <string>par l {seq l {space :p:21:p, comp titleIndentation:::p::p, par l {seq {space :p:81:p, comp titleAppearance:::p::p}, seq l {space :::p, comp chkExpandTab:::p::p, space :::p, par l {comp lblTabWidth:1::p:16:p, comp spnTabWidth:1::p::p}, space :p:40:p, par b {comp lblFont:2:b:p::p, comp cmbFontName:2:b:p::p}, space :::p, par t {comp lblFontSize:::p:27:p, comp spnFontSize:::p::p}}}, space ::54:x}}</string> 
            </void> 
           </object> 
           <void property="name"> 
@@ -502,11 +502,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq t {space :p:85:p, comp chkAutoUpdate::::260:x, space :p:82:p}}</string> 
+            <string>par l {seq {par l {seq l {space :p:47:p, par l {comp lblLanguage::l:p::p, comp lblUpdates::l:p::p}, space :p:306:p}, seq l {space :p:85:p, comp cmbLang:::p:215:p}, seq t {space :p:85:p, comp chkAutoUpdate::::336:x}}, space :::p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:32:p, comp chkAutoUpdate:::p::p, space ::201:x}}</string> 
+            <string>par l {seq l {space :p:20:p, comp lblUpdates:::p::p, space :::p, comp chkAutoUpdate:::p::p, space :p:24:p, comp lblLanguage:::p::p, space :::p, comp cmbLang:::p::p, space ::118:x}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 
@@ -536,6 +536,57 @@
               <string>JavaCodeGenerator.variableName</string> 
               <string>chkAutoUpdate</string> 
              </void> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JComboBox</string> 
+            <void property="name"> 
+             <string>cmbLang</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.lblUpdates.text</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>font</string> 
+             <object id="SwingDerivedFont0" class="com.jformdesigner.model.SwingDerivedFont"> 
+              <null/> 
+              <int>1</int> 
+              <int>0</int> 
+              <boolean>false</boolean> 
+             </object> 
+            </void> 
+            <void property="name"> 
+             <string>lblUpdates</string> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <object class="com.jformdesigner.model.FormMessage"> 
+              <null/> 
+              <string>PreferencesWin.lblLanguage.text</string> 
+             </object> 
+            </void> 
+            <void method="setProperty"> 
+             <string>font</string> 
+             <object idref="SwingDerivedFont0"/> 
+            </void> 
+            <void property="name"> 
+             <string>lblLanguage</string> 
             </void> 
            </object> 
           </void> 

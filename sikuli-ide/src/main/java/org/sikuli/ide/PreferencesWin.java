@@ -173,6 +173,9 @@ public class PreferencesWin extends JFrame {
       _spnFontSize = new JSpinner();
       JPanel paneGeneral = new JPanel();
       _chkAutoUpdate = new JCheckBox();
+      _cmbLang = new JComboBox();
+      _lblUpdates = new JLabel();
+      _lblLanguage = new JLabel();
       JPanel paneOkCancel = new JPanel();
       JPanel hSpacer1 = new JPanel(null);
       _btnOk = new JButton();
@@ -345,7 +348,7 @@ public class PreferencesWin extends JFrame {
                            .add(_paneTextEditingLayout.createParallelGroup(GroupLayout.TRAILING)
                               .add(_lblFontSize, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
                               .add(_spnFontSize, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-                     .addContainerGap(55, Short.MAX_VALUE))
+                     .addContainerGap(54, Short.MAX_VALUE))
             );
             _paneTextEditingLayout.linkSize(new Component[] {_lblTabWidth, _spnTabWidth}, GroupLayout.VERTICAL);
             _paneTextEditingLayout.linkSize(new Component[] {_cmbFontName, _lblFont}, GroupLayout.VERTICAL);
@@ -356,21 +359,44 @@ public class PreferencesWin extends JFrame {
          //======== paneGeneral ========
          {
 
+            //---- _lblUpdates ----
+            _lblUpdates.setFont(_lblUpdates.getFont().deriveFont(_lblUpdates.getFont().getStyle() | Font.BOLD));
+
+            //---- _lblLanguage ----
+            _lblLanguage.setFont(_lblLanguage.getFont().deriveFont(_lblLanguage.getFont().getStyle() | Font.BOLD));
+
             GroupLayout paneGeneralLayout = new GroupLayout(paneGeneral);
             paneGeneral.setLayout(paneGeneralLayout);
             paneGeneralLayout.setHorizontalGroup(
                paneGeneralLayout.createParallelGroup()
-                  .add(GroupLayout.TRAILING, paneGeneralLayout.createSequentialGroup()
-                     .add(85, 85, 85)
-                     .add(_chkAutoUpdate, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                     .add(82, 82, 82))
+                  .add(paneGeneralLayout.createSequentialGroup()
+                     .add(paneGeneralLayout.createParallelGroup()
+                        .add(paneGeneralLayout.createSequentialGroup()
+                           .add(47, 47, 47)
+                           .add(paneGeneralLayout.createParallelGroup()
+                              .add(_lblLanguage)
+                              .add(_lblUpdates))
+                           .add(306, 306, 306))
+                        .add(paneGeneralLayout.createSequentialGroup()
+                           .add(85, 85, 85)
+                           .add(_cmbLang, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE))
+                        .add(GroupLayout.TRAILING, paneGeneralLayout.createSequentialGroup()
+                           .add(85, 85, 85)
+                           .add(_chkAutoUpdate, GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)))
+                     .addContainerGap())
             );
             paneGeneralLayout.setVerticalGroup(
                paneGeneralLayout.createParallelGroup()
                   .add(paneGeneralLayout.createSequentialGroup()
-                     .add(32, 32, 32)
+                     .add(20, 20, 20)
+                     .add(_lblUpdates)
+                     .addPreferredGap(LayoutStyle.RELATED)
                      .add(_chkAutoUpdate)
-                     .addContainerGap(201, Short.MAX_VALUE))
+                     .add(24, 24, 24)
+                     .add(_lblLanguage)
+                     .addPreferredGap(LayoutStyle.RELATED)
+                     .add(_cmbLang, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                     .addContainerGap(118, Short.MAX_VALUE))
             );
          }
          _tabPane.addTab(I18N._I("prefTabGeneralSettings"), paneGeneral);
@@ -432,6 +458,8 @@ public class PreferencesWin extends JFrame {
       _lblFontSize.setText(I18N._I("PreferencesWin.lblFontSize.text"));
       _tabPane.setTitleAt(1, I18N._I("PreferencesWin.paneTextEditing.tab.title"));
       _chkAutoUpdate.setText(I18N._I("prefGeneralAutoCheck"));
+      _lblUpdates.setText(I18N._I("PreferencesWin.lblUpdates.text"));
+      _lblLanguage.setText(I18N._I("PreferencesWin.lblLanguage.text"));
       _tabPane.setTitleAt(2, I18N._I("prefTabGeneralSettings"));
       _btnOk.setText(I18N._I("ok"));
       _btnCancel.setText(I18N._I("cancel"));
@@ -460,6 +488,9 @@ public class PreferencesWin extends JFrame {
    private JLabel _lblFontSize;
    private JSpinner _spnFontSize;
    private JCheckBox _chkAutoUpdate;
+   private JComboBox _cmbLang;
+   private JLabel _lblUpdates;
+   private JLabel _lblLanguage;
    private JButton _btnOk;
    private JButton _btnCancel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
