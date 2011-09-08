@@ -543,7 +543,7 @@ class LocaleListCellRenderer extends DefaultListCellRenderer {
         Object value, int index, boolean isSelected, boolean hasFocus) {
       Locale locale = (Locale) (value);
       return super.getListCellRendererComponent(list, 
-            locale.getDisplayName(), index, isSelected, hasFocus);
+            locale.getDisplayName(locale), index, isSelected, hasFocus);
     }
 }
 
