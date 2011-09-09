@@ -3,6 +3,7 @@
 from org.sikuli.script import Screen as JScreen
 import inspect
 import __main__
+import __builtin__
 import sys
 
 from Region import *
