@@ -87,6 +87,7 @@ public class RegionTest implements SikuliEventObserver
        JFrame frame = KeyEventDemo.createAndShowGUI();
        Screen scr = new Screen();
        scr.type("abcde" + Key.ENTER);
+       scr.type(Key.SPACE);
        scr.type("captial letter", KeyModifier.SHIFT);
        //TODO: verify output
        frame.dispose();
