@@ -21,7 +21,7 @@ import org.sikuli.script.Region;
 import org.sikuli.script.UnionScreen;
 
 
-public class PatternWindow extends JFrame implements Observer {
+public class PatternWindow extends JFrame {
 
    private ImageButton _imgBtn;
    private ScreenshotPane _screenshot;
@@ -31,7 +31,6 @@ public class PatternWindow extends JFrame implements Observer {
    private JTabbedPane tabPane;
    private JPanel paneTarget, panePreview;
 
-   private JPanel glass;
    private ScreenImage _simg;
 
    static String _I(String key, Object... args){ 
@@ -119,7 +118,7 @@ public class PatternWindow extends JFrame implements Observer {
 
    private void createScreenshots(Container c){
       _screenshot = new ScreenshotPane(_simg);
-      _screenshot.addObserver(this);
+      //_screenshot.addObserver(this);
       createMarginBox(c, _screenshot);
    }
 
@@ -143,15 +142,6 @@ public class PatternWindow extends JFrame implements Observer {
       JButton btnCancel = new JButton(_I("cancel"));
       btnCancel.addActionListener(new ActionCancel(this));
 
-      ImageIcon loadingIcon = new ImageIcon(
-            SikuliIDE.class.getResource("/icons/loading.gif"));
-      JLabel lblLoading = new JLabel(loadingIcon);
-
-      glass = (JPanel)getGlassPane();
-      glass.setLayout(new BorderLayout());
-      glass.add(lblLoading, BorderLayout.CENTER);
-      glass.setVisible(true);
-
       GridBagConstraints c = new GridBagConstraints();
 
       c.gridy = 3;
@@ -165,10 +155,6 @@ public class PatternWindow extends JFrame implements Observer {
       return pane;
    }
 
-
-   public void update(Subject s){
-      glass.setVisible(false);
-   }
 
    public void setTargetOffset(Location offset){
       if(offset != null)

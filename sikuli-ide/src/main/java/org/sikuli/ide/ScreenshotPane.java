@@ -23,7 +23,9 @@ import org.sikuli.script.Pattern;
 import org.sikuli.script.Debug;
 import org.sikuli.script.natives.Vision;
 
-class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener, Subject{
+import org.sikuli.ide.util.GifDecoder;
+
+class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener {
    final static int DEFAULT_H = 500;
    static int MAX_NUM_MATCHING=100;
 
@@ -31,17 +33,17 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    int _width, _height;
    double _scale, _ratio;
 
-   boolean _runFind = false; 
+   boolean _runFind = false, _finding = false; 
 
    float _similarity;
    int _numMatches;
    Set<Match> _fullMatches = null;
    Vector<Match> _showMatches = null;
-   Observer _observer = null;
 
    protected ScreenImage _simg;
    protected BufferedImage _screen = null;
    protected Rectangle _uBound;
+   protected GifDecoder _loadingSpinner;
 
    private JLabel btnSimilar, _lblMatchCount;
    private JSlider sldSimilar;
@@ -60,6 +62,8 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _screen = simg.getImage();
       MAX_NUM_MATCHING = (int)Vision.getParameter("FindAllMaxReturn");
       autoResize();
+      _loadingSpinner = new GifDecoder();
+      _loadingSpinner.read(getClass().getResourceAsStream("/icons/loading.gif"));
    }
 
    static String _I(String key, Object... args){ 
@@ -170,14 +174,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       repaint();
    }
 
-   public void addObserver( Observer ob ){
-      _observer = ob;
-   }
 
-   public void notifyObserver(){
-      if(_observer != null)
-         _observer.update(this);
-   }
 
    public void setParameters(final String patFilename,
                              final boolean exact, final float similarity, 
@@ -188,6 +185,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
          Thread thread = new Thread(new Runnable(){
             public void run(){
                try{
+                  _finding = true;
                   Finder f = new Finder(_simg, _match_region);
                   f.findAll(new Pattern(patFilename).similar(0.00001f));
                   _fullMatches = new TreeSet<Match>(new Comparator(){
@@ -198,6 +196,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
                         return false;
                      }
                   });
+                  _finding = false;
                   int count=0;
                   while(f.hasNext()){
                      if(++count > MAX_NUM_MATCHING)
@@ -207,7 +206,6 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
                         _fullMatches.add(m);
                      }
                      setParameters(exact, similarity, numMatches);
-                     notifyObserver();
                   }
                }
                catch(Exception e){
@@ -247,20 +245,37 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    }
 
 
-   public void paint(Graphics g){
+   public void paintComponent(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       if( _screen != null ){
          g2d.drawImage(_screen, 0, 0, _width, _height, null);
          if( _showMatches != null )
             paintMatches(g2d);
-         else
+//         else
             paintOverlay(g2d);
       }
+   }
+
+   long _curFrame_t = 0;
+   int _loadingFrame = 0;
+   private BufferedImage getLoadingFrame(){
+      BufferedImage img = _loadingSpinner.getFrame(_loadingFrame);
+      int delay = _loadingSpinner.getDelay(_loadingFrame);
+      long now = (new Date()).getTime();
+      if(now - _curFrame_t >= delay){
+         _curFrame_t = now;
+         _loadingFrame = (_loadingFrame+1) % _loadingSpinner.getFrameCount();
+      }
+
+      return img;
    }
 
    void paintOverlay(Graphics2D g2d){
       g2d.setColor(new Color(0,0,0,150));
       g2d.fillRect(0, 0, _width, _height);
+      BufferedImage spinner = getLoadingFrame();
+      g2d.drawImage(spinner, null, _width/2-spinner.getWidth()/2, _height/2-spinner.getHeight()/2);
+      repaint();
    }
 
    void paintMatches(Graphics2D g2d){
