@@ -33,7 +33,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    int _width, _height;
    double _scale, _ratio;
 
-   boolean _runFind = false, _finding = false; 
+   boolean _runFind = false;
 
    float _similarity;
    int _numMatches;
@@ -184,7 +184,6 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
          Thread thread = new Thread(new Runnable(){
             public void run(){
                try{
-                  _finding = true;
                   Finder f = new Finder(_simg, _match_region);
                   f.findAll(new Pattern(patFilename).similar(0.00001f));
                   _fullMatches = new TreeSet<Match>(new Comparator(){
@@ -195,7 +194,6 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
                         return false;
                      }
                   });
-                  _finding = false;
                   int count=0;
                   while(f.hasNext()){
                      if(++count > MAX_NUM_MATCHING)

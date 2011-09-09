@@ -21,18 +21,23 @@ import org.sikuli.script.Finder;
 import org.sikuli.script.Region;
 import org.sikuli.script.Debug;
 
+import org.sikuli.ide.util.LoadingSpinner;
+
 class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListener, ChangeListener{
    final static int DEFAULT_H = 300;
    final static float DEFAULT_PATTERN_RATIO=0.4f;
    ScreenImage _simg;
    BufferedImage _img;
-   Match _match;
+   Match _match = null;
 
    int _viewX, _viewY, _viewW, _viewH;
    float _zoomRatio, _ratio;
    Location _tar = new Location(0,0);
    Location _offset = new Location(0,0);
    JSpinner txtX, txtY;
+
+   private LoadingSpinner _loading;
+   private boolean _finding = true;
 
    public TargetOffsetPane(ScreenImage simg, String patFilename, Location initOffset){
       _simg = simg;
@@ -41,22 +46,37 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
       int w = DEFAULT_H/r.height*r.width;
       setPreferredSize(new Dimension(w, DEFAULT_H));
 
-      Finder f = new Finder(_simg, new Region(0,0,0,0));
-      try{
-         f.find(patFilename);
-         if(f.hasNext()){
-            _match = f.next();
-            if(initOffset!=null)
-               setTarget(initOffset.x, initOffset.y);
-            else
-               setTarget(0,0);
-         }
-         _img = ImageIO.read(new File(patFilename));
-      } catch (IOException e) {
-         Debug.error("Can't load " + patFilename);
-      }
       addMouseListener(this);
       addMouseWheelListener(this);
+
+      _loading = new LoadingSpinner();
+      findTarget(patFilename, initOffset);
+   }
+
+   void findTarget(final String patFilename, final Location initOffset){
+      Thread thread = new Thread(new Runnable(){
+         public void run(){
+            Finder f = new Finder(_simg, new Region(0,0,0,0));
+            try{
+               f.find(patFilename);
+               if(f.hasNext()){
+                  _match = f.next();
+                  if(initOffset!=null)
+                     setTarget(initOffset.x, initOffset.y);
+                  else
+                     setTarget(0,0);
+               }
+               _img = ImageIO.read(new File(patFilename));
+            } catch (IOException e) {
+               Debug.error("Can't load " + patFilename);
+            }
+            synchronized(this){
+               _finding = false;
+            }
+            repaint();
+         }
+      });
+      thread.start();
    }
 
    static String _I(String key, Object... args){ 
@@ -176,7 +196,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
       g2d.drawImage(clip, destX, destY, destW, destH, null);
    }
 
-   public void paint(Graphics g){
+   public void paintComponent(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       if( getWidth() > 0 && getHeight() > 0){
          if(_match!=null){
@@ -188,8 +208,23 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
             paintPatternOnly(g2d);
          paintRulers(g2d);
          paintTarget(g2d);
+         synchronized(this){
+            if(_finding) 
+               paintLoading(g2d);
+         }
+
       }
    }
+
+   void paintLoading(Graphics2D g2d){
+      int w = getWidth(), h = getHeight();
+      g2d.setColor(new Color(0,0,0,200));
+      g2d.fillRect(0, 0, w, h);
+      BufferedImage spinner = _loading.getFrame();
+      g2d.drawImage(spinner, null, w/2-spinner.getWidth()/2, h/2-spinner.getHeight()/2);
+      repaint();
+   }
+
 
    Location convertViewToScreen(Point p){
       Location ret = new Location(0,0);
