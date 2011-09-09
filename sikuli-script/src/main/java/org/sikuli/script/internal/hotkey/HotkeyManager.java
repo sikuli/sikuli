@@ -68,6 +68,15 @@ public abstract class HotkeyManager {
     *
     *  @return true if success. false otherwise.
     */
+   public boolean addHotkey(String key, int modifiers, HotkeyListener listener){
+      return addHotkey(key.charAt(0), modifiers, listener);
+   }
+
+   /**
+    *  install a hotkey listener.
+    *
+    *  @return true if success. false otherwise.
+    */
    public boolean addHotkey(char key, int modifiers, HotkeyListener listener){
       int[] keyCodes = Key.toJavaKeyCode(key);
       int keyCode = keyCodes[keyCodes.length-1];
@@ -77,6 +86,15 @@ public abstract class HotkeyManager {
       return _instance._addHotkey(keyCode, modifiers, listener);
    }
 
+
+   /**
+    *  uninstall a hotkey listener.
+    *
+    *  @return true if success. false otherwise.
+    */
+   public boolean removeHotkey(String key, int modifiers){
+      return removeHotkey(key.charAt(0), modifiers);
+   }
 
    /**
     *  uninstall a hotkey listener.
