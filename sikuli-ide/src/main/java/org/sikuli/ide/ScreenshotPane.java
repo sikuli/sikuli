@@ -23,7 +23,7 @@ import org.sikuli.script.Pattern;
 import org.sikuli.script.Debug;
 import org.sikuli.script.natives.Vision;
 
-import org.sikuli.ide.util.GifDecoder;
+import org.sikuli.ide.util.LoadingSpinner;
 
 class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener {
    final static int DEFAULT_H = 500;
@@ -43,11 +43,11 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
    protected ScreenImage _simg;
    protected BufferedImage _screen = null;
    protected Rectangle _uBound;
-   protected GifDecoder _loadingSpinner;
 
    private JLabel btnSimilar, _lblMatchCount;
    private JSlider sldSimilar;
    private JSpinner txtNumMatches;
+   private LoadingSpinner _loading;
 
    public ScreenshotPane(ScreenImage simg){
       _match_region = new UnionScreen();
@@ -62,8 +62,7 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
       _screen = simg.getImage();
       MAX_NUM_MATCHING = (int)Vision.getParameter("FindAllMaxReturn");
       autoResize();
-      _loadingSpinner = new GifDecoder();
-      _loadingSpinner.read(getClass().getResourceAsStream("/icons/loading.gif"));
+      _loading = new LoadingSpinner();
    }
 
    static String _I(String key, Object... args){ 
@@ -251,29 +250,16 @@ class ScreenshotPane extends JPanel implements ChangeListener, ComponentListener
          g2d.drawImage(_screen, 0, 0, _width, _height, null);
          if( _showMatches != null )
             paintMatches(g2d);
-//         else
+         else
             paintOverlay(g2d);
       }
    }
 
-   long _curFrame_t = 0;
-   int _loadingFrame = 0;
-   private BufferedImage getLoadingFrame(){
-      BufferedImage img = _loadingSpinner.getFrame(_loadingFrame);
-      int delay = _loadingSpinner.getDelay(_loadingFrame);
-      long now = (new Date()).getTime();
-      if(now - _curFrame_t >= delay){
-         _curFrame_t = now;
-         _loadingFrame = (_loadingFrame+1) % _loadingSpinner.getFrameCount();
-      }
-
-      return img;
-   }
 
    void paintOverlay(Graphics2D g2d){
       g2d.setColor(new Color(0,0,0,150));
       g2d.fillRect(0, 0, _width, _height);
-      BufferedImage spinner = getLoadingFrame();
+      BufferedImage spinner = _loading.getFrame();
       g2d.drawImage(spinner, null, _width/2-spinner.getWidth()/2, _height/2-spinner.getHeight()/2);
       repaint();
    }

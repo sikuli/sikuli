@@ -64,9 +64,8 @@ public class PatternWindow extends JFrame {
       c.doLayout();
       pack();
 
-      init(exact, similarity, numMatches);
-
       setVisible(true);
+      init(exact, similarity, numMatches);
    }
 
    void takeScreenshot(){

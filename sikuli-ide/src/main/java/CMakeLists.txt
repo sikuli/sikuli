@@ -63,6 +63,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/indentation/PythonIndentation.java
          org/sikuli/ide/indentation/PythonState.java
          org/sikuli/ide/util/GifDecoder.java
+         org/sikuli/ide/util/LoadingSpinner.java
 )
 
 add_custom_target( ${PROJECT_NAME}.classes
