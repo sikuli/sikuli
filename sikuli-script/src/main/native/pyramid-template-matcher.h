@@ -29,10 +29,10 @@ struct MatchingData {
 
    MatchingData(const Mat& source_, const Mat& target_) : source(source_), target(target_){
       use_gray = false;
-      meanStdDev( target, mean, stddev );
+      //meanStdDev( target, mean, stddev );
    }
 
-   bool useGray(){
+   bool useGray() const{
       return use_gray;
    }
 

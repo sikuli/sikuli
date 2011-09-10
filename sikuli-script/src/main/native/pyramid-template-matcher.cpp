@@ -33,8 +33,17 @@ void PyramidTemplateMatcher::init() {
 
 
 PyramidTemplateMatcher::PyramidTemplateMatcher(const MatchingData& data, int levels, float _factor)
-: factor(_factor), source(data.source), target(data.target), lowerPyramid(NULL)
+: factor(_factor),  lowerPyramid(NULL)
 { 
+   if(data.useGray()){
+      source = data.source_gray;
+      target = data.target_gray;
+   }
+   else{
+      source = data.source;
+      target = data.target;
+   }
+
    if (source.rows < target.rows || source.cols < target.cols)
       return;
 
