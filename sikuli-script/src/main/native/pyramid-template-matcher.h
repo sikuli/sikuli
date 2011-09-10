@@ -21,6 +21,31 @@ using namespace cv;
 using namespace std;
 
 
+struct MatchingData {
+   Mat source, target;
+   Mat source_gray, target_gray;
+   Scalar mean, stddev;
+   bool use_gray;
+
+   MatchingData(const Mat& source_, const Mat& target_) : source(source_), target(target_){
+      use_gray = false;
+      meanStdDev( target, mean, stddev );
+   }
+
+   bool useGray(){
+      return use_gray;
+   }
+
+   bool useGray(bool flag){
+      use_gray = flag;
+      if(use_gray){
+         cvtColor(source, source_gray, CV_RGB2GRAY);
+         cvtColor(target, target_gray, CV_RGB2GRAY);
+      }
+      return flag;
+   }
+};
+
 class PyramidTemplateMatcher{
 private:
    bool _use_gpu;
@@ -30,7 +55,7 @@ public:
    PyramidTemplateMatcher(){
       init();
    }
-   PyramidTemplateMatcher(Mat source, Mat target, int levels, float factor);
+   PyramidTemplateMatcher(const MatchingData& data, int levels, float factor);
    ~PyramidTemplateMatcher();
 
    virtual FindResult next();

@@ -133,42 +133,19 @@ TemplateFinder::find_all(Mat target, double min_similarity){
       levels++;
    }
    
-   
-   Mat sourceMat;
-   Mat targetMat;
+   MatchingData data(roiSource, target);
    
    if (min_similarity < 0.99){
-      // if fuzzy matching, we use gray-scale image to boost speed
-      
-      Mat roiSourceGray;
-      Mat targetGray;
-      
-      // convert image from RGB to grayscale
-      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-      cvtColor(target, targetGray, CV_RGB2GRAY);
-      
-      sourceMat = roiSourceGray;
-      targetMat = targetGray;      
-      
-   } else{
-      // otherwise, we use color image to boost precision
-      
-      sourceMat = roiSource;
-      targetMat = target;   
+      data.useGray(true);
+      create_matcher(data, levels, factor);
+      add_matches_to_buffer(5);     
+      if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
+         return;
    }
-   
-   
-   
-   create_matcher(sourceMat, targetMat, levels, factor);
-   add_matches_to_buffer(5);     
-   
-   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
-      return;
-   
+   data.useGray(false);
    dout << "[find_all] matching (original resolution: color) ... " << endl;
-   create_matcher(roiSource, target, 0, 1);
+   create_matcher(data, 0, 1);
    add_matches_to_buffer(5);
-   
 }
 
 
@@ -181,10 +158,10 @@ TemplateFinder::top_score_in_buffer(){
 }
 
 void
-TemplateFinder::create_matcher(Mat& source, Mat& target, int level, float ratio){
+TemplateFinder::create_matcher(const MatchingData& data, int level, float ratio){
    if (matcher)
       delete matcher;
-   matcher = new PyramidTemplateMatcher(source,target,level,ratio);
+   matcher = new PyramidTemplateMatcher(data, level, ratio);
 }
 
 void 
@@ -216,6 +193,13 @@ TemplateFinder::find(Mat target, double min_similarity){
    if(ratio < 1.f)
       ratio = 1.f;
    
+
+   MatchingData data(roiSource, target);
+
+   if (min_similarity < 0.99)
+      data.useGray(true);
+
+   /*
    Mat sourceMat;
    Mat targetMat;
    
@@ -239,6 +223,7 @@ TemplateFinder::find(Mat target, double min_similarity){
       sourceMat = roiSource;
       targetMat = target;   
    }
+   */
    
    
    TimingBlock tb("NEW METHOD");
@@ -260,21 +245,21 @@ TemplateFinder::find(Mat target, double min_similarity){
    */
    
    dout << "matching (whole) ... " << endl;
-   create_matcher(sourceMat, targetMat, 1, ratio);
+   create_matcher(data, 1, ratio);
    add_matches_to_buffer(5);
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){
       return;
    }  
    
    dout << "matching (0.75) ..." << endl;
-   create_matcher(sourceMat, targetMat, 1, ratio*0.75);
+   create_matcher(data, 1, ratio*0.75);
    add_matches_to_buffer(5);
    if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
       return;
    
    if (ratio > 2){
       dout << "matching (0.5) ..." << endl;
-      create_matcher(sourceMat, targetMat, 1, ratio*0.5);
+      create_matcher(data, 1, ratio*0.5);
       add_matches_to_buffer(5);
       if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
          return;
@@ -282,26 +267,22 @@ TemplateFinder::find(Mat target, double min_similarity){
    
    if (ratio > 4){      
       dout << "matching (0.25) ..." << endl;
-      create_matcher(sourceMat, targetMat, 1, ratio*0.25);
+      create_matcher(data, 1, ratio*0.25);
       add_matches_to_buffer(5);
       if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
          return;
    }
    
-   if (min_similarity < 0.99){
-      // only do this for fuzzy matching when the input images were
-      // converted to gray-scale
-      
+   if(data.useGray()){
       dout << "matching (original resolution: gray) ... " << endl;
-      create_matcher(sourceMat, targetMat, 0, 1);
+      create_matcher(data, 0, 1);
       add_matches_to_buffer(5);
       if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
          return;
    }
-   
 
    dout << "matching (original resolution: color) ... " << endl;
-   create_matcher(roiSource, target, 0, 1);
+   create_matcher(data, 0, 1);
    add_matches_to_buffer(5);
  
    

@@ -32,8 +32,8 @@ void PyramidTemplateMatcher::init() {
 }
 
 
-PyramidTemplateMatcher::PyramidTemplateMatcher(Mat _source, Mat _target, int levels, float _factor)
-: factor(_factor), source(_source), target(_target), lowerPyramid(NULL)
+PyramidTemplateMatcher::PyramidTemplateMatcher(const MatchingData& data, int levels, float _factor)
+: factor(_factor), source(data.source), target(data.target), lowerPyramid(NULL)
 { 
    if (source.rows < target.rows || source.cols < target.cols)
       return;
@@ -71,7 +71,8 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       resize(source, smallSource, Size(source.cols/factor,source.rows/factor),INTER_NEAREST);
       resize(target, smallTarget, Size(target.cols/factor,target.rows/factor),INTER_NEAREST);      
 #endif
-      return new PyramidTemplateMatcher(smallSource, smallTarget, level, factor);
+      MatchingData data(smallSource, smallTarget);
+      return new PyramidTemplateMatcher(data, level, factor);
 }
 
 double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location){
@@ -95,7 +96,14 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
       Scalar mean, stddev;
       meanStdDev( target, mean, stddev );
       if(stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON){ // pure color target
-         matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
+         if(mean[0]+mean[1]+mean[2]+mean[3] < DBL_EPSILON){ // black target
+            Mat inv_source, inv_target;
+            bitwise_not(source, inv_source);
+            bitwise_not(target, inv_target);
+            matchTemplate(inv_source,inv_target,out_result,CV_TM_SQDIFF_NORMED);   
+         } 
+         else
+            matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
          result = Mat::ones(out_result.size(), CV_32F) - result;
       }
       else

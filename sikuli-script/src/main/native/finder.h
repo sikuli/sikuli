@@ -100,7 +100,7 @@ public:
 private:
    
    void init();
-   void create_matcher(Mat& source, Mat& target, int level, float ratio);
+   void create_matcher(const MatchingData& data, int level, float ratio);
    PyramidTemplateMatcher* matcher;
    
    FindResult current_match;
