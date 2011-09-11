@@ -31,15 +31,15 @@ struct MatchingData {
    Scalar mean, stddev;
    bool use_gray;
 
-   MatchingData(){
+   inline MatchingData(){
    }
 
-   MatchingData(const Mat& source_, const Mat& target_) : source(source_), target(target_){
+   inline MatchingData(const Mat& source_, const Mat& target_) : source(source_), target(target_){
       use_gray = false;
       meanStdDev( target, mean, stddev );
    }
 
-   MatchingData createSmallData(float factor){
+   inline MatchingData createSmallData(float factor){
       Mat new_source, new_target;
       resize(source, target, new_source, new_target, factor);
       MatchingData newData(new_source, new_target);
@@ -48,7 +48,7 @@ struct MatchingData {
       return newData;
    }
 
-   void resize(const Mat& source, const Mat& target, Mat& out_source, Mat& out_target, float factor){
+   inline void resize(const Mat& source, const Mat& target, Mat& out_source, Mat& out_target, float factor){
 #if USE_PYRDOWN
       // Faster
       pyrDown(source, out_source);
@@ -60,31 +60,31 @@ struct MatchingData {
 #endif
    }
 
-   bool isSameColor() const{
+   inline bool isSameColor() const{
       return stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON;
    }
 
-   bool isBlack() const{
+   inline bool isBlack() const{
       return (mean[0]+mean[1]+mean[2]+mean[3] < DBL_EPSILON) && isSameColor();
    }
 
-   bool isSourceSmallerThanTarget() const{
+   inline bool isSourceSmallerThanTarget() const{
       return source.rows < target.rows || source.cols < target.cols;
    }
 
-   const Mat& getSource() const{
+   inline const Mat& getSource() const{
       return use_gray? source_gray : source;
    }
 
-   const Mat& getTarget() const{
+   inline const Mat& getTarget() const{
       return use_gray? target_gray : target;
    }
 
-   bool useGray() const{
+   inline bool useGray() const{
       return use_gray;
    }
 
-   bool useGray(bool flag){
+   inline bool useGray(bool flag){
       use_gray = flag;
       if(use_gray){
          cvtColor(source, source_gray, CV_RGB2GRAY);
@@ -93,7 +93,7 @@ struct MatchingData {
       return flag;
    }
 
-   void setSourceROI(const Rect& roi){
+   inline void setSourceROI(const Rect& roi){
       if(use_gray)
          source_gray.adjustROI(roi.y, roi.y+roi.height, roi.x, roi.x+roi.width);
       else
