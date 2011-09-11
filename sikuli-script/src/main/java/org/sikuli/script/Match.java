@@ -34,8 +34,20 @@ public class Match extends Region implements Comparable {
    }
 
    public int compareTo(Object o){
-      return getScore() < ((Match)o).getScore() ? -1 :
-             getScore() > ((Match)o).getScore() ? 1 : 0;
+      Match m = (Match)o;
+      if(score != m.score)
+         return score < m.score ? -1 : 1;
+      if(x != m.x)
+         return x - m.x;
+      if(y != m.y)
+         return y - m.y;
+      if(w != m.w)
+         return w - m.w;
+      if(h != m.h)
+         return h - m.h;
+      if(equals(o))
+         return 0;
+      return -1;
    }
 
    public boolean equals(Object oThat) {
