@@ -972,7 +972,7 @@ public class SikuliIDE extends JFrame {
    
    public String getCurrentFilename(){
       SikuliPane pane = getCurrentCodePane();
-      String fname = pane.getCurrentFilename();
+      String fname = pane.getCurrentFile().getAbsolutePath();
       return fname;
    }
 

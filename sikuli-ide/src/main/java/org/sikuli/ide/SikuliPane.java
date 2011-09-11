@@ -38,7 +38,7 @@ import org.sikuli.script.Location;
 
 public class SikuliPane extends JTextPane implements KeyListener, 
                                                      CaretListener{
-   private String _editingFilename;
+   private File _editingFile;
    private String _srcBundlePath = null;
    private boolean _dirty = false;
    private Class _historyBtnClass;
@@ -220,17 +220,17 @@ public class SikuliPane extends JTextPane implements KeyListener,
       return "Untitled";
    }
 
-   public String getCurrentFilename(){
-      if(_editingFilename==null){
+   public File getCurrentFile(){
+      if(_editingFile ==null){
          try{
             saveAsFile();
-            return _editingFilename;
+            return _editingFile;
          }
          catch(IOException e){
             e.printStackTrace();
          }
       }
-      return _editingFilename;
+      return _editingFile;
    }
 
    static InputStream SikuliToHtmlConverter = SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
@@ -264,7 +264,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    private void writeSrcFile(boolean writeHTML) throws IOException{
       this.write( new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream(_editingFilename), "UTF8")));
+                  new FileOutputStream(_editingFile), "UTF8")));
       if(writeHTML)
          convertSrcToHtml(getSrcBundle());
       cleanBundle(getSrcBundle());
@@ -272,7 +272,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public String saveFile() throws IOException{
-      if(_editingFilename==null)
+      if(_editingFile==null)
          return saveAsFile();
       else{
          writeSrcFile(true);
@@ -325,14 +325,25 @@ public class SikuliPane extends JTextPane implements KeyListener,
       else
          Utils.mkdir(bundlePath);
       setSrcBundle(bundlePath);
-      _editingFilename = getSourceFilename(bundlePath);
+      _editingFile = createSourceFile(bundlePath, ".py");
       Debug.log(1, "save to bundle: " + getSrcBundle());
       writeSrcFile(true);
       //TODO: update all bundle references in ImageButtons
       //BUG: if save and rename images, the images will be gone..
    }
+
+   private File createSourceFile(String bundlePath, String ext){
+      if( bundlePath.endsWith(".sikuli") || 
+          bundlePath.endsWith(".sikuli/") ){
+         File dir = new File(bundlePath);
+         String name = dir.getName();
+         name = name.substring(0, name.lastIndexOf("."));
+         return new File(bundlePath, name+ext);
+      }
+      return new File(bundlePath);
+   }
    
-   private String getSourceFilename(String sikuli_dir){
+   private File findSourceFile(String sikuli_dir){
       if( sikuli_dir.endsWith(".sikuli") || 
           sikuli_dir.endsWith(".sikuli" + "/") ){
          File dir = new File(sikuli_dir);
@@ -344,22 +355,22 @@ public class SikuliPane extends JTextPane implements KeyListener,
                String py_name = f.getName();
                py_name = py_name.substring(0, py_name.lastIndexOf('.'));
                if( py_name.equals(sikuli_name) )
-                  return f.getAbsolutePath();
+                  return f;
             }
          }
          if(pys.length >= 1)
-            return pys[0].getAbsolutePath();
+            return pys[0];
       }
-      return sikuli_dir;
+      return new File(sikuli_dir);
    }
    
    public void loadFile(String filename) throws IOException{
       if( filename.endsWith("/") )
          filename = filename.substring(0, filename.length()-1);
       setSrcBundle(filename+"/");
-      _editingFilename = getSourceFilename(filename);
+      _editingFile = findSourceFile(filename);
       this.read( new BufferedReader(new InputStreamReader(
-                  new FileInputStream(_editingFilename), "UTF8")), null);
+                  new FileInputStream(_editingFile), "UTF8")), null);
       updateDocumentListeners();
       setDirty(false);
    }
