@@ -39,4 +39,9 @@ public class Util {
          return true;
       return false;
    }
+
+   public static String getParentPath(String path){
+      File f = new File(path);
+      return f.getParent();
+   }
 }

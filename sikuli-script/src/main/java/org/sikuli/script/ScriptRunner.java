@@ -34,7 +34,7 @@ public class ScriptRunner {
       String[] h = new String[]{
          "# coding=utf-8",
          "from __future__ import with_statement",
-         "from sikuli.Sikuli import *",
+         "from sikuli import *",
          "setThrowException(True)",
          "setShowActions(False)"
       };
@@ -51,6 +51,9 @@ public class ScriptRunner {
    }
 
    public void runPython(String bundlePath, File pyFile) throws IOException{
+      addTempHeader("addModPath(\"" + bundlePath + "\")");
+      addTempHeader("addModPath(\"" + Util.getParentPath(bundlePath) + "\")");
+
       Iterator<String> it = _headers.iterator();
       while(it.hasNext()){
          String line = it.next();

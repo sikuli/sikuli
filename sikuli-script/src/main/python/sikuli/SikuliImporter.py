@@ -25,7 +25,7 @@ class SikuliImporter:
          try:
             return imp.load_module(fullname, file, pathname, desc)
          except Exception,e:
-            raise ImportError( "Errors in loading sikuli module: %s\nYou may need to add \"from sikuli.Sikuli import *\" in the module.\n%s" %(fullname, e) )
+            raise ImportError( "Errors in loading sikuli module: %s\n%s\n  - HOW TO FIX? Try adding \"from sikuli import *\" in the module.\n" %(fullname, e) )
          finally:
             if file:
                file.close()

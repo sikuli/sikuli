@@ -1524,7 +1524,7 @@ public class SikuliIDE extends JFrame {
       protected void runPython(File f) throws Exception{
          ScriptRunner srunner = new ScriptRunner(getPyArgs());
          try{
-            String path= SikuliIDE.getInstance().getCurrentBundlePath();
+            String path = SikuliIDE.getInstance().getCurrentBundlePath();
             srunner.addTempHeader("initSikuli()");
             srunner.runPython(path, f);
             srunner.close();

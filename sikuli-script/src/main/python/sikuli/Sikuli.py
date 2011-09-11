@@ -68,6 +68,13 @@ def load(jar):
       return True
    return False
 
+def addModPath(path):
+   import os
+   if path[:-1] == os.sep:
+      path = path[:-1]
+   if not path in sys.path:
+      sys.path.append(path)
+
 def addImagePath(path):
    ImageLocator.addImagePath(path)
 
