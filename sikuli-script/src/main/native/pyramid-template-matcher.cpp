@@ -8,10 +8,6 @@
 #include "TimingBlock.h"
 #include "vision.h"
 
-// select how images are template matched
-#define USE_SQRDIFF_NORMED 0
-#define USE_CCORR_NORMED 1
-
 
 #ifdef DEBUG
 #define dout std::cerr
@@ -76,10 +72,6 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, co
       }
 #endif
 
-#if USE_SQRDIFF_NORMED
-      matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
-      result = Mat::ones(out_result.size(), CV_32F) - result;
-#else
       if(data.isSameColor()){ // pure color target
          if(data.isBlack()){ // black target
             Mat inv_source, inv_target;
@@ -93,7 +85,6 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, co
       }
       else
          matchTemplate(source,target,out_result,CV_TM_CCOEFF_NORMED);
-#endif
       minMaxLoc(result, NULL, &out_score, NULL, &out_location);
       return out_score;
 }

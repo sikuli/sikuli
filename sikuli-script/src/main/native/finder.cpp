@@ -176,16 +176,16 @@ TemplateFinder::add_matches_to_buffer(int num_matches_to_add){
 
 void
 TemplateFinder::find(Mat target, double min_similarity){
+   TimingBlock tb("TemplateFinder::find");
    //dout << "target: " << target.cols << "x" << target.rows << endl;
    
    this->min_similarity = min_similarity;   
    BaseFinder::find();  
    
    if (roiSource.cols < target.cols || roiSource.rows < target.rows){	   
-	   current_match.score = -1;
-	   return;
+      current_match.score = -1;
+      return;
    }
-   
    
    float ratio;
    ratio = min(target.rows / PyramidMinTargetDimension, 
@@ -193,84 +193,23 @@ TemplateFinder::find(Mat target, double min_similarity){
    if(ratio < 1.f)
       ratio = 1.f;
    
-
    MatchingData data(roiSource, target);
 
    if (min_similarity < 0.99)
       data.useGray(true);
-
-   /*
-   Mat sourceMat;
-   Mat targetMat;
    
-   if (min_similarity < 0.99){
-      // if fuzzy matching, we use gray-scale image to boost speed
-      
-      Mat roiSourceGray;
-      Mat targetGray;
-      
-      // convert image from RGB to grayscale
-      cvtColor(roiSource, roiSourceGray, CV_RGB2GRAY);
-      cvtColor(target, targetGray, CV_RGB2GRAY);
-      
-      
-      sourceMat = roiSourceGray;
-      targetMat = targetGray;
-      
-   } else{
-      // otherwise, we use color image to boost precision
-      
-      sourceMat = roiSource;
-      targetMat = target;   
-   }
-   */
-   
-   
-   TimingBlock tb("NEW METHOD");
-   
-   /*
-   dout << "matching (center) ... " << endl;            
-   Mat sourceMat_center = Mat(sourceMat, 
-                                 Range(sourceMat.rows*BORDER_MARGIN,
-                                       sourceMat.rows*(1-BORDER_MARGIN)),
-                                 Range(sourceMat.cols*BORDER_MARGIN,
-                                       sourceMat.cols*(1-BORDER_MARGIN)));
-   create_matcher(sourceMat_center, targetMat, 1, ratio);
-   add_matches_to_buffer(5); 
-   if (top_score_in_buffer() >= max(min_similarity,CENTER_REMATCH_THRESHOLD)){
-      roi.x += sourceMat.cols*BORDER_MARGIN;
-      roi.y += sourceMat.rows*BORDER_MARGIN;   
-      return;
-   }
-   */
-   
-   dout << "matching (whole) ... " << endl;
-   create_matcher(data, 1, ratio);
-   add_matches_to_buffer(5);
-   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){
-      return;
-   }  
-   
-   dout << "matching (0.75) ..." << endl;
-   create_matcher(data, 1, ratio*0.75);
-   add_matches_to_buffer(5);
-   if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD))
-      return;
-   
-   if (ratio > 2){
-      dout << "matching (0.5) ..." << endl;
-      create_matcher(data, 1, ratio*0.5);
-      add_matches_to_buffer(5);
-      if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
-         return;
-   }
-   
-   if (ratio > 4){      
-      dout << "matching (0.25) ..." << endl;
-      create_matcher(data, 1, ratio*0.25);
-      add_matches_to_buffer(5);
-      if (top_score_in_buffer()  >= max(min_similarity,REMATCH_THRESHOLD))
-         return;
+   const int N_RESIZE_RATIO = 4;
+   const float resize_ratio[N_RESIZE_RATIO] = {1.f, 0.75f, 0.5f, 0.25f};
+   for(int i=0;i<N_RESIZE_RATIO;i++){
+      float new_ratio = ratio * resize_ratio[i];
+      if(new_ratio >= 1.f){
+         dout << "matching (" << resize_ratio[i] << ") ... " << endl;
+         create_matcher(data, 1, new_ratio);
+         add_matches_to_buffer(5);
+         if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){
+            return;
+         }  
+      }
    }
    
    if(data.useGray()){
@@ -284,8 +223,6 @@ TemplateFinder::find(Mat target, double min_similarity){
    dout << "matching (original resolution: color) ... " << endl;
    create_matcher(data, 0, 1);
    add_matches_to_buffer(5);
- 
-   
 }
 
 bool
