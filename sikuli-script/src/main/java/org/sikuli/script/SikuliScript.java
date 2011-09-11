@@ -106,7 +106,8 @@ public class SikuliScript {
                ScriptRunner runner = new ScriptRunner(args);
                runner.runPython(args[i]);
             }
-            catch(IOException e) {
+            catch(Exception e) {
+               Debug.error("Can't run this Sikuli script: " + args[i]);
                e.printStackTrace();
             }
          }

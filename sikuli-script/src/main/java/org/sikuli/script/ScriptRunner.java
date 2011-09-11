@@ -53,6 +53,7 @@ public class ScriptRunner {
    public void runPython(String bundlePath, File pyFile) throws IOException{
       addTempHeader("addModPath(\"" + bundlePath + "\")");
       addTempHeader("addModPath(\"" + Util.getParentPath(bundlePath) + "\")");
+      addTempHeader("if len(sys.argv)==0 or '" + bundlePath + "' != sys.argv[0]: sys.argv.insert(0, '" + bundlePath + "')");
 
       Iterator<String> it = _headers.iterator();
       while(it.hasNext()){
