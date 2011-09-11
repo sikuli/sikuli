@@ -381,15 +381,13 @@ public class Region {
          return wait(target, _autoWaitTimeout);
       }
       while (true){
-         Match match = null;
          try{
-            match = doFind(target);
+            _lastMatch = doFind(target);
          }catch (Exception e){
             throw new FindFailed(e.getMessage());
          }
          
-         if (match != null){
-            _lastMatch = match;
+         if (_lastMatch != null){
             return _lastMatch;
          }       
          
@@ -439,24 +437,22 @@ public class Region {
       
       while (true){
          
-         Iterator<Match> matches = null;
          try{
             
             if(_autoWaitTimeout > 0){
                RepeatableFindAll rf = new RepeatableFindAll(target);
                rf.repeat(_autoWaitTimeout);
-               matches = rf.getMatches();
+               _lastMatches = rf.getMatches();
             }
             else{
-               matches = doFindAll(target);
+               _lastMatches = doFindAll(target);
             }
             
          }catch (Exception e){
             throw new FindFailed(e.getMessage());
          }
          
-         if (matches != null){
-            _lastMatches = matches;
+         if (_lastMatches != null){
             return _lastMatches;
          }       
          

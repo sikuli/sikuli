@@ -133,6 +133,44 @@ public class RegionFastTest
       assertEquals(_mockScr.getLastMatch(), m);
    }
 
+   @Test
+   public void test_getLastMatchNotFound() throws Exception {
+      Match m = _mockScr.find("test-res/network.png");
+      assertNotNull(_mockScr.getLastMatch());
+      try{
+         _mockScr.find("test-res/google.png");
+         fail("find should throw a FindlFailed exception.");
+      }
+      catch(FindFailed ff){
+      }
+      assertNull(_mockScr.getLastMatch());
+   }
+
+   @Test
+   public void test_getLastMatchesNotFound() throws Exception {
+      _mockScr.findAll("test-res/network.png");
+      assertNotNull(_mockScr.getLastMatches());
+      try{
+         String ptn = "test-res/google.png";
+         Iterator<Match> m = _mockScr.findAll(ptn);
+         fail("findAll should throw a FindlFailed exception.");
+      }
+      catch(FindFailed ff){
+      }
+      assertNull(_mockScr.getLastMatches());
+   }
+
+
+   @Test
+   public void test_getLastMatches() throws Exception {
+      String ptn = "test-res/network.png";
+      assertNull(_mockScr.getLastMatches());
+      Iterator<Match> m = _mockScr.findAll(ptn);
+      assertEquals(_mockScr.getLastMatches(), m);
+   }
+
+
+
 
    @Test
    public void test_doFindAll_1match() throws Exception {
