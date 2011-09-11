@@ -12,9 +12,6 @@
 #define USE_SQRDIFF_NORMED 0
 #define USE_CCORR_NORMED 1
 
-// select how images are downsampled
-#define USE_RESIZE 1
-#define USE_PYRDOWN 0
 
 #ifdef DEBUG
 #define dout std::cerr
@@ -32,27 +29,20 @@ void PyramidTemplateMatcher::init() {
 }
 
 
-PyramidTemplateMatcher::PyramidTemplateMatcher(const MatchingData& data, int levels, float _factor)
+PyramidTemplateMatcher::PyramidTemplateMatcher(const MatchingData& data_, int levels, float _factor)
 : factor(_factor),  lowerPyramid(NULL)
 { 
-   if(data.useGray()){
-      source = data.source_gray;
-      target = data.target_gray;
-   }
-   else{
-      source = data.source;
-      target = data.target;
-   }
+   data = data_;
 
-   if (source.rows < target.rows || source.cols < target.cols)
+   if (data.getSource().rows < data.getTarget().rows || data.getSource().cols < data.getTarget().cols)
       return;
 
    init();
 #ifdef ENABLE_GPU
-   if(sikuli::Vision::getParameter("GPU") && WORTH_GPU(source)){
+   if(sikuli::Vision::getParameter("GPU") && WORTH_GPU(data.getSource())){
       if(gpu::getCudaEnabledDeviceCount()>0) 
          _use_gpu = true;
-      //cout << source.rows << "x" << source.cols << endl; 
+      //cout << data.getSource().rows << "x" << data.getSource().cols << endl; 
    }
 #endif
    if (levels > 0)
@@ -69,22 +59,10 @@ PyramidTemplateMatcher::~PyramidTemplateMatcher(){
 
 PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       TimingBlock t("PyramidTemplateMatcher::createSmallMatcher");
-      Mat smallSource, smallTarget;
-      
-#if USE_PYRDOWN
-         // Faster
-      pyrDown(source, smallSource);
-      pyrDown(target, smallTarget);
-#endif
-#if USE_RESIZE
-      resize(source, smallSource, Size(source.cols/factor,source.rows/factor),INTER_NEAREST);
-      resize(target, smallTarget, Size(target.cols/factor,target.rows/factor),INTER_NEAREST);      
-#endif
-      MatchingData data(smallSource, smallTarget);
-      return new PyramidTemplateMatcher(data, level, factor);
+      return new PyramidTemplateMatcher(data.createSmallData(factor), level, factor);
 }
 
-double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location){
+double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, const MatchingData& data, Mat& out_result, Point& out_location){
       TimingBlock t("PyramidTemplateMatcher::findBest");
       double out_score;
 #ifdef ENABLE_GPU
@@ -102,10 +80,8 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, Ma
       matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
       result = Mat::ones(out_result.size(), CV_32F) - result;
 #else
-      Scalar mean, stddev;
-      meanStdDev( target, mean, stddev );
-      if(stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON){ // pure color target
-         if(mean[0]+mean[1]+mean[2]+mean[3] < DBL_EPSILON){ // black target
+      if(data.isSameColor()){ // pure color target
+         if(data.isBlack()){ // black target
             Mat inv_source, inv_target;
             bitwise_not(source, inv_source);
             bitwise_not(target, inv_target);
@@ -147,7 +123,7 @@ void PyramidTemplateMatcher::eraseResult(int x, int y, int xmargin, int ymargin)
 
 FindResult PyramidTemplateMatcher::next(){
    TimingBlock tb("PyramidTemplateMatcher::next()");
-   if (source.rows < target.rows || source.cols < target.cols){
+   if (data.isSourceSmallerThanTarget()){
       //std:cerr << "PyramidTemplateMatcher: source is smaller than the target" << endl;
       return FindResult(0,0,0,0,-1);
    }
@@ -157,7 +133,7 @@ FindResult PyramidTemplateMatcher::next(){
    double detectionScore;
    Point detectionLoc;
    if(!_hasMatchedResult){
-      detectionScore = findBest(source, target, result, detectionLoc);
+      detectionScore = findBest(data.getSource(), data.getTarget(), data, result, detectionLoc);
       _hasMatchedResult = true;
    }
    else{
@@ -171,6 +147,8 @@ FindResult PyramidTemplateMatcher::next(){
       }
 
    }
+
+   const Mat& target = data.getTarget();
 
    int xmargin = target.cols/3;
    int ymargin = target.rows/3;
@@ -188,16 +166,16 @@ FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
    // compute the parameter to define the neighborhood rectangle
    int x0 = max(x-(int)factor,0);
    int y0 = max(y-(int)factor,0);
-   int x1 = min(x+target.cols+(int)factor,source.cols);
-   int y1 = min(y+target.rows+(int)factor,source.rows);
+   int x1 = min(x+data.target.cols+(int)factor,data.source.cols);
+   int y1 = min(y+data.target.rows+(int)factor,data.source.rows);
    Rect roi(x0,y0,x1-x0,y1-y0);
-   Mat roiOfSource(source, roi);
+   Mat source = data.getSource()(roi);
 
    Point detectionLoc;
-   double detectionScore = findBest(roiOfSource, target, result, detectionLoc);
+   double detectionScore = findBest(source, data.getTarget(), data, result, detectionLoc);
 
    detectionLoc.x += roi.x;
    detectionLoc.y += roi.y;
 
-   return FindResult(detectionLoc.x,detectionLoc.y,target.cols,target.rows,detectionScore);
+   return FindResult(detectionLoc.x,detectionLoc.y,data.target.cols,data.target.rows,detectionScore);
 }

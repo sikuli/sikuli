@@ -17,6 +17,10 @@
 #include <opencv2/gpu/gpu.hpp>
 #endif
 
+// select how images are downsampled
+#define USE_RESIZE 1
+#define USE_PYRDOWN 0
+
 using namespace cv;
 using namespace std;
 
@@ -27,9 +31,53 @@ struct MatchingData {
    Scalar mean, stddev;
    bool use_gray;
 
+   MatchingData(){
+   }
+
    MatchingData(const Mat& source_, const Mat& target_) : source(source_), target(target_){
       use_gray = false;
-      //meanStdDev( target, mean, stddev );
+      meanStdDev( target, mean, stddev );
+   }
+
+   MatchingData createSmallData(float factor){
+      Mat new_source, new_target;
+      resize(source, target, new_source, new_target, factor);
+      MatchingData newData(new_source, new_target);
+      if(use_gray)
+         newData.useGray(true);
+      return newData;
+   }
+
+   void resize(const Mat& source, const Mat& target, Mat& out_source, Mat& out_target, float factor){
+#if USE_PYRDOWN
+      // Faster
+      pyrDown(source, out_source);
+      pyrDown(target, out_target);
+#endif
+#if USE_RESIZE
+      cv::resize(source, out_source, Size(source.cols/factor, source.rows/factor),INTER_NEAREST);
+      cv::resize(target, out_target, Size(target.cols/factor, target.rows/factor),INTER_NEAREST);      
+#endif
+   }
+
+   bool isSameColor() const{
+      return stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON;
+   }
+
+   bool isBlack() const{
+      return (mean[0]+mean[1]+mean[2]+mean[3] < DBL_EPSILON) && isSameColor();
+   }
+
+   bool isSourceSmallerThanTarget() const{
+      return source.rows < target.rows || source.cols < target.cols;
+   }
+
+   const Mat& getSource() const{
+      return use_gray? source_gray : source;
+   }
+
+   const Mat& getTarget() const{
+      return use_gray? target_gray : target;
    }
 
    bool useGray() const{
@@ -43,6 +91,13 @@ struct MatchingData {
          cvtColor(target, target_gray, CV_RGB2GRAY);
       }
       return flag;
+   }
+
+   void setSourceROI(const Rect& roi){
+      if(use_gray)
+         source_gray.adjustROI(roi.y, roi.y+roi.height, roi.x, roi.x+roi.width);
+      else
+         source.adjustROI(roi.y, roi.y+roi.height, roi.x, roi.x+roi.width);
    }
 };
 
@@ -63,11 +118,11 @@ public:
 protected:
 
    PyramidTemplateMatcher* createSmallMatcher(int level);
-   double findBest(const Mat& source, const Mat& target, Mat& out_result, Point& out_location);
+   double findBest(const Mat& source, const Mat& target, const MatchingData& data, Mat& out_result, Point& out_location);
    void eraseResult(int x, int y, int xmargin, int ymargin);
    FindResult nextFromLowerPyramid();
 
-   Mat source, target;
+   MatchingData data;
    float factor;
    bool _hasMatchedResult;
    double _detectedScore;
