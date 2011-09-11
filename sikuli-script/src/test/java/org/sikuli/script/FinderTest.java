@@ -160,11 +160,6 @@ public class FinderTest
    }
 
    @Test
-   public void testExactColor() throws Exception {
-      testTargetScreenSet("exactcolor", 1.f);
-   }
-
-   @Test
    public void testMacDesktopAll() throws Exception {
       testTargetScreenSetWithFindAll("macdesktop", 0.0001f);
    }
@@ -178,6 +173,12 @@ public class FinderTest
    public void testInbox() throws Exception {
       testTargetScreenSetWithFindAll("sikuliinbox", 0.7f);
    }
+
+   @Test
+   public void testExactColor() throws Exception {
+      testTargetScreenSet("exactcolor");
+   }
+
 
 }
 

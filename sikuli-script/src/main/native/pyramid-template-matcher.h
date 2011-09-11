@@ -61,15 +61,23 @@ struct MatchingData {
    }
 
    inline bool isSameColor() const{
-      return stddev[0]+stddev[1]+stddev[2]+stddev[3] < DBL_EPSILON;
+      return stddev[0]+stddev[1]+stddev[2]+stddev[3] <= 1e-5;
    }
 
    inline bool isBlack() const{
-      return (mean[0]+mean[1]+mean[2]+mean[3] < DBL_EPSILON) && isSameColor();
+      return (mean[0]+mean[1]+mean[2]+mean[3] <= 1e-5) && isSameColor();
    }
 
    inline bool isSourceSmallerThanTarget() const{
       return source.rows < target.rows || source.cols < target.cols;
+   }
+
+   inline const Mat& getOrigSource() const{
+      return source;
+   }
+
+   inline const Mat& getOrigTarget() const{
+      return target;
    }
 
    inline const Mat& getSource() const{
@@ -118,7 +126,7 @@ public:
 protected:
 
    PyramidTemplateMatcher* createSmallMatcher(int level);
-   double findBest(const Mat& source, const Mat& target, const MatchingData& data, Mat& out_result, Point& out_location);
+   double findBest(const MatchingData& data, Rect* roi, Mat& out_result, Point& out_location);
    void eraseResult(int x, int y, int xmargin, int ymargin);
    FindResult nextFromLowerPyramid();
 

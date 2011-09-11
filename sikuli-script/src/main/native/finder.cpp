@@ -203,7 +203,7 @@ TemplateFinder::find(Mat target, double min_similarity){
    for(int i=0;i<N_RESIZE_RATIO;i++){
       float new_ratio = ratio * resize_ratio[i];
       if(new_ratio >= 1.f){
-         dout << "matching (" << resize_ratio[i] << ") ... " << endl;
+         dout << "matching (" << new_ratio << ") ... " << endl;
          create_matcher(data, 1, new_ratio);
          add_matches_to_buffer(5);
          if (top_score_in_buffer() >= max(min_similarity,REMATCH_THRESHOLD)){

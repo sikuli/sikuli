@@ -58,9 +58,16 @@ PyramidTemplateMatcher* PyramidTemplateMatcher::createSmallMatcher(int level){
       return new PyramidTemplateMatcher(data.createSmallData(factor), level, factor);
 }
 
-double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, const MatchingData& data, Mat& out_result, Point& out_location){
+double PyramidTemplateMatcher::findBest(const MatchingData& data, Rect* roi, Mat& out_result, Point& out_location){
       TimingBlock t("PyramidTemplateMatcher::findBest");
       double out_score;
+      Mat source;
+      if(roi != NULL)
+         source = data.getSource()(*roi);
+      else
+         source = data.getSource();
+      const Mat& target = data.getTarget();
+
 #ifdef ENABLE_GPU
       if(_use_gpu){
          gpu::GpuMat gSource, gTarget;
@@ -73,18 +80,23 @@ double PyramidTemplateMatcher::findBest(const Mat& source, const Mat& target, co
 #endif
 
       if(data.isSameColor()){ // pure color target
+         source = data.getOrigSource();
+         if(roi != NULL)
+            source = source(*roi);
          if(data.isBlack()){ // black target
             Mat inv_source, inv_target;
             bitwise_not(source, inv_source);
-            bitwise_not(target, inv_target);
-            matchTemplate(inv_source,inv_target,out_result,CV_TM_SQDIFF_NORMED);   
+            bitwise_not(data.getOrigTarget(), inv_target);
+            matchTemplate(inv_source, inv_target, out_result, CV_TM_SQDIFF_NORMED);   
          } 
-         else
-            matchTemplate(source,target,out_result,CV_TM_SQDIFF_NORMED);   
+         else{
+            matchTemplate(source, data.getOrigTarget(), out_result, CV_TM_SQDIFF_NORMED);   
+         }
          result = Mat::ones(out_result.size(), CV_32F) - result;
       }
-      else
-         matchTemplate(source,target,out_result,CV_TM_CCOEFF_NORMED);
+      else{
+         matchTemplate(source, target, out_result, CV_TM_CCOEFF_NORMED);
+      }
       minMaxLoc(result, NULL, &out_score, NULL, &out_location);
       return out_score;
 }
@@ -124,7 +136,7 @@ FindResult PyramidTemplateMatcher::next(){
    double detectionScore;
    Point detectionLoc;
    if(!_hasMatchedResult){
-      detectionScore = findBest(data.getSource(), data.getTarget(), data, result, detectionLoc);
+      detectionScore = findBest(data, NULL, result, detectionLoc);
       _hasMatchedResult = true;
    }
    else{
@@ -153,6 +165,7 @@ FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
 
    int x = match.x*factor;
    int y = match.y*factor;
+
    
    // compute the parameter to define the neighborhood rectangle
    int x0 = max(x-(int)factor,0);
@@ -160,10 +173,9 @@ FindResult PyramidTemplateMatcher::nextFromLowerPyramid(){
    int x1 = min(x+data.target.cols+(int)factor,data.source.cols);
    int y1 = min(y+data.target.rows+(int)factor,data.source.rows);
    Rect roi(x0,y0,x1-x0,y1-y0);
-   Mat source = data.getSource()(roi);
 
    Point detectionLoc;
-   double detectionScore = findBest(source, data.getTarget(), data, result, detectionLoc);
+   double detectionScore = findBest(data, &roi, result, detectionLoc);
 
    detectionLoc.x += roi.x;
    detectionLoc.y += roi.y;
