@@ -75,6 +75,7 @@ IF(APPLE)
    LIST(APPEND RUN_ARGS -Xdock:name='Sikuli IDE') 
 ENDIF()
 
+#SET(ARGS -s -r ../sample-scripts/mod1.sikuli --args a1 a2) # example args
 SET(ARGS "")
 
 SET(CLASSPATH 
