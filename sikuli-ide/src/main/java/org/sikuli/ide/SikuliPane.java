@@ -332,15 +332,25 @@ public class SikuliPane extends JTextPane implements KeyListener,
       //BUG: if save and rename images, the images will be gone..
    }
    
-   private String getSourceFilename(String filename){
-      if( filename.endsWith(".sikuli") || 
-          filename.endsWith(".sikuli" + "/") ){
-         File f = new File(filename);
-         String dest = f.getName();
-         dest = dest.replace(".sikuli", ".py");
-         return getSrcBundle() + dest;
+   private String getSourceFilename(String sikuli_dir){
+      if( sikuli_dir.endsWith(".sikuli") || 
+          sikuli_dir.endsWith(".sikuli" + "/") ){
+         File dir = new File(sikuli_dir);
+         File[] pys = dir.listFiles(new GeneralFileFilter("py", "Python Source"));
+         if(pys.length > 1){
+            String sikuli_name = dir.getName();
+            sikuli_name = sikuli_name.substring(0, sikuli_name.lastIndexOf('.'));
+            for(File f : pys){
+               String py_name = f.getName();
+               py_name = py_name.substring(0, py_name.lastIndexOf('.'));
+               if( py_name.equals(sikuli_name) )
+                  return f.getAbsolutePath();
+            }
+         }
+         if(pys.length >= 1)
+            return pys[0].getAbsolutePath();
       }
-      return filename;
+      return sikuli_dir;
    }
    
    public void loadFile(String filename) throws IOException{
