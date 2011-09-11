@@ -176,7 +176,7 @@ public class FinderTest
 
    @Test
    public void testExactColor() throws Exception {
-      testTargetScreenSet("exactcolor");
+      testTargetScreenSet("exactcolor", 1.f);
    }
 
 
