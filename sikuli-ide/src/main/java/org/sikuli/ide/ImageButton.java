@@ -246,8 +246,10 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       String[] tokens = str.split("\\)\\s*\\.?");
       for(String tok : tokens){
          //System.out.println("token: " + tok);
-         if( tok.startsWith("exact") )  
+         if( tok.startsWith("exact") ){
             btn.setExact(true);
+            btn.setSimilarity(1.f);
+         }
          else if( tok.startsWith("Pattern") ){
             String filename = tok.substring(
                   tok.indexOf("\"")+1,tok.lastIndexOf("\""));
@@ -285,6 +287,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
             }
          }
       }
+      btn.setToolTipText( btn.toString() );
       return btn;
    }
 
