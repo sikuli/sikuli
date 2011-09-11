@@ -6,6 +6,7 @@ import java.lang.System
 import imp
 from Screen import Screen
 from org.sikuli.script import Env
+from org.sikuli.script import Debug
 import Sikuli
 
 def _stripPackagePrefix(module_name):
@@ -66,7 +67,7 @@ class SikuliImporter:
          if mod:
             return mod
       if Sikuli.load(module_name +".jar"):
-         print "[sikuli] " + module_name + ".jar loaded"
+         Debug.info(module_name + ".jar loaded")
          return None
 
       return None
