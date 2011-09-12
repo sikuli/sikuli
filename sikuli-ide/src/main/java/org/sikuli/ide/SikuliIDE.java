@@ -353,6 +353,8 @@ public class SikuliIDE extends JFrame {
    };
    
    private String[][] CommandsOnToolbar = {
+      {"exists"}, {"PATTERN", "[timeout]"},
+      {_I("cmdExists")},
       {"find"}, {"PATTERN"},
       {_I("cmdFind")},
       {"findAll"}, {"PATTERN"},
@@ -361,8 +363,6 @@ public class SikuliIDE extends JFrame {
       {_I("cmdWait")},
       {"waitVanish"}, {"PATTERN", "[timeout]"},
       {_I("cmdWaitVanish")},
-      {"exists"}, {"PATTERN", "[timeout]"},
-      {_I("cmdExists")},
       {"----"},{},{},
       {"click"}, {"PATTERN","[modifiers]"},
       {_I("cmdClick")},
