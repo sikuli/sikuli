@@ -657,9 +657,6 @@ public class SikuliIDE extends JFrame {
       _mainPane.setSelectedIndex(prev);
    }
    
-   static final int DEFAULT_WINDOW_W = 1024;
-   static final int DEFAULT_WINDOW_H = 700;
-
    // Constructor 
    protected SikuliIDE(String[] args) {
       super("Sikuli IDE");
@@ -696,7 +693,8 @@ public class SikuliIDE extends JFrame {
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
-      setSize(DEFAULT_WINDOW_W, DEFAULT_WINDOW_H);
+      setSize(UserPreferences.getInstance().getIdeSize());
+      setLocation(UserPreferences.getInstance().getIdeLocation());
 
       initShortcutKeys();
       //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -740,6 +738,14 @@ public class SikuliIDE extends JFrame {
       addWindowListener(new WindowAdapter(){
          public void windowClosing(WindowEvent e) {
             SikuliIDE.this.quit();
+         }
+      });
+      addComponentListener(new ComponentAdapter() {
+         public void componentResized(ComponentEvent e) {
+            UserPreferences.getInstance().setIdeSize(SikuliIDE.this.getSize());
+         }
+         public void componentMoved(ComponentEvent e) {
+            UserPreferences.getInstance().setIdeLocation(SikuliIDE.this.getLocation());
          }
       });
    }

@@ -9,6 +9,8 @@ import java.util.prefs.*;
 import java.util.Date;
 import java.util.Locale;
 import java.awt.Event;
+import java.awt.Dimension;
+import java.awt.Point;
 
 import org.sikuli.script.Debug;
 
@@ -159,6 +161,29 @@ public class UserPreferences {
 
    public long getCheckUpdateTime(){
       return pref.getLong("LAST_CHECK_UPDATE", (new Date()).getTime());
+   }
+
+
+   public void setIdeSize(Dimension size){
+      String str = (int)size.getWidth()  + "x" + (int)size.getHeight();
+      pref.put("IDE_SIZE", str);
+   }
+   
+   public Dimension getIdeSize(){
+      String str = pref.get("IDE_SIZE", "1024x700");
+      String[] w_h = str.split("x");
+      return new Dimension(Integer.parseInt(w_h[0]), Integer.parseInt(w_h[1]));
+   }
+
+   public void setIdeLocation(Point p){
+      String str = p.x + "," + p.y;
+      pref.put("IDE_LOCATION", str);
+   }
+   
+   public Point getIdeLocation(){
+      String str = pref.get("IDE_LOCATION", "0,0");
+      String[] x_y = str.split(",");
+      return new Point(Integer.parseInt(x_y[0]), Integer.parseInt(x_y[1]));
    }
 
 
