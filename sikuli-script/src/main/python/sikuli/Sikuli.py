@@ -182,8 +182,8 @@ def sleep(sec):
 ##
 # Shows a message dialog containing the given message.
 # @param msg The given message string.
-def popup(msg):
-   _si.popup(msg)
+def popup(msg, title="Sikuli"):
+   _si.popup(msg, title)
 
 def exit(code=0):
    ScreenHighlighter.closeAll()

@@ -52,9 +52,13 @@ public class SikuliScript {
       return App.close(appName);
    }
    
-   public void popup(String message){
+   public void popup(String message, String title){
       JOptionPane.showMessageDialog(null, message, 
-                                    "Sikuli", JOptionPane.PLAIN_MESSAGE);
+                                    title, JOptionPane.PLAIN_MESSAGE);
+   }
+
+   public void popup(String message){
+      popup(message, "Sikuli");
    }
 
    public String run(String cmdline){
