@@ -221,7 +221,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public File getCurrentFile(){
-      if(_editingFile ==null){
+      if(_editingFile == null && isDirty()){
          try{
             saveAsFile();
             return _editingFile;

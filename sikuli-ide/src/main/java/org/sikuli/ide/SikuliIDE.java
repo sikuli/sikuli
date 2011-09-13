@@ -153,7 +153,7 @@ public class SikuliIDE extends JFrame {
    }
 
    boolean checkDirtyPanes(){
-      for(int i=0;i<_mainPane.getComponentCount();i++){
+      for(int i=0;i<_mainPane.getTabCount();i++){
          try{
             JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
             SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
@@ -163,7 +163,7 @@ public class SikuliIDE extends JFrame {
             }
          }
          catch(Exception e){
-            Debug.log(7, "checkDirtyPanes: " + e.getMessage());
+            Debug.log("checkDirtyPanes: " + e.getMessage());
          }
       }
       getRootPane().putClientProperty("Window.documentModified", false);
@@ -710,6 +710,7 @@ public class SikuliIDE extends JFrame {
          (new FileAction()).doNew(null);
 
       _inited = true;
+      restoreSession();
       setVisible(true);
       autoCheckUpdate();
       getCurrentCodePane().requestFocus();
@@ -731,6 +732,41 @@ public class SikuliIDE extends JFrame {
          (new HelpAction()).checkUpdate(true);
       }
       pref.setCheckUpdateTime();
+   }
+
+   private void saveSession(){
+      int nTab = _mainPane.getTabCount();
+      StringBuffer sbuf = new StringBuffer();
+      for(int i=0;i<nTab;i++){
+         try{
+            JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
+            SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+            String bundlePath= codePane.getSrcBundle();
+            if(bundlePath != null){
+               Debug.log(5, "save session: " + bundlePath);
+               if(i!=0)
+                  sbuf.append(";");
+               sbuf.append(bundlePath);
+            }
+         }
+         catch(Exception e){
+            e.printStackTrace();
+         }
+      }
+      UserPreferences.getInstance().setIdeSession(sbuf.toString());
+   }
+
+   private void restoreSession(){
+      String session_str = UserPreferences.getInstance().getIdeSession();
+      if(session_str == null)
+         return;
+      String[] filenames = session_str.split(";");
+      for(int i=0;i<filenames.length;i++){
+         Debug.log(5, "restore session: " + filenames[i]);
+         File f = new File(filenames[i]);
+         if(f.exists())
+            loadFile(filenames[i]);
+      }
    }
 
    private void initWindowListener(){
@@ -1124,6 +1160,7 @@ public class SikuliIDE extends JFrame {
    }
 
    public void quit(){
+      saveSession();
       (new FileAction()).doQuit(null);
    }
 

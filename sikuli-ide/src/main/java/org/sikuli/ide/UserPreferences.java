@@ -218,6 +218,13 @@ public class UserPreferences {
       );
    }
 
+   public void setIdeSession(String session_str){
+      pref.put("IDE_SESSION", session_str);
+   }
+
+   public String getIdeSession(){
+      return pref.get("IDE_SESSION", null);
+   }
 
    public void put(String key, String val){
       pref.put(key, val);
