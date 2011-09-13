@@ -179,7 +179,7 @@ class HighlightLabelView extends LabelView {
    private static String[] keywordsSikuliClass = {
       "Region", "Screen", "Match", "Pattern",
       "Location", "VDict", "Env", "Key", "Button", "Finder",
-      "App"
+      "App", "KeyModifier", "Vision"
    };
 
    private static String[] keywordsSikuli = {
@@ -240,6 +240,7 @@ class HighlightLabelView extends LabelView {
       patternColors.put(Pattern.compile("(#:.*$)"), new Color(220,220,220));
       patternColors.put(Pattern.compile("(#.*$)"), new Color(138,140,193));
       patternColors.put(Pattern.compile("(\"[^\"]*\"?)"), new Color(128,0,0));
+      patternColors.put(Pattern.compile("(\'[^\']*\'?)"), new Color(128,0,0));
       patternColors.put(Pattern.compile("\\b([0-9]+)\\b"), new Color(128,64,0));
       for(int i=0;i<keywords.length;i++)
          patternColors.put(Pattern.compile("\\b("+keywords[i]+")\\b"), 
