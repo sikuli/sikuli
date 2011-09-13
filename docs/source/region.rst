@@ -1380,6 +1380,13 @@ you can group methods applied to the same region using Python's ``with`` syntax:
 All methods inside the ``with`` block that have the region omitted are redirected to the
 region object specified at the ``with`` statement.
 
+**Note for Sikuli X versions up to rc3**
+
+This should work for Regions and Region-like objects (Region, Screen, App.window()). 
+Match objects have to be made a Region explicitly using ``Region(some_match)``.
+
+This is a general workaround when facing any problems using ``with some_region:``.
+
 Special Methods for Developers
 ------------------------------
 

@@ -27,6 +27,7 @@ String concatenation with with other text or other key constants is possible usi
 	ENTER, TAB, ESC, BACKSPACE, DELETE, INSERT
 
 .. versionadded:: X1.0-rc3
+
 **miscellanous keys** ::
 
 	SPACE
@@ -71,6 +72,7 @@ Methods where key modifiers can be used include: :py:meth:`click() <Region.click
 :py:meth:`type() <Region.type>`.
 
 .. deprecated:: X1.0-rc3
+
 **the oldies but goldies** ::
 
 	KEY_ALT, KEY_CTRL, KEY_SHIFT

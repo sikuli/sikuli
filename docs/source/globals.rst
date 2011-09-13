@@ -30,15 +30,22 @@ your choice as .sikuli (e.g. temp directory) and import it from there.
 * the directories/folders containing your .sikuli's you want to import have to
   be in ``sys.path`` (see below: Usage)
 
+  .. versionadded:: X1.0-rc3
+  
+* Sikuli automatically finds other Sikuli scripts in the same directory, when they are imported
+
 * your imported script must contain (recommendation: as first line) the
-  following statement: ``from sikuli.Sikuli import *`` (this is necessary for the
+  following statement: ``from sikuli import *`` (this is necessary for the
   Python environment to know the Sikuli classes, methods, functions and global
   names) 
 
 **Usage**:
 
-* Prepare sys.path (the example contains a recommendation to avoid double entries)
-* Import your .sikuli using just it's name:: 
+* Prepare sys.path (since X-1.0rc3: except for scripts in same directory)
+
+* Import your .sikuli using just it's name 
+
+* the example contains a recommendation to avoid double entries::
 
 	# an example - choose your own naming
 	# on Windows
@@ -70,7 +77,20 @@ the new :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>` to make sure that images cont
 
 	*	Since the IDE is not reset at rerun of scripts: when changing
 	 	imported scripts while they are in use, you have to restart the IDE. 
+	 	
+	* Alternative, to restarting the IDE, while editing imported scripts:
+	
+		use the following combinations with Jythons reload() function:: 
 
+			# instead of: import module
+			import module
+			reload(module) 
+
+			# instead of: from module import *
+			import module
+			reload(module)
+			from module import *  	
+ 	
 *	Python has a so called namespace concept: names (variables, functions,
 	classes) are only known in it's namespace your main script has it's own namespace
 
@@ -97,6 +117,15 @@ distributed as a zipped file::
 
 	# now you can import every .sikuli in the same directory
 	import myLib
+	
+.. versionadded:: X1.0-rc3
+
+Since scripts in same directory are found automatically::
+
+    # nothing else needed
+	# now you can import every .sikuli in the same directory
+	import myLib
+
 
 **Loading a jar-file containing Java/Python modules**
 	
@@ -244,9 +273,27 @@ but they should be considered as deprecated.  They are being replaced by a new
 :py:class:`App` class introduced in Sikuli X. This class makes it possible to treat
 a specific application as an object with attributes and methods.  We recommend to
 switch to the class App and its features, the next time you work with one of your
-existing scripts and in all cases, when developing new scripts. 
+existing scripts and in all cases, when developing new scripts.
 
-This is a comparism of old and new functions: 
+**General hint for Windows users** on backslashes \\ and double apostrophes "
+
+In a Sikuli script in normal strings enclosed in " (double apostrophes), 
+these special characters \\ and " have to be escaped using a backslash, 
+when you have them inside the string. So for one backslash you need \\\\ 
+and for one " you need \\". In a string enclosed in ' (single apostrophes), a ' 
+has to be \\' and a " is taken as such.
+
+To avoid any problems, it is recommended to use the raw string ``r'some text with \\ and " ...'``,
+since there is no need for escaping.
+This is especially useful, when you have to specify Windows path's or want to 
+setup command lines for use with App.open(), openApp(), os.popen or Jythons Subprocess module.
+
+a fictive command line example::
+	
+	cmd = r'c:\Program Files\myapp.exe -x "c:\Some Place\some.txt" >..\log.txt'
+	openApp(cmd)
+
+**This is a comparism of old (xxxApp) and new (App.xxx) functions:** 
 
 *	Open an application: :py:func:`openApp` --> :py:meth:`App.open`
 *	Switch to an application or application window: :py:func:`switchApp` -->
@@ -257,20 +304,25 @@ This is a comparism of old and new functions:
 
 	Open the specified application.
 
-	:param application: the name of an application (case-insensitive), that can be
+	:param application: a string containing the name of an application (case-insensitive), that can be
 		found in the path used by the system to locate applications. Or it can be the
-		ful path to an application. (Windows: use double backslash \\ in the path string
-		to represent a backslash).
+		full path to an application.
+		
+		**Note for Windows:**  (since X-1.0rc3) The string may contain commandline parameters 
+		for the specified program or batch file after the name or full path.
 
 	This function opens the specified application and brings its windows to the
 	front. This is equivalent to :py:meth:`App.open`. Depending on the system and/or
 	the application, this function may switch to an already opened application or
 	may open a new instance of the application.
 
-	Example::
+	Examples::
 
 		# Windows: opens command prompt (found through PATH)
 		openApp("cmd.exe")
+		
+		#Windows (since X-1.0rc3): with parameters (no sense, only to show ;-)
+		openApp(r'cmd.exe /c start c:\Program Files\myapp.bat')
 
 		# Windows: opens Firefox (full path specified)
 		openApp("c:\\Program Files\\Mozilla Firefox\\firefox.exe") 
@@ -435,6 +487,10 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 			be found in the path used by the system to locate applications, or the
 			full path to an application (Windows: use double backslash \\ in the
 			path string to represent a backslash)
+			
+			**Note for Windows:** (since X-1.0rc3) The string may contain commandline parameters 
+			for the specified program or batch file after the name or full path (see: :py:func:`openApp`)
+
 			
 		:return: an App object, that can be used with the instance methods.
 		
@@ -621,10 +677,15 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 Interacting with the User
 -------------------------
 
-.. py:function:: popup(text)
+.. versionadded:: X1.0-rc3
+.. py:function:: popup(text, [title])
 
 	Display a dialog box with an *OK* button and *text* as the message. The script
 	then waits for the user to click the *OK* button.
+	
+	:param text: text to be displayed as message
+	
+	:param title: optional title for the messagebox
 
 	Example::
 
@@ -639,6 +700,12 @@ Interacting with the User
 	Display a dialog box with an input field, a Cancel button, and an OK button. The
 	optional *text* can be displayed as a caption. The script then waits for the
 	user to click either the Cancel or the OK button.
+	
+	:param text: optional text to be displayed as message
+	
+	:return: the text, the user has entered, when clicked **OK**
+
+		**None**, if the user pressed the **Cancel** button
 
 	Example::
 
@@ -923,6 +990,7 @@ follows.
 .. _min-target-size:
 
 .. versionadded:: X1.0-rc3
+
 MinTargetSize
 ^^^^^^^^^^^^^
 
