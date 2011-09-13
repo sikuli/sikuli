@@ -41,9 +41,9 @@ your choice as .sikuli (e.g. temp directory) and import it from there.
 
 **Usage**:
 
-* Prepare sys.path (since X-1.0rc3: except for scripts in same directory)
+* Add the path to the Sikuli module into *sys.path* (since X-1.0rc3: If the modules to import are in the same directory as the main script, skip this step.)
 
-* Import your .sikuli using just it's name 
+* Import your .sikuli using just its name. For example, to import a_module.sikuli, just write *import a_module*.
 
 * the example contains a recommendation to avoid double entries::
 
@@ -75,12 +75,7 @@ the new :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>` to make sure that images cont
 	*	If your imported script contains code outside of any function definitions ( ``def()`` ),
 		this code is only processed once at the first time, when the import is evaluated
 
-	*	Since the IDE is not reset at rerun of scripts: when changing
-	 	imported scripts while they are in use, you have to restart the IDE. 
-	 	
-	* Alternative, to restarting the IDE, while editing imported scripts:
-	
-		use the following combinations with Jythons reload() function:: 
+	*	Since the IDE does not reload the modules while running a script each time, if you are changing imported scripts while they are in use, you have to use the Jython's reload() function:: 
 
 			# instead of: import module
 			import module
@@ -122,7 +117,7 @@ distributed as a zipped file::
 
 Since scripts in same directory are found automatically::
 
-    # nothing else needed
+	# nothing else needed
 	# now you can import every .sikuli in the same directory
 	import myLib
 
