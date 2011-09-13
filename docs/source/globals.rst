@@ -277,9 +277,9 @@ existing scripts and in all cases, when developing new scripts.
 
 **General hint for Windows users** on backslashes \\ and double apostrophes "
 
-In a Sikuli script in normal strings enclosed in " (double apostrophes), these special characters 
-\\ and " have to be escaped using a backslash, when you have
-them inside the string. So for one backslash you need \\\\ 
+In a Sikuli script in normal strings enclosed in " (double apostrophes), 
+these special characters \\ and " have to be escaped using a backslash, 
+when you have them inside the string. So for one backslash you need \\\\ 
 and for one " you need \\". In a string enclosed in ' (single apostrophes), a ' 
 has to be \\' and a " is taken as such.
 
