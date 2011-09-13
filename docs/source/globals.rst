@@ -70,7 +70,20 @@ the new :ref:`SIKULI_IMAGE_PATH <ImageSearchPath>` to make sure that images cont
 
 	*	Since the IDE is not reset at rerun of scripts: when changing
 	 	imported scripts while they are in use, you have to restart the IDE. 
+	 	
+	* Alternative, to restarting the IDE, while editing imported scripts:
+	
+		use the following combinations with Jythons reload() function:: 
 
+			# instead of: import module
+			import module
+			reload(module) 
+
+			# instead of: from module import *
+			import module
+			reload(module)
+			from module import *  	
+ 	
 *	Python has a so called namespace concept: names (variables, functions,
 	classes) are only known in it's namespace your main script has it's own namespace
 
@@ -621,10 +634,15 @@ e.g. ``myPath = "c:\\Program Files\\Sikuli-IDE\\Lib\\"`` )
 Interacting with the User
 -------------------------
 
-.. py:function:: popup(text)
+.. versionadded:: X1.0-rc3
+.. py:function:: popup(text, [title])
 
 	Display a dialog box with an *OK* button and *text* as the message. The script
 	then waits for the user to click the *OK* button.
+	
+	:param text: text to be displayed as message
+	
+	:param title: optional title for the messagebox
 
 	Example::
 
@@ -639,6 +657,12 @@ Interacting with the User
 	Display a dialog box with an input field, a Cancel button, and an OK button. The
 	optional *text* can be displayed as a caption. The script then waits for the
 	user to click either the Cancel or the OK button.
+	
+	:param text: optional text to be displayed as message
+	
+	:return: the text, the user has entered, when clicked **OK**
+
+		**None**, if the user pressed the **Cancel** button
 
 	Example::
 
@@ -923,6 +947,7 @@ follows.
 .. _min-target-size:
 
 .. versionadded:: X1.0-rc3
+
 MinTargetSize
 ^^^^^^^^^^^^^
 
