@@ -156,23 +156,18 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_switchApp__II(JNIEnv *en
 
 //returns PID, or 0 if failed.
 JNIEXPORT jint JNICALL Java_org_sikuli_script_Win32Util_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
-   const char *appName = env->GetStringUTFChars(jAppName, NULL);
+   char *appName = (char *)env->GetStringUTFChars(jAppName, NULL);
    int n = strlen(appName);
    char *buf = new char[n+3];
    STARTUPINFO si;
    PROCESS_INFORMATION pi;
-   strncpy(buf+1, appName, n);
-   buf[0] = '"';
-   buf[n+1] = '"';
-   buf[n+2] = 0;
    ZeroMemory(&si, sizeof(si));
    ZeroMemory(&pi, sizeof(pi));
    si.cb = sizeof(si);
    int result = CreateProcess( NULL,
-     buf, NULL, NULL, FALSE, 0, 
+     appName, NULL, NULL, FALSE, 0, 
      NULL, NULL, &si, &pi);
 
-   delete [] buf;
    env->ReleaseStringUTFChars(jAppName, appName);
 
    if(!result) // CreateProcess failed
