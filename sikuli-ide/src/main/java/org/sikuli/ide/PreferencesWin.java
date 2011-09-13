@@ -104,10 +104,21 @@ public class PreferencesWin extends JFrame {
             return l1.getDisplayLanguage().compareTo(l2.getDisplayLanguage());
          }
       });
-      for(Locale l : sortedLocales)
+
+      for(Locale l : sortedLocales){
          _cmbLang.addItem(l);
+      }
       _cmbLang.setRenderer(new LocaleListCellRenderer());
-      _cmbLang.setSelectedItem(pref.getLocale());
+      Locale curLocale = pref.getLocale();
+      _cmbLang.setSelectedItem(curLocale);
+      if(!_cmbLang.getSelectedItem().equals(curLocale)){
+         if(curLocale.getVariant().length() > 0){
+            curLocale = new Locale(curLocale.getLanguage(), curLocale.getCountry());
+            _cmbLang.setSelectedItem(curLocale);
+         }
+         if(!_cmbLang.getSelectedItem().equals(curLocale))
+            _cmbLang.setSelectedItem(new Locale(curLocale.getLanguage()));
+      }
    }
 
    

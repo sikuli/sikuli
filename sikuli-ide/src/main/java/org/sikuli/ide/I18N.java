@@ -15,21 +15,26 @@ public class I18N {
    static Locale curLocale;
 
    static {
-      Locale locale = UserPreferences.getInstance().getLocale();
-      setLocale(locale);
-      Debug.info("locale: " + locale);
       Locale locale_en = new Locale("en","US");
       i18nRB_en = ResourceBundle.getBundle("i18n/IDE",locale_en);
+      Locale locale = UserPreferences.getInstance().getLocale();
+      if(!setLocale(locale)){
+         locale = locale_en;
+         UserPreferences.getInstance().setLocale(locale);
+      }
+      Debug.info("locale: " + locale);
    }
 
-   public static void setLocale(Locale locale){
+   public static boolean setLocale(Locale locale){
       curLocale = locale;
       try{
          i18nRB = ResourceBundle.getBundle("i18n/IDE",locale);
       }
       catch(MissingResourceException e){
          Debug.error("no locale for " + locale);
+         return false;
       }
+      return true;
    }
 
    public static String _I(String key, Object... args){ 
