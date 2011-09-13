@@ -65,7 +65,7 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::83:x:1, space :::p, comp lblDelaySecs::::96:x}, comp txtHotkey::l::185:x:1}, space :p:69:p}}</string> 
+            <string>par l {seq {space :p:26:p, par l {comp lblDelay::t:p::p, comp lblHotkey::t:p::p, comp lblNaming::t:p::p}, space :::p, par l {comp radTimestamp::l:p::p, comp radOCR::l:p::p, comp radOff::l:p::p, seq l {comp spnDelay::::148:x:1, space :::p, comp lblDelaySecs::::161:x}, comp txtHotkey::l::315:x:1}, space :p:69:p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
@@ -325,11 +325,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq {space :48:48:p, par l {comp titleIndentation::l:p::p, seq l {comp titleAppearance:::p::p, space :::p, par l {seq l {space :29:29:29, par l {comp lblTabWidth::t:p::p, comp lblFont::t:p::p, comp lblFontSize::t:p::p}, space :::p, par l {comp cmbFontName::l::177:x, comp spnFontSize::l:p:67:p, comp spnTabWidth::l:p:52:p}, space ::55:x}, comp chkExpandTab::l::337:x}}}, space :::p}}</string> 
+            <string>par l {seq t {space :p:95:p, par l {comp titleIndentation::l:p::p, seq l {comp titleAppearance:::p::p, space :::p, par l {seq l {space :29:29:29, par l {comp lblTabWidth::t:p::p, comp lblFont::t:p::p, comp lblFontSize::t:p::p}, space :::p, par l {comp cmbFontName::l::218:x, comp spnFontSize::l:p:67:p, comp spnTabWidth::l:p:52:p}, space ::97:x}, comp chkExpandTab::l::420:x}}}, space :::p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:21:p, comp titleIndentation:::p::p, par l {seq {space :p:81:p, comp titleAppearance:::p::p}, seq l {space :::p, comp chkExpandTab:::p::p, space :::p, par l {comp lblTabWidth:1::p:16:p, comp spnTabWidth:1::p::p}, space :p:40:p, par b {comp lblFont:2:b:p::p, comp cmbFontName:2:b:p::p}, space :::p, par t {comp lblFontSize:::p:27:p, comp spnFontSize:::p::p}}}, space ::54:x}}</string> 
+            <string>par l {seq l {space :p:21:p, comp titleIndentation:::p::p, par l {seq l {space :p:81:p, comp titleAppearance:::p::p}, seq l {space :::p, comp chkExpandTab:::p::p, space :::p, par l {comp lblTabWidth:1::p:16:p, comp spnTabWidth:1::p::p}, space :p:40:p, par b {comp lblFont:2:b:p::p, comp cmbFontName:2:b:p::p}, space :::p, par t {comp lblFontSize:::p:27:p, comp spnFontSize:::p::p}}}, space ::154:x}}</string> 
            </void> 
           </object> 
           <void property="name"> 
@@ -502,11 +502,11 @@
            <class>org.jdesktop.layout.GroupLayout</class> 
            <void method="setProperty"> 
             <string>$horizontalGroup</string> 
-            <string>par l {seq {par l {seq l {space :p:47:p, par l {comp lblLanguage::l:p::p, comp lblUpdates::l:p::p}, space :p:306:p}, seq l {space :p:85:p, comp cmbLang:::p:215:p}, seq t {space :p:85:p, comp chkAutoUpdate::::336:x}}, space :::p}}</string> 
+            <string>par l {seq l {space :p:137:p, par l {seq l {comp lblLanguage:::p::p, space :p:185:p}, seq l {space :p:38:p, comp cmbLang:::p:215:p}, seq l {comp lblUpdates:::p::p, space :p:318:p}, seq t {space :p:38:p, comp chkAutoUpdate::::376:x}}, space :::p}}</string> 
            </void> 
            <void method="setProperty"> 
             <string>$verticalGroup</string> 
-            <string>par l {seq l {space :p:20:p, comp lblUpdates:::p::p, space :::p, comp chkAutoUpdate:::p::p, space :p:24:p, comp lblLanguage:::p::p, space :::p, comp cmbLang:::p::p, space ::118:x}}</string> 
+            <string>par l {seq l {space :p:26:p, comp lblUpdates:::p::p, space :::p, comp chkAutoUpdate:::p::p, space :p:40:p, comp lblLanguage:::p::p, space :::p, comp cmbLang:::p::p, space ::196:x}}</string> 
            </void> 
           </object> 
           <void method="auxiliary"> 
@@ -726,8 +726,8 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>470</int> 
-        <int>375</int> 
+        <int>600</int> 
+        <int>475</int> 
        </object> 
       </void> 
      </object> 
