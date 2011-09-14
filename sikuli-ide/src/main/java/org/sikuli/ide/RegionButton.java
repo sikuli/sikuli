@@ -45,8 +45,8 @@ class RegionButton extends JButton implements ActionListener, Observer{
    public static RegionButton createFromString(SikuliPane parentPane, String str){
       String[] tokens = str.split("[(),]");
       try{
-         int x = Integer.valueOf(tokens[1]), y = Integer.valueOf(tokens[2]), 
-             w = Integer.valueOf(tokens[3]), h = Integer.valueOf(tokens[4]);
+         int x = Integer.valueOf(tokens[1].trim()), y = Integer.valueOf(tokens[2].trim()), 
+             w = Integer.valueOf(tokens[3].trim()), h = Integer.valueOf(tokens[4].trim());
          return new RegionButton(parentPane, x, y, w, h);
       }
       catch(Exception e){
