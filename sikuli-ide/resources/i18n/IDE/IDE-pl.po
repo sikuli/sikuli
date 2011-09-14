@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-08-27 22:28+0000\n"
-"Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
+"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"PO-Revision-Date: 2011-09-06 10:57+0000\n"
+"Last-Translator: Łukasz Czerwiński <milimetr88@gmail.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
-"X-Generator: Launchpad (build 13794)\n"
+"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -37,7 +37,7 @@ msgstr "Widok"
 
 #: menuTool
 msgid "Tools"
-msgstr ""
+msgstr "Narzędzia"
 
 #: menuFileNew
 msgid "New"
@@ -73,11 +73,11 @@ msgstr "Wyjdź"
 
 #: menuEditUndo
 msgid "Undo"
-msgstr ""
+msgstr "Cofnij"
 
 #: menuEditRedo
 msgid "Redo"
-msgstr ""
+msgstr "Ponów"
 
 #: menuEditCut
 msgid "Cut"
@@ -106,19 +106,19 @@ msgstr "Cofnij wcięcie"
 #: menuFind
 msgctxt "menuFind"
 msgid "Find"
-msgstr ""
+msgstr "Znajdź"
 
 #: menuFindFind
 msgid "Find..."
-msgstr ""
+msgstr "Znajdź..."
 
 #: menuFindFindNext
 msgid "Find Next"
-msgstr ""
+msgstr "Znajdź następny"
 
 #: menuFindFindPrev
 msgid "Find Previous"
-msgstr ""
+msgstr "Znajdź poprzedni"
 
 #: menuRunRun
 msgctxt "menuRunRun"
@@ -128,7 +128,7 @@ msgstr "Uruchom"
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Uruchom w zwolnionym tempie"
 
 #: menuRunStop
 msgid "Stop"
@@ -141,11 +141,11 @@ msgstr "Test jednostkowy (Unit Test)"
 
 #: menuViewCommandList
 msgid "Command List"
-msgstr ""
+msgstr "Lista poleceń"
 
 #: menuToolExtensions
 msgid "Extensions..."
-msgstr ""
+msgstr "Rozszerzenia"
 
 #: menuHelp
 msgid "Help"
@@ -189,7 +189,7 @@ msgstr "Brak dostępnych uaktualnień"
 
 #: cmdListSettings
 msgid "Settings"
-msgstr ""
+msgstr "Ustawienia"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -198,15 +198,15 @@ msgstr ""
 #: cmdListFind
 msgctxt "cmdListFind"
 msgid "Find"
-msgstr ""
+msgstr "Znajdź"
 
 #: cmdListMouse
 msgid "Mouse Actions"
-msgstr ""
+msgstr "Akcje myszy"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr ""
+msgstr "Akcje klawiatury"
 
 #: cmdListObserver
 msgid "Event Observation"
@@ -236,12 +236,12 @@ msgstr "Uruchom ({0})"
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Uruchom"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
 msgid "Run in slow motion"
-msgstr ""
+msgstr "Uruchom w zwolnionym tempie"
 
 #: btnRunStopHint
 msgid "Press {0} to stop"
@@ -249,7 +249,7 @@ msgstr "Wciśnij {0} aby zatrzymać"
 
 #: btnRegionLabel
 msgid "Create Region"
-msgstr ""
+msgstr "Utwórz obszar"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
@@ -257,11 +257,11 @@ msgstr ""
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Zrób zrzut ekranu"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr ""
+msgstr "Zrób zrzut ekranu ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -269,13 +269,15 @@ msgstr "Wstaw obraz z dysku"
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "Wstaw obrazek "
 
 #: msgRunningSklError
 msgid ""
 "Runtime Error when running {0}\n"
 "{1}"
 msgstr ""
+"Błąd wykonania w trakcie działania {0}\n"
+"{1}"
 
 #: msgExit
 msgid "Exited with code {0}"
@@ -287,13 +289,15 @@ msgstr ""
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
-msgstr ""
+msgstr "Linia {0} zawiera błąd"
 
 #: msgErrorMsg
 msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
+"Informacja o błędzie:\n"
+"{0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
@@ -302,6 +306,42 @@ msgstr "Wybierz obszar na ekranie"
 #: winPreferences
 msgid "Preferences"
 msgstr "Ustawienia"
+
+#: PreferencesWin.chkExpandTab.text
+msgid "Tab key inserts spaces instead of tab"
+msgstr "Tab wstawia spacje zamiast tabulacji"
+
+#: PreferencesWin.lblUpdates.text
+msgid "Updates"
+msgstr ""
+
+#: PreferencesWin.lblLanguage.text
+msgid "Language"
+msgstr ""
+
+#: PreferencesWin.lblTabWidth.text
+msgid "Tab width:"
+msgstr "Szerokość tabulacji:"
+
+#: PreferencesWin.lblFont.text
+msgid "Font name:"
+msgstr "Nazwa czcionki:"
+
+#: PreferencesWin.lblFontSize.text
+msgid "Size:"
+msgstr "Rozmiar:"
+
+#: PreferencesWin.titleAppearance.textWithMnemonic
+msgid "Fonts"
+msgstr "Czcionki"
+
+#: PreferencesWin.titleIndentation.textWithMnemonic
+msgid "Indentation"
+msgstr "Wcięcie"
+
+#: PreferencesWin.paneTextEditing.tab.title
+msgid "Text Editing"
+msgstr "Edycja tekstu"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
@@ -317,7 +357,7 @@ msgstr ""
 
 #: prefSeconds
 msgid "seconds"
-msgstr ""
+msgstr "sekund"
 
 #: prefAutoNaming
 msgid "Automatic Naming:"
@@ -325,11 +365,11 @@ msgstr ""
 
 #: prefTimestamp
 msgid "time stamp"
-msgstr ""
+msgstr "znacznik czasu"
 
 #: prefRecognizedText
 msgid "text in the image"
-msgstr ""
+msgstr "tekst na obrazku"
 
 #: prefManualInput
 msgid "off (manual input)"
@@ -385,8 +425,8 @@ msgid "Similarity:"
 msgstr "Podobieństwo:"
 
 #: lblNumberOfMatches
-msgid "Number of matches:"
-msgstr "Liczba dopasowań:"
+msgid "Number of matches/Max:"
+msgstr ""
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
@@ -394,7 +434,7 @@ msgstr ""
 
 #: lblTargetOffsetY
 msgid ", Y:"
-msgstr ""
+msgstr ", Y:"
 
 #: ok
 msgid "OK"
@@ -422,32 +462,36 @@ msgstr "Czy chcesz nadpisać plik \"{0}\"?"
 
 #: dlgEnterScreenshotFilename
 msgid "Name The Screen Shot"
-msgstr ""
+msgstr "Nazwij zrzut ekranu"
 
 #: msgEnterScreenshotFilename
 msgid "Enter the screen shot's file name:"
-msgstr ""
+msgstr "Wpisz nazwę pliku ze zrzutem ekranu:"
 
 #: cmdFind
 msgid ""
 "Looks for the best matched GUI component on the screen or in the Region."
-msgstr ""
+msgstr "Szuka najlepiej pasującego elementu GUI na ekranie lub w Obszarze"
 
 #: cmdFindAll
 msgid "Looks for all matched GUI component on the screen or in the Region."
-msgstr ""
+msgstr "Szuka wszystkich pasujących elementów GUI na ekranie lub w Obszarze"
 
 #: cmdWait
 msgid ""
 "Waits the given GUI component to appear on the screen or in the Region for "
 "up to <i>timeout</i> seconds."
 msgstr ""
+"Czeka przez co najwyżej <i>timeout</i> sekund, aż element GUI pojawi się na "
+"ekranie lub w Obszarze"
 
 #: cmdWaitVanish
 msgid ""
 "Waits the given GUI component to disappear on the screen or in the Region "
 "for up to <i>timeout</i> seconds."
 msgstr ""
+"Czeka przez co najwyżej <i>timeout</i> sekund, aż element GUI zniknie z "
+"ekranu lub Obszaru"
 
 #: cmdExists
 msgid ""
@@ -455,51 +499,62 @@ msgid ""
 "Region.<br>If it can not be found, None is returned without throwing an "
 "exception."
 msgstr ""
+"Sprawdza czy podany element GUI występuje na ekranie lub w "
+"Obszarze.<br>Jeśli nie, zwracane jest None bez rzucania wyjątku."
 
 #: cmdClick
 msgid ""
 "Clicks on the best matched GUI component on the screen or in the Region."
 msgstr ""
+"Klika na najlepiej pasującym elemencie GUI na ekranie lub w Obszarze."
 
 #: cmdDoubleClick
 msgid ""
 "Double clicks on the best matched GUI component on the screen or in the "
 "Region."
 msgstr ""
+"Podwójnie klika na najlepiej pasującym elemencie GUI na ekranie lub w "
+"Obszarze."
 
 #: cmdRightClick
 msgid ""
 "Right clicks on the best matched GUI component on the screen or in the "
 "Region."
 msgstr ""
+"Klika prawym przyciskiem na najlepiej pasującym elemencie GUI na ekranie lub "
+"w Obszarze."
 
 #: cmdHover
 msgid "Moves the mouse cursor on the best matched GUI component."
-msgstr ""
+msgstr "Przesuwa kursor myszy nad najlepiej pasujący element GUI."
 
 #: cmdDragDrop
 msgid "Drags the first component, and drops at the second component."
-msgstr ""
+msgstr "Przeciąga pierwszy element i upuszcza go na drugi."
 
 #: cmdType
 msgid "Types the given <i>text</i> to the current focused window."
-msgstr ""
+msgstr "Wpisuje podany <i>tekst</i> do aktywnego okna."
 
 #: cmdType2
 msgid ""
 "Clicks on the given component to gain the focus and then types the given "
 "<i>text</i>."
 msgstr ""
+"Klika na podany element, żeby go uaktywnić, a następnie wpisuje podany "
+"<i>tekst</i>."
 
 #: cmdPaste
 msgid "Pastes the given <i>text</i> to the current focused window."
-msgstr ""
+msgstr "Wkleja podany <i>text</i> do aktywnego okna."
 
 #: cmdPaste2
 msgid ""
 "Clicks on the given component to gain the focus and then pastes the given "
 "<i>text</i>."
 msgstr ""
+"Klika na podany element, żeby go uaktywnić, a następnie wkleja podany "
+"<i>tekst</i>."
 
 #: cmdOnAppear
 msgid ""
@@ -527,11 +582,11 @@ msgstr ""
 
 #: extBtnInstall
 msgid "Install"
-msgstr ""
+msgstr "Instaluj"
 
 #: extBtnInfo
 msgid "More Info"
-msgstr ""
+msgstr "Więcej informacji"
 
 #: extMsgInstalled
 msgid "Installed"
@@ -539,7 +594,7 @@ msgstr ""
 
 #: extBtnInstallVer
 msgid "Install {0}"
-msgstr ""
+msgstr "Zainstaluj {0}"
 
 #: extBtnUpdateVer
 msgid "Update to {0}"

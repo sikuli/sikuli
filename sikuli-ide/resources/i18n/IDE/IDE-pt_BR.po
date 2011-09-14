@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-02-11 19:00+0000\n"
-"Last-Translator: Alex Massabni <Unknown>\n"
+"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"PO-Revision-Date: 2011-09-06 11:45+0000\n"
+"Last-Translator: Piantino <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
-"X-Generator: Launchpad (build 13794)\n"
+"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -307,6 +307,42 @@ msgstr "Selecione uma região da tela"
 msgid "Preferences"
 msgstr "Preferências"
 
+#: PreferencesWin.chkExpandTab.text
+msgid "Tab key inserts spaces instead of tab"
+msgstr ""
+
+#: PreferencesWin.lblUpdates.text
+msgid "Updates"
+msgstr ""
+
+#: PreferencesWin.lblLanguage.text
+msgid "Language"
+msgstr ""
+
+#: PreferencesWin.lblTabWidth.text
+msgid "Tab width:"
+msgstr ""
+
+#: PreferencesWin.lblFont.text
+msgid "Font name:"
+msgstr "Nome da Fonte:"
+
+#: PreferencesWin.lblFontSize.text
+msgid "Size:"
+msgstr "Tamanho:"
+
+#: PreferencesWin.titleAppearance.textWithMnemonic
+msgid "Fonts"
+msgstr "Fontes"
+
+#: PreferencesWin.titleIndentation.textWithMnemonic
+msgid "Indentation"
+msgstr "Identação"
+
+#: PreferencesWin.paneTextEditing.tab.title
+msgid "Text Editing"
+msgstr "Edição de texto"
+
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
 msgstr "Capturando a tela"
@@ -389,8 +425,8 @@ msgid "Similarity:"
 msgstr "Similaridade:"
 
 #: lblNumberOfMatches
-msgid "Number of matches:"
-msgstr "Quantidade de comparações:"
+msgid "Number of matches/Max:"
+msgstr ""
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"

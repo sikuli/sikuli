@@ -7,24 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-01-03 15:43+0000\n"
-"Last-Translator: Iñigo Gonzalez <Unknown>\n"
+"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"PO-Revision-Date: 2011-09-06 07:35+0000\n"
+"Last-Translator: alonso <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
-"X-Generator: Launchpad (build 13794)\n"
+"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #: menuFile
 msgctxt "menuFile"
 msgid "File"
-msgstr "Fitxer"
+msgstr "Arxiu"
 
 #: menuEdit
 msgid "Edit"
-msgstr "Editar"
+msgstr "Edita"
 
 #: menuRun
 msgctxt "menuRun"
@@ -33,11 +33,11 @@ msgstr "Executa"
 
 #: menuView
 msgid "View"
-msgstr "Visualització"
+msgstr "Vista"
 
 #: menuTool
 msgid "Tools"
-msgstr ""
+msgstr "Eines"
 
 #: menuFileNew
 msgid "New"
@@ -49,15 +49,15 @@ msgstr "Obre..."
 
 #: menuFileSave
 msgid "Save"
-msgstr ""
+msgstr "Desa"
 
 #: menuFileSaveAs
 msgid "Save as..."
-msgstr ""
+msgstr "Anomena i desa..."
 
 #: menuFileExport
 msgid "Export excutable..."
-msgstr ""
+msgstr "Exporta com a executable..."
 
 #: menuFilePreferences
 msgid "Preferences..."
@@ -73,11 +73,11 @@ msgstr "Sortir"
 
 #: menuEditUndo
 msgid "Undo"
-msgstr ""
+msgstr "Desfer"
 
 #: menuEditRedo
 msgid "Redo"
-msgstr ""
+msgstr "Torna a fer"
 
 #: menuEditCut
 msgid "Cut"
@@ -85,19 +85,19 @@ msgstr "Tallar"
 
 #: menuEditCopy
 msgid "Copy"
-msgstr ""
+msgstr "Copia"
 
 #: menuEditPaste
 msgid "Paste"
-msgstr ""
+msgstr "Enganxa"
 
 #: menuEditSelectAll
 msgid "Select All"
-msgstr ""
+msgstr "Selecciona-ho Tot"
 
 #: menuEditIndent
 msgid "Indent"
-msgstr ""
+msgstr "Sagna"
 
 #: menuEditUnIndent
 msgid "Un-Indent"
@@ -106,24 +106,24 @@ msgstr ""
 #: menuFind
 msgctxt "menuFind"
 msgid "Find"
-msgstr ""
+msgstr "Cerca"
 
 #: menuFindFind
 msgid "Find..."
-msgstr ""
+msgstr "Cerca..."
 
 #: menuFindFindNext
 msgid "Find Next"
-msgstr ""
+msgstr "Cerca següent"
 
 #: menuFindFindPrev
 msgid "Find Previous"
-msgstr ""
+msgstr "Cerca anterior"
 
 #: menuRunRun
 msgctxt "menuRunRun"
 msgid "Run"
-msgstr ""
+msgstr "Executa"
 
 #: menuRunRunAndShowActions
 msgctxt "menuRunRunAndShowActions"
@@ -132,16 +132,16 @@ msgstr ""
 
 #: menuRunStop
 msgid "Stop"
-msgstr ""
+msgstr "Para"
 
 #: menuViewUnitTest
 msgctxt "menuViewUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Test unitari"
 
 #: menuViewCommandList
 msgid "Command List"
-msgstr ""
+msgstr "Llista d'ordres"
 
 #: menuToolExtensions
 msgid "Extensions..."
@@ -149,7 +149,7 @@ msgstr ""
 
 #: menuHelp
 msgid "Help"
-msgstr ""
+msgstr "Ajuda"
 
 #: menuHelpCheckUpdate
 msgid "Check Update..."
@@ -169,7 +169,7 @@ msgstr ""
 
 #: menuHelpBugReport
 msgid "Report a Bug"
-msgstr ""
+msgstr "Informa d'un error"
 
 #: menuHelpTranslation
 msgid "Join our translation project!"
@@ -189,7 +189,7 @@ msgstr ""
 
 #: cmdListSettings
 msgid "Settings"
-msgstr ""
+msgstr "Configuració"
 
 #: cmdListAutoCapture
 msgid "Auto Capture"
@@ -198,15 +198,15 @@ msgstr ""
 #: cmdListFind
 msgctxt "cmdListFind"
 msgid "Find"
-msgstr ""
+msgstr "Cerca"
 
 #: cmdListMouse
 msgid "Mouse Actions"
-msgstr ""
+msgstr "Accions del ratolí"
 
 #: cmdListKeyboard
 msgid "Keyboard Actions"
-msgstr ""
+msgstr "Accions del teclat"
 
 #: cmdListObserver
 msgid "Event Observation"
@@ -214,7 +214,7 @@ msgstr ""
 
 #: paneMessage
 msgid "Message"
-msgstr ""
+msgstr "Missatge"
 
 #: paneTestTrace
 msgid "Test Trace"
@@ -222,21 +222,21 @@ msgstr ""
 
 #: tabUntitled
 msgid "Untitled"
-msgstr ""
+msgstr "Sense títol"
 
 #: tabUnitTest
 msgctxt "tabUnitTest"
 msgid "Unit Test"
-msgstr ""
+msgstr "Test unitari"
 
 #: btnRun
 msgid "Run ({0})"
-msgstr ""
+msgstr "Executa ({0})"
 
 #: btnRunLabel
 msgctxt "btnRunLabel"
 msgid "Run"
-msgstr ""
+msgstr "Executa"
 
 #: btnRunSlowMotionLabel
 msgctxt "btnRunSlowMotionLabel"
@@ -249,7 +249,7 @@ msgstr ""
 
 #: btnRegionLabel
 msgid "Create Region"
-msgstr ""
+msgstr "Crea una regió"
 
 #: btnRegionHint
 msgid "Create a region to restrict screen matching"
@@ -257,11 +257,11 @@ msgstr ""
 
 #: btnCaptureLabel
 msgid "Take screenshot"
-msgstr ""
+msgstr "Fes una captura de pantalla"
 
 #: btnCaptureHint
 msgid "Take a screenshot ({0})"
-msgstr ""
+msgstr "Fes una captura de pantalla ({0})"
 
 #: btnInsertImageHint
 msgid "Insert an image from disks"
@@ -269,7 +269,7 @@ msgstr ""
 
 #: btnInsertImageLabel
 msgid "Insert image "
-msgstr ""
+msgstr "Insereix imatge "
 
 #: msgRunningSklError
 msgid ""
@@ -283,7 +283,7 @@ msgstr ""
 
 #: msgStopped
 msgid "Stopped"
-msgstr ""
+msgstr "Aturat"
 
 #: msgErrorLine
 msgid "An error occurs at line {0}"
@@ -294,6 +294,8 @@ msgid ""
 "Error message:\n"
 "{0}"
 msgstr ""
+"Missatge d'error:\n"
+"{0}"
 
 #: msgCapturePrompt
 msgid "Select a region on the screen"
@@ -301,7 +303,43 @@ msgstr ""
 
 #: winPreferences
 msgid "Preferences"
+msgstr "Preferències"
+
+#: PreferencesWin.chkExpandTab.text
+msgid "Tab key inserts spaces instead of tab"
 msgstr ""
+
+#: PreferencesWin.lblUpdates.text
+msgid "Updates"
+msgstr ""
+
+#: PreferencesWin.lblLanguage.text
+msgid "Language"
+msgstr ""
+
+#: PreferencesWin.lblTabWidth.text
+msgid "Tab width:"
+msgstr "Amplada del tabulador:"
+
+#: PreferencesWin.lblFont.text
+msgid "Font name:"
+msgstr ""
+
+#: PreferencesWin.lblFontSize.text
+msgid "Size:"
+msgstr ""
+
+#: PreferencesWin.titleAppearance.textWithMnemonic
+msgid "Fonts"
+msgstr ""
+
+#: PreferencesWin.titleIndentation.textWithMnemonic
+msgid "Indentation"
+msgstr "Sagnat"
+
+#: PreferencesWin.paneTextEditing.tab.title
+msgid "Text Editing"
+msgstr "Edició de text"
 
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
@@ -317,7 +355,7 @@ msgstr ""
 
 #: prefSeconds
 msgid "seconds"
-msgstr ""
+msgstr "segons"
 
 #: prefAutoNaming
 msgid "Automatic Naming:"
@@ -337,15 +375,15 @@ msgstr ""
 
 #: prefTabGeneralSettings
 msgid "General Settings"
-msgstr ""
+msgstr "Configuració general"
 
 #: prefGeneralAutoCheck
 msgid "Check Update Automatically"
-msgstr ""
+msgstr "Comprova actualitzacions automàticament"
 
 #: dlgAskCloseTab
 msgid "Do you want to close this tab?"
-msgstr ""
+msgstr "Vols tancar aquesta pestanya?"
 
 #: msgAskSaveChanges
 msgid "{0} has been modified. Save changes?"
@@ -362,7 +400,7 @@ msgstr ""
 #: tabNaming
 msgctxt "tabNaming"
 msgid "File"
-msgstr ""
+msgstr "Fitxer"
 
 #: tabMatchingPreview
 msgid "Matching Preview"
@@ -374,18 +412,18 @@ msgstr ""
 
 #: lblPath
 msgid "Path:"
-msgstr ""
+msgstr "Ruta:"
 
 #: lblFilename
 msgid "Filename:"
-msgstr ""
+msgstr "Nom de fitxer:"
 
 #: lblSimilarity
 msgid "Similarity:"
-msgstr ""
+msgstr "Similitud:"
 
 #: lblNumberOfMatches
-msgid "Number of matches:"
+msgid "Number of matches/Max:"
 msgstr ""
 
 #: lblTargetOffsetX
@@ -398,23 +436,23 @@ msgstr ""
 
 #: ok
 msgid "OK"
-msgstr ""
+msgstr "Accepta"
 
 #: cancel
 msgid "Cancel"
-msgstr ""
+msgstr "Canceŀla"
 
 #: yes
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 #: no
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: dlgFileExists
 msgid "File Exists"
-msgstr ""
+msgstr "El fitxer ja existeix"
 
 #: msgFileExists
 msgid "Are you sure to overwrite this file \"{0}\"?"

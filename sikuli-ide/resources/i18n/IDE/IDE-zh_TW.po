@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-02-08 18:39+0000\n"
+"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"PO-Revision-Date: 2011-09-08 21:44+0000\n"
 "Last-Translator: Tsung-Hsiang Chang <vgod@vgod.tw>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
-"X-Generator: Launchpad (build 13794)\n"
+"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -302,6 +302,42 @@ msgstr "在螢幕上選取一塊區域"
 msgid "Preferences"
 msgstr "偏好設定"
 
+#: PreferencesWin.chkExpandTab.text
+msgid "Tab key inserts spaces instead of tab"
+msgstr "TAB鍵插入空白字元"
+
+#: PreferencesWin.lblUpdates.text
+msgid "Updates"
+msgstr "更新"
+
+#: PreferencesWin.lblLanguage.text
+msgid "Language"
+msgstr "語言"
+
+#: PreferencesWin.lblTabWidth.text
+msgid "Tab width:"
+msgstr "Tab 寬度:"
+
+#: PreferencesWin.lblFont.text
+msgid "Font name:"
+msgstr "字型:"
+
+#: PreferencesWin.lblFontSize.text
+msgid "Size:"
+msgstr "大小:"
+
+#: PreferencesWin.titleAppearance.textWithMnemonic
+msgid "Fonts"
+msgstr "字型"
+
+#: PreferencesWin.titleIndentation.textWithMnemonic
+msgid "Indentation"
+msgstr "縮排"
+
+#: PreferencesWin.paneTextEditing.tab.title
+msgid "Text Editing"
+msgstr "文字編輯"
+
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
 msgstr "螢幕截圖"
@@ -384,8 +420,8 @@ msgid "Similarity:"
 msgstr "相似度："
 
 #: lblNumberOfMatches
-msgid "Number of matches:"
-msgstr "比對結果顯示數量："
+msgid "Number of matches/Max:"
+msgstr "比對符合/最大數量"
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"

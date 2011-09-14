@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sikuli\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-02-08 09:24-0400\n"
-"PO-Revision-Date: 2011-02-08 21:27+0000\n"
-"Last-Translator: Monkey <monkey.libre@gmail.com>\n"
+"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"PO-Revision-Date: 2011-09-06 09:26+0000\n"
+"Last-Translator: andAlexander Andelkovic <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-27 22:32+0000\n"
-"X-Generator: Launchpad (build 13794)\n"
+"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -307,6 +307,42 @@ msgstr "Seleccione una región de la pantalla"
 msgid "Preferences"
 msgstr "Preferencias"
 
+#: PreferencesWin.chkExpandTab.text
+msgid "Tab key inserts spaces instead of tab"
+msgstr "El tabulador inserta espacios en vez de tabulaciones"
+
+#: PreferencesWin.lblUpdates.text
+msgid "Updates"
+msgstr ""
+
+#: PreferencesWin.lblLanguage.text
+msgid "Language"
+msgstr ""
+
+#: PreferencesWin.lblTabWidth.text
+msgid "Tab width:"
+msgstr "Ancho de Tabulador:"
+
+#: PreferencesWin.lblFont.text
+msgid "Font name:"
+msgstr "Nombre del tipo de letra:"
+
+#: PreferencesWin.lblFontSize.text
+msgid "Size:"
+msgstr "Tamaño:"
+
+#: PreferencesWin.titleAppearance.textWithMnemonic
+msgid "Fonts"
+msgstr "Tipos de letra"
+
+#: PreferencesWin.titleIndentation.textWithMnemonic
+msgid "Indentation"
+msgstr "Indentación"
+
+#: PreferencesWin.paneTextEditing.tab.title
+msgid "Text Editing"
+msgstr "Edición de texto"
+
 #: prefTabScreenCapturing
 msgid "Screen Capturing"
 msgstr "Captura de pantalla"
@@ -389,8 +425,8 @@ msgid "Similarity:"
 msgstr "Similitud:"
 
 #: lblNumberOfMatches
-msgid "Number of matches:"
-msgstr "Número de coincidencias:"
+msgid "Number of matches/Max:"
+msgstr "Número de partidos / Max:"
 
 #: lblTargetOffsetX
 msgid "Target offset  X:"
