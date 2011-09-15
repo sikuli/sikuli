@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 import launchpadlib
 from launchpadlib.launchpad import Launchpad
+import os
 
 FILE_TYPES = dict(tarball='Code Release Tarball',
                   readme='README File',
@@ -70,19 +71,20 @@ MIME = { 'exe':'application/octet-stream',
          'dmg':'application/octet-stream'}
 files = [
      {'file':'linux-x86_64.zip', 'desc':'Sikuli X (Linux 64bit)'},
-     {'file':'linux.zip', 'desc':'Sikuli X (Linux 32bit)'},
-     {'file':'osx-10.6.dmg', 'desc':'Sikuli X (Mac OS X 10.6)'},
+     {'file':'linux-i686.zip', 'desc':'Sikuli X (Linux 32bit)'},
+     {'file':'osx-10.6.dmg', 'desc':'Sikuli X (Mac OS X 10.6/10.7)'},
      {'file':'win32.zip', 'desc':'Sikuli X (Windows portable zip)'},
      {'file':'win32.exe', 'desc':'Sikuli X (Windows installer)'},
 ]
 
 project = 'sikuli'
-version = 'x1.0-rc2'
+version = 'x1.0-rc3'
 lp = Launchpad.login_with('sikuli','production')
-filename_prefix = "Sikuli-X-1.0rc2"
+filename_prefix = "Sikuli-X-1.0rc3 (r905)"
 for f in files:
    filename = filename_prefix + "-" + f['file'] 
    signature_filename = filename + ".asc"
+   os.system("gpg --armor --sign --detach-sig '%s'" % (filename) )
    description = f['desc']
    file_type = FILE_TYPES['installer']
    content_type = MIME[filename[-3:]]
