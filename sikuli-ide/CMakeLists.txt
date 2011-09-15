@@ -277,7 +277,7 @@ IF(APPLE)
    )
 
    add_custom_target( ${APP_FILE}.update_ver
-	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion `echo '${SIKULI_VERSION}' | awk '{print $1}'`
+	COMMAND defaults write ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info CFBundleVersion `echo ${SIKULI_VERSION} | awk '{print $$1}'`
 	COMMAND plutil -convert xml1 ${BINARY_APP_DIR}/${APP_FILE}/Contents/Info.plist
    )
 
