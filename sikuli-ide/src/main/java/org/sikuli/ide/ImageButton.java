@@ -238,7 +238,8 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
          if(str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
             String filename = str.substring(1, str.length()-1);
             File f = parentPane.getFileInBundle(filename);
-            return new ImageButton(parentPane, f.getAbsolutePath());
+            if(f != null)
+               return new ImageButton(parentPane, f.getAbsolutePath());
          }
          return null;
       }
