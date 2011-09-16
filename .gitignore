@@ -3,3 +3,6 @@ BUILD/
 *~
 *.bak
 .bzr
+*.swp
+sikuli-script/src/main/native/org_sikuli_script_MacUtil.h
+sikuli-script/src/main/native/org_sikuli_script_VDictProxy.h
