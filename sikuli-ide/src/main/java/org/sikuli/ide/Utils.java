@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import javax.imageio.*;
 
 import org.sikuli.script.Debug;
+import org.sikuli.script.Util;
 
 
 public class Utils {
@@ -124,12 +125,7 @@ public class Utils {
    }
 
    public static String slashify(String path, boolean isDirectory) {
-      String p = path;
-      if (File.separatorChar != '/')
-         p = p.replace(File.separatorChar, '/');
-      if (!p.endsWith("/") && isDirectory)
-         p = p + "/";
-      return p;
+      return Util.slashify(path, isDirectory);
    }
    
    public static String saveTmpImage(BufferedImage img){

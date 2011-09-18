@@ -44,4 +44,13 @@ public class Util {
       File f = new File(path);
       return f.getParent();
    }
+
+   public static String slashify(String path, boolean isDirectory) {
+      String p = path;
+      if (File.separatorChar != '/')
+         p = p.replace(File.separatorChar, '/');
+      if (!p.endsWith("/") && isDirectory)
+         p = p + "/";
+      return p;
+   }
 }
