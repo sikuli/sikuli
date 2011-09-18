@@ -741,8 +741,9 @@ public class SikuliIDE extends JFrame {
          try{
             JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
             SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
-            String bundlePath= codePane.getSrcBundle();
-            if(bundlePath != null){
+            File f = codePane.getCurrentFile();
+            if( f != null){
+               String bundlePath= codePane.getSrcBundle();
                Debug.log(5, "save session: " + bundlePath);
                if(i!=0)
                   sbuf.append(";");
@@ -839,7 +840,8 @@ public class SikuliIDE extends JFrame {
          setCurrentFilename(file);
       }
       catch(IOException e){
-         e.printStackTrace();
+         Debug.error("Can't load file " + file);
+         Debug.error(e.getMessage());
       }
    }
 
