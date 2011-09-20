@@ -1,5 +1,5 @@
 import unittest
-import os
+#import os
 from org.sikuli.script.android import AndroidScreen
 from org.sikuli.script import Settings
 
@@ -8,7 +8,7 @@ scr = AndroidScreen() # compatiable with Sikuli Screen/Region
 assert scr != None
 dev = scr.getRobot().getDevice() # Android Monkey device
 
-Settings.BundlePath = os.getcwd() + "/test-res/"
+#Settings.BundlePath = os.getcwd() + "/test-res/"
 Settings.MoveMouseDelay = 0
 Settings.AutoWaitTimeout = 10
 
