@@ -6,6 +6,7 @@
 package org.sikuli.script.android;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import org.sikuli.script.Region;
 import org.sikuli.script.IRobot;
@@ -13,6 +14,7 @@ import org.sikuli.script.IScreen;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FindFailed;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +52,7 @@ public class AndroidScreen extends Region implements IScreen {
       Debug.log("AndroidRobot.init");
       try{
          AdbBackend adb = new AdbBackend();
-         if(timeout<0 || deviceIdRegex == null)
+         if(timeoutMs<0 || deviceIdRegex == null)
             _dev = adb.waitForConnection();
          else
             _dev = adb.waitForConnection(timeoutMs, deviceIdRegex);
@@ -108,6 +110,21 @@ public class AndroidScreen extends Region implements IScreen {
       return capture(reg.getROI());
    }
 
+
+   public <PSRML> int type(PSRML target, String text, int modifiers) throws FindFailed{
+      click(target, 0);
+      if(text != null){
+         Debug.history(
+           (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
+               "ANDROID.TYPE \"" + text + "\"");
+         _robot.pressModifiers(modifiers);
+         _dev.type(text); //FIXME: assume text don't have special keys
+         _robot.releaseModifiers(modifiers);
+         _robot.waitForIdle();
+         return 1;
+      }
+      return 0;
+   }
 
    public void showMove(Location loc){
    }
