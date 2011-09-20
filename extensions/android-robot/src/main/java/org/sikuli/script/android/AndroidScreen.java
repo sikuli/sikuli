@@ -14,6 +14,10 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.lang.reflect.Method;
 
 import com.android.monkeyrunner.MonkeyDevice;
 import com.android.monkeyrunner.adb.AdbBackend;
@@ -27,6 +31,17 @@ public class AndroidScreen extends Region implements IScreen {
    static {
       //TODO: Let android.path be configurable
       String ANDROID_ROOT = System.getProperty("android.path") + File.separator;
+      String[] ANDROID_JARS = {"monkeyrunner.jar", "guavalib.jar", "sdklib.jar", "ddmlib.jar" };
+      for(String jar : ANDROID_JARS){
+         String path = ANDROID_ROOT + "/tools/lib/"+ jar;
+         Debug.log("load android jar: " + path);
+         try{
+            ClassPathHack.addFile(path);
+         }
+         catch(IOException e){
+            Debug.error("Can't load Android lib: " + jar + "\n" + e.getMessage());
+         }
+      }
       System.setProperty("java.library.path", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_LIB_FOLDER);
       System.setProperty("com.android.monkeyrunner.bindir", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_FOLDER);
    };
@@ -92,4 +107,36 @@ public class AndroidScreen extends Region implements IScreen {
    }
 
 
+}
+
+class ClassPathHack {
+    private static final Class[] parameters = new Class[] {URL.class};
+
+    public static void addFile(String s) throws IOException
+    {
+        File f = new File(s);
+        addFile(f);
+    }
+
+    public static void addFile(File f) throws IOException
+    {
+        //f.toURL is deprecated
+        addURL(f.toURL());
+    }
+
+    public static void addURL(URL u) throws IOException
+    {
+        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        Class sysclass = URLClassLoader.class;
+
+        try {
+            Method method = sysclass.getDeclaredMethod("addURL", parameters);
+            method.setAccessible(true);
+            method.invoke(sysloader, new Object[] {u});
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new IOException("Error, could not add URL to system classloader");
+        }
+
+    }
 }
