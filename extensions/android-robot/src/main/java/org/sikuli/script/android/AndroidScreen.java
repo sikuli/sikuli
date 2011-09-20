@@ -13,15 +13,23 @@ import org.sikuli.script.IScreen;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
+import java.io.File;
 
 import com.android.monkeyrunner.MonkeyDevice;
 import com.android.monkeyrunner.adb.AdbBackend;
+import com.android.sdklib.SdkConstants;
 import org.python.core.PyObject;
 
 public class AndroidScreen extends Region implements IScreen {
    protected MonkeyDevice _dev;
    protected IRobot _robot;
 
+   static {
+      //TODO: Let android.path be configurable
+      String ANDROID_ROOT = System.getProperty("android.path") + File.separator;
+      System.setProperty("java.library.path", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_LIB_FOLDER);
+      System.setProperty("com.android.monkeyrunner.bindir", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_FOLDER);
+   };
 
    private void initRobots(){
       Debug.log("AndroidRobot.init");

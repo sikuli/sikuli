@@ -7,7 +7,6 @@ ANDROID_SDK_LIB=$ANDROID_SDK/tools/lib
 CLASSPATH=$SIKULI_SCRIPT_JAR:$ANDROID_ROBOT_JAR:$ANDROID_SDK_LIB/monkeyrunner.jar:$ANDROID_SDK_LIB/guavalib.jar:$ANDROID_SDK_LIB/sdklib.jar::$ANDROID_SDK_LIB/ddmlib.jar 
 
 java -cp $CLASSPATH \
+     -Dandroid.path=$ANDROID_SDK \
      -Dpython.path=$SIKULI_SCRIPT_JAR/Lib \
-     -Djava.library.path=$ANDROID_SDK/tools/lib \
-     -Dcom.android.monkeyrunner.bindir=$ANDROID_SDK/tools \
      org.sikuli.script.SikuliScript $*
