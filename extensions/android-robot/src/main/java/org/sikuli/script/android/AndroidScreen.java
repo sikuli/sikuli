@@ -46,17 +46,27 @@ public class AndroidScreen extends Region implements IScreen {
       System.setProperty("com.android.monkeyrunner.bindir", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_FOLDER);
    };
 
-   private void initRobots(){
+   private void initRobots(long timeoutMs, String deviceIdRegex){
       Debug.log("AndroidRobot.init");
       try{
          AdbBackend adb = new AdbBackend();
-         _dev = adb.waitForConnection();
+         if(timeout<0 || deviceIdRegex == null)
+            _dev = adb.waitForConnection();
+         else
+            _dev = adb.waitForConnection(timeoutMs, deviceIdRegex);
       }
       catch(Exception e){
          Debug.error("no connection to android device.");
          e.printStackTrace();
       }
       _robot = new AndroidRobot(_dev);
+
+      Rectangle b = getBounds();
+      init(b.x, b.y, b.width, b.height, this);
+   }
+
+   private void initRobots(){
+      initRobots(-1, null);
    }
 
    public Region newRegion(Rectangle rect){
@@ -74,10 +84,12 @@ public class AndroidScreen extends Region implements IScreen {
                            Integer.parseInt(height));
    }
 
+   public AndroidScreen(long timeout, String deviceIdRegex) {
+      initRobots(timeout, deviceIdRegex);
+   }
+
    public AndroidScreen() {
       initRobots();
-      Rectangle b = getBounds();
-      init(b.x, b.y, b.width, b.height, this);
    }
 
    public ScreenImage capture() {

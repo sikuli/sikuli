@@ -4,7 +4,7 @@ from org.sikuli.script.android import AndroidScreen
 from org.sikuli.script import Settings
 
 print "set up android connection"
-scr = AndroidScreen() # compatiable with Sikuli Screen/Region
+scr = AndroidScreen(10000, ".*") # compatiable with Sikuli Screen/Region
 assert scr != None
 dev = scr.getRobot().getDevice() # Android Monkey device
 
