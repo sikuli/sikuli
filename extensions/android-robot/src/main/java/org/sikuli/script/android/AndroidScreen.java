@@ -14,8 +14,8 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
 
-import com.android.monkeyrunner.MonkeyRunner;
 import com.android.monkeyrunner.MonkeyDevice;
+import com.android.monkeyrunner.adb.AdbBackend;
 import org.python.core.PyObject;
 
 public class AndroidScreen extends Region implements IScreen {
@@ -26,8 +26,8 @@ public class AndroidScreen extends Region implements IScreen {
    private void initRobots(){
       Debug.log("AndroidRobot.init");
       try{
-         PyObject[] args = {};
-         _dev = MonkeyRunner.waitForConnection(args,null);
+         AdbBackend adb = new AdbBackend();
+         _dev = adb.waitForConnection();
       }
       catch(Exception e){
          Debug.error("no connection to android device.");
