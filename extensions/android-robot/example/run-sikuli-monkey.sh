@@ -8,5 +8,4 @@ CLASSPATH=$SIKULI_SCRIPT_JAR:$ANDROID_ROBOT_JAR:$ANDROID_SDK_LIB/monkeyrunner.ja
 
 java -cp $CLASSPATH \
      -Dandroid.path=$ANDROID_SDK \
-     -Dpython.path=$SIKULI_SCRIPT_JAR/Lib \
      org.sikuli.script.SikuliScript $*
