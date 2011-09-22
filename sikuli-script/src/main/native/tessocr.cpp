@@ -462,21 +462,24 @@ void sharpen(Mat& img){
    addWeighted(img, 2.5, blur, -1.5, 0, img);
 }
 
+float preprocess_for_ocr(const Mat& in_img, Mat& out_img){
+   const float MIN_HEIGHT = 30;
+   float scale = 1.f;
+   if (in_img.rows < MIN_HEIGHT){
+      scale = MIN_HEIGHT / float(in_img.rows);
+      resize(in_img, out_img, Size(in_img.cols*scale,in_img.rows*scale));
+   }else {
+      out_img = in_img;
+   }
+   sharpen(out_img);
+   return scale;
+}
+
 string OCR::recognize_as_string(const Mat& blobImage){
    Mat gray, ocrImage;  // the image passed to tesseract
-   bool upsampled = false;
-   const float MIN_HEIGHT = 30;
-   float scale = 0;
    OCR::init();
    cvtColor(blobImage, gray, CV_RGB2GRAY);
-   if (gray.rows < MIN_HEIGHT){
-      upsampled = true;
-      scale = MIN_HEIGHT / float(gray.rows);
-      resize(gray, ocrImage, Size(gray.cols*scale,gray.rows*scale));
-   }else {
-      ocrImage = gray;
-   }
-   sharpen(ocrImage);
+   preprocess_for_ocr(gray, ocrImage);
 
    //imshow("ocr", ocrImage); waitKey();
    char* text = mytesseract_str((unsigned char*)ocrImage.data,
@@ -491,21 +494,13 @@ string OCR::recognize_as_string(const Mat& blobImage){
    return "";
 }
 
+
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
  
    Mat blobImage(screen,blob);
    
    Mat ocrImage;  // the image passed to tesseract      
-   bool upsampled = false;
-   const float MIN_HEIGHT = 20;
-   float scale = 0;
-   if (blobImage.rows < MIN_HEIGHT){
-      upsampled = true;
-      scale = MIN_HEIGHT / float(blobImage.rows);
-      resize(blobImage, ocrImage, Size(blobImage.cols*scale,blobImage.rows*scale));
-   }else {
-      ocrImage = blobImage.clone(); 
-   }  
+   float scale = preprocess_for_ocr(blobImage, ocrImage);
    
    vector<OCRChar> ocr_chars;
    ocr_chars = OCR::recognize((unsigned char*)ocrImage.data,
@@ -515,25 +510,17 @@ vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
    
    for (vector<OCRChar>::iterator iter = ocr_chars.begin(); 
         iter != ocr_chars.end(); iter++){
-      
-      
       OCRChar& ocrchar = *iter;
-      
-      
-      if (upsampled){
+      if(scale>1.f){
          // scale back the coordinates in the OCR result
-         
          ocrchar.x = ocrchar.x/scale;
          ocrchar.y = ocrchar.y/scale;
          ocrchar.width = ocrchar.width/scale;
          ocrchar.height = ocrchar.height/scale;
       }
       
-      
-      
       ocrchar.x += blob.x;
       ocrchar.y += blob.y;
-      
       
       char ch = ocrchar.ch;
       if (ch < 0 || ch > '~') 
