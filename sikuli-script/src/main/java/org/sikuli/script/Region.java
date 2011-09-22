@@ -970,7 +970,7 @@ public class Region {
    }
 
    public String text(){
-      ScreenImage simg = _scr.capture(x, y, w, h);
+      ScreenImage simg = getScreen().capture(x, y, w, h);
       _lastScreenImage = simg;
       return TextRecognizer.getInstance().recognize(simg);
    }
