@@ -128,6 +128,7 @@ public:
                                     int width, int height, int bpp);
    
    static OCRText recognize(cv::Mat mat);
+   static string recognize_as_string(const cv::Mat& mat);
    
    static vector<FindResult> find_word(const cv::Mat& mat, string word, bool is_find_one = true);
    

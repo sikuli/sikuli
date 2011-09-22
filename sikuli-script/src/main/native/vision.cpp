@@ -406,8 +406,7 @@ Vision::findChanges(FindInput input){
 
 string
 Vision::recognize(Mat image){
-   OCRText text = OCR::recognize(image);
-   return text.getString();
+   return OCR::recognize_as_string(image);
 }
 
 string
