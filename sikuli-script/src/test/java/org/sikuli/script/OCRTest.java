@@ -63,6 +63,28 @@ public class OCRTest
       return correct/(float)total;
    }
 
+
+   @Test
+   public void testAllOCR() throws Exception {
+      String suites[] = {"Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
+                         "web-twitter",  "win-7-desktop",  "win-vista-black"};
+
+      int numCases[] = {348, 177, 325, 236, 133, 112};
+      float accuracy[] = {164/348f, 126/177f, 201/325f, 153/236f, 77/133f, 82/112f};
+      int i = 0, correct = 0, total = 0;
+      for(String suite : suites){
+         float acc = testOcrSuite(suite);
+         assertTrue(acc >= (accuracy[i] * 0.95)); // each case should not be worse than 95% of the expected accuracy.
+         correct += acc * numCases[i];
+         total += numCases[i];
+         i++;
+      }
+      float total_acc = correct / (float)total;
+      System.err.println("OCR Accuracy: " + (total_acc*100) + "%");
+      assertTrue(total_acc >= 0.6);
+   }
+
+   @Ignore("run all tests at once instead.")
    @Test
    public void testLinux_XFCE11() throws Exception {
       String name = "Linux-XFCE11";
@@ -70,6 +92,7 @@ public class OCRTest
       assertTrue(accuracy >= 27/348f);
    }
 
+   @Ignore("run all tests at once instead.")
    @Test
    public void testMacDesktop() throws Exception {
       String name = "Mac-desktop";
@@ -77,6 +100,7 @@ public class OCRTest
       assertTrue(accuracy >= 22/177f);
    }
 
+   @Ignore("run all tests at once instead.")
    @Test
    public void testMacDesktop2() throws Exception {
       String name = "Mac-desktop2";
@@ -84,6 +108,7 @@ public class OCRTest
       assertTrue(accuracy >= 13/325f);
    }
 
+   @Ignore("run all tests at once instead.")
    @Test
    public void testTwitter() throws Exception {
       String name = "web-twitter";
@@ -92,6 +117,7 @@ public class OCRTest
    }
 
 
+   @Ignore("run all tests at once instead.")
    @Test
    public void testWin7Desktop() throws Exception {
       String name = "win-7-desktop";
@@ -99,6 +125,7 @@ public class OCRTest
       assertTrue(accuracy >= 10/133f);
    }
 
+   @Ignore("run all tests at once instead.")
    @Test
    public void testWinVistaBlackDesktop() throws Exception {
       String name = "win-vista-black";
