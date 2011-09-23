@@ -16,6 +16,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
+import java.util.List;
+import java.util.LinkedList;
+
+import org.sikuli.script.natives.FindResult;
+import org.sikuli.script.natives.FindResults;
+import org.sikuli.script.natives.Mat;
+import org.sikuli.script.natives.Vision;
 
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -365,7 +372,7 @@ public class Region {
 
 
    
-   //////////// CORE FUNCTIONS
+   //////////// PUBLIC API
 
    /**
     * Match find( Pattern/String/PatternClass ) 
@@ -973,6 +980,28 @@ public class Region {
       ScreenImage simg = getScreen().capture(x, y, w, h);
       _lastScreenImage = simg;
       return TextRecognizer.getInstance().recognize(simg);
+   }
+
+   public enum ListTextMode {
+      WORD, LINE, PARAGRAPH
+   };
+
+   public List<Region> listText(/*mode = WORD*/){
+      return listText(ListTextMode.WORD);
+   }
+
+   //TODO: support LINE and PARAGRAPH
+   // listText only supports WORD mode now.
+   public List<Region> listText(ListTextMode mode){
+      ScreenImage simg = getScreen().capture(x, y, w, h);
+      Mat mat = OpenCV.convertBufferedImageToMat(simg.getImage());
+      FindResults blobs = Vision.findTextBlobs(mat);
+      List<Region> ret = new LinkedList<Region>();
+      for(int i=0;i<blobs.size();i++){
+         FindResult fr = blobs.get(i);
+         ret.add(new Match(fr, getScreen()));
+      }
+      return ret;
    }
 
 

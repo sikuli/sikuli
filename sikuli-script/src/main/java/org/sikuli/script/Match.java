@@ -17,18 +17,17 @@ public class Match extends Region implements Comparable {
 
    private Location _target = null;
 
-   public Match(int _x, int _y, int _w, int _h, double _score, IScreen _parent) 
-                                                            throws AWTException{
+   public Match(int _x, int _y, int _w, int _h, double _score, IScreen _parent) {
       init(_x, _y, _w, _h, _parent);
       score = _score;
    }
 
-   public Match(Match m, IScreen _parent) throws AWTException{
+   public Match(Match m, IScreen _parent) {
       init(m.x, m.y, m.w, m.h, _parent);
       score = m.score;
    }
 
-   public Match(FindResult f, IScreen _parent) throws AWTException{
+   public Match(FindResult f, IScreen _parent) {
       init(f.getX(), f.getY(), f.getW(), f.getH(), _parent);
       score = f.getScore();
    }
