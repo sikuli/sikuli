@@ -17,13 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
 import java.util.List;
-import java.util.LinkedList;
-
-import org.sikuli.script.natives.FindResult;
-import org.sikuli.script.natives.FindResults;
-import org.sikuli.script.natives.Mat;
-import org.sikuli.script.natives.Vision;
-import org.sikuli.script.natives.OCRWords;
 
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -983,35 +976,10 @@ public class Region {
       return TextRecognizer.getInstance().recognize(simg);
    }
 
-   public enum ListTextMode {
-      WORD, LINE, PARAGRAPH
-   };
-
-   public List<Region> listText(/*mode = WORD*/){
-      return listText(ListTextMode.WORD);
-   }
-
-   //TODO: support LINE and PARAGRAPH
-   // listText only supports WORD mode now.
-   public List<Region> listText(ListTextMode mode){
+   public List<Match> listText(){
       ScreenImage simg = getScreen().capture(x, y, w, h);
-      Mat mat = OpenCV.convertBufferedImageToMat(simg.getImage());
-      FindResults blobs = Vision.findTextBlobs(mat);
-      List<Region> ret = new LinkedList<Region>();
-      for(int i=0;i<blobs.size();i++){
-         FindResult fr = blobs.get(i);
-         ret.add(new Match(fr, getScreen()));
-      }
-      return ret;
+      return TextRecognizer.getInstance().listText(simg, this);
    }
-
-   public OCRWords listText2(ListTextMode mode){
-      ScreenImage simg = getScreen().capture(x, y, w, h);
-      Mat mat = OpenCV.convertBufferedImageToMat(simg.getImage());
-      return Vision.recognize_as_ocrtext(mat).getWords();
-   }
-
-
 
    ////////////////////////////////////////////////////////////////
    // SPECIAL FUNCTIONS FOR JYTHON

@@ -14,6 +14,7 @@ import org.sikuli.script.natives.FindResult;
 
 public class Match extends Region implements Comparable {
    double score;
+   String _text = null;
 
    private Location _target = null;
 
@@ -21,6 +22,13 @@ public class Match extends Region implements Comparable {
       init(_x, _y, _w, _h, _parent);
       score = _score;
    }
+
+   public Match(int _x, int _y, int _w, int _h, double _score, IScreen _parent, String text) {
+      init(_x, _y, _w, _h, _parent);
+      score = _score;
+      _text = text;
+   }
+
 
    public Match(Match m, IScreen _parent) {
       init(m.x, m.y, m.w, m.h, _parent);
@@ -77,6 +85,12 @@ public class Match extends Region implements Comparable {
    void setTargetOffset(Location offset){
       _target = new Location(getCenter());
       _target.translate(offset.x, offset.y);
+   }
+
+   public String text(){
+      if(_text==null)
+         return super.text();
+      return _text;
    }
 }
 
