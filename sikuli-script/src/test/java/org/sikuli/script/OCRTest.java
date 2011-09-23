@@ -48,7 +48,7 @@ public class OCRTest
       return ret;
    }
 
-   protected float testOcrSuite(String suite) throws IOException{
+   protected float testOcrSuite(String suite, Stat accum) throws IOException{
       BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
       List<OCRTruth> truth = readGroundTruth("test-res/OCR/" + suite + ".csv");
       int correct = 0, total = 0;
@@ -64,6 +64,8 @@ public class OCRTest
          total++;
       }
       System.err.println(suite + ": " + correct + "/" + total);
+      accum.true_pos += correct;
+      accum.recall_s += total;
       return correct/(float)total;
    }
 
@@ -112,16 +114,20 @@ public class OCRTest
 
       float accuracy[] = {164/348f, 126/177f, 201/325f, 153/236f, 77/133f, 82/112f};
       int i = 0, correct = 0, total = 0;
+      Stat accum = new Stat();
       for(String suite : _suites){
-         float acc = testOcrSuite(suite);
-         assertTrue(acc >= (accuracy[i] * 0.95)); // each case should not be worse than 95% of the expected accuracy.
-         correct += acc * _numCases[i];
-         total += _numCases[i];
+         float acc = testOcrSuite(suite, accum);
+         // each case should not be worse than 95% of the expected accuracy.
+         delayAssertTrue(suite + " accuracy too low: " + acc + 
+                         " expected: " + accuracy[i] * 0.95,
+                         acc >= (accuracy[i] * 0.95)); 
          i++;
       }
-      float total_acc = correct / (float)total;
+      float total_acc = accum.true_pos / (float)accum.recall_s;
       System.err.println("OCR Accuracy: " + (total_acc*100) + "%");
-      assertTrue(total_acc >= 0.6);
+      delayAssertTrue("OCR avg accuracy too low: " + total_acc, 
+                      total_acc >= 0.6);
+      checkDelayAssertion();
    }
 
    protected double overlap(Region r, OCRTruth t){
@@ -189,56 +195,6 @@ public class OCRTest
       delayAssertTrue("avg coverage too low: " + total_coverage, 
                       total_coverage >= 0.73);
       checkDelayAssertion();
-   }
-
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testLinux_XFCE11() throws Exception {
-      String name = "Linux-XFCE11";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 27/348f);
-   }
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testMacDesktop() throws Exception {
-      String name = "Mac-desktop";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 22/177f);
-   }
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testMacDesktop2() throws Exception {
-      String name = "Mac-desktop2";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 13/325f);
-   }
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testTwitter() throws Exception {
-      String name = "web-twitter";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 33/326f);
-   }
-
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testWin7Desktop() throws Exception {
-      String name = "win-7-desktop";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 10/133f);
-   }
-
-   @Ignore("run all tests at once instead.")
-   @Test
-   public void testWinVistaBlackDesktop() throws Exception {
-      String name = "win-vista-black";
-      float accuracy = testOcrSuite(name);
-      assertTrue(accuracy >= 7/112f);
    }
 
 }
