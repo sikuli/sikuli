@@ -23,6 +23,7 @@ import org.sikuli.script.natives.FindResult;
 import org.sikuli.script.natives.FindResults;
 import org.sikuli.script.natives.Mat;
 import org.sikuli.script.natives.Vision;
+import org.sikuli.script.natives.OCRWords;
 
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -1003,6 +1004,13 @@ public class Region {
       }
       return ret;
    }
+
+   public OCRWords listText2(ListTextMode mode){
+      ScreenImage simg = getScreen().capture(x, y, w, h);
+      Mat mat = OpenCV.convertBufferedImageToMat(simg.getImage());
+      return Vision.recognize_as_ocrtext(mat).getWords();
+   }
+
 
 
    ////////////////////////////////////////////////////////////////

@@ -69,6 +69,50 @@ public class OCRTest
       return correct/(float)total;
    }
 
+   protected float[] testListText2OnSuite(String suite, Stat accum) throws IOException{
+      float MIN_OVERLAP_AREA = 0.95f;
+      BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
+      List<OCRTruth> truth = readGroundTruth("test-res/OCR/" + suite + ".csv");
+      int found = 0, correct = 0;
+      Screen scr = createMockScreen(img);
+      OCRWords blobs = scr.listText2(Region.ListTextMode.WORD);
+      int ocr_not_same = 0;
+
+      for(int i=0;i<blobs.size();i++){
+         OCRWord w = blobs.get(i);
+         Rectangle r = new Rectangle(w.getX(), w.getY(), w.getWidth(), w.getHeight());
+         for(OCRTruth t : truth){
+            if( overlap(r, t) >= MIN_OVERLAP_AREA ){
+               truth.remove(t);
+               found++;
+               String ocr = w.getString();
+               BufferedImage text_img = img.getSubimage(w.getX(), w.getY(), w.getWidth()+1, w.getHeight()+1);
+               Screen text_scr = createMockScreen(text_img);
+               String recognized_text = text_scr.text().trim();
+               if(!ocr.equals(recognized_text)){
+                  System.out.println("old: " + ocr + " new: " + recognized_text + " expected: " + t.text);
+                  ocr_not_same++;
+               }
+               if(ocr.equals(t.text))
+                  correct++;
+               //System.out.println("expected: " + t.text + " got: " + ocr);
+               break;
+            }
+         }
+      }
+      //System.err.println(suite + " precision: " + correct + "/" + blobs.size());
+      //System.err.println(suite + " recall: " + correct + "/" + truth.size());
+      System.err.println(suite + " ocr not same: " + ocr_not_same);
+      float precision = correct / (float)blobs.size();
+      float recall = correct / (float)truth.size();
+      float coverage = found/(float)truth.size();
+      accum.true_pos += correct;
+      accum.coverage_c += found;
+      accum.precision_s += blobs.size();
+      accum.recall_s += truth.size();
+      return new float[]{precision, recall, coverage};
+   }
+
    protected float[] testListTextOnSuite(String suite, Stat accum) throws IOException{
       float MIN_OVERLAP_AREA = 0.95f;
       BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
@@ -131,6 +175,10 @@ public class OCRTest
 
    protected double overlap(Region r, OCRTruth t){
       Rectangle a = new Rectangle(r.x, r.y, r.w, r.h);
+      return overlap(a, t);
+   }
+
+   protected double overlap(Rectangle a, OCRTruth t){
       Rectangle b = new Rectangle(t.x, t.y, t.w, t.h);
       Rectangle inter = a.intersection(b);
       //System.out.println("intersection " + a + " " + b + " " + inter);
@@ -138,6 +186,7 @@ public class OCRTest
          return inter.getWidth()*inter.getHeight() / (t.w*t.h) ;
       return 0;
    }
+
 
 
    protected void delayAssertTrue(String msg, boolean condition){
@@ -157,14 +206,14 @@ public class OCRTest
 
    @Test
    public void testListText() throws Exception {
-      double lb_precision[] = {.33, .28, .24, .40, .36, .46};
+      double lb_precision[] = {.33, .28, .24, .38, .36, .46};
       double lb_recall[] = {.65, .61, .39, .68, .73, .61};
       double lb_coverage[] = {.81, .80, .56, .82, .84, .67};
       int i = 0;
       Stat accum = new Stat();
       for(String suite : _suites){
          Float recall = 0.f, precision = 0.f;
-         float[] prc = testListTextOnSuite(suite, accum);
+         float[] prc = testListText2OnSuite(suite, accum);
          /*
          System.err.println(suite + " precision: " + prc[0]);
          System.err.println(suite + " recall: " + prc[1]);
