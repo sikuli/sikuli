@@ -97,7 +97,8 @@ public:
    
    static OCRText recognize_as_ocrtext(cv::Mat image);
    
-   static std::vector<FindResult> findBlobs(const cv::Mat& image);
+   static std::vector<FindResult> findBlobs(const cv::Mat& image, bool textOnly=false);
+   static std::vector<FindResult> findTextBlobs(const cv::Mat& image);
       
    static std::string recognize(cv::Mat image);
 
