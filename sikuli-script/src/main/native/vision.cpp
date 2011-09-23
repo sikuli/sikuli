@@ -446,7 +446,12 @@ Vision::recognize_as_ocrtext(Mat image){
 
 
 vector<FindResult>
-Vision::findBlobs(const cv::Mat& image){
+Vision::findTextBlobs(const cv::Mat& image){
+   return findBlobs(image, true);
+}
+
+vector<FindResult>
+Vision::findBlobs(const cv::Mat& image, bool textOnly){
    
    vector<FindResult> results;
    vector<Blob> out_text_blobs;
@@ -455,21 +460,24 @@ Vision::findBlobs(const cv::Mat& image){
    cvgui::segmentScreenshot(image, out_text_blobs, out_img_blobs);
    
    
-   for (vector<Blob>::iterator i = out_text_blobs.begin(); 
+   for (vector<Blob>::iterator i = out_text_blobs.begin();
         i != out_text_blobs.end(); ++i){
       
       Blob& b = *i;
-      FindResult fr(b.x,b.y,b.width,b.height,1);      
-      results.push_back(fr);      
+      FindResult fr(b.x,b.y,b.width,b.height,1);
+      results.push_back(fr);
    }
    
-   for (vector<Blob>::iterator i = out_img_blobs.begin(); 
+   if(!textOnly){
+      for (vector<Blob>::iterator i = out_img_blobs.begin(); 
         i != out_img_blobs.end(); ++i){
-      
-      Blob& b = *i;
-      FindResult fr(b.x,b.y,b.width,b.height,1);      
-      results.push_back(fr);      
+
+         Blob& b = *i;
+         FindResult fr(b.x,b.y,b.width,b.height,1);      
+         results.push_back(fr);      
+      }
    }
+
    return results;
 }
 

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.io.*;
 import java.util.*;
 
+import org.sikuli.script.natives.*;
 
 public class OCRTest 
 {
@@ -63,25 +64,71 @@ public class OCRTest
       return correct/(float)total;
    }
 
+   String _suites[] = {"Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
+      "web-twitter",  "win-7-desktop",  "win-vista-black"};
+   int _numCases[] = {348, 177, 325, 236, 133, 112};
 
    @Test
    public void testAllOCR() throws Exception {
-      String suites[] = {"Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
-                         "web-twitter",  "win-7-desktop",  "win-vista-black"};
 
-      int numCases[] = {348, 177, 325, 236, 133, 112};
       float accuracy[] = {164/348f, 126/177f, 201/325f, 153/236f, 77/133f, 82/112f};
       int i = 0, correct = 0, total = 0;
-      for(String suite : suites){
+      for(String suite : _suites){
          float acc = testOcrSuite(suite);
          assertTrue(acc >= (accuracy[i] * 0.95)); // each case should not be worse than 95% of the expected accuracy.
-         correct += acc * numCases[i];
-         total += numCases[i];
+         correct += acc * _numCases[i];
+         total += _numCases[i];
          i++;
       }
       float total_acc = correct / (float)total;
       System.err.println("OCR Accuracy: " + (total_acc*100) + "%");
       assertTrue(total_acc >= 0.6);
+   }
+
+   protected double overlap(FindResult r, OCRTruth t){
+      Rectangle a = new Rectangle(r.getX(), r.getY(), r.getW(), r.getH());
+      Rectangle b = new Rectangle(t.x, t.y, t.w, t.h);
+      Rectangle inter = a.intersection(b);
+      return inter.getWidth()*inter.getHeight() / (t.w*t.h) ;
+   }
+
+   protected float testFindTextBlobs(String suite) throws IOException{
+      float MIN_OVERLAP_AREA = 0.95f;
+      BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
+      Set<OCRTruth> truth = new HashSet(readGroundTruth("test-res/OCR/" + suite + ".csv"));
+      Mat mat = OpenCV.convertBufferedImageToMat(img);
+      FindResults blobs = Vision.findTextBlobs(mat);
+      int correct = 0, total = 0;
+      for(int i=0;i<blobs.size();i++){
+         FindResult r = blobs.get(i);
+         for(OCRTruth t : truth){
+            if( overlap(r, t) >= MIN_OVERLAP_AREA ){
+               truth.remove(t);
+               correct++;
+               break;
+            }
+         }
+         total++;
+      }
+      return correct/(float)total;
+   }
+
+
+   @Test
+   public void testFindTextBlobs() throws Exception {
+      double coverages[] = {.935, .827, .955, 1, .923, 1};
+      int i = 0, correct = 0, total = 0;
+      for(String suite : _suites){
+         float coverage = testFindTextBlobs(suite);
+         System.err.println(suite + " coverage: " + coverage);
+         assertTrue(coverage >= (coverages[i] * 0.95)); // each case should not be worse than 95% of the expected coverage.
+         correct += coverage * _numCases[i];
+         total += _numCases[i];
+         i++;
+      }
+      float total_acc = correct / (float)total;
+      System.err.println("FindTextBlob coverage: " + (total_acc*100) + "%");
+      assertTrue(total_acc >= 0.93);
    }
 
    @Ignore("run all tests at once instead.")
