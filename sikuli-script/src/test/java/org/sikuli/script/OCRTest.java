@@ -107,7 +107,6 @@ public class OCRTest
 
    String _suites[] = {"Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
       "web-twitter",  "win-7-desktop",  "win-vista-black"};
-   int _numCases[] = {348, 177, 325, 236, 133, 112};
 
    @Test
    public void testAllOCR() throws Exception {
