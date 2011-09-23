@@ -61,7 +61,7 @@ public class OCRTest
          if(t.text.equals(recognized_text))
             correct++;
          else{
-            //System.err.println("'" + recognized_text + "' expected: '" + t.text + "'");
+            System.err.println("'" + recognized_text + "' expected: '" + t.text + "'");
          }
          total++;
       }
@@ -105,8 +105,9 @@ public class OCRTest
    }
 
 
-   String _suites[] = {"Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
-      "web-twitter",  "win-7-desktop",  "win-vista-black"};
+   String _suites[] = {
+      "Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
+      "web-twitter",  "win-7-desktop", "win-vista-black"};
 
    @Test
    public void testAllOCR() throws Exception {

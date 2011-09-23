@@ -472,6 +472,7 @@ float preprocess_for_ocr(const Mat& in_img, Mat& out_img){
       out_img = in_img;
    }
    sharpen(out_img);
+   //imshow("ocrImage", out_img); 
    return scale;
 }
 
@@ -806,7 +807,10 @@ OCR::recognize(cv::Mat screen){
    cvgui::getParagraphBlobs(screen, parablobs);
 
    Mat screen_gray;
-   cvtColor(screen,screen_gray,CV_RGB2GRAY);
+   if(screen.channels()>1)
+      cvtColor(screen,screen_gray,CV_RGB2GRAY);
+   else
+      screen_gray = screen;
    
    
    for (vector<ParagraphBlob>::iterator it = parablobs.begin(); 
