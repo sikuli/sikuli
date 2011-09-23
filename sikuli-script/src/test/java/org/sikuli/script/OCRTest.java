@@ -52,10 +52,12 @@ public class OCRTest
       BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
       List<OCRTruth> truth = readGroundTruth("test-res/OCR/" + suite + ".csv");
       int correct = 0, total = 0;
+      int margin = 4;
       for(OCRTruth t : truth){
-         BufferedImage text_img = img.getSubimage(t.x, t.y, t.w, t.h);
+         BufferedImage text_img = img.getSubimage(
+               t.x-margin, t.y-margin, t.w+margin*2+1, t.h+margin*2+1);
          Screen scr = createMockScreen(text_img);
-         String recognized_text = scr.text().trim();
+         String recognized_text = scr.text();
          if(t.text.equals(recognized_text))
             correct++;
          else{
@@ -109,7 +111,7 @@ public class OCRTest
    @Test
    public void testAllOCR() throws Exception {
 
-      float accuracy[] = {164/348f, 126/177f, 201/325f, 153/236f, 77/133f, 82/112f};
+      float accuracy[] = {202/348f, 109/177f, 221/325f, 132/236f, 80/133f, 57/112f};
       int i = 0, correct = 0, total = 0;
       Stat accum = new Stat();
       for(String suite : _suites){
