@@ -115,28 +115,6 @@ public class OCRTest
       return inter.getWidth()*inter.getHeight() / (t.w*t.h) ;
    }
 
-   /*
-   protected float testFindTextBlobs(String suite) throws IOException{
-      float MIN_OVERLAP_AREA = 0.95f;
-      BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
-      Set<OCRTruth> truth = new HashSet(readGroundTruth("test-res/OCR/" + suite + ".csv"));
-      Mat mat = OpenCV.convertBufferedImageToMat(img);
-      FindResults blobs = Vision.findTextBlobs(mat);
-      int correct = 0, total = 0;
-      for(int i=0;i<blobs.size();i++){
-         FindResult r = blobs.get(i);
-         for(OCRTruth t : truth){
-            if( overlap(r, t) >= MIN_OVERLAP_AREA ){
-               truth.remove(t);
-               correct++;
-               break;
-            }
-         }
-         total++;
-      }
-      return correct/(float)total;
-   }
-   */
 
    @Test
    public void testListText() throws Exception {
@@ -151,29 +129,10 @@ public class OCRTest
          i++;
       }
       float total_acc = correct / (float)total;
-      System.err.println("FindTextBlob coverage: " + (total_acc*100) + "%");
+      System.err.println("Region.listText coverage: " + (total_acc*100) + "%");
       assertTrue(total_acc >= 0.93);
    }
 
-
-   /*
-   @Test
-   public void testFindTextBlobs() throws Exception {
-      double coverages[] = {.935, .827, .955, 1, .923, 1};
-      int i = 0, correct = 0, total = 0;
-      for(String suite : _suites){
-         float coverage = testFindTextBlobs(suite);
-         System.err.println(suite + " coverage: " + coverage);
-         assertTrue(coverage >= (coverages[i] * 0.95)); // each case should not be worse than 95% of the expected coverage.
-         correct += coverage * _numCases[i];
-         total += _numCases[i];
-         i++;
-      }
-      float total_acc = correct / (float)total;
-      System.err.println("FindTextBlob coverage: " + (total_acc*100) + "%");
-      assertTrue(total_acc >= 0.93);
-   }
-   */
 
    @Ignore("run all tests at once instead.")
    @Test
