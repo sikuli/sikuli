@@ -69,7 +69,7 @@ public class TextRecognizer {
    public String recognize(BufferedImage img){
       if (_init_succeeded){
          Mat mat = OpenCV.convertBufferedImageToMat(img);
-         return Vision.recognize(mat);
+         return Vision.recognize(mat).trim();
       }else{
          return "";
       }
