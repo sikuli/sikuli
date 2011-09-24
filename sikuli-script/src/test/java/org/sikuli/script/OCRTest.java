@@ -77,6 +77,7 @@ public class OCRTest
       int found = 0, correct = 0;
       Screen scr = createMockScreen(img);
       List<Match> blobs = scr.listText();
+      int truth_size = truth.size();
 
       for(Match r : blobs){
          for(OCRTruth t : truth){
@@ -95,12 +96,12 @@ public class OCRTest
       //System.err.println(suite + " precision: " + correct + "/" + blobs.size());
       //System.err.println(suite + " recall: " + correct + "/" + truth.size());
       float precision = correct / (float)blobs.size();
-      float recall = correct / (float)truth.size();
-      float coverage = found/(float)truth.size();
+      float recall = correct / (float)truth_size;
+      float coverage = found/(float)truth_size;
       accum.true_pos += correct;
       accum.coverage_c += found;
       accum.precision_s += blobs.size();
-      accum.recall_s += truth.size();
+      accum.recall_s += truth_size;
       return new float[]{precision, recall, coverage};
    }
 
