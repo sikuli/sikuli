@@ -39,20 +39,16 @@ char* OCR::getBoxText(const unsigned char* imagedata,
    return boxtext;
 }
 
-/*
-static char* mytesseract_str(const unsigned char* imagedata,
+char* OCR::getText(const unsigned char* imagedata,
                          int width, int height, int bpp){
 
    int bytes_per_pixel = bpp / 8;
    int bytes_per_line = COMPUTE_IMAGE_XDIM(width,bpp);
-   char* text = TessBaseAPI::TesseractRect(imagedata,
-                                                bytes_per_pixel,
-                                                bytes_per_line, 0, 0,
-                                                width,
-                                                height);
+   _tessAPI.SetImage(imagedata, width, height, bytes_per_pixel, bytes_per_line);
+   _tessAPI.Recognize(0);
+   char *text = _tessAPI.GetUTF8Text();
    return text;
 }
-*/
 
 
 OCRRect::OCRRect(int x_, int y_, int width_, int height_)
@@ -483,7 +479,6 @@ float preprocess_for_ocr(const Mat& in_img, Mat& out_img){
    return scale;
 }
 
-/*
 string OCR::recognize_as_string(const Mat& blobImage){
    Mat gray, ocrImage;  // the image passed to tesseract
    OCR::init();
@@ -491,7 +486,7 @@ string OCR::recognize_as_string(const Mat& blobImage){
    preprocess_for_ocr(gray, ocrImage);
 
    //imshow("ocr", ocrImage); waitKey();
-   char* text = mytesseract_str((unsigned char*)ocrImage.data,
+   char* text = getText((unsigned char*)ocrImage.data,
                               ocrImage.cols,
                               ocrImage.rows,
                               8);
@@ -502,7 +497,6 @@ string OCR::recognize_as_string(const Mat& blobImage){
    }
    return "";
 }
-*/
 
 
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
@@ -861,7 +855,7 @@ OCR::recognize(const unsigned char* imagedata,
       string ch;
       int x0,y0,x1,y1, page;
       while (str >> ch >> x0 >> y0 >> x1 >> y1 >> page){    
-         //cout << ch << " " << x0 << " " << y0 << " " << x1 << " " << y1 << endl;  
+         cout << ch << " " << x0 << " " << y0 << " " << x1 << " " << y1 << endl;  
          
          //convert back to the screen coordinate (0,0) - (left,top)
          int h = y1 - y0;

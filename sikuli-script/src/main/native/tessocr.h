@@ -132,6 +132,7 @@ class OCR {
 public:
    static tesseract::TessBaseAPI _tessAPI;
    static char* getBoxText(const unsigned char* imagedata, int width, int height, int bpp);
+   static char* getText(const unsigned char* imagedata, int width, int height, int bpp);
    static vector<OCRChar> recognize(const unsigned char* imagedata,
                                     int width, int height, int bpp);
    
