@@ -7,7 +7,8 @@ FIND_PATH(OpenCV_DIR OpenCVConfig.cmake
    "c:/OpenCV2.1"
 )
 
-FIND_PATH(TESSERACT_DATA_DIR confsets 
+FIND_PATH(TESSERACT_DATA_DIR eng.traineddata
+   ${Tesseract_DIR}/share/tessdata
    "/opt/local/share/tessdata"
    "/usr/local/share/tessdata"
    "/usr/share/tesseract-ocr/tessdata"

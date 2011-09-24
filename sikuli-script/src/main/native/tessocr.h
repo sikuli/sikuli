@@ -17,6 +17,12 @@
 #include "opencv.hpp"
 #include "find-result.h"
 
+#ifdef WIN32
+   #include "baseapi.h"
+#else
+   #include "tesseract/baseapi.h"
+#endif
+
 
 using namespace std;
 
@@ -124,6 +130,8 @@ private:
 class OCR {
 
 public:
+   static tesseract::TessBaseAPI _tessAPI;
+   static char* getBoxText(const unsigned char* imagedata, int width, int height, int bpp);
    static vector<OCRChar> recognize(const unsigned char* imagedata,
                                     int width, int height, int bpp);
    

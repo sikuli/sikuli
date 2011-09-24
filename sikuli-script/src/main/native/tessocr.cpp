@@ -13,28 +13,33 @@
 
 using namespace std;
 using namespace sikuli;
+using namespace tesseract;
 
-#ifdef WIN32
-   #include "baseapi.h"
-#else
-   #include "tesseract/baseapi.h"
-#endif
+
+TessBaseAPI OCR::_tessAPI;
 
 #define COMPUTE_IMAGE_XDIM(xsize,bpp) ((bpp)>8 ? ((xsize)*(bpp)+7)/8 :((xsize)+8/(bpp)-1)/(8/(bpp)))
-static char* mytesseract(const unsigned char* imagedata,
+char* OCR::getBoxText(const unsigned char* imagedata,
                          int width, int height, int bpp){
    
    int bytes_per_pixel = bpp / 8;        
    int bytes_per_line = COMPUTE_IMAGE_XDIM(width,bpp);
+   _tessAPI.SetImage(imagedata, width, height, bytes_per_pixel, bytes_per_line);
+   _tessAPI.Recognize(0);
+   char *boxtext = _tessAPI.GetBoxText(0);
+
+   /*
    char* text = TessBaseAPI::TesseractRectBoxes(imagedata,
                                                 bytes_per_pixel,
                                                 bytes_per_line, 0, 0,
                                                 width,
                                                 height,
                                                 height);
-   return text;
+                                                */
+   return boxtext;
 }
 
+/*
 static char* mytesseract_str(const unsigned char* imagedata,
                          int width, int height, int bpp){
 
@@ -47,6 +52,7 @@ static char* mytesseract_str(const unsigned char* imagedata,
                                                 height);
    return text;
 }
+*/
 
 
 OCRRect::OCRRect(int x_, int y_, int width_, int height_)
@@ -113,7 +119,7 @@ OCRWord::clear() {
 
 bool
 OCRWord::isValidWord(){
-   return TessBaseAPI::IsValidWord(str().c_str());
+   return OCR::_tessAPI.IsValidWord(str().c_str());
 }
 
 void
@@ -383,7 +389,8 @@ OCR::init(const char* datapath){
    //we have to use setenv instead.
    setenv("TESSDATA_PREFIX", datapath, 1);
 #endif
-   int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
+   int ret = _tessAPI.Init(datapath, lang);
+   //int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    //cout << (ret==0?"done":"failed") << endl;
 
    isInitialized = true;   
@@ -476,6 +483,7 @@ float preprocess_for_ocr(const Mat& in_img, Mat& out_img){
    return scale;
 }
 
+/*
 string OCR::recognize_as_string(const Mat& blobImage){
    Mat gray, ocrImage;  // the image passed to tesseract
    OCR::init();
@@ -494,6 +502,7 @@ string OCR::recognize_as_string(const Mat& blobImage){
    }
    return "";
 }
+*/
 
 
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
@@ -842,16 +851,16 @@ OCR::recognize(const unsigned char* imagedata,
    
    vector<OCRChar> ret;
    
-   char* text = mytesseract(imagedata,width,height,bpp);
+   char* boxtext = getBoxText(imagedata,width,height,bpp);
    
    //Result ocr_result;   
    
-   if (text){
+   if (boxtext){
       
-      stringstream str(text);
+      stringstream str(boxtext);
       string ch;
-      int x0,y0,x1,y1;
-      while (str >> ch >> x0 >> y0 >> x1 >> y1){    
+      int x0,y0,x1,y1, page;
+      while (str >> ch >> x0 >> y0 >> x1 >> y1 >> page){    
          //cout << ch << " " << x0 << " " << y0 << " " << x1 << " " << y1 << endl;  
          
          //convert back to the screen coordinate (0,0) - (left,top)
@@ -863,7 +872,7 @@ OCR::recognize(const unsigned char* imagedata,
       };
       
       
-      delete text;
+      delete [] boxtext;
    }
    
    
