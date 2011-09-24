@@ -96,15 +96,16 @@ class OCRChar : public OCRRect{
    
 public:
    
-   OCRChar(char ch_, int x_, int y_, int width_, int height_)
+   OCRChar(const std::string& ch_, int x_, int y_, int width_, int height_)
    : ch(ch_), OCRRect(x_,y_,width_,height_){};
    
-   char ch;
+   std::string ch;
 };
 
 class OCRWord : public OCRRect {
    
 public:
+   float score;
    std::string getString();
    
    std::vector<OCRChar> getChars();

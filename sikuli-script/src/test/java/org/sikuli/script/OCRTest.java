@@ -61,7 +61,7 @@ public class OCRTest
          if(t.text.equals(recognized_text))
             correct++;
          else{
-            System.err.println("'" + recognized_text + "' expected: '" + t.text + "'");
+            System.err.println("got: '" + recognized_text + "', expected: '" + t.text + "'");
          }
          total++;
       }
@@ -87,7 +87,7 @@ public class OCRTest
                if(ocr.equals(t.text))
                   correct++;
                else
-                  System.out.println("expected: " + t.text + " got: " + ocr);
+                  System.out.println("got: ''" + ocr + "', expected: " + t.text);
                break;
             }
          }
@@ -165,7 +165,6 @@ public class OCRTest
          fail( failures + " assertion(s) failed.\n" + msg);
    }
 
-   @Ignore("FIXME")
    @Test
    public void testListText() throws Exception {
       double lb_precision[] = {.33, .28, .24, .38, .36, .46};

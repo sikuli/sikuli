@@ -51,15 +51,16 @@ class OCRChar : public OCRRect{
 public:
    
    OCRChar() : ch(0), OCRRect(0,0,0,0){};
-   OCRChar(char ch_, int x_, int y_, int width_, int height_)
+   OCRChar(const string& ch_, int x_, int y_, int width_, int height_)
    : ch(ch_), OCRRect(x_,y_,width_,height_){};
    
-   char ch;
+   string ch;
 };
 
 class OCRWord : public OCRRect {
 
 public:
+   float score;
    void add(const OCRChar& ocr_char);
    
    string str();
@@ -133,6 +134,9 @@ public:
    static tesseract::TessBaseAPI _tessAPI;
    static char* getBoxText(const unsigned char* imagedata, int width, int height, int bpp);
    static char* getText(const unsigned char* imagedata, int width, int height, int bpp);
+   static vector<OCRWord> recognize_to_words(const unsigned char* imagedata,
+                                             int width, int height, int bpp);
+
    static vector<OCRChar> recognize(const unsigned char* imagedata,
                                     int width, int height, int bpp);
    

@@ -82,7 +82,7 @@ public class TextRecognizer {
       for(int i=0;i<words.size();i++){
          OCRWord w = words.get(i);
          Match m = new Match(parent.x+w.getX(), parent.y+w.getY(), w.getWidth(), w.getHeight(), 
-                             1, parent.getScreen(), w.getString());
+                             w.getScore(), parent.getScreen(), w.getString());
          ret.add(m);
       }
       return ret;

@@ -239,18 +239,14 @@ Painter::drawOCRWord(Mat& ocr_result_image, OCRWord ocrword){
         it != chars.end(); ++it){
       
       OCRChar& ocrchar = *it;
-      char ch = ocrchar.ch;
-      
-      char buf[2];
-      buf[0] = ch;
-      buf[1] = 0;
+      string ch = ocrchar.ch;
       
 //      cout << buf;
       
      
       Point pt(ocrchar.x, ocrword.y + ocrword.height - 10);      
       
-      putText(ocr_result_image, buf, pt,  
+      putText(ocr_result_image, ch.c_str(), pt,  
                         FONT_HERSHEY_SIMPLEX, 0.4, Color::RED);
    //           FONT_HERSHEY_PLAIN, 0.8, Color::RED);
       
@@ -592,11 +588,6 @@ cvgui::run_ocr_on_lineblobs(vector<LineBlob>& ocr_input_lineblobs,
          ocrchar.x += lineblob.x;
          ocrchar.y += lineblob.y;
          
-         
-         char ch = ocrchar.ch;
-         if (ch < 0 || ch > '~') 
-            ch = '?';
-         ocrchar.ch = ch;
          
          
          if (iter > ocr_chars.begin()){

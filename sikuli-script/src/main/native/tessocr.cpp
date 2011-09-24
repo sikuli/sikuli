@@ -389,6 +389,7 @@ OCR::init(const char* datapath){
    //int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
    //cout << (ret==0?"done":"failed") << endl;
 
+   _tessAPI.SetAccuracyVSpeed(AVS_MOST_ACCURATE); // FIXME: doesn't work?
    isInitialized = true;   
 }
 
@@ -498,6 +499,39 @@ string OCR::recognize_as_string(const Mat& blobImage){
    return "";
 }
 
+vector<OCRWord> getWordsFromImage(const Mat& screen, const Blob& blob){
+ 
+   Mat blobImage(screen,blob);
+   
+   Mat ocrImage;  // the image passed to tesseract      
+   float scale = preprocess_for_ocr(blobImage, ocrImage);
+   
+
+   vector<OCRWord> ocr_words;
+   ocr_words = OCR::recognize_to_words((unsigned char*)ocrImage.data,
+                              ocrImage.cols,
+                              ocrImage.rows,
+                              8); 
+   
+   for (vector<OCRWord>::iterator iter = ocr_words.begin(); 
+        iter != ocr_words.end(); iter++){
+      OCRWord& word = *iter;
+      if(scale>1.f){
+         // scale back the coordinates in the OCR result
+         word.x = word.x/scale;
+         word.y = word.y/scale;
+         word.width = word.width/scale;
+         word.height = word.height/scale;
+      }
+      
+      word.x += blob.x;
+      word.y += blob.y;
+   }
+   
+   return ocr_words;
+}
+
+
 
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
  
@@ -526,11 +560,6 @@ vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
       ocrchar.x += blob.x;
       ocrchar.y += blob.y;
       
-      char ch = ocrchar.ch;
-      if (ch < 0 || ch > '~') 
-         ch = '?';
-      ocrchar.ch = ch;
-   
    }
    
    return ocr_chars;
@@ -773,12 +802,26 @@ OCRLine
 recognize_line(const cv::Mat& screen_gray, const LineBlob& lineblob){
    
    Blob b(lineblob);
+   
+   vector<OCRWord> words = getWordsFromImage(screen_gray, lineblob);
+   OCRLine line;
+   for(vector<OCRWord>::iterator it = words.begin(); it != words.end(); ++it)
+      line.addWord(*it);
+   return line;
+}
+
+/*
+OCRLine
+recognize_line(const cv::Mat& screen_gray, const LineBlob& lineblob){
+   
+   Blob b(lineblob);
    //Util::growRect(b, 2, 2, screen_gray);
    
    vector<OCRChar> ocrchars = run_ocr(screen_gray, b);
    OCRLine ocrline = linkOCRCharsToOCRLine(ocrchars);
    return ocrline;
 }
+*/
 
 
 OCRParagraph
@@ -860,7 +903,7 @@ OCR::recognize(const unsigned char* imagedata,
          //convert back to the screen coordinate (0,0) - (left,top)
          int h = y1 - y0;
          int w = x1 - x0;
-         OCRChar ocr_char(ch[0],x0,height-y1,w,h);
+         OCRChar ocr_char(ch,x0,height-y1,w,h);
          
          ret.push_back(ocr_char);
       };
@@ -875,4 +918,49 @@ OCR::recognize(const unsigned char* imagedata,
 }
 
 
+
+vector<OCRWord>
+OCR::recognize_to_words(const unsigned char* imagedata,
+                        int width, int height, int bpp){
+   
+   OCR::init();
+   
+   vector<OCRWord> ret;
+   vector<OCRChar> chars = OCR::recognize(imagedata, width, height, bpp);
+   char *text = _tessAPI.GetUTF8Text();
+   //cout << "chars: " << chars.size() << endl;
+   cout << "UTF8Text: [" << text << "]\n";
+   int *scores = _tessAPI.AllWordConfidences();
+   char *p_ch = text;
+   OCRWord word;
+   
+   for(vector<OCRChar>::iterator it = chars.begin(); it != chars.end(); ){
+      int len = it->ch.length();
+      if(*p_ch != ' ' && *p_ch != '\n'){
+         word.add(*it);
+         ++it;
+      }
+      else{
+         if(!word.empty()){
+            cout << "add " << word.str() << endl;
+            ret.push_back(word);
+            word.clear();
+         }
+      }
+      p_ch += len;
+   }
+   if(!word.empty())
+      ret.push_back(word);
+   int i;
+   for(i=0;i<ret.size() && scores[i] >= 0;i++){
+      ret[i].score = scores[i]/100.f;
+      cout << ret[i].str() << " " << ret[i].score << endl;
+   }
+   while(scores[i]>=0) i++;
+   if(ret.size() != i){
+      cout << "WARNING: num of words not consistent!\n";
+      cout << "#WORDS: " << ret.size() <<  " " << i << endl;
+   }
+   return ret;
+}
 
