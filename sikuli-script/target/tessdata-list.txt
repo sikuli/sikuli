@@ -1,3 +1,4 @@
+./chi_tra.traineddata
 ./eng.traineddata
 ./configs
 ./configs/ambigs.train

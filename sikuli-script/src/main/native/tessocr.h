@@ -129,8 +129,12 @@ private:
 };
 
 class OCR {
+private:
+   static std::string _datapath, _lang;
 
 public:
+   static void setParameter(std::string param, std::string value);
+
    static tesseract::TessBaseAPI _tessAPI;
    static char* getBoxText(const unsigned char* imagedata, int width, int height, int bpp);
    static char* getText(const unsigned char* imagedata, int width, int height, int bpp);

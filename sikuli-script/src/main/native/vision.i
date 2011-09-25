@@ -5,6 +5,7 @@
 #include <iostream>
 #include "opencv.hpp"
 #include "cvgui.h"
+#include "tessocr.h"
 %}
 
 %include "std_vector.i"
@@ -238,7 +239,14 @@ namespace sikuli {
    };
    void setDebug(DebugCategories cat, int level);
 
+
+
 }
+
+class OCR {
+public:
+   static void setParameter(std::string param, std::string value);
+};
 
 
 namespace cv{

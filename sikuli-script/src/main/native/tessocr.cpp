@@ -361,12 +361,32 @@ unsigned char* x2(const unsigned char* imagedata,
    
 }
 
-bool 
-OCR::isInitialized = false;
+bool OCR::isInitialized = false;
+string OCR::_datapath = "tessdata";
+string OCR::_lang = "eng";
+
+void OCR::setParameter(std::string param, std::string value){
+   bool reinit = false;
+   if(param == "datapath"){
+      _datapath = value;
+      reinit = true;
+   }
+   else if(param == "lang"){
+      _lang = value;
+      reinit = true;
+   }
+   else
+      _tessAPI.SetVariable(param.c_str(), value.c_str());
+   if(reinit){
+      isInitialized = false;
+      _tessAPI.End();
+   }
+
+}
 
 void
 OCR::init(){
-   init("tessdata");
+   init(_datapath.c_str());
 }
 
 void
@@ -374,9 +394,8 @@ OCR::init(const char* datapath){
    if (isInitialized)
       return;
    
-   char outputbase[] = "output";
-   char lang[] = "eng";
-   bool numeric_mode = false;
+   _datapath = datapath;
+
 #ifdef WIN32
    string env_datapath = string("TESSDATA_PREFIX=") + string(datapath);
    putenv(const_cast<char*>(env_datapath.c_str()));
@@ -385,8 +404,7 @@ OCR::init(const char* datapath){
    //we have to use setenv instead.
    setenv("TESSDATA_PREFIX", datapath, 1);
 #endif
-   int ret = _tessAPI.Init(datapath, lang);
-   //int ret = TessBaseAPI::InitWithLanguage(datapath,outputbase,lang,NULL,numeric_mode,0,0);
+   int ret = _tessAPI.Init(datapath, _lang.c_str());
    //cout << (ret==0?"done":"failed") << endl;
 
    _tessAPI.SetAccuracyVSpeed(AVS_MOST_ACCURATE); // FIXME: doesn't work?
