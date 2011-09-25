@@ -116,7 +116,6 @@ ENDIF()
 
 SET(TESSDATA_IN_JAR_DIR "${JAR_DIR}/tessdata")
 SET(TESSDATA_LIST_TXT "${BINARY_DIR}/tessdata-list.txt")
-IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
    add_custom_target( ${JAR_FILE}.tessdata-in-jar
       COMMAND ${CMAKE_COMMAND} -E make_directory ${TESSDATA_IN_JAR_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${TESSERACT_DATA_DIR} ${TESSDATA_IN_JAR_DIR}
@@ -124,7 +123,6 @@ IF(NOT EXISTS ${TESSDATA_IN_JAR_DIR}/filelist.txt)
       #      COMMAND cd ${TESSDATA_IN_JAR_DIR} && (find . -type f > filelist.txt)
       COMMENT "Copying Tesseract Data"
    )
-ENDIF()
 
 add_custom_target(doc
    javadoc -public -docencoding utf-8 -windowtitle "Javadoc of Sikuli Script" -sourcepath ${JAVA_SRC_DIR}
