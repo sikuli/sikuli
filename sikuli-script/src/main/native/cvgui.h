@@ -144,6 +144,7 @@ class Painter {
 
 public:
    
+   static void drawRect(Mat& image, OCRRect r, Scalar color);
    static void drawRect(Mat& image, Rect r, Scalar color);
    static void drawRects(Mat& image, vector<Rect>& rects, Scalar color);
    static void drawRects(Mat& image, vector<Rect>& rects);

@@ -107,6 +107,7 @@ public class OCRTest
       }
       //System.err.println(suite + " precision: " + correct + "/" + blobs.size());
       //System.err.println(suite + " recall: " + correct + "/" + truth.size());
+      System.err.println(suite + " blobs: " + blobs.size() + ", truth: " + truth_size + ", found: " + found);
       float precision = correct / (float)blobs.size();
       float recall = correct / (float)truth_size;
       float coverage = found/(float)truth_size;

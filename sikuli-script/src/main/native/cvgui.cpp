@@ -121,6 +121,14 @@ Painter::drawRect(Mat& image, Rect r, Scalar color){
 }
 
 void 
+Painter::drawRect(Mat& image, OCRRect r, Scalar color){
+   rectangle(image, 
+             Point(r.x, r.y),
+             Point(r.x + r.width, r.y + r.height),
+             color);   
+}
+
+void 
 Painter::drawRects(Mat& image, vector<Rect>& rects, Scalar color){
    for (vector<Rect>::iterator r = rects.begin();
         r != rects.end(); ++r){
@@ -232,26 +240,13 @@ Painter::drawParagraphBlobs(Mat& image, vector<ParagraphBlob> blobs, Scalar colo
 void 
 Painter::drawOCRWord(Mat& ocr_result_image, OCRWord ocrword){
    
-//   cout << ocrword.x << " " << ocrword.y <<  " " << ocrword.width <<  " " << ocrword.height << ":";
-   
-   vector<OCRChar> chars = ocrword.getChars();
-   for (vector<OCRChar>::iterator it = chars.begin(); 
-        it != chars.end(); ++it){
-      
-      OCRChar& ocrchar = *it;
-      string ch = ocrchar.ch;
-      
-//      cout << buf;
-      
-     
-      Point pt(ocrchar.x, ocrword.y + ocrword.height - 10);      
-      
-      putText(ocr_result_image, ch.c_str(), pt,  
-                        FONT_HERSHEY_SIMPLEX, 0.4, Color::RED);
-   //           FONT_HERSHEY_PLAIN, 0.8, Color::RED);
-      
-   }
-//   cout << "|" << ocrword.getString() << endl;
+   cout << ocrword.x << " " << ocrword.y <<  " " << ocrword.width <<  " " << ocrword.height << ": ";
+   cout << ocrword.getString() << endl;
+  
+   drawRect(ocr_result_image, ocrword, Scalar(255,255,0));
+   Point pt(ocrword.x, ocrword.y + ocrword.height - 10);      
+   putText(ocr_result_image, ocrword.getString(), pt,  
+     FONT_HERSHEY_SIMPLEX, 0.4, Color::RED);
 
 }
 
@@ -1298,6 +1293,9 @@ cvgui::computeUnitBlobs(const Mat& screen, Mat& output){
    
    VLOG("NonEdgeRemoved", gray);
    
+   //GaussianBlur(gray, gray, Size(3, 3), 3);
+   //VLOG("Blurred", gray); 
+
    output = gray;
 }
 
@@ -1405,7 +1403,7 @@ cvgui::getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& output_parabl
    output_parablobs = parablobs;
    
    
- //  Mat screen_dark = screen * 0.2;
+//  Mat screen_dark = screen * 0.2;
 //   Mat ocr_result_image = screen_dark;
 //   
 //   
