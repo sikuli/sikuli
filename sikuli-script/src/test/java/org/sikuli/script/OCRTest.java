@@ -67,7 +67,7 @@ public class OCRTest
          }
          total++;
       }
-      System.err.println(suite + ": " + correct + "/" + total);
+      System.err.println(suite + ": " + correct + "/" + total + " " + percent(correct/(float)total));
       accum.true_pos += correct;
       accum.recall_s += total;
       return correct/(float)total;
@@ -131,14 +131,14 @@ public class OCRTest
       for(String suite : _suites){
          float acc = testOcrSuite(suite, accum);
          // each case should not be worse than 95% of the expected accuracy.
-         delayAssertTrue(suite + " accuracy too low: " + acc + 
-                         " expected: " + accuracy[i] * 0.95,
+         delayAssertTrue(suite + " accuracy too low: " + percent(acc) + 
+                         " expected: " + percent(accuracy[i] * 0.95),
                          acc >= (accuracy[i] * 0.95)); 
          i++;
       }
       float total_acc = accum.true_pos / (float)accum.recall_s;
-      System.err.println("OCR Accuracy: " + (total_acc*100) + "%");
-      delayAssertTrue("OCR avg accuracy too low: " + total_acc, 
+      System.err.println("OCR Accuracy: " + percent(total_acc));
+      delayAssertTrue("OCR avg accuracy too low: " + percent(total_acc), 
                       total_acc >= 0.6);
       checkDelayAssertion();
    }
@@ -178,6 +178,10 @@ public class OCRTest
          fail( failures + " assertion(s) failed.\n" + msg);
    }
 
+   private String percent(double d){
+      return String.format("%.2f%%", d*100);
+   }
+
    @Test
    public void testListText() throws Exception {
       double lb_precision[] = {.43, .36, .31, .45, .36, .63};
@@ -188,31 +192,30 @@ public class OCRTest
       for(String suite : _suites){
          Float recall = 0.f, precision = 0.f;
          float[] prc = testListTextOnSuite(suite, accum);
-         System.err.println(suite + " precision: " + prc[0] +
-                            ", recall: " + prc[1] +
-                            ", coverage: " + prc[2]);
-         delayAssertTrue(suite + " precision too low: " + prc[0] + 
-                         " expected: " + lb_precision[i] * 0.95,
+         System.err.println(String.format("%-15s precision: %s, recall: %s, coverage: %s", 
+                            suite, percent(prc[0]), percent(prc[1]), percent(prc[2])));
+         delayAssertTrue(String.format("%15s precision too low %s, expected %s", 
+                         suite, percent(prc[0]), percent(lb_precision[i] * 0.95)),
                          prc[0] >= (lb_precision[i] * 0.95)); 
-         delayAssertTrue(suite + " recall too low: " + prc[1] + 
-                         " expected: " + lb_recall[i] * 0.95,
+         delayAssertTrue(String.format("%15s recall too low %s, expected %s", 
+                         suite, percent(prc[1]), percent(lb_recall[i] * 0.95)),
                          prc[1] >= (lb_recall[i] * 0.95)); 
-         delayAssertTrue(suite + " coverage too low: " + prc[2] + 
-                         " expected: " + lb_coverage[i] * 0.95,
+         delayAssertTrue(String.format("%15s coverage too low %s, expected %s", 
+                         suite, percent(prc[2]), percent(lb_coverage[i] * 0.95)),
                          prc[2] >= (lb_coverage[i] * 0.95)); 
          i++;
       }
       float total_coverage = accum.coverage_c / (float)accum.recall_s;
       float total_precision = accum.true_pos/(float)accum.precision_s;
       float total_recall = accum.true_pos/(float)accum.recall_s;
-      System.err.println("Region.listText precision: " + (total_precision*100) + "%");
-      System.err.println("Region.listText recall: " + (total_recall*100) + "%");
-      System.err.println("Region.listText coverage: " + (total_coverage*100) + "%");
-      delayAssertTrue("avg precision too low: " + total_precision, 
+      System.err.println("Region.listText precision: " + percent(total_precision));
+      System.err.println("Region.listText recall:    " + percent(total_recall));
+      System.err.println("Region.listText coverage:  " + percent(total_coverage));
+      delayAssertTrue("avg precision too low: " + percent(total_precision), 
                       total_precision >= 0.41);
-      delayAssertTrue("avg recall too low: " + total_recall, 
+      delayAssertTrue("avg recall too low: " + percent(total_recall), 
                       total_recall >= 0.48);
-      delayAssertTrue("avg coverage too low: " + total_coverage, 
+      delayAssertTrue("avg coverage too low: " + percent(total_coverage), 
                       total_coverage >= 0.55);
       checkDelayAssertion();
    }
