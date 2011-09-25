@@ -888,9 +888,9 @@ OCR::recognize(cv::Mat screen){
       
    }
    
-   Mat dark = screen * 0.2;
-   Painter::drawOCRText(dark, ocrtext);
-   VLOG("OCR-result", dark);
+   //Mat dark = screen * 0.2;
+   //Painter::drawOCRText(dark, ocrtext);
+   //VLOG("OCR-result", dark);
    
    
    return ocrtext; 

@@ -11,11 +11,6 @@
 #include <sys/stat.h> 
 
 
-#ifdef ENABLE_VISUAL_LOG
-   const bool enable_visual_log = true;
-#else
-   const bool enable_visual_log = false;
-#endif 
 using namespace sikuli;
 
 std::map<std::string, float> Vision::_params;

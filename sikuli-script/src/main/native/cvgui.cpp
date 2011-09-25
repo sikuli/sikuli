@@ -1389,8 +1389,8 @@ cvgui::getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& output_parabl
    cvgui::mergeLineBlobs(filtered_lineblobs, merged_lineblobs);
    Painter::drawLineBlobs(result_merged_blobs, merged_lineblobs, Scalar(255,255,0));
    VLOG("lineblobs-merged", result_merged_blobs);
-   
-   
+
+
    vector<ParagraphBlob> parablobs;
    cvgui::linkLineBlobsIntoPagagraphBlobs(merged_lineblobs, parablobs);
    

@@ -12,6 +12,12 @@
 
 using namespace cv;
 
+#ifdef ENABLE_VISUAL_LOG
+   const bool enable_visual_log = true;
+#else
+   const bool enable_visual_log = false;
+#endif 
+
 class VisualLogger{
    
 private:
@@ -45,7 +51,8 @@ public:
    }
    
    static void log(const char* name, const Mat& image){
-      if (!enabled)
+      std::cout << "vlog " << enabled << " " << name << std::endl;
+      if (!enable_visual_log && !enabled)
          return;
       
       char buf[200];
