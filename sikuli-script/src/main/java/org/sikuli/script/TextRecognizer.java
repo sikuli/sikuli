@@ -102,5 +102,19 @@ public class TextRecognizer {
          return "";
       }
    }
+
+   public String recognizeWord(ScreenImage simg){
+      BufferedImage img = simg.getImage();
+      return recognizeWord(img);
+   }
+
+   public String recognizeWord(BufferedImage img){
+      if (_init_succeeded){
+         Mat mat = OpenCV.convertBufferedImageToMat(img);
+         return Vision.recognizeWord(mat).trim();
+      }else{
+         return "";
+      }
+   }
 }
 

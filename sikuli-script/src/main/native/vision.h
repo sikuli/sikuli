@@ -101,6 +101,7 @@ public:
    static std::vector<FindResult> findTextBlobs(const cv::Mat& image);
       
    static std::string recognize(cv::Mat image);
+   static std::string recognizeWord(cv::Mat image);
 
    //helper functions
    static cv::Mat createMat(int _rows, int _cols, unsigned char* _data);

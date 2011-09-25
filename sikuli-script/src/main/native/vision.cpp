@@ -398,11 +398,13 @@ Vision::findChanges(FindInput input){
 
 
 
+string
+Vision::recognizeWord(Mat image){
+   return OCR::recognize_as_string(image);
+}
 
 string
 Vision::recognize(Mat image){
-   //return OCR::recognize_as_string(image);
-   // old method
    OCRText text = OCR::recognize(image);
    return text.getString();
 }

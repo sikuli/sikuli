@@ -52,12 +52,14 @@ public class OCRTest
       BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
       List<OCRTruth> truth = readGroundTruth("test-res/OCR/" + suite + ".csv");
       int correct = 0, total = 0;
-      int margin = 4;
+      int margin = 1;
+      TextRecognizer tr = TextRecognizer.getInstance();
       for(OCRTruth t : truth){
          BufferedImage text_img = img.getSubimage(
                t.x-margin, t.y-margin, t.w+margin*2+1, t.h+margin*2+1);
-         Screen scr = createMockScreen(text_img);
-         String recognized_text = scr.text();
+         String recognized_text = tr.recognizeWord(text_img);
+         //Screen scr = createMockScreen(text_img);
+         //String recognized_text = scr.text(); // Region.text() uses listText, not good for single word images.
          if(t.text.equals(recognized_text))
             correct++;
          else{
