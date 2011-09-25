@@ -122,7 +122,7 @@ public class OCRTest
       "Linux-XFCE11", "Mac-desktop", "Mac-desktop2",
       "web-twitter",  "win-7-desktop", "win-vista-black"};
 
-   @Test
+   //@Test
    public void testAllOCR() throws Exception {
 
       float accuracy[] = {202/348f, 109/177f, 221/325f, 132/236f, 80/133f, 57/112f};

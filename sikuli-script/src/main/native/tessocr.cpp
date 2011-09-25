@@ -916,7 +916,7 @@ OCR::recognize(const unsigned char* imagedata,
       string ch;
       int x0,y0,x1,y1, page;
       while (str >> ch >> x0 >> y0 >> x1 >> y1 >> page){    
-         cout << ch << " " << x0 << " " << y0 << " " << x1 << " " << y1 << endl;  
+         //cout << ch << " " << x0 << " " << y0 << " " << x1 << " " << y1 << endl;  
          
          //convert back to the screen coordinate (0,0) - (left,top)
          int h = y1 - y0;
@@ -947,7 +947,7 @@ OCR::recognize_to_words(const unsigned char* imagedata,
    vector<OCRChar> chars = OCR::recognize(imagedata, width, height, bpp);
    char *text = _tessAPI.GetUTF8Text();
    //cout << "chars: " << chars.size() << endl;
-   cout << "UTF8Text: [" << text << "]\n";
+   //cout << "UTF8Text: [" << text << "]\n";
    int *scores = _tessAPI.AllWordConfidences();
    char *p_ch = text;
    OCRWord word;
@@ -976,8 +976,8 @@ OCR::recognize_to_words(const unsigned char* imagedata,
    }
    while(scores[i]>=0) i++;
    if(ret.size() != i){
-      cout << "WARNING: num of words not consistent!\n";
-      cout << "#WORDS: " << ret.size() <<  " " << i << endl;
+      cerr << "WARNING: num of words not consistent!: "
+           << "#WORDS: " << ret.size() <<  " " << i << endl;
    }
    return ret;
 }

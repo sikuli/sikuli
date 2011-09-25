@@ -25,12 +25,11 @@ private:
    static int image_i;
    static int step_i;
    static char* prefix;
-   static bool enabled;
    
 public:
       
    static void newImage(){
-      if (!enabled)
+      if (!enable_visual_log)
          return;
       
       image_i++;
@@ -38,7 +37,7 @@ public:
    }
    
    static void next(){
-      if (!enabled)
+      if (!enable_visual_log)
          return;
       
       image_i++;
@@ -47,12 +46,12 @@ public:
    
    
    static void setEnabled(bool enabled_){
-      enabled = enabled_;
+      //enabled = enabled_;
    }
    
    static void log(const char* name, const Mat& image){
-      std::cout << "vlog " << enabled << " " << name << std::endl;
-      if (!enable_visual_log && !enabled)
+      std::cout << "vlog " << enable_visual_log << " " << name << std::endl;
+      if (!enable_visual_log)
          return;
       
       char buf[200];

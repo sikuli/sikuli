@@ -70,7 +70,7 @@ static bool sort_blob_by_y(Blob a, Blob b){
 
 int VisualLogger::image_i = 0;
 int VisualLogger::step_i = 0;
-bool VisualLogger::enabled = false;
+//bool VisualLogger::enabled = false;
 char* VisualLogger::prefix = 0;
 
 //#define VLOG(x,y) 
@@ -1306,6 +1306,7 @@ cvgui::computeUnitBlobs(const Mat& screen, Mat& output){
 void 
 cvgui::getParagraphBlobs(const Mat& screen, vector<ParagraphBlob>& output_parablobs){
       
+   VisualLogger::newImage();
    Mat screen_gray;
    cvtColor(screen,screen_gray,CV_RGB2GRAY);
    
