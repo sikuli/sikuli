@@ -73,24 +73,34 @@ public class OCRTest
       return correct/(float)total;
    }
 
+   private List<Match> filter(List<Match> matches, double min_accept_score){
+      List<Match> ret = new LinkedList<Match>();
+      for(Match m : matches)
+         if(m.score >= min_accept_score)
+            ret.add(m);
+      return ret;
+   }
+
    protected float[] testListTextOnSuite(String suite, Stat accum) throws IOException{
       BufferedImage img = ImageIO.read(new File("test-res/OCR/" + suite + ".png"));
       List<OCRTruth> truth = readGroundTruth("test-res/OCR/" + suite + ".csv");
+      double MIN_ACCEPT_SCORE = 0.7;
       int found = 0, correct = 0;
       Screen scr = createMockScreen(img);
       List<Match> blobs = scr.listText();
+      //blobs = filter(blobs, MIN_ACCEPT_SCORE);
       int truth_size = truth.size();
 
-      for(Match r : blobs){
+      for(Match m : blobs){
          for(OCRTruth t : truth){
-            if( overlap(r, t) ){
+            if( overlap(m, t) ){
                truth.remove(t);
                found++;
-               String ocr = r.text();
+               String ocr = m.text();
                if(ocr.equals(t.text))
                   correct++;
                else
-                  System.out.println("got: ''" + ocr + "', expected: " + t.text);
+                  System.out.println("got: '" + ocr + "', expected: " + t.text);
                break;
             }
          }
@@ -170,9 +180,9 @@ public class OCRTest
 
    @Test
    public void testListText() throws Exception {
-      double lb_precision[] = {.33, .28, .24, .38, .36, .46};
-      double lb_recall[] = {.65, .61, .39, .68, .73, .61};
-      double lb_coverage[] = {.81, .80, .56, .82, .84, .67};
+      double lb_precision[] = {.43, .36, .31, .45, .36, .63};
+      double lb_recall[] = {.56, .46, .34, .47, .54, .57};
+      double lb_coverage[] = {.67, .57, .39, .52, .66, .58};
       int i = 0;
       Stat accum = new Stat();
       for(String suite : _suites){
@@ -199,11 +209,11 @@ public class OCRTest
       System.err.println("Region.listText recall: " + (total_recall*100) + "%");
       System.err.println("Region.listText coverage: " + (total_coverage*100) + "%");
       delayAssertTrue("avg precision too low: " + total_precision, 
-                      total_precision >= 0.34);
+                      total_precision >= 0.41);
       delayAssertTrue("avg recall too low: " + total_recall, 
-                      total_recall >= 0.88);
+                      total_recall >= 0.48);
       delayAssertTrue("avg coverage too low: " + total_coverage, 
-                      total_coverage >= 0.95);
+                      total_coverage >= 0.55);
       checkDelayAssertion();
    }
 
