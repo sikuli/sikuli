@@ -960,7 +960,7 @@ OCR::recognize_to_words(const unsigned char* imagedata,
       }
       else{
          if(!word.empty()){
-            cout << "add " << word.str() << endl;
+            //cout << "add " << word.str() << endl;
             ret.push_back(word);
             word.clear();
          }
@@ -972,7 +972,7 @@ OCR::recognize_to_words(const unsigned char* imagedata,
    int i;
    for(i=0;i<ret.size() && scores[i] >= 0;i++){
       ret[i].score = scores[i]/100.f;
-      cout << ret[i].str() << " " << ret[i].score << endl;
+      //cout << ret[i].str() << " " << ret[i].score << endl;
    }
    while(scores[i]>=0) i++;
    if(ret.size() != i){
