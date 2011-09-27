@@ -35,6 +35,10 @@ public class SikuliScript {
    public String input(String msg){
       return (String)JOptionPane.showInputDialog(msg);
    }
+
+   public String input(String msg, String preset){
+      return (String)JOptionPane.showInputDialog(msg, preset);
+   }
    
    public int switchApp(String appName){
       if(App.focus(appName) != null)
