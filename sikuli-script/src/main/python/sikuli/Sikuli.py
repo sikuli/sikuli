@@ -109,10 +109,11 @@ def setShowActions(flag):
 ##
 # Shows a question-message dialog requesting input from the user.
 # @param msg The message to display.
+# @param default The preset text of the input field.
 # @return The user's input string.
 #
-def input(msg=""):
-   return _si.input(msg)
+def input(msg="", default=""):
+   return _si.input(msg, default)
 
 def capture(*args):
    scr = UnionScreen()
