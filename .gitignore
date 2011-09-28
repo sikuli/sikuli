@@ -8,3 +8,4 @@ BUILD/
 sikuli-script/src/main/native/org_sikuli_script_MacUtil.h
 sikuli-script/src/main/native/org_sikuli_script_VDictProxy.h
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Frameworks/*
+.DS_Store
