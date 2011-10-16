@@ -690,7 +690,7 @@ Interacting with the User
 
 	.. image:: popup.png
 
-.. py:function:: input([text])
+.. py:function:: input([text], [default])
 
 	Display a dialog box with an input field, a Cancel button, and an OK button. The
 	optional *text* can be displayed as a caption. The script then waits for the
@@ -698,7 +698,9 @@ Interacting with the User
 	
 	:param text: optional text to be displayed as message
 	
-	:return: the text, the user has entered, when clicked **OK**
+	:param default: optional preset text for the input field (``new in later then X-1.0rc3``)
+	
+	:return: the text, contained in the input field, when the user clicked **OK**
 
 		**None**, if the user pressed the **Cancel** button
 
@@ -706,12 +708,17 @@ Interacting with the User
 
 		name = input("Please enter your name to log in:")
 
+		name = input("Please enter your name to log in:", "anonymous") # a preset input text
+		
 	.. image:: input.png
 	
 	A dialog box that looks like above will appear to allow the user to
 	interactively enter some text. This text is then assigned to the variable
 	*name*, which can be used in other parts of the script, such as ``paste(name)``
 	to paste the text to a login box.
+	
+	When using the parameter ``default``, the text input field will be pre-populated with the 
+	given text, so the user might just click OK/Cancel or edit the content of the input field.
 
 
 Listening to Global Hotkeys
