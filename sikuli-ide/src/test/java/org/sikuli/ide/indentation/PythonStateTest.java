@@ -386,6 +386,21 @@ public class PythonStateTest extends TestCase {
       assertEquals("print 0\n", state.getLastPhysicalLine());
    }
 
+   public void testIsPhysicalLineCompleteEscapedCharNoEOL(){
+      state.update("print \\0");
+      assertFalse(state.isPhysicalLineComplete());
+   }
+
+   public void testIsPhysicalLineCompleteEscapedCharEOL(){
+      state.update("print \\0\n");
+      assertTrue(state.isPhysicalLineComplete());
+   }
+
+   public void testGetLastPhysicalLineEscapedChar(){
+      state.update("print \\0\n");
+      assertEquals("print \\0\n", state.getLastPhysicalLine());
+   }
+
    public void testIsPhysicalLineCompleteLine2Incomplete(){
       state.update("print\n");
       assertTrue(state.isPhysicalLineComplete());
@@ -648,6 +663,138 @@ public class PythonStateTest extends TestCase {
       state.update("print\\\n");
       state.update(" 0\n");
       assertFalse(state.isExplicitLineJoining());
+   }
+
+   public void testGetLastLogicalLineStructureEmptyLine(){
+      state.update("\n");
+      assertEquals("", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrint(){
+      state.update("print\n");
+      assertEquals("print", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrint0(){
+      state.update("print 0\n");
+      assertEquals("print 0", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintSingleQuotedString(){
+      state.update("print '0'\n");
+      assertEquals("print ''", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintDoubleQuotedString(){
+      state.update("print \"0\"\n");
+      assertEquals("print \"\"", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintSingleQuotedLongString(){
+      state.update("print '''0'''\n");
+      assertEquals("print ''''''", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintDoubleQuotedLongString(){
+      state.update("print \"\"\"0\"\"\"\n");
+      assertEquals("print \"\"\"\"\"\"", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureMultilineLongString(){
+      state.update("\"\"\"first line\n");
+      state.update("   second line\n");
+      state.update("   end of string\"\"\"\n");
+      assertEquals("\"\"\"\"\"\"", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintParentheses(){
+      state.update("print (0, {'a' : 0}, \"a\", x[0], 'a', f(0), '''a''', \"\"\"a\"\"\")\n");
+      assertEquals("print ()", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintSquareBrackets(){
+      state.update("print a[f('a')+'a'+\"a\"+{'a':0}+x[0]+'''a'''+\"\"\"a\"\"\"]\n");
+      assertEquals("print a[]", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintBraces(){
+      state.update("print {'a':x[0],\"a\":f(0),'''a''':{'a':0},\"\"\"a\"\"\":0}\n");
+      assertEquals("print {}", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureComment(){
+      state.update("print 0 # comment\n");
+      assertEquals("print 0 #", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureEscapedChar(){
+      state.update("print \\x\n");
+      assertEquals("print \\x", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureExplicitLineJoiningPrint(){
+      state.update("print \\\n");
+      state.update("0\n");
+      assertEquals("print 0", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureExplicitLineJoiningSingleQuotedString(){
+      state.update("print '0\\\n");
+      state.update("1'\n");
+      assertEquals("print ''", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureExplicitLineJoiningDoubleQuotedString(){
+      state.update("print \"0\\\n");
+      state.update("1\"\n");
+      assertEquals("print \"\"", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureImplicitLineJoiningParentheses(){
+      state.update("f(a,\n");
+      state.update("  'b',\n");
+      state.update("  x[0])\n");
+      assertEquals("f()", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureImplicitLineJoiningSquareBrackets(){
+      state.update("x = a[\n");
+      state.update("      b[1:5],\n");
+      state.update("      0]\n");
+      assertEquals("x = a[]", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureImplicitLineJoiningBraces(){
+      state.update("x = {\n");
+      state.update("  'a' : 0,\n");
+      state.update("  'b' : 1,\n");
+      state.update("}\n");
+      assertEquals("x = {}", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureClass(){
+      state.update("class C(D):\n");
+      assertEquals("class C():", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureAssignmentFunctionCall(){
+      state.update("x = lookup(index['foo'], 0) + \"base\"\n");
+      assertEquals("x = lookup() + \"\"", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureIfPassIndented(){
+      state.update("    if (x == 0): pass\n");
+      assertEquals("    if (): pass", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructureExcept(){
+      state.update("except (AE, BE), (e, m):\n");
+      assertEquals("except (), ():", state.getLastLogicalLineStructure());
+   }
+
+   public void testGetLastLogicalLineStructurePrintFormat(){
+      state.update("print '%s, %d\\n' % ('foo', f(x, 3))\n");
+      assertEquals("print '' % ()", state.getLastLogicalLineStructure());
    }
 
    public void testCodeFragment(){
@@ -972,6 +1119,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
@@ -987,6 +1135,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
@@ -1002,6 +1151,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
@@ -1017,6 +1167,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
@@ -1032,6 +1183,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
@@ -1047,6 +1199,7 @@ public class PythonStateTest extends TestCase {
       assertFalse(state.isExplicitLineJoining());
       assertEquals("", state.getLastPhysicalLine());
       assertEquals("", state.getLastLogicalLine());
+      assertEquals("", state.getLastLogicalLineStructure());
       assertEquals(0, state.getPhysicalLineNumber());
       assertEquals(0, state.getLogicalLineNumber());
       assertEquals(0, state.getLogicalLinePhysicalStartLineNumber());
