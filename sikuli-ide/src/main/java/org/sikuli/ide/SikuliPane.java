@@ -12,6 +12,8 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import javax.swing.*;
@@ -75,6 +77,16 @@ public class SikuliPane extends JTextPane implements KeyListener,
       updateDocumentListeners();
 
       _indentationLogic = new PythonIndentation();
+      _indentationLogic.setTabWidth(pref.getTabWidth());
+      pref.addPreferenceChangeListener(new PreferenceChangeListener(){
+
+         @Override
+         public void preferenceChange(PreferenceChangeEvent event){
+            // TODO: define constants for preference keys in UserPreferences
+            if( event.getKey().equals("TAB_WIDTH") ){
+               _indentationLogic.setTabWidth(Integer.parseInt(event.getNewValue()));
+            }
+         }});
    }
 
    private void updateDocumentListeners(){
