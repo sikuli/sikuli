@@ -35,7 +35,7 @@ Command Line Options
    ::
 
       usage: 
-      Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>] [-s] [-t <sikuli-test-case>]
+      Sikuli-IDE [--args <arguments>] [-h] [-r <sikuli-file>] [-s] [-t <sikuli-file>]
        --args <arguments>             specify the arguments passed to Jython's sys.argv
        -h,--help                      print this help message
        -r,--run <sikuli-file>         run .sikuli or .skl file
@@ -50,9 +50,9 @@ Command Line Options
 
    print runtime errors to stderr instead of popping up a message box
 
-.. option::  -t,--test <sikuli-test-case>   
+.. option::  -t,--test <sikuli-file>   
 
-   run .sikuli as a unit test case with junit's text UI runner
+   run a .sikuli (.skl not possible) as a unit test with junit's text UI runner (A script that can also be run in IDE's Unit Test View).
 
 
                
