@@ -40,7 +40,7 @@ Command Line Options
        -h,--help                      print this help message
        -r,--run <sikuli-file>         run .sikuli or .skl file
        -s,--stderr                    print runtime errors to stderr instead of popping up a message box
-       -t,--test <sikuli-test-case>   run .sikuli as a unit test case with junit's text UI runner
+       -t,--test <sikuli-file>   run .sikuli as a unit test case with junit's text UI runner
 
 .. option::  -r,--run <sikuli-file>         
 
