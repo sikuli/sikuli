@@ -168,13 +168,15 @@ class HighlightLabelView extends LabelView {
    static {
       UserPreferences.getInstance().addPreferenceChangeListener(
             new PreferenceChangeListener(){
-
                @Override
                public void preferenceChange(PreferenceChangeEvent event){
+                  //FIXME: need to reposition images 
                   if( event.getKey().equals("TAB_WIDTH") ){
                      tabStr = nSpaces(Integer.parseInt(event.getNewValue()));
                   }
-               }});
+               }
+            }
+      );
    }
 
    private static String nSpaces(int n){
