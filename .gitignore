@@ -8,3 +8,15 @@ BUILD/
 sikuli-script/src/main/native/org_sikuli_script_MacUtil.h
 sikuli-script/src/main/native/org_sikuli_script_VDictProxy.h
 sikuli-ide/target/osx-10.6/Sikuli-IDE.app/Contents/Frameworks/*
+sikuli-script/.project
+sikuli-script/.classpath
+sikuli-script/.settings
+sikuli-script/bin/*
+sikuli-ide/.project
+sikuli-ide/.classpath
+sikuli-ide/.settings
+sikuli-ide/bin/*
+sikuli-script/src/main/java/com/apple/eawt
+sikuli-script/src/main/java/com/sun/awt
+.DS_Store
+*.pyc

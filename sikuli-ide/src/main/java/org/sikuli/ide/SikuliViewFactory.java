@@ -9,6 +9,9 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.text.*;
 import javax.swing.*;
+
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -161,8 +164,26 @@ class SectionBoxView extends BoxView
 class HighlightLabelView extends LabelView {
 
    static FontMetrics _fMetrics = null;
-   final String tabStr = "    "; // default tab size: 4
+   static String tabStr = nSpaces(UserPreferences.getInstance().getTabWidth());
+   static {
+      UserPreferences.getInstance().addPreferenceChangeListener(
+            new PreferenceChangeListener(){
+               @Override
+               public void preferenceChange(PreferenceChangeEvent event){
+                  //FIXME: need to reposition images 
+                  if( event.getKey().equals("TAB_WIDTH") ){
+                     tabStr = nSpaces(Integer.parseInt(event.getNewValue()));
+                  }
+               }
+            }
+      );
+   }
 
+   private static String nSpaces(int n){
+      char[] s = new char[n];
+      Arrays.fill(s, ' ');
+      return new String(s);
+   }
 
    private static Map<Pattern, Color> patternColors;
    private static Font fontParenthesis;
