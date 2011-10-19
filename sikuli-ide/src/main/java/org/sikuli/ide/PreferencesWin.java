@@ -477,6 +477,14 @@ public class PreferencesWin extends JFrame {
          });
          paneOkCancel.add(_btnOk);
 
+         //---- _btnCancel ----
+         _btnCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               btnCancelActionPerformed(e);
+            }
+         });
+         paneOkCancel.add(_btnCancel);
+
          //---- _btnApply ----
          _btnApply.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -485,13 +493,6 @@ public class PreferencesWin extends JFrame {
          });
          paneOkCancel.add(_btnApply);
 
-         //---- _btnCancel ----
-         _btnCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               btnCancelActionPerformed(e);
-            }
-         });
-         paneOkCancel.add(_btnCancel);
       }
       contentPane.add(paneOkCancel, BorderLayout.SOUTH);
       setSize(600, 475);
