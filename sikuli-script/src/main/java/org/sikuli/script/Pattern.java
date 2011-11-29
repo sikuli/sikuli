@@ -22,6 +22,7 @@ public class Pattern {
    public Pattern(Pattern p){
       imgURL = p.imgURL;
       similarity = p.similarity;
+      image = p.image;
       dx = p.dx;
       dy = p.dy;
    }
@@ -32,6 +33,11 @@ public class Pattern {
    
    public Pattern(BufferedImage image){
       this.image = image;
+   }
+   
+   public Pattern(BufferedImage image, float similarity){
+      this.image = image;
+      this.similarity = similarity;
    }
 
    public Pattern similar(float similarity_){
