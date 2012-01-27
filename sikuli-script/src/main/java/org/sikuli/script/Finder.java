@@ -173,12 +173,7 @@ public class Finder implements Iterator<Match>{
          IScreen parentScreen = null;
          if(_region != null)
             parentScreen = _region.getScreen();
-         try{
-            ret = new Match(fr, parentScreen);
-         }
-         catch(AWTException e){
-            e.printStackTrace();
-         }
+         ret = new Match(fr, parentScreen);
          if(_region != null){
             ret = _region.toGlobalCoord(ret);
          }

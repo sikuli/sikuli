@@ -9,9 +9,13 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.sikuli.script.natives.Mat;
 import org.sikuli.script.natives.Vision;
+import org.sikuli.script.natives.OCRWord;
+import org.sikuli.script.natives.OCRWords;
 
 import com.wapmx.nativeutils.jniloader.NativeLoader;
 
@@ -61,6 +65,30 @@ public class TextRecognizer {
       return _instance;
    }
 
+   public enum ListTextMode {
+      WORD, LINE, PARAGRAPH
+   };
+
+   public List<Match> listText(ScreenImage simg, Region parent){
+      return listText(simg, parent, ListTextMode.WORD);
+   }
+
+   //TODO: support LINE and PARAGRAPH
+   // listText only supports WORD mode now.
+   public List<Match> listText(ScreenImage simg, Region parent, ListTextMode mode){
+      Mat mat = OpenCV.convertBufferedImageToMat(simg.getImage());
+      OCRWords words = Vision.recognize_as_ocrtext(mat).getWords();
+      List<Match> ret = new LinkedList<Match>();
+      for(int i=0;i<words.size();i++){
+         OCRWord w = words.get(i);
+         Match m = new Match(parent.x+w.getX(), parent.y+w.getY(), w.getWidth(), w.getHeight(), 
+                             1, parent.getScreen(), w.getString());
+         ret.add(m);
+      }
+      return ret;
+   }
+
+
    public String recognize(ScreenImage simg){
       BufferedImage img = simg.getImage();
       return recognize(img);
@@ -69,7 +97,7 @@ public class TextRecognizer {
    public String recognize(BufferedImage img){
       if (_init_succeeded){
          Mat mat = OpenCV.convertBufferedImageToMat(img);
-         return Vision.recognize(mat);
+         return Vision.recognize(mat).trim();
       }else{
          return "";
       }

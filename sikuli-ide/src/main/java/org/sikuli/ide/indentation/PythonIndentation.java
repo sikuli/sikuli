@@ -10,17 +10,17 @@ import java.util.regex.Pattern;
 
 /**
  * Implements the logic for giving hints about the (correct) indentation of new
- * lines of Python code entered by a user, in order to automatically adjust the
- * indentation. When the user has entered a new line of code and hits the enter
- * key, the object provides hints how to change the indentation of the last line
- * entered and the next line. The typical usage is:
+ * lines of Python code entered by a user. Auto indentation uses these hints to
+ * automatically adjust the the indentation of the next line to be entered,
+ * and/or the last line entered. The typical usage is:
  * <ol>
  * <li>Call {@link #reset()} to reset the object's state.
- * <li>Feed the code to the object by calling {@link #addText(String)} up to and
- * including the last entered by the user (including the end-of-line sequence).
+ * <li>Feed each line of python text entered by the user (including the
+ * terminating end-of-line sequence) to the object by calling
+ * {@link #addText(String)}.
  * <li>Call {@link #shouldChangeLastLineIndentation()} and
  * {@link #shouldChangeNextLineIndentation()} to get hints about the indentation
- * of the last line entered and the next line.
+ * of the last line entered, and the next line to be entered.
  * </ol>
  * Note: the proposed indentation change for the next line may depend on the
  * current indentation of the last line entered. If you change the indentation
@@ -38,13 +38,13 @@ import java.util.regex.Pattern;
  * <p>
  * This implementation provides indentation hints for the following contexts:
  * <ul>
- * <li>compound statements such as {@code if/elif/else}, {@code for},
- * {@code while}, {@code try/except/finally}, function and class definitions
+ * <li>compound statements such as {@code if/elif/else}, {@code for}, {@code
+ * while}, {@code try/except/finally}, function and class definitions
  * <li>statements after which indentation is normally decreased: {@code break},
  * {@code continue}, {@code pass}, {@code raise}, {@code return}
  * <li>expressions in parentheses, square brackets and curly braces that extend
  * over multiple lines (implicit line joining)
- * <li>explicit line joining (backslash followed by end-of-line)
+ * <li>explicit line joining (backslash-escaped by end-of-line)
  * <li>long strings
  * </ul>
  */
@@ -64,8 +64,12 @@ public class PythonIndentation {
    private static final Pattern UNINDENT_LAST_LINE_STATEMENT = Pattern
          .compile("^\\s*(?:elif|else|except|finally)\\b");
 
-   private static final Pattern COMPOUND_HEADER_STATEMENT = Pattern
-         .compile("^\\s*(?:if|elif|else|for|while|with|try|except|finally|def|class)\\b");
+   // this is matched with a logical line structure
+   private static final Pattern COMPOUND_HEADER_STATEMENT_WITH_ARG = Pattern
+         .compile("^\\s*(?:if|elif|for|while|with|except|def|class)\\b.*[\\w'\")\\]}](?:\\s*:)?\\s*$");
+
+   private static final Pattern COMPOUND_HEADER_STATEMENT_WITHOUT_ARG = Pattern
+         .compile("^\\s*(?:else|try|except|finally)\\b(?:\\s*:)?\\s*$");
 
    private PythonState pythonState;
    private Matcher endsWithColonMatcher = ENDS_WITH_COLON.matcher("");
@@ -73,7 +77,9 @@ public class PythonIndentation {
          .matcher("");
    private Matcher unindentLastLineStatementMatcher = UNINDENT_LAST_LINE_STATEMENT
          .matcher("");
-   private Matcher compoundHeaderStatementMatcher = COMPOUND_HEADER_STATEMENT
+   private Matcher compoundHeaderStatementWithArgMatcher = COMPOUND_HEADER_STATEMENT_WITH_ARG
+         .matcher("");
+   private Matcher compoundHeaderStatementWithoutArgMatcher = COMPOUND_HEADER_STATEMENT_WITHOUT_ARG
          .matcher("");
 
    private boolean wasColonAdded;
@@ -84,81 +90,90 @@ public class PythonIndentation {
    }
 
    /**
-    * Checks if a logical line (logically) ends with a colon. A logical line
-    * logically ends with a colon if it contains a colon that is not inside a
-    * comment and the colon is only followed by whitespace or by a comment. The
-    * logical line must be complete, otherwise the result is undefined.
+    * Checks if the last logical line (logically) ends with a colon. A logical
+    * line logically ends with a colon if it contains a colon that is not inside
+    * a comment and the colon is only followed by whitespace or by a comment.
     * <p>
     * If {@link #setLastLineEndsWithColon()} was called after the last chunk of
     * text was fed to this object, this method returns true.
     * <p>
     * This method is not thread safe!
     * 
-    * @param logicalLine
-    *           a complete logical line
-    * @return true if the logical line logically ends with a colon
+    * @return true if the last logical line logically ends with a colon
     */
-   public boolean endsWithColon(String logicalLine){
+   public boolean endsLastLogicalLineWithColon(){
       // not thread safe!
       if( wasColonAdded )
          return true;
-      return endsWithColonMatcher.reset(logicalLine).matches();
+      return endsWithColonMatcher.reset(
+            pythonState.getLastLogicalLineStructure()).matches();
    }
 
    /**
-    * Checks if a logical line begins with a python statement that usually
-    * terminates an indented block ({@code break}, {@code continue},
+    * Checks if the last logical line (logically) contains a colon. A logical
+    * line logically contains a colon if it contains a colon that is not inside
+    * a parenthesized expression, a string or a comment.
+    * 
+    * @return true if the last logical line logically contains a colon
+    */
+   public boolean hasLastLogicalLineColon(){
+      if( wasColonAdded )
+         return true;
+      return pythonState.getLastLogicalLineStructure().contains(":");
+   }
+
+   /**
+    * Checks if the last logical line begins with a python statement that
+    * usually terminates an indented block ({@code break}, {@code continue},
     * {@code pass}, {@code raise}, {@code return}).
     * <p>
-    * This method returns true only if {@code break}/{@code continue}/
-    * {@code pass}/{@code raise}/{@code return} is the first statement in the
-    * logical line. It does not recognize things like {@code print x; return}.
+    * This method returns true only if {@code break}/{@code continue}/ {@code
+    * pass}/{@code raise}/{@code return} is the first statement in the logical
+    * line. It does not recognize things like {@code print x; return}.
     * <p>
     * This method is not thread safe!
     * 
-    * @param logicalLine
-    *           a logical line
-    * @return true if the logical line begins with a statement that usually
+    * @return true if the last logical line begins with a statement that usually
     *         terminates an indented block
     */
-   public boolean isUnindentNextLineStatement(String logicalLine){
+   public boolean isLastLogicalLineUnindentNextLineStatement(){
       // not thread safe!
-      return unindentNextLineStatementMatcher.reset(logicalLine).find();
+      return unindentNextLineStatementMatcher.reset(
+            pythonState.getLastLogicalLine()).find();
    }
 
    /**
-    * Checks if a logical line begins with a python statement that must have a
-    * lower indentation level than the preceding block ({@code else},
+    * Checks if the last physical line begins with a python statement that must
+    * have a lower indentation level than the preceding block ({@code else},
     * {@code elif}, {@code except}, {@code finally}).
     * <p>
     * This method is not thread safe!
     * 
-    * @param logicalLine
-    *           a logical line
-    * @return true if the logical line begins with a statement that must have a
-    *         lower indentation level than the preceding block
+    * @return true if the last physical line begins with a statement that must
+    *         have a lower indentation level than the preceding block
     */
-   public boolean isUnindentLastLineStatement(String logicalLine){
+   public boolean isUnindentLastLineStatement(){
       // not thread safe!
-      return unindentLastLineStatementMatcher.reset(logicalLine).find();
+      return unindentLastLineStatementMatcher.reset(
+            pythonState.getLastPhysicalLine()).find();
    }
 
    /**
-    * Checks if a logical line begins with a python statement that starts a
-    * clause of a compound statement ({@code if}, {@code else}, {@code elif},
+    * Checks if the last logical line begins with a python statement that starts
+    * a clause of a compound statement ({@code if}, {@code else}, {@code elif},
     * {@code for}, {@code while}, {@code with}, {@code try}, {@code except},
     * {@code finally}, {@code def}, {@code class}).
     * <p>
     * This method is not thread safe!
     * 
-    * @param logicalLine
-    *           a logical line
     * @return true if the logical line begins with a statement that starts a
     *         clause of a compound statement
     */
-   public boolean isCompoundHeaderStatement(String logicalLine){
+   public boolean isLastLogicalLineCompoundHeaderStatement(){
       // not thread safe!
-      return compoundHeaderStatementMatcher.reset(logicalLine).find();
+      String structure = pythonState.getLastLogicalLineStructure();
+      return compoundHeaderStatementWithArgMatcher.reset(structure).find()
+            || compoundHeaderStatementWithoutArgMatcher.reset(structure).find();
    }
 
    /**
@@ -242,7 +257,7 @@ public class PythonIndentation {
                   .getPrevLogicalLineIndentation() )
          return 0;
       int change;
-      if( isUnindentLastLineStatement(pythonState.getLastPhysicalLine()) ){
+      if( isUnindentLastLineStatement() ){
          change = -pythonState.getTabSize();
       }else{
          change = 0;
@@ -270,10 +285,9 @@ public class PythonIndentation {
       int physicalIndentation = pythonState.getLastPhysicalLineIndentation();
       int change = logicalIndentation - physicalIndentation;
       if( pythonState.isLogicalLineComplete() ){
-         String logicalLine = pythonState.getLastLogicalLine();
-         if( endsWithColon(logicalLine) ){
+         if( endsLastLogicalLineWithColon() ){
             change += pythonState.getTabSize();
-         }else if( isUnindentNextLineStatement(logicalLine) ){
+         }else if( isLastLogicalLineUnindentNextLineStatement() ){
             change -= pythonState.getTabSize();
          }
       }else if( pythonState.inLongString() ){
@@ -317,18 +331,56 @@ public class PythonIndentation {
 
    /**
     * Returns a hint whether a colon should be added at the end of the last
-    * logical line. This is the case if the last logical line is complete (i.e.
-    * no explicit or implicit joining with the next physical line) and it begins
-    * with a statement that starts a clause in a compound statement but does not
-    * (logically) end with a colon and does not end with a comment.
+    * logical line. This is the case if the last logical line satisfies all of
+    * the following:
+    * <ul>
+    * <li>it is complete (i.e. no explicit or implicit joining with the next
+    * physical line),
+    * <li>it begins with a statement that starts a clause in a compound
+    * statement,
+    * <li>if the statement requires and argument, it is followed by another
+    * token,
+    * <li>it does not (logically) end with a punctuation symbol,
+    * <li>it does not end with a comment.
+    * </ul>
+    * For example, the following lines should have a colon appended:
+    * <pre>
+    * if x
+    * else
+    * elif x
+    * while x
+    * class C
+    * class C(D)
+    * def f()
+    * try
+    * except
+    * except E
+    * except E, e
+    * finally
+    * </pre>
+    * The following lines should not have a colon appended:
+    * <pre>
+    * print x
+    * 'if x'
+    * if
+    * if (x
+    * if 's
+    * if x:
+    * if x,
+    * if x ?
+    * if x # ends with comment
+    * elif
+    * while
+    * class
+    * def
+    * </pre>
     * 
     * @return true if the last logical line should end with a colon but does not
     */
    public boolean shouldAddColon(){
       if( !pythonState.isLogicalLineComplete() )
          return false;
-      String logicalLine = pythonState.getLastLogicalLine();
-      return isCompoundHeaderStatement(logicalLine)
-            && !endsWithColon(logicalLine);
+      return isLastLogicalLineCompoundHeaderStatement()
+            && !hasLastLogicalLineColon();
    }
 }

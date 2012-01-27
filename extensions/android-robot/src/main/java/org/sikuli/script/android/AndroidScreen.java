@@ -6,6 +6,7 @@
 package org.sikuli.script.android;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import org.sikuli.script.Region;
 import org.sikuli.script.IRobot;
@@ -13,6 +14,7 @@ import org.sikuli.script.IScreen;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FindFailed;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -46,17 +48,27 @@ public class AndroidScreen extends Region implements IScreen {
       System.setProperty("com.android.monkeyrunner.bindir", ANDROID_ROOT + SdkConstants.OS_SDK_TOOLS_FOLDER);
    };
 
-   private void initRobots(){
+   private void initRobots(long timeoutMs, String deviceIdRegex){
       Debug.log("AndroidRobot.init");
       try{
          AdbBackend adb = new AdbBackend();
-         _dev = adb.waitForConnection();
+         if(timeoutMs<0 || deviceIdRegex == null)
+            _dev = adb.waitForConnection();
+         else
+            _dev = adb.waitForConnection(timeoutMs, deviceIdRegex);
       }
       catch(Exception e){
          Debug.error("no connection to android device.");
          e.printStackTrace();
       }
       _robot = new AndroidRobot(_dev);
+
+      Rectangle b = getBounds();
+      init(b.x, b.y, b.width, b.height, this);
+   }
+
+   private void initRobots(){
+      initRobots(-1, null);
    }
 
    public Region newRegion(Rectangle rect){
@@ -74,10 +86,12 @@ public class AndroidScreen extends Region implements IScreen {
                            Integer.parseInt(height));
    }
 
+   public AndroidScreen(long timeout, String deviceIdRegex) {
+      initRobots(timeout, deviceIdRegex);
+   }
+
    public AndroidScreen() {
       initRobots();
-      Rectangle b = getBounds();
-      init(b.x, b.y, b.width, b.height, this);
    }
 
    public ScreenImage capture() {
@@ -96,6 +110,21 @@ public class AndroidScreen extends Region implements IScreen {
       return capture(reg.getROI());
    }
 
+
+   public <PSRML> int type(PSRML target, String text, int modifiers) throws FindFailed{
+      click(target, 0);
+      if(text != null){
+         Debug.history(
+           (modifiers!=0?KeyEvent.getKeyModifiersText(modifiers)+"+":"")+
+               "ANDROID.TYPE \"" + text + "\"");
+         _robot.pressModifiers(modifiers);
+         _dev.type(text); //FIXME: assume text don't have special keys
+         _robot.releaseModifiers(modifiers);
+         _robot.waitForIdle();
+         return 1;
+      }
+      return 0;
+   }
 
    public void showMove(Location loc){
    }

@@ -4,7 +4,7 @@ from org.sikuli.script.android import AndroidScreen
 from org.sikuli.script import Settings
 
 print "set up android connection"
-scr = AndroidScreen() # compatiable with Sikuli Screen/Region
+scr = AndroidScreen(10000, ".*") # compatiable with Sikuli Screen/Region
 assert scr != None
 dev = scr.getRobot().getDevice() # Android Monkey device
 
@@ -37,9 +37,10 @@ class TestAndroidBasic(unittest.TestCase):
    def testType(self):
       global scr, dev
       dev.press('KEYCODE_HOME', 'DOWN_AND_UP')
+      scr.wait("google.png", 15)
       scr.click("google.png")
       scr.type("sikuli")
-      assert scr.exists("search-sikuli.png")
+      assert scr.exists("search-sikuli.png", 15)
 
 if __name__ == '__main__':
    unittest.main()

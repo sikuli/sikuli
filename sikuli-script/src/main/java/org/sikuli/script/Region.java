@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
+import java.util.List;
 
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -365,7 +366,7 @@ public class Region {
 
 
    
-   //////////// CORE FUNCTIONS
+   //////////// PUBLIC API
 
    /**
     * Match find( Pattern/String/PatternClass ) 
@@ -970,11 +971,15 @@ public class Region {
    }
 
    public String text(){
-      ScreenImage simg = _scr.capture(x, y, w, h);
+      ScreenImage simg = getScreen().capture(x, y, w, h);
       _lastScreenImage = simg;
       return TextRecognizer.getInstance().recognize(simg);
    }
 
+   public List<Match> listText(){
+      ScreenImage simg = getScreen().capture(x, y, w, h);
+      return TextRecognizer.getInstance().listText(simg, this);
+   }
 
    ////////////////////////////////////////////////////////////////
    // SPECIAL FUNCTIONS FOR JYTHON

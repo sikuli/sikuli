@@ -1,17 +1,16 @@
-#, fuzzy
+#. extracted from /Users/vgod/github/sikuli/sikuli-ide/resources/i18n/IDE_en_US.properties
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-08 16:24-0400\n"
+"POT-Creation-Date: 2011-10-19 16:28-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-14 21:56+0000\n"
-"X-Generator: Launchpad (build 13921)\n"
+"X-Generator: Translate Toolkit 1.9.0\n"
 
 #: menuFile
 msgctxt "menuFile"
@@ -432,6 +431,10 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+#: apply
+msgid "Apply"
+msgstr ""
+
 #: cancel
 msgid "Cancel"
 msgstr ""
@@ -547,7 +550,8 @@ msgstr ""
 
 #: cmdOnChange
 msgid ""
-"Calls <i>handler</i> when anything is changed on the screen or in the Region."
+"Calls <i>handler</i> when anything is changed on the screen or in the "
+"Region."
 msgstr ""
 
 #: cmdObserve

@@ -12,155 +12,570 @@ public class PythonIndentationTest extends TestCase {
       tabsize = indentlogic.getTabWidth();
    }
 
-   public void testEndsWithColonEmpty(){
-      assertFalse(indentlogic.endsWithColon(""));
+   public void testEndsLastLogicalLineWithColonEmpty(){
+      indentlogic.addText("");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonEmptyLine(){
-      assertFalse(indentlogic.endsWithColon("\n"));
+   public void testEndsLastLogicalLineWithColonEmptyLine(){
+      indentlogic.addText("\n");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColon(){
-      assertTrue(indentlogic.endsWithColon("line:\n"));
+   public void testEndsLastLogicalLineWithColon(){
+      indentlogic.addText("line:\n");
+      assertTrue(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonSpace(){
-      assertTrue(indentlogic.endsWithColon("line: \n"));
+   public void testEndsLastLogicalLineWithColonSpace(){
+      indentlogic.addText("line: \n");
+      assertTrue(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonComment(){
-      assertTrue(indentlogic.endsWithColon("line: #comment\n"));
+   public void testEndsLastLogicalLineWithColonComment(){
+      indentlogic.addText("line: #comment\n");
+      assertTrue(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonNoColon(){
-      assertFalse(indentlogic.endsWithColon("line\n"));
+   public void testEndsLastLogicalLineWithColonNoColon(){
+      indentlogic.addText("line\n");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonCommented(){
-      assertFalse(indentlogic.endsWithColon("line#:\n"));
+   public void testEndsLastLogicalLineWithColonCommented(){
+      indentlogic.addText("line#:\n");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testEndsWithColonString(){
-      assertFalse(indentlogic.endsWithColon("'line:'\n"));
+   public void testEndsLastLogicalLineWithColonString(){
+      indentlogic.addText("'line:'\n");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testIsUnindentNextLineStatementEmpty(){
-      assertFalse(indentlogic.isUnindentNextLineStatement(""));
+   public void testEndsLastLogicalLineWithColonCompactIfPass(){
+      indentlogic.addText("if x: pass\n");
+      assertFalse(indentlogic.endsLastLogicalLineWithColon());
    }
 
-   public void testIsUnindentNextLineStatementEmptyLine(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\n"));
+   public void testShouldAddColonNoText(){
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementBreak(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\tbreak\n"));
+   public void testShouldAddColonEmptyLine(){
+      indentlogic.addText("\n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementContinue(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\tcontinue\n"));
+   public void testShouldAddColonPrint(){
+      indentlogic.addText("print 0\n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementPass(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\tpass\n"));
+   public void testShouldAddColonIf(){
+      indentlogic.addText("if\n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementRaise(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\traise\n"));
+   public void testShouldAddColonIfSpace(){
+      indentlogic.addText("if \n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementRaiseException(){
-      assertTrue(indentlogic
-            .isUnindentNextLineStatement("\traise Exception()\n"));
+   public void testShouldAddColonIfComment(){
+      indentlogic.addText("if # comment\n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementReturn(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\treturn\n"));
+   public void testShouldAddColonIfX(){
+      indentlogic.addText("if x\n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementReturnValue(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\treturn 0\n"));
+   public void testShouldAddColonIfXSpace(){
+      indentlogic.addText("if x \n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementBreakComment(){
-      assertTrue(indentlogic.isUnindentNextLineStatement("\tbreak #comment\n"));
+   public void testShouldAddColonIfXComment(){
+      indentlogic.addText("if x # comment\n");
+      assertFalse(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementPrint(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\tprint\n"));
+   public void testShouldAddColonIfString(){
+      indentlogic.addText("if 'x'\n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementString(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\t'break'\n"));
+   public void testShouldAddColonIfStringSpace(){
+      indentlogic.addText("if 'x' \n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementComment(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\t#break\n"));
+   public void testShouldAddColonIfStringWithColon(){
+      indentlogic.addText("if 'x:'\n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementBreakIdentifier(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\tbreakid=0\n"));
+   public void testShouldAddColonIfFunctionCall(){
+      indentlogic.addText("if f(x)\n");
+      assertTrue(indentlogic.shouldAddColon());
    }
 
-   public void testIsUnindentNextLineStatementReturnIdentifier(){
-      assertFalse(indentlogic.isUnindentNextLineStatement("\treturnid=0\n"));
+   public void testShouldAddColonIfFunctionCallSpace(){
+      indentlogic.addText("if f(x) \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfTuple(){
+      indentlogic.addText("if (x)\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfNoSpaceTuple(){
+      indentlogic.addText("if(x)\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfTupleSpace(){
+      indentlogic.addText("if (x) \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfList(){
+      indentlogic.addText("if [x]\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfNoSpaceList(){
+      indentlogic.addText("if[x]\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfListSpace(){
+      indentlogic.addText("if [x] \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfDict(){
+      indentlogic.addText("if { 'a' : 0 }\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfNoSpaceDict(){
+      indentlogic.addText("if{ 'a' : 0 }\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfDictSpace(){
+      indentlogic.addText("if { 'a' : 0 } \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXColon(){
+      indentlogic.addText("if x:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXColonSpace(){
+      indentlogic.addText("if x: \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXColonComment(){
+      indentlogic.addText("if x: #comment\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXColonPass(){
+      indentlogic.addText("if x: pass\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXComma(){
+      indentlogic.addText("if x,\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXCommaSpace(){
+      indentlogic.addText("if x, \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXQuestionMark(){
+      indentlogic.addText("if x ?\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXQuestionMarkSpace(){
+      indentlogic.addText("if x ? \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfStringPercent(){
+      indentlogic.addText("if '%s' %\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfStringPercentSpace(){
+      indentlogic.addText("if '%s' % \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfFParenthesis(){
+      indentlogic.addText("if f(\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfParenthesisX(){
+      indentlogic.addText("if (x\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfOpenSingleQuote(){
+      indentlogic.addText("if 'x\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfOpenDoubleQuote(){
+      indentlogic.addText("if \"x\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonStringWithIfX(){
+      indentlogic.addText("'if x'\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonIfXExplicitLineJoining(){
+      indentlogic.addText("if x\\\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElif(){
+      indentlogic.addText("elif\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElifX(){
+      indentlogic.addText("elif x\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElifXColon(){
+      indentlogic.addText("elif x:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElse(){
+      indentlogic.addText("else\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElseSpace(){
+      indentlogic.addText("else \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElseColon(){
+      indentlogic.addText("else:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonElseColonSpace(){
+      indentlogic.addText("else: \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonWhile(){
+      indentlogic.addText("while\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonWhileX(){
+      indentlogic.addText("while x\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonWhileXColon(){
+      indentlogic.addText("while x:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonClass(){
+      indentlogic.addText("class\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonClassX(){
+      indentlogic.addText("class X\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonClassXColon(){
+      indentlogic.addText("class X:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonClassXInheritY(){
+      indentlogic.addText("class X(Y)\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonClassXInheritYColon(){
+      indentlogic.addText("class X(Y):\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonDef(){
+      indentlogic.addText("def\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonDefX(){
+      indentlogic.addText("def x\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonDefFParentheses(){
+      indentlogic.addText("def f()\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonDefFParenthesesColon(){
+      indentlogic.addText("def f():\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonTry(){
+      indentlogic.addText("try\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonTryColon(){
+      indentlogic.addText("try:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   // except is special because it can be used bare or with arguments
+   public void testShouldAddColonExcept(){
+      indentlogic.addText("except\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   // except is special because it can be used bare or with arguments
+   public void testShouldAddColonExceptSpace(){
+      indentlogic.addText("except \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptColon(){
+      indentlogic.addText("except:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptColonSpace(){
+      indentlogic.addText("except: \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptX(){
+      indentlogic.addText("except x\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXSpace(){
+      indentlogic.addText("except x \n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXColon(){
+      indentlogic.addText("except x:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXColonSpace(){
+      indentlogic.addText("except x: \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXCommaY(){
+      indentlogic.addText("except x, y\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXCommaYColon(){
+      indentlogic.addText("except x, y:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXComma(){
+      indentlogic.addText("except x,\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonExceptXCommaSpace(){
+      indentlogic.addText("except x, \n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonFinally(){
+      indentlogic.addText("finally\n");
+      assertTrue(indentlogic.shouldAddColon());
+   }
+
+   public void testShouldAddColonFinallyColon(){
+      indentlogic.addText("finally:\n");
+      assertFalse(indentlogic.shouldAddColon());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementEmpty(){
+      indentlogic.addText("");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementEmptyLine(){
+      indentlogic.addText("\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementBreak(){
+      indentlogic.addText("\tbreak\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementContinue(){
+      indentlogic.addText("\tcontinue\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementPass(){
+      indentlogic.addText("\tpass\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementRaise(){
+      indentlogic.addText("\traise\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementRaiseException(){
+      indentlogic.addText("\traise Exception()\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementReturn(){
+      indentlogic.addText("\treturn\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementReturnValue(){
+      indentlogic.addText("\treturn 0\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementBreakComment(){
+      indentlogic.addText("\tbreak #comment\n");
+      assertTrue(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementPrint(){
+      indentlogic.addText("\tprint\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementString(){
+      indentlogic.addText("\t'break'\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementComment(){
+      indentlogic.addText("\t#break\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementBreakIdentifier(){
+      indentlogic.addText("\tbreakid=0\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementReturnIdentifier(){
+      indentlogic.addText("\treturnid=0\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
+   }
+
+   public void testIsLastLogicalLineUnindentNextLineStatementCompactIfPass(){
+      indentlogic.addText("\tif x: pass\n");
+      assertFalse(indentlogic.isLastLogicalLineUnindentNextLineStatement());
    }
 
    public void testIsUnindentLastLineStatementEmpty(){
-      assertFalse(indentlogic.isUnindentLastLineStatement(""));
+      indentlogic.addText("");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementEmptyLine(){
-      assertFalse(indentlogic.isUnindentLastLineStatement("\n"));
+      indentlogic.addText("\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementElif(){
-      assertTrue(indentlogic.isUnindentLastLineStatement("\telif a=0:\n"));
+      indentlogic.addText("\telif a=0:\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementElse(){
-      assertTrue(indentlogic.isUnindentLastLineStatement("\telse:\n"));
+      indentlogic.addText("\telse:\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementExcept(){
-      assertTrue(indentlogic
-            .isUnindentLastLineStatement("\texcept Exception, e:\n"));
+      indentlogic.addText("\texcept Exception, e:\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementFinally(){
-      assertTrue(indentlogic.isUnindentLastLineStatement("\tfinally:\n"));
+      indentlogic.addText("\tfinally:\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementElseComment(){
-      assertTrue(indentlogic.isUnindentLastLineStatement("\telse: #comment\n"));
+      indentlogic.addText("\telse: #comment\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementPrint(){
-      assertFalse(indentlogic.isUnindentLastLineStatement("\tprint\n"));
+      indentlogic.addText("\tprint\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementString(){
-      assertFalse(indentlogic.isUnindentLastLineStatement("\t'else:'\n"));
+      indentlogic.addText("\t'else:'\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementLongString(){
-      assertFalse(indentlogic
-            .isUnindentLastLineStatement("\t\"\"\"else:\"\"\"\n"));
+      indentlogic.addText("\t\"\"\"else:\"\"\"\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementComment(){
-      assertFalse(indentlogic.isUnindentLastLineStatement("\t# else:\n"));
+      indentlogic.addText("\t# else:\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementElseIdentifier(){
-      assertFalse(indentlogic.isUnindentLastLineStatement("\telseid=0\n"));
+      indentlogic.addText("\telseid=0\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testIsUnindentLastLineStatementElifOpenParenthesis(){
-      assertTrue(indentlogic.isUnindentLastLineStatement("\telif (\n"));
+      indentlogic.addText("\telif (\n");
+      assertTrue(indentlogic.isUnindentLastLineStatement());
    }
 
-   public void testIsUnindentLastLineStatement(){
-      assertFalse(indentlogic.isUnindentLastLineStatement(""));
+   public void testIsUnindentLastLineStatementCompactIfPass(){
+      indentlogic.addText("\tif x: pass\n");
+      assertFalse(indentlogic.isUnindentLastLineStatement());
    }
 
    public void testDefaultTabWidth(){
@@ -304,9 +719,8 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationExplicitLineJoining(){
       indentlogic.addText("print\\\n");
-      assertEquals(
-            PythonIndentation.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
-                  * tabsize, indentlogic.shouldChangeNextLineIndentation());
+      assertEquals(PythonIndentation.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
+            * tabsize, indentlogic.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationExplicitLineJoiningRepeated(){
@@ -316,9 +730,8 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationExplicitLineJoiningPhysicalLineOffset(){
       indentlogic.addText("\"\"\"doc\n\"\"\"\nprint\\\n");
-      assertEquals(
-            PythonIndentation.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
-                  * tabsize, indentlogic.shouldChangeNextLineIndentation());
+      assertEquals(PythonIndentation.EXPLICIT_LINE_JOINING_INDENTATION_TABSTOPS
+            * tabsize, indentlogic.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationExplicitLineJoiningPhysicalLineOffsetRepeated(){
@@ -348,15 +761,15 @@ public class PythonIndentationTest extends TestCase {
 
    public void testShouldChangeNextLineIndentationParenthesis(){
       indentlogic.addText("print (0,\n");
-      assertEquals(PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS
-            * tabsize, indentlogic.shouldChangeNextLineIndentation());
+      assertEquals(
+            PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS * tabsize,
+            indentlogic.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationNestedParenthesis(){
       indentlogic.addText("print (0,\n\t\t(1,\n");
-      assertEquals(
-            PythonIndentation.NESTED_PARENTHESIS_INDENTATION_TABSTOPS
-                  * tabsize, indentlogic.shouldChangeNextLineIndentation());
+      assertEquals(PythonIndentation.NESTED_PARENTHESIS_INDENTATION_TABSTOPS
+            * tabsize, indentlogic.shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationNestedParenthesisSameLine(){
@@ -509,19 +922,24 @@ public class PythonIndentationTest extends TestCase {
    public void testShouldChangeNextLineIndentationParenthesisLongSingleQuoteString(){
       indentlogic.addText("print ('''\n");
       assertEquals(PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS
-            * indentlogic.getTabWidth(),
-            indentlogic.shouldChangeNextLineIndentation());
+            * indentlogic.getTabWidth(), indentlogic
+            .shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationParenthesisLongDoubleQuoteString(){
       indentlogic.addText("print (\"\"\"\n");
       assertEquals(PythonIndentation.PARENTHESIS_INDENTATION_TABSTOPS
-            * indentlogic.getTabWidth(),
-            indentlogic.shouldChangeNextLineIndentation());
+            * indentlogic.getTabWidth(), indentlogic
+            .shouldChangeNextLineIndentation());
    }
 
    public void testShouldChangeNextLineIndentationCompactIf(){
       indentlogic.addText("if True: print 0\n");
+      assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
+   }
+
+   public void testShouldChangeNextLineIndentationCompactIfPass(){
+      indentlogic.addText("\tif True: pass\n");
       assertEquals(0, indentlogic.shouldChangeNextLineIndentation());
    }
 

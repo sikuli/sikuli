@@ -35,6 +35,20 @@ static char* mytesseract(const unsigned char* imagedata,
    return text;
 }
 
+static char* mytesseract_str(const unsigned char* imagedata,
+                         int width, int height, int bpp){
+
+   int bytes_per_pixel = bpp / 8;
+   int bytes_per_line = COMPUTE_IMAGE_XDIM(width,bpp);
+   char* text = TessBaseAPI::TesseractRect(imagedata,
+                                                bytes_per_pixel,
+                                                bytes_per_line, 0, 0,
+                                                width,
+                                                height);
+   return text;
+}
+
+
 OCRRect::OCRRect(int x_, int y_, int width_, int height_)
 : x(x_), y(y_), width(width_), height(height_){};
 
@@ -442,18 +456,52 @@ static int findEditDistance(const char *s1, const char *s2) {
    return findMin(d1, d2, d3);
 }
 
+void sharpen(Mat& img){
+   Mat blur;
+   GaussianBlur(img, blur, cv::Size(0, 0), 5);
+   addWeighted(img, 2.5, blur, -1.5, 0, img);
+}
+
+float preprocess_for_ocr(const Mat& in_img, Mat& out_img){
+   const float MIN_HEIGHT = 30;
+   float scale = 1.f;
+   if (in_img.rows < MIN_HEIGHT){
+      scale = MIN_HEIGHT / float(in_img.rows);
+      resize(in_img, out_img, Size(in_img.cols*scale,in_img.rows*scale));
+   }else {
+      out_img = in_img;
+   }
+   sharpen(out_img);
+   //imshow("ocrImage", out_img); 
+   return scale;
+}
+
+string OCR::recognize_as_string(const Mat& blobImage){
+   Mat gray, ocrImage;  // the image passed to tesseract
+   OCR::init();
+   cvtColor(blobImage, gray, CV_RGB2GRAY);
+   preprocess_for_ocr(gray, ocrImage);
+
+   //imshow("ocr", ocrImage); waitKey();
+   char* text = mytesseract_str((unsigned char*)ocrImage.data,
+                              ocrImage.cols,
+                              ocrImage.rows,
+                              8);
+   if(text){
+      string ret = string(text);
+      delete [] text;
+      return ret;
+   }
+   return "";
+}
+
+
 vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
  
    Mat blobImage(screen,blob);
    
    Mat ocrImage;  // the image passed to tesseract      
-   bool upsampled = false;
-   if (blobImage.rows < 20){
-      upsampled = true;
-      resize(blobImage, ocrImage, Size(blobImage.cols*2,blobImage.rows*2));
-   }else {
-      ocrImage = blobImage.clone(); 
-   }  
+   float scale = preprocess_for_ocr(blobImage, ocrImage);
    
    vector<OCRChar> ocr_chars;
    ocr_chars = OCR::recognize((unsigned char*)ocrImage.data,
@@ -463,25 +511,17 @@ vector<OCRChar> run_ocr(const Mat& screen, const Blob& blob){
    
    for (vector<OCRChar>::iterator iter = ocr_chars.begin(); 
         iter != ocr_chars.end(); iter++){
-      
-      
       OCRChar& ocrchar = *iter;
-      
-      
-      if (upsampled){
+      if(scale>1.f){
          // scale back the coordinates in the OCR result
-         
-         ocrchar.x = ocrchar.x/2;
-         ocrchar.y = ocrchar.y/2;
-         ocrchar.width = ocrchar.width/2;
-         ocrchar.height = ocrchar.height/2;
+         ocrchar.x = ocrchar.x/scale;
+         ocrchar.y = ocrchar.y/scale;
+         ocrchar.width = ocrchar.width/scale;
+         ocrchar.height = ocrchar.height/scale;
       }
-      
-      
       
       ocrchar.x += blob.x;
       ocrchar.y += blob.y;
-      
       
       char ch = ocrchar.ch;
       if (ch < 0 || ch > '~') 
@@ -767,7 +807,10 @@ OCR::recognize(cv::Mat screen){
    cvgui::getParagraphBlobs(screen, parablobs);
 
    Mat screen_gray;
-   cvtColor(screen,screen_gray,CV_RGB2GRAY);
+   if(screen.channels()>1)
+      cvtColor(screen,screen_gray,CV_RGB2GRAY);
+   else
+      screen_gray = screen;
    
    
    for (vector<ParagraphBlob>::iterator it = parablobs.begin(); 
@@ -788,6 +831,7 @@ OCR::recognize(cv::Mat screen){
    
    return ocrtext; 
 }
+
 
 
 vector<OCRChar>

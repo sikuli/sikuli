@@ -169,6 +169,10 @@ public class PreferencesWin extends JFrame {
       this.dispose();
    }
 
+   private void btnApplyActionPerformed(ActionEvent e) {
+	  savePrefs();
+   }
+
    private void btnCancelActionPerformed(ActionEvent e) {
       this.dispose();
    }
@@ -232,6 +236,7 @@ public class PreferencesWin extends JFrame {
       JPanel paneOkCancel = new JPanel();
       JPanel hSpacer1 = new JPanel(null);
       _btnOk = new JButton();
+      _btnApply = new JButton();
       _btnCancel = new JButton();
 
       //======== this ========
@@ -479,6 +484,15 @@ public class PreferencesWin extends JFrame {
             }
          });
          paneOkCancel.add(_btnCancel);
+
+         //---- _btnApply ----
+         _btnApply.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               btnApplyActionPerformed(e);
+            }
+         });
+         paneOkCancel.add(_btnApply);
+
       }
       contentPane.add(paneOkCancel, BorderLayout.SOUTH);
       setSize(600, 475);
@@ -516,6 +530,7 @@ public class PreferencesWin extends JFrame {
       _lblLanguage.setText(I18N._I("PreferencesWin.lblLanguage.text"));
       _tabPane.setTitleAt(2, I18N._I("prefTabGeneralSettings"));
       _btnOk.setText(I18N._I("ok"));
+      _btnApply.setText(I18N._I("apply"));
       _btnCancel.setText(I18N._I("cancel"));
       // JFormDesigner - End of component i18n initialization  //GEN-END:initI18n
    }
@@ -546,6 +561,7 @@ public class PreferencesWin extends JFrame {
    private JLabel _lblUpdates;
    private JLabel _lblLanguage;
    private JButton _btnOk;
+   private JButton _btnApply;
    private JButton _btnCancel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -32,6 +32,10 @@ public class UserPreferences {
       Debug.log(1, "init user preferences");
    }
 
+   public void addPreferenceChangeListener(PreferenceChangeListener pcl){
+      pref.addPreferenceChangeListener(pcl);
+   }
+
    public void setCaptureHotkey(int hkey){
       pref.putInt("CAPTURE_HOTKEY", hkey);
    }

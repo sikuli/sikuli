@@ -1563,9 +1563,14 @@ cvgui::segmentScreenshot(const Mat& screen, vector<Blob>& text_blobs, vector<Blo
    
    VLOG("Input", screen);
    
-   Mat gray;
-   cvtColor(screen,gray,CV_RGB2GRAY);
-   Mat screen_gray = gray.clone();
+   Mat gray, screen_gray;
+   if(screen.channels() > 1){
+      cvtColor(screen,gray,CV_RGB2GRAY);
+   }
+   else
+      gray = screen;
+
+   screen_gray = gray.clone();
    
    adaptiveThreshold(gray, gray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 5, 1);
    VLOG("AdaptiveThresholded", gray);
