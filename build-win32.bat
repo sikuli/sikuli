@@ -1,3 +1,11 @@
+:: ============================================================================
+:: PREREQUISITES
+:: ----------------------------------------------------------------------------
+:: 1. CMake 2.8+ (http://www.cmake.org/)
+:: 2. JDK 6 x86 (http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u30-download-1377139.html)
+:: 3. Tesseract-OCR 2.04 source code + English language data (http://code.google.com/p/tesseract-ocr/). 
+:: ============================================================================
+
 @ECHO OFF
 
 SET script_build_dir=%~dp0\sikuli-script\build
