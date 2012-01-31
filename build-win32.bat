@@ -1,9 +1,12 @@
 :: ============================================================================
 :: PREREQUISITES
 :: ----------------------------------------------------------------------------
-:: 1. CMake 2.8+ (http://www.cmake.org/)
+:: 1. Visual C++ 9.0
 :: 2. JDK 6 x86 (http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u30-download-1377139.html)
-:: 3. Tesseract-OCR 2.04 source code + English language data (http://code.google.com/p/tesseract-ocr/). 
+:: 3. CMake 2.8+ (http://www.cmake.org/)
+:: 4. OpenCV 2.1+ (http://opencv.willowgarage.com/wiki/)
+:: 5. Tesseract-OCR 2.04 Source (http://code.google.com/p/tesseract-ocr/)
+:: 6. SWIG 1.3+ (http://www.swig.org/)
 :: ============================================================================
 
 @ECHO OFF
