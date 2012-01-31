@@ -1,12 +1,15 @@
 :: ============================================================================
 :: PREREQUISITES
 :: ----------------------------------------------------------------------------
-:: 1. Visual C++ 9.0
-:: 2. JDK 6 x86 (http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u30-download-1377139.html)
-:: 3. CMake 2.8+ (http://www.cmake.org/)
-:: 4. OpenCV 2.1+ (http://opencv.willowgarage.com/wiki/)
-:: 5. Tesseract-OCR 2.04 Source (http://code.google.com/p/tesseract-ocr/)
-:: 6. SWIG 1.3+ (http://www.swig.org/)
+:: The path to these dependent libraries can be set in cmake_modules/common.cmake.
+:: You may need to add appropriate paths on your machine if cmake can not find 
+:: the libraries automatically.
+::   1. Visual C++ 9.0
+::   2. JDK 6 x86 (http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u30-download-1377139.html)
+::   3. CMake 2.8+ (http://www.cmake.org/)
+::   4. OpenCV 2.1+ (http://opencv.willowgarage.com/wiki/)
+::   5. Tesseract-OCR 2.04 Source (http://code.google.com/p/tesseract-ocr/)
+::   6. SWIG 1.3+ (http://www.swig.org/)
 :: ============================================================================
 
 @ECHO OFF
