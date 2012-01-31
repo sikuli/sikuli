@@ -39,3 +39,5 @@ PUSHD %ide_build_dir%
 cmake -G "NMake Makefiles" -D CMAKE_BUILD_TYPE=Release ..
 nmake package
 POPD
+
+IF NOT ERRORLEVEL 0 EXIT /B %ERRORLEVEL%
