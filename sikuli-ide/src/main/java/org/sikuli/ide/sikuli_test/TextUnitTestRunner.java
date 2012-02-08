@@ -59,7 +59,7 @@ public class TextUnitTestRunner extends junit.textui.TestRunner {
          "\tdef __init__(self, name):\n"+
          "\t\tjunit.framework.TestCase.__init__(self,name)\n"+
          "\t\tself.theTestFunction = getattr(self,name)\n"+
-         "\t\tsetBundlePath('"+bundlePath+"')\n"+
+         "\t\tsetBundlePath('"+bundlePath.replace("\\", "\\\\")+"')\n"+
          "\tdef runTest(self):\n"+
          "\t\tself.theTestFunction()\n";
 
