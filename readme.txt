@@ -1,6 +1,6 @@
 A new version 
 =============
-is planned for beginning of December 2012.
+is planned for January 2013.
 More information at: https://github.com/RaiMan/Sikuli12.11
 and on Sikuli's Launchpad page: https://launchpad.net/sikuli
 
