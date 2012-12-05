@@ -1186,11 +1186,11 @@ public class SikuliIDE extends JFrame {
 
       
       public void openDoc(ActionEvent ae){
-         openURL("http://sikuli.org/documentation.shtml");
+         openURL("http://doc.sikuli.org/");
       }
 
       public void openGuide(ActionEvent ae){
-         openURL("http://sikuli.org/guide-x");
+         openURL("http://doc.sikuli.org/index.html#complete-guide-to-sikuli-script");
       }
 
       public void openAsk(ActionEvent ae){
