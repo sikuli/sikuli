@@ -340,20 +340,15 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_script_Win32Util_getHwnd__Ljava_lang_Str
 
 #define CLASS_RECTANGLE "java/awt/Rectangle"
 
-//FIXME
 jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
-   jclass jClassRect = env->FindClass(CLASS_RECTANGLE);
-   jmethodID initMethod = (env)->GetMethodID(jClassRect, "setRect", "(DDDD)V");
-   jobject ret = NULL;
-   if(initMethod!=NULL){
-      ret = (env)->AllocObject(jClassRect);
-      (env)->CallVoidMethod(ret, initMethod, 
-                                      (double)r.left, (double)r.top,
-                                      (double)r.right-r.left, 
-                                      (double)r.bottom-r.top);
-   }
-   (env)->DeleteLocalRef(jClassRect);
-   return ret;
+   jclass rectangleClass = env->FindClass(CLASS_RECTANGLE);
+   assert(rectangleClass != NULL);
+   jmethodID constructor = env->GetMethodID(rectangleClass, "<init>", "(IIII)V");
+   jobject rectangle = env->NewObject(rectangleClass, constructor, (int)r.left, (int)r.top,
+                                                                   (int)r.right-r.left, 
+                                                                   (int)r.bottom-r.top);
+   env->DeleteLocalRef(rectangleClass);
+   return rectangle;
 }
 
 /*
