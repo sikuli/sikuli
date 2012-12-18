@@ -9,6 +9,7 @@
 #include <jawt_md.h>
 #include <cstring>
 #include <iostream>
+#include <assert.h>
 
 using namespace std;
 
