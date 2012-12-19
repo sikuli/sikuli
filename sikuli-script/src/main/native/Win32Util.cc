@@ -74,6 +74,9 @@ static int gWinNum, gWinCount;
 // pre-req: gAppName, gWinNum, gWinCount = 0 
 // output: gPid of the found window
 static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
+   if (!IsWindowVisible(handle)) {
+      return TRUE;
+   }
    char filename[BUF_SIZE], title[BUF_SIZE] ;
    GetWindowModuleFileName(handle, filename, BUF_SIZE);
    GetWindowText(handle, title, BUF_SIZE);
@@ -89,6 +92,9 @@ static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
 }
 
 static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
+   if (!IsWindowVisible(handle)) {
+      return TRUE;
+   }
    DWORD pid;
    GetWindowThreadProcessId(handle, &pid);
    if( pid == gPid){
@@ -105,6 +111,9 @@ static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
 
 static HWND gFoundHandle;
 static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
+   if (!IsWindowVisible(handle)) {
+      return TRUE;
+   }
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
    //fprintf(stderr,"win: %s\n", buf);
@@ -119,6 +128,9 @@ static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
 }
 
 static BOOL CALLBACK findWindowHandleByPid(HWND handle, long lParam){
+   if (!IsWindowVisible(handle)) {
+      return TRUE;
+   }
    DWORD pid;
    GetWindowThreadProcessId(handle, &pid);
    if( pid == gPid ){
