@@ -1,8 +1,8 @@
 A new version is available per May 22nd 2013 
 =====
 named **SikuliX-1.0** consisting of 2 major parts:
- - **Sikuli-IDE** (made for scripting in Python language) [more ...](https://github.com/RaiMan/SikuliX-IDE)
- - **Sikuli-API** (for Java programming and usage with other IDE's) [more ...](https://github.com/RaiMan/SikuliX-API)
+ - **SikuliX-IDE** (made for scripting in Python language) [more ...](https://github.com/RaiMan/SikuliX-IDE)
+ - **SikuliX-API** (for Java programming and usage with other IDE's) [more ...](https://github.com/RaiMan/SikuliX-API)
 
 More information about **downloadable packages**: [click here ...](http://www.sikuli.org/download.html)
 
