@@ -8,6 +8,9 @@ More information about **downloadable packages**: [click here ...](http://www.si
 
 or go to [**Sikuli's Launchpad page**](https://launchpad.net/sikuli)
 
+**a word on the future ...**<br />
+Most probably this repo will never come back to life again. So if you are interested in the further developement of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned reepos. 
+
 What is Sikuli?
 ===============
 
