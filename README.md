@@ -1,6 +1,8 @@
 A new version 
 =============
-is planned for May 2013.
+Is available per May 22nd 2013 named SikuliX-1.0 consisting of 2 major parts:
+
+
 More information at: https://github.com/RaiMan/Sikuli12.11
 and on Sikuli's Launchpad page: https://launchpad.net/sikuli
 
