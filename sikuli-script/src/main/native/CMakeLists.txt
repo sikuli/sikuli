@@ -1,6 +1,7 @@
 # Copyright 2010-2011, Sikuli.org
 # Released under the MIT License.
 ENABLE_LANGUAGE(CXX)
+ENABLE_LANGUAGE(C)
 
 IF(LINUX)
    # -O2/O3 seems incorrectly optimizes some SWIG generated code
@@ -22,6 +23,10 @@ SET(JNI_HEADERS
 )
 
 SET(LIBRARY_OUTPUT_PATH ${BINARY_LIB_DIR})
+
+
+
+
 
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(JNI REQUIRED)
@@ -84,6 +89,7 @@ ENDIF()
 SET(BUILD_TARGETS
    #TODO move VDictProxy to swig
    VDictProxy
+   VNCNative
 )
 
 IF(WIN32)
@@ -132,6 +138,12 @@ ADD_LIBRARY(VDictProxy SHARED
    org_sikuli_script_VDictProxy.h
 )
 TARGET_LINK_LIBRARIES(VDictProxy ${OpenCV_LIBS})
+
+ADD_LIBRARY(VNCNative SHARED
+   VNCNative.c
+   VNCNative.h
+)
+TARGET_LINK_LIBRARIES(VNCNative -lvncclient)
 
 
 ## SWIG: generate a JNI wrapper 

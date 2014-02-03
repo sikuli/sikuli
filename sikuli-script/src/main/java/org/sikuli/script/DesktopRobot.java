@@ -15,10 +15,16 @@ import java.awt.event.KeyEvent;
 
 public class DesktopRobot extends Robot implements IRobot{
    final static int MAX_DELAY = 60000;
+   GraphicsDevice graphicsDevice;
 
    public DesktopRobot(GraphicsDevice screen) throws AWTException{
       super(screen);
-   
+      graphicsDevice=screen;
+   }
+
+   public GraphicsDevice getGraphicsDevice() { return graphicsDevice; }
+   public Rectangle getBounds() { 
+      return getGraphicsDevice().getDefaultConfiguration().getBounds();
    }
 
    public void smoothMove(Location dest){
