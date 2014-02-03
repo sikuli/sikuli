@@ -1,5 +1,31 @@
+### VNCRobot version
+
+Connects up to a VNC server instead of tying up the mouse/keyboard.
+
+* Example... (replace 192.168.1.111 with the ip address of the vncserver)
+
+```python
+vncscreenid=JScreen.connectVNC(["vncviewer","192.168.1.111"],"password")
+vncscreen=Screen(vncscreenid)
+
+# Then everything will have to be accessed via the new "vncscreen" object.
+
+vncscreen.click(Location(1,1))
+vncscreen.type("abc")
+vncscreen.find("xxx.png")
+```
+
+* You can add vncviewer options to the connection....
+
+```python
+vncscreenid=JScreen.connectVNC(["vncviewer","-encodings","tight","-quality","5","192.168.1.111"],"password")
+```
+
+
 A new version is available per May 22nd 2013 
 =====
+
+
 named **SikuliX-1.0** consisting of 2 major parts:
  - **SikuliX-IDE** (made for scripting in Python language) [more ...](https://github.com/RaiMan/SikuliX-IDE)
  - **SikuliX-API** (for Java programming and usage with other IDE's) [more ...](https://github.com/RaiMan/SikuliX-API)

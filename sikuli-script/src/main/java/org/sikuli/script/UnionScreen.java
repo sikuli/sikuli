@@ -53,7 +53,7 @@ public class UnionScreen extends Screen {
             int ix = inter.x, iy = inter.y;
             inter.x-=scrBound.x;
             inter.y-=scrBound.y;
-            ScreenImage img = _robots[i].captureScreen(inter);
+            ScreenImage img = getRobot(i).captureScreen(inter);
             g2d.drawImage(img.getImage(), ix-rect.x, iy-rect.y, null);
          }
       }
