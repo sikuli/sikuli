@@ -22,20 +22,13 @@ vncscreenid=JScreen.connectVNC(["vncviewer","-encodings","tight","-quality","5",
 ```
 
 
-A new version is available per May 22nd 2013 
+A new version of SikuliX is available since 2013 as a follow up developement 
 =====
 
-
-named **SikuliX-1.0** consisting of 2 major parts:
- - **SikuliX-IDE** (made for scripting in Python language) [more ...](https://github.com/RaiMan/SikuliX-IDE)
- - **SikuliX-API** (for Java programming and usage with other IDE's) [more ...](https://github.com/RaiMan/SikuliX-API)
-
-More information about **downloadable packages**: [click here ...](http://www.sikuli.org/download.html)
-
-or go to [**Sikuli's Launchpad page**](https://launchpad.net/sikuli)
+**if interested start here:** http://sikulix.com
 
 **a word on the future ...**<br />
-Most probably this repo will never come back to life again. So if you are interested in the further developement of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned reepos. 
+Most probably this repo will never come back to life again. So if you are interested in the further developement of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned version. 
 
 What is Sikuli?
 ===============
