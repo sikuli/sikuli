@@ -22,13 +22,13 @@ vncscreenid=JScreen.connectVNC(["vncviewer","-encodings","tight","-quality","5",
 ```
 
 
-A new version of SikuliX is available since 2013 as a follow up developement 
+A new version of SikuliX is available since 2013 as a follow up development
 =====
 
 **if interested start here:** http://sikulix.com
 
 **a word on the future ...**<br />
-Most probably this repo will never come back to life again. So if you are interested in the further developement of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned version. 
+Most probably this repo will never come back to life again. So if you are interested in the further development of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned version.
 
 What is Sikuli?
 ===============
