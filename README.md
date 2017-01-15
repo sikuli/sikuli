@@ -1,4 +1,14 @@
-### VNCRobot version
+A new version of Sikuli(X) is available since 2013 <br>as a follow up development
+=====
+
+**if interested start here:** http://sikulix.com
+
+**a word on the future of this repository ...**<br />
+Most probably this repo will never come back to life again. So if you are interested in the further development of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned version.
+
+--- 
+
+VNCRobot version
 
 Connects up to a VNC server instead of tying up the mouse/keyboard.
 
@@ -20,15 +30,6 @@ vncscreen.find("xxx.png")
 ```python
 vncscreenid=JScreen.connectVNC(["vncviewer","-encodings","tight","-quality","5","192.168.1.111"],"password")
 ```
-
-
-A new version of SikuliX is available since 2013 as a follow up development
-=====
-
-**if interested start here:** http://sikulix.com
-
-**a word on the future ...**<br />
-Most probably this repo will never come back to life again. So if you are interested in the further development of Sikuli either as a user or as a possible contributor, you should decide to switch to the above mentioned version.
 
 What is Sikuli?
 ===============
