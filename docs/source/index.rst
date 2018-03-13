@@ -43,7 +43,7 @@ tasks without learning Python. A good start might be to have a look at the :doc:
 
 However, if you would like to write more powerful and
 complex scripts, which might even be structured in modules, you have to dive into the `Python Language
-<http://jythonpodcast.hostjava.net/jythonbook/en/1.0/>`_.
+<http://www.jython.org/jythonbook/en/1.0/>`_.
 
 The preface of each chapter in this documentaton briefly describes 
 a class or a group of methods. It

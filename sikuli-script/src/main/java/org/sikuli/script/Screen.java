@@ -5,11 +5,12 @@
  */
 package org.sikuli.script;
 
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.image.*;
 
 public class Screen extends Region implements Observer, IScreen {
-   protected GraphicsDevice _curGD;
+//   protected GraphicsDevice _curGD;
    protected int _curID = 0;
    protected static int _primaryScreen = -1;
 
@@ -17,13 +18,13 @@ public class Screen extends Region implements Observer, IScreen {
    protected CapturePrompt _prompt;
    protected ScreenHighlighter _overlay;
 
-   static GraphicsDevice[] _gdev;
+//   static GraphicsDevice[] _gdev;
    static GraphicsEnvironment _genv;
-   static IRobot[] _robots;
+   static ArrayList<IRobot> _robots;
 
    static{
       _genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      _gdev = _genv.getScreenDevices();
+//      _gdev = _genv.getScreenDevices();
       initRobots();
    }
 
@@ -33,11 +34,13 @@ public class Screen extends Region implements Observer, IScreen {
 
    private static void initRobots(){
       try{
-         _robots = new DesktopRobot[_gdev.length];
+         _robots = new ArrayList<IRobot>();
+         GraphicsDevice[] _gdev = _genv.getScreenDevices();
          for(int i=0;i<_gdev.length;i++){
-            _robots[i] = new DesktopRobot(_gdev[i]);
+            DesktopRobot robot=new DesktopRobot(_gdev[i]);
+            _robots.add(robot );
             //_robots[i].setAutoWaitForIdle(false); //TODO: make sure we don't need this
-            _robots[i].setAutoDelay(10);
+            robot.setAutoDelay(10);
          }
       }
       catch(AWTException e){
@@ -45,13 +48,22 @@ public class Screen extends Region implements Observer, IScreen {
       }
    }
 
+   public static int connectVNC(String[] args,String password)  {
+      VNCRobot vnc=new VNCRobot(args,password);
+      _robots.clear(); // have to clear, this will overlap the main screen and find() will look for the screen by coords.
+      int i=_robots.size();
+      _robots.add(vnc);
+      _primaryScreen=i;
+      return i;
+   }
 
    public static int getNumberScreens(){
-      return _gdev.length;
+//      return _gdev.length;
+      return _robots.size();
    }
 
    public static IRobot getRobot(int id){
-      return _robots[id];
+      return _robots.get(id);
    }
 
    public static int getPrimaryId(){
@@ -69,19 +81,21 @@ public class Screen extends Region implements Observer, IScreen {
    }
    
    public IRobot getRobot(){
-      return _robots[getPrimaryId()];
+      return getRobot(getPrimaryId());
    }
 
    public GraphicsDevice getGraphicsDevice(){
-      return _curGD;
+      return getRobot().getGraphicsDevice();
    }
 
    public static Rectangle getBounds(int id){
-      return _gdev[id].getDefaultConfiguration().getBounds();
+//      return getRobot(id).getGraphicsDevice().getDefaultConfiguration().getBounds();
+      return getRobot(id).getBounds();
    }
 
    public Rectangle getBounds(){
-      return _curGD.getDefaultConfiguration().getBounds();
+//      return getRobot().getGraphicsDevice().getDefaultConfiguration().getBounds();
+      return getBounds(getPrimaryId());
    }
 
    public int getID(){
@@ -89,8 +103,8 @@ public class Screen extends Region implements Observer, IScreen {
    }
 
    public Screen(int id) {
-      if(id<_gdev.length){
-         _curGD = _gdev[id];
+      if(id<getNumberScreens()){
+//         _curGD = _gdev[id];
          _curID = id;
       }
       else
@@ -106,9 +120,9 @@ public class Screen extends Region implements Observer, IScreen {
    }
 
    private void initGD(){
-      _curGD = _genv.getDefaultScreenDevice();
-      for(int i=0;i<_gdev.length;i++)
-         if(_gdev[i] == _curGD)
+      GraphicsDevice _curGD = _genv.getDefaultScreenDevice();
+      for(int i=0;i<getNumberScreens();i++)
+         if(getRobot(i).getGraphicsDevice() == _curGD)
             _curID = i;
    }
 
@@ -131,7 +145,7 @@ public class Screen extends Region implements Observer, IScreen {
       Rectangle bounds = getBounds();
       rect.x -= bounds.x;
       rect.y -= bounds.y;
-      ScreenImage simg = _robots[_curID].captureScreen(rect);
+      ScreenImage simg = getRobot(_curID).captureScreen(rect);
       simg.x += bounds.x;
       simg.y += bounds.y;
       return simg;

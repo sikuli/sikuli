@@ -30,7 +30,7 @@ operators <ExtendingaRegion>` to extend or restrict your searching regions.
 The approach to find this corner is to first identify the most characteristic corner
 of the window (mostly the one with the window buttons) and then try to find the
 other relevant corners, to be sure you get the click point you need. The strategy is
-illustrated below. We want to find the top-right corner, then go to the right to
+illustrated below. We want to find the top-left corner, then go to the right to
 find the top-right corner, then go below to find the bottom-right corner.
 
 .. image:: Safari_spatial.png

@@ -6,6 +6,7 @@
 package org.sikuli.script;
 
 import java.awt.Rectangle;
+import java.awt.GraphicsDevice;
 
 public interface IRobot {
    enum KeyMode {
@@ -27,6 +28,8 @@ public interface IRobot {
    void waitForIdle();
    void delay(int ms);
    void setAutoDelay(int ms);
+   GraphicsDevice getGraphicsDevice();
+   Rectangle getBounds();
 
    /**
     *  Return the underlying device object (if any).
