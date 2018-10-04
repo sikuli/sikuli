@@ -1,5 +1,7 @@
+!!!This Sikuli X-1.0rc3 IS NO LONGER SUPPORTED !!!
+==================================================
+
 A new version of Sikuli(X) is available since 2013 <br>as a follow up development
-=====
 
 **if interested start here:** http://sikulix.com
 
